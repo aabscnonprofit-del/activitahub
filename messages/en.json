@@ -736,6 +736,12 @@
       "paid": "Paid",
       "refunded": "Refunded",
       "failed": "Failed"
+    },
+    "history": {
+      "bookings": "Bookings",
+      "spent": "Total spent",
+      "organizers": "Organizers",
+      "repeat": "Repeat"
     }
   },
   "notifications": {
@@ -750,5 +756,21 @@
     "submitting": "Submitting…",
     "placeholder": "Share your experience (optional)",
     "yourRating": "Your rating"
+  },
+  "analytics": {
+    "title": "Analytics",
+    "subtitle": "Your performance at a glance.",
+    "unavailable": "Analytics unavailable.",
+    "revenue": "Revenue",
+    "bookings": "Bookings",
+    "completionRate": "Completion rate",
+    "repeatCustomers": "Repeat customers",
+    "proposalConversion": "Proposal conversion",
+    "proposalsSent": "Proposals sent",
+    "avgRating": "Avg rating",
+    "completed": "Completed",
+    "revenueOverTime": "Revenue over time",
+    "activityPopularity": "Activity popularity",
+    "noData": "No data yet"
   }
 }

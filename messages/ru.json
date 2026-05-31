@@ -736,6 +736,12 @@
       "paid": "Оплачено",
       "refunded": "Возвращено",
       "failed": "Ошибка"
+    },
+    "history": {
+      "bookings": "Бронирований",
+      "spent": "Всего потрачено",
+      "organizers": "Организаторы",
+      "repeat": "Повторные"
     }
   },
   "notifications": {
@@ -750,5 +756,21 @@
     "submitting": "Отправка…",
     "placeholder": "Поделитесь впечатлениями (необязательно)",
     "yourRating": "Ваша оценка"
+  },
+  "analytics": {
+    "title": "Аналитика",
+    "subtitle": "Ваши показатели с первого взгляда.",
+    "unavailable": "Аналитика недоступна.",
+    "revenue": "Доход",
+    "bookings": "Бронирования",
+    "completionRate": "Доля завершения",
+    "repeatCustomers": "Повторные клиенты",
+    "proposalConversion": "Конверсия предложений",
+    "proposalsSent": "Отправлено предложений",
+    "avgRating": "Средняя оценка",
+    "completed": "Завершено",
+    "revenueOverTime": "Доход по времени",
+    "activityPopularity": "Популярность активностей",
+    "noData": "Пока нет данных"
   }
 }

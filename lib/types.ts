@@ -518,6 +518,43 @@ export type AppNotification = {
   created_at: string
 }
 
+// ── Analytics (Phase 6) ──────────────────────────────────────────────────────
+
+export type OrganizerAnalytics = {
+  total_bookings: number
+  completed_bookings: number
+  completion_rate: number
+  revenue_cents: number
+  proposals_sent: number
+  proposals_accepted: number
+  proposal_conversion: number
+  repeat_customers: number
+  avg_rating: number | null
+  revenue_by_month: { month: string; revenue_cents: number }[]
+  activity_popularity: { title: string; bookings: number }[]
+}
+
+export type PlatformAnalytics = {
+  gmv_cents: number
+  active_organizers: number
+  active_customers: number
+  total_requests: number
+  total_bookings: number
+  marketplace_conversion: number
+  top_categories: { category: string; count: number }[]
+  bookings_by_month: { month: string; count: number }[]
+  total_reviews: number
+  pending_reviews: number
+}
+
+export type CustomerStats = {
+  total_bookings: number
+  completed: number
+  total_spent_cents: number
+  organizers: number
+  repeat_organizers: number
+}
+
 export type ActionResult<T = undefined> =
   | { success: true; data?: T; error?: never }
   | { success?: never; error: string; data?: never }

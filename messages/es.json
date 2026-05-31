@@ -736,6 +736,12 @@
       "paid": "Pagado",
       "refunded": "Reembolsado",
       "failed": "Fallido"
+    },
+    "history": {
+      "bookings": "Reservas",
+      "spent": "Total gastado",
+      "organizers": "Organizadores",
+      "repeat": "Recurrentes"
     }
   },
   "notifications": {
@@ -750,5 +756,21 @@
     "submitting": "Enviando…",
     "placeholder": "Comparte tu experiencia (opcional)",
     "yourRating": "Tu valoración"
+  },
+  "analytics": {
+    "title": "Analíticas",
+    "subtitle": "Tu rendimiento de un vistazo.",
+    "unavailable": "Analíticas no disponibles.",
+    "revenue": "Ingresos",
+    "bookings": "Reservas",
+    "completionRate": "Tasa de finalización",
+    "repeatCustomers": "Clientes recurrentes",
+    "proposalConversion": "Conversión de propuestas",
+    "proposalsSent": "Propuestas enviadas",
+    "avgRating": "Valoración media",
+    "completed": "Completadas",
+    "revenueOverTime": "Ingresos en el tiempo",
+    "activityPopularity": "Popularidad de actividades",
+    "noData": "Aún no hay datos"
   }
 }

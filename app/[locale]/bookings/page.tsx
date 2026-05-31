@@ -8,6 +8,7 @@ import { cancelBooking } from '@/lib/actions/bookings'
 import { createBookingCheckout, requestRefund } from '@/lib/actions/bookingPayments'
 import { ReviewForm } from '@/components/reviews/ReviewForm'
 import { StarRating } from '@/components/ui/StarRating'
+import { getCustomerStats } from '@/lib/analytics/queries'
 import { formatDate, formatPrice } from '@/lib/utils'
 import type { Locale, Booking, BookingStatus } from '@/lib/types'
 
@@ -70,6 +71,8 @@ export default async function BookingsPage({ params }: Props) {
     refundStatus.set(r.booking_id, r.status)
   }
 
+  const stats = await getCustomerStats(supabase)
+
   return (
     <div className="flex min-h-screen flex-col">
       <PublicHeader locale={locale} isAuthenticated />
@@ -77,6 +80,23 @@ export default async function BookingsPage({ params }: Props) {
         <div className="mx-auto max-w-3xl px-4 py-10">
           <h1 className="text-2xl font-extrabold text-slate-900">{t('title')}</h1>
           <p className="mt-0.5 text-sm text-slate-500">{t('subtitle')}</p>
+
+          {/* Customer history / lifetime value */}
+          {stats && stats.total_bookings > 0 && (
+            <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+              {[
+                { label: t('history.bookings'), value: stats.total_bookings },
+                { label: t('history.spent'), value: formatPrice(stats.total_spent_cents, 'usd', locale) ?? '$0' },
+                { label: t('history.organizers'), value: stats.organizers },
+                { label: t('history.repeat'), value: stats.repeat_organizers },
+              ].map((s, i) => (
+                <div key={i} className="rounded-2xl border border-slate-200 bg-white p-4">
+                  <p className="text-xs uppercase tracking-wide text-slate-400">{s.label}</p>
+                  <p className="mt-0.5 text-xl font-extrabold text-slate-900">{s.value}</p>
+                </div>
+              ))}
+            </div>
+          )}
 
           {bookings.length === 0 ? (
             <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-12 text-center">
