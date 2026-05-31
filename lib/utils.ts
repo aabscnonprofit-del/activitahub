@@ -34,6 +34,18 @@ export function isUpcoming(dateStr: string): boolean {
   return eventDate >= today
 }
 
+export function formatPrice(
+  cents: number | null | undefined,
+  currency: string = 'usd',
+  locale: string = 'en'
+): string | null {
+  if (cents == null) return null
+  return new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency: currency.toUpperCase(),
+  }).format(cents / 100)
+}
+
 export function absoluteUrl(path: string): string {
   const base =
     process.env.NEXT_PUBLIC_APP_URL ??

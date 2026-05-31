@@ -49,6 +49,12 @@ export function PublicHeader({ locale, isAuthenticated }: PublicHeaderProps) {
         {/* Desktop navigation */}
         <nav className="hidden items-center gap-6 md:flex">
           <Link
+            href={`/${locale}/marketplace`}
+            className="text-sm font-medium text-slate-600 hover:text-brand-600 transition-colors"
+          >
+            {t('marketplace')}
+          </Link>
+          <Link
             href={`/${locale}/pricing`}
             className="text-sm font-medium text-slate-600 hover:text-brand-600 transition-colors"
           >
@@ -139,6 +145,13 @@ export function PublicHeader({ locale, isAuthenticated }: PublicHeaderProps) {
       {mobileOpen && (
         <div className="border-t border-slate-100 bg-white px-4 py-4 md:hidden">
           <nav className="flex flex-col gap-1">
+            <Link
+              href={`/${locale}/marketplace`}
+              onClick={() => setMobileOpen(false)}
+              className="rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
+            >
+              {t('marketplace')}
+            </Link>
             <Link
               href={`/${locale}/pricing`}
               onClick={() => setMobileOpen(false)}

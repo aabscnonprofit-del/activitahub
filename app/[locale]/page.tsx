@@ -93,7 +93,7 @@ export default async function HomePage({ params }: HomePageProps) {
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
               <Link
-                href={`/${locale}/pricing`}
+                href={`/${locale}/marketplace`}
                 className="inline-flex items-center gap-2 rounded-xl bg-white/10 px-8 py-4 text-base font-semibold text-white hover:bg-white/20 transition-colors"
               >
                 {t('hero.ctaSecondary')}

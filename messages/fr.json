@@ -572,5 +572,65 @@
       "saving": "Enregistrement…",
       "creating": "Création…"
     }
+  },
+  "marketplace": {
+    "title": "Marché",
+    "subtitle": "Découvrez des activités d'organisateurs certifiés près de chez vous.",
+    "resultCount": "{count} activités",
+    "empty": "Aucune activité ne correspond à vos filtres.",
+    "backToMarketplace": "Retour au marché",
+    "filters": {
+      "search": "Rechercher",
+      "searchPlaceholder": "Mots-clés…",
+      "city": "Ville",
+      "country": "Pays",
+      "category": "Catégorie",
+      "language": "Langue",
+      "indoorOutdoor": "Intérieur / extérieur",
+      "maxPrice": "Prix max.",
+      "childAge": "Âge de l'enfant",
+      "date": "Date",
+      "apply": "Appliquer",
+      "clear": "Effacer",
+      "any": "Tout"
+    },
+    "card": {
+      "free": "Gratuit"
+    },
+    "detail": {
+      "about": "À propos",
+      "venue": "Lieu",
+      "upcoming": "Prochaines sessions",
+      "minutes": "min",
+      "ages": "Âges",
+      "organizer": "Organisateur",
+      "certified": "Organisateur Certifié",
+      "bookCta": "Demander cette activité",
+      "bookHint": "Envoyez une demande et l'organisateur proposera les détails."
+    },
+    "organizer": {
+      "anonymous": "Organisateur",
+      "certified": "Organisateur Certifié",
+      "memberSince": "Membre depuis {date}",
+      "activities": "Activités",
+      "noActivities": "Aucune activité publiée pour l'instant."
+    },
+    "categories": {
+      "sports": "Sports",
+      "arts": "Arts",
+      "music": "Musique",
+      "education": "Éducation",
+      "outdoor": "Plein air",
+      "wellness": "Bien-être",
+      "workshop": "Atelier",
+      "party": "Fête",
+      "food": "Cuisine",
+      "other": "Autre"
+    },
+    "indoorOutdoor": {
+      "indoor": "Intérieur",
+      "outdoor": "Extérieur",
+      "both": "Les deux"
+    }
   }
 }

@@ -572,5 +572,65 @@
       "saving": "Guardando…",
       "creating": "Creando…"
     }
+  },
+  "marketplace": {
+    "title": "Mercado",
+    "subtitle": "Descubre actividades de organizadores certificados cerca de ti.",
+    "resultCount": "{count} actividades",
+    "empty": "Ninguna actividad coincide con tus filtros.",
+    "backToMarketplace": "Volver al mercado",
+    "filters": {
+      "search": "Buscar",
+      "searchPlaceholder": "Palabras clave…",
+      "city": "Ciudad",
+      "country": "País",
+      "category": "Categoría",
+      "language": "Idioma",
+      "indoorOutdoor": "Interior / exterior",
+      "maxPrice": "Precio máx.",
+      "childAge": "Edad del niño",
+      "date": "Fecha",
+      "apply": "Aplicar",
+      "clear": "Limpiar",
+      "any": "Cualquiera"
+    },
+    "card": {
+      "free": "Gratis"
+    },
+    "detail": {
+      "about": "Acerca de",
+      "venue": "Lugar",
+      "upcoming": "Próximas sesiones",
+      "minutes": "min",
+      "ages": "Edades",
+      "organizer": "Organizador",
+      "certified": "Organizador Certificado",
+      "bookCta": "Solicitar esta actividad",
+      "bookHint": "Envía una solicitud y el organizador propondrá los detalles."
+    },
+    "organizer": {
+      "anonymous": "Organizador",
+      "certified": "Organizador Certificado",
+      "memberSince": "Miembro desde {date}",
+      "activities": "Actividades",
+      "noActivities": "Aún no hay actividades publicadas."
+    },
+    "categories": {
+      "sports": "Deportes",
+      "arts": "Arte",
+      "music": "Música",
+      "education": "Educación",
+      "outdoor": "Aire libre",
+      "wellness": "Bienestar",
+      "workshop": "Taller",
+      "party": "Fiesta",
+      "food": "Comida",
+      "other": "Otro"
+    },
+    "indoorOutdoor": {
+      "indoor": "Interior",
+      "outdoor": "Exterior",
+      "both": "Ambos"
+    }
   }
 }
