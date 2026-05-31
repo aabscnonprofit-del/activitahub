@@ -7,6 +7,9 @@
     "startLearning": "Empezar a aprender",
     "continueLearning": "Continuar aprendiendo",
     "courseComplete": "Has completado todas las lecciones de este curso.",
+    "takeExam": "Realizar el examen final",
+    "certified": "Certificado: aprobaste el examen final.",
+    "viewCertificate": "Ver certificado",
     "module": "Módulo",
     "min": "min",
     "completed": "Completada",
@@ -20,6 +23,48 @@
       "title": "Aún no hay curso disponible",
       "description": "Tu curso de certificación aún no está listo. Vuelve pronto."
     }
+  },
+  "exam": {
+    "backToAcademy": "Volver a la academia",
+    "passingScore": "Puntuación para aprobar: {score}%",
+    "question": "Pregunta {n} de {total}",
+    "submit": "Enviar examen",
+    "grading": "Calificando…",
+    "allAnswered": "Todas las preguntas respondidas",
+    "answeredCount": "{answered}/{total} respondidas",
+    "passedTitle": "¡Felicidades, aprobaste!",
+    "passedBody": "Obtuviste {score}%. Tu certificado está listo.",
+    "viewCertificate": "Ver tu certificado",
+    "failed": "Obtuviste {score}%. Necesitas {passing}% para aprobar; repasa las lecciones e inténtalo de nuevo."
+  },
+  "certificate": {
+    "title": "Certificado de Finalización",
+    "issuedTo": "Esto certifica que",
+    "statement": "ha completado con éxito {course} y es reconocido como Organizador Certificado de Activita.",
+    "course": "Curso",
+    "score": "Puntuación",
+    "date": "Emitido",
+    "code": "ID del certificado",
+    "scanToVerify": "Escanear para verificar",
+    "print": "Imprimir / Guardar PDF",
+    "backToAcademy": "Volver a la academia",
+    "anonymousHolder": "Organizador de Activita",
+    "nextTitle": "¡Estás certificado! Queda un paso.",
+    "nextBody": "Suscríbete para activar tu panel de organizador y empezar a publicar actividades.",
+    "nextCta": "Ir a facturación"
+  },
+  "verify": {
+    "title": "Verificar certificado",
+    "validTitle": "Certificado verificado",
+    "validBody": "Este es un certificado auténtico de Organizador Certificado de Activita.",
+    "invalidTitle": "Certificado no encontrado",
+    "invalidBody": "No pudimos verificar un certificado con este código.",
+    "holder": "Titular",
+    "course": "Curso",
+    "score": "Puntuación",
+    "issued": "Emitido",
+    "code": "ID del certificado",
+    "backHome": "Volver al inicio"
   },
   "pricing": {
     "title": "Precios simples y transparentes",

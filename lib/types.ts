@@ -238,6 +238,61 @@ export type CourseOutline = {
   nextLessonId: string | null
 }
 
+// ── Certification (Phase 3B) ────────────────────────────────────────────────
+
+export type ExamOption = {
+  id: string
+  label: string
+}
+
+export type ExamQuestion = {
+  id: string
+  prompt: string
+  type: QuizQuestionType
+  options: ExamOption[]
+}
+
+// Exam as delivered to the student (NO answer key).
+export type Exam = {
+  id: string
+  title: string
+  description: string | null
+  passing_score: number
+  questions: ExamQuestion[]
+}
+
+export type ExamSubmissionResult = {
+  score: number
+  passed: boolean
+  passing_score: number
+  attempt_id: string
+  certificate_id: string | null
+  certificate_code: string | null
+}
+
+export type Certificate = {
+  id: string
+  profile_id: string
+  course_id: string
+  exam_attempt_id: string | null
+  certificate_code: string
+  score: number
+  issued_at: string
+  created_at: string
+}
+
+// Public, safe-field certificate verification result.
+export type CertificateVerification =
+  | { valid: false }
+  | {
+      valid: true
+      certificate_code: string
+      holder_name: string | null
+      course_title: string
+      score: number
+      issued_at: string
+    }
+
 export type ActionResult<T = undefined> =
   | { success: true; data?: T; error?: never }
   | { success?: never; error: string; data?: never }

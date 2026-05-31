@@ -7,6 +7,9 @@
     "startLearning": "Start learning",
     "continueLearning": "Continue learning",
     "courseComplete": "You've completed every lesson in this course.",
+    "takeExam": "Take the final exam",
+    "certified": "Certified — you passed the final exam.",
+    "viewCertificate": "View certificate",
     "module": "Module",
     "min": "min",
     "completed": "Completed",
@@ -20,6 +23,48 @@
       "title": "No course available yet",
       "description": "Your certification course isn't ready yet. Please check back soon."
     }
+  },
+  "exam": {
+    "backToAcademy": "Back to academy",
+    "passingScore": "Passing score: {score}%",
+    "question": "Question {n} of {total}",
+    "submit": "Submit exam",
+    "grading": "Grading…",
+    "allAnswered": "All questions answered",
+    "answeredCount": "{answered}/{total} answered",
+    "passedTitle": "Congratulations — you passed!",
+    "passedBody": "You scored {score}%. Your certificate is ready.",
+    "viewCertificate": "View your certificate",
+    "failed": "You scored {score}%. You need {passing}% to pass — review the lessons and try again."
+  },
+  "certificate": {
+    "title": "Certificate of Completion",
+    "issuedTo": "This certifies that",
+    "statement": "has successfully completed {course} and is recognized as an Activita Certified Organizer.",
+    "course": "Course",
+    "score": "Score",
+    "date": "Issued",
+    "code": "Certificate ID",
+    "scanToVerify": "Scan to verify",
+    "print": "Print / Save PDF",
+    "backToAcademy": "Back to academy",
+    "anonymousHolder": "Activita Organizer",
+    "nextTitle": "You're certified! One step left.",
+    "nextBody": "Subscribe to activate your organizer dashboard and start listing activities.",
+    "nextCta": "Go to billing"
+  },
+  "verify": {
+    "title": "Verify Certificate",
+    "validTitle": "Certificate verified",
+    "validBody": "This is a genuine Activita Certified Organizer certificate.",
+    "invalidTitle": "Certificate not found",
+    "invalidBody": "We couldn't verify a certificate with this code.",
+    "holder": "Holder",
+    "course": "Course",
+    "score": "Score",
+    "issued": "Issued",
+    "code": "Certificate ID",
+    "backHome": "Back to home"
   },
   "pricing": {
     "title": "Simple, transparent pricing",

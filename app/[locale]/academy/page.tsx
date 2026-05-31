@@ -1,13 +1,14 @@
 import { getTranslations } from 'next-intl/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowRight, GraduationCap, Trophy } from 'lucide-react'
+import { ArrowRight, GraduationCap, Trophy, Award } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import {
   getOrCreateEnrollment,
   getCourseOutline,
   hasAcademyAccess,
 } from '@/lib/academy/queries'
+import { getCertificate, getFinalExamId } from '@/lib/academy/certification'
 import { CourseOutline } from '@/components/academy/CourseOutline'
 import type { Locale, Profile } from '@/lib/types'
 import type { Metadata } from 'next'
@@ -69,6 +70,11 @@ export default async function AcademyPage({ params }: AcademyPageProps) {
   const courseComplete =
     outline.totalLessons > 0 && outline.completedLessons === outline.totalLessons
 
+  const certificate = await getCertificate(supabase, user.id, enrollment.course.id)
+  const examId = courseComplete
+    ? await getFinalExamId(supabase, enrollment.course.id)
+    : null
+
   return (
     <div className="space-y-8">
       {/* Course header + progress */}
@@ -104,9 +110,28 @@ export default async function AcademyPage({ params }: AcademyPageProps) {
           </div>
         </div>
 
-        {/* Continue / completed CTA */}
+        {/* Continue / exam / certificate CTA */}
         <div className="mt-5">
-          {courseComplete ? (
+          {certificate ? (
+            <div className="flex flex-wrap items-center gap-3 rounded-lg bg-green-50 px-4 py-3">
+              <Award className="h-5 w-5 shrink-0 text-green-500" aria-hidden="true" />
+              <span className="text-sm font-medium text-green-800">{t('certified')}</span>
+              <Link
+                href={`/${locale}/academy/certificate`}
+                className="ml-auto inline-flex items-center gap-1.5 rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700 transition-colors"
+              >
+                {t('viewCertificate')}
+              </Link>
+            </div>
+          ) : courseComplete && examId ? (
+            <Link
+              href={`/${locale}/academy/exam`}
+              className="inline-flex items-center gap-2 rounded-lg bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-700 transition-colors"
+            >
+              {t('takeExam')}
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </Link>
+          ) : courseComplete ? (
             <div className="flex items-center gap-2 rounded-lg bg-green-50 px-4 py-3 text-sm font-medium text-green-800">
               <Trophy className="h-5 w-5 text-green-500" aria-hidden="true" />
               {t('courseComplete')}

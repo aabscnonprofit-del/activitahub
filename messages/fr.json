@@ -7,6 +7,9 @@
     "startLearning": "Commencer à apprendre",
     "continueLearning": "Continuer l'apprentissage",
     "courseComplete": "Vous avez terminé toutes les leçons de ce cours.",
+    "takeExam": "Passer l'examen final",
+    "certified": "Certifié — vous avez réussi l'examen final.",
+    "viewCertificate": "Voir le certificat",
     "module": "Module",
     "min": "min",
     "completed": "Terminée",
@@ -20,6 +23,48 @@
       "title": "Aucun cours disponible pour l'instant",
       "description": "Votre cours de certification n'est pas encore prêt. Revenez bientôt."
     }
+  },
+  "exam": {
+    "backToAcademy": "Retour à l'académie",
+    "passingScore": "Score de réussite : {score}%",
+    "question": "Question {n} sur {total}",
+    "submit": "Soumettre l'examen",
+    "grading": "Correction…",
+    "allAnswered": "Toutes les questions répondues",
+    "answeredCount": "{answered}/{total} répondues",
+    "passedTitle": "Félicitations — vous avez réussi !",
+    "passedBody": "Vous avez obtenu {score}%. Votre certificat est prêt.",
+    "viewCertificate": "Voir votre certificat",
+    "failed": "Vous avez obtenu {score}%. Il faut {passing}% pour réussir — révisez les leçons et réessayez."
+  },
+  "certificate": {
+    "title": "Certificat de Réussite",
+    "issuedTo": "Ceci certifie que",
+    "statement": "a complété avec succès {course} et est reconnu comme Organisateur Certifié Activita.",
+    "course": "Cours",
+    "score": "Score",
+    "date": "Délivré",
+    "code": "ID du certificat",
+    "scanToVerify": "Scanner pour vérifier",
+    "print": "Imprimer / Enregistrer en PDF",
+    "backToAcademy": "Retour à l'académie",
+    "anonymousHolder": "Organisateur Activita",
+    "nextTitle": "Vous êtes certifié ! Une étape reste.",
+    "nextBody": "Abonnez-vous pour activer votre tableau de bord organisateur et publier des activités.",
+    "nextCta": "Aller à la facturation"
+  },
+  "verify": {
+    "title": "Vérifier le certificat",
+    "validTitle": "Certificat vérifié",
+    "validBody": "Ceci est un véritable certificat d'Organisateur Certifié Activita.",
+    "invalidTitle": "Certificat introuvable",
+    "invalidBody": "Nous n'avons pas pu vérifier de certificat avec ce code.",
+    "holder": "Titulaire",
+    "course": "Cours",
+    "score": "Score",
+    "issued": "Délivré",
+    "code": "ID du certificat",
+    "backHome": "Retour à l'accueil"
   },
   "pricing": {
     "title": "Des tarifs simples et transparents",

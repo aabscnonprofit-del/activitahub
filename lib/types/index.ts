@@ -170,3 +170,56 @@ export interface Quiz {
   created_at: string
   updated_at: string
 }
+
+// ── Certification (Phase 3B) ────────────────────────────────────────────────
+
+export interface ExamOption {
+  id: string
+  label: string
+}
+
+export interface ExamQuestion {
+  id: string
+  prompt: string
+  type: QuizQuestionType
+  options: ExamOption[]
+}
+
+export interface Exam {
+  id: string
+  title: string
+  description: string | null
+  passing_score: number
+  questions: ExamQuestion[]
+}
+
+export interface ExamSubmissionResult {
+  score: number
+  passed: boolean
+  passing_score: number
+  attempt_id: string
+  certificate_id: string | null
+  certificate_code: string | null
+}
+
+export interface Certificate {
+  id: string
+  profile_id: string
+  course_id: string
+  exam_attempt_id: string | null
+  certificate_code: string
+  score: number
+  issued_at: string
+  created_at: string
+}
+
+export type CertificateVerification =
+  | { valid: false }
+  | {
+      valid: true
+      certificate_code: string
+      holder_name: string | null
+      course_title: string
+      score: number
+      issued_at: string
+    }
