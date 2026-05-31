@@ -32,7 +32,8 @@ function SubmitButton() {
 export function SignUpForm({ locale }: SignUpFormProps) {
   const t = useTranslations('auth.signUp')
   const tCommon = useTranslations('common')
-  const [state, formAction] = useFormState(signUp, initialState)
+  const [rawState, formAction] = useFormState(signUp, initialState)
+  const state = rawState ?? initialState
 
   // On success, show check-email message instead of the form
   if (state.success) {

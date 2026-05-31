@@ -55,7 +55,10 @@ export function PathSelector({
   onboardingStatus,
 }: PathSelectorProps) {
   const t = useTranslations('onboarding')
-  const [state, formAction] = useFormState(selectOnboardingPath, initialState)
+  // useFormState can yield an undefined initial state under Next 15 + React 18;
+  // coalesce so `state.*` access never crashes.
+  const [rawState, formAction] = useFormState(selectOnboardingPath, initialState)
+  const state = rawState ?? initialState
 
   const pathSelected = onboardingStatus !== 'not_started' && currentPath !== null
 

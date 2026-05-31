@@ -32,7 +32,8 @@ function SubmitButton() {
 export function ResetPasswordForm({ locale }: ResetPasswordFormProps) {
   const t = useTranslations('auth.resetPassword')
 
-  const [state, formAction] = useFormState(resetPassword, initialState)
+  const [rawState, formAction] = useFormState(resetPassword, initialState)
+  const state = rawState ?? initialState
 
   if (state.success) {
     return (

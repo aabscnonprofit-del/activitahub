@@ -31,7 +31,8 @@ function SubmitButton() {
 
 export function SignInForm({ locale }: SignInFormProps) {
   const t = useTranslations('auth.signIn')
-  const [state, formAction] = useFormState(signIn, initialState)
+  const [rawState, formAction] = useFormState(signIn, initialState)
+  const state = rawState ?? initialState
 
   return (
     <form action={formAction} className="space-y-4" noValidate>

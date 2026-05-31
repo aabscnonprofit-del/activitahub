@@ -28,7 +28,8 @@ function SubmitButton() {
 
 export function ExamForm({ exam, locale }: { exam: Exam; locale: Locale }) {
   const t = useTranslations('exam')
-  const [state, formAction] = useFormState(submitExam, initialState)
+  const [rawState, formAction] = useFormState(submitExam, initialState)
+  const state = rawState ?? initialState
   const [answers, setAnswers] = useState<Record<string, string[]>>({})
 
   function select(questionId: string, optionId: string, multiple: boolean) {
