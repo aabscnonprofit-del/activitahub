@@ -1,9 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
+import Image from 'next/image'
 import { useTranslations } from 'next-intl'
-import { Plus, MapPin, Pencil, Trash2, Users, Home, TreePine } from 'lucide-react'
+import { Plus, MapPin, Pencil, Trash2, Users, Home, TreePine, ImagePlus, X } from 'lucide-react'
 import { createVenue, updateVenue, deleteVenue } from '@/lib/actions/venues'
+import { uploadVenuePhoto, deleteVenuePhoto } from '@/lib/actions/venuePhotos'
 import type { Venue } from '@/lib/types'
 import Modal from '@/components/ui/Modal'
 import EmptyState from '@/components/ui/EmptyState'
@@ -11,7 +13,12 @@ import Badge from '@/components/ui/Badge'
 import ConfirmDialog from '@/components/ui/ConfirmDialog'
 import { Toaster, useToast } from '@/components/ui/Toast'
 
-type Props = { initialVenues: Venue[]; locale: string }
+type PhotoVM = { id: string; url: string }
+type Props = {
+  initialVenues: Venue[]
+  initialPhotos?: Record<string, PhotoVM[]>
+  locale: string
+}
 type FormMode = { type: 'create' } | { type: 'edit'; venue: Venue }
 
 function indoorIcon(type: string | null) {
@@ -20,15 +27,56 @@ function indoorIcon(type: string | null) {
   return <MapPin className="w-4 h-4" />
 }
 
-export default function VenuesClient({ initialVenues }: Props) {
+export default function VenuesClient({ initialVenues, initialPhotos }: Props) {
   const t = useTranslations('venues')
   const tCommon = useTranslations('common')
   const { toasts, addToast, dismiss } = useToast()
 
   const [venues, setVenues] = useState<Venue[]>(initialVenues)
+  const [photos, setPhotos] = useState<Record<string, PhotoVM[]>>(initialPhotos ?? {})
   const [formMode, setFormMode] = useState<FormMode | null>(null)
   const [deleteTarget, setDeleteTarget] = useState<Venue | null>(null)
   const [pending, setPending] = useState(false)
+  const [uploading, setUploading] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  async function handleUploadPhoto(venueId: string, file: File) {
+    setUploading(true)
+    try {
+      const fd = new FormData()
+      fd.set('venueId', venueId)
+      fd.set('file', file)
+      const result = await uploadVenuePhoto(fd)
+      if (!result.ok) {
+        addToast('error', result.error)
+        return
+      }
+      setPhotos((prev) => ({
+        ...prev,
+        [venueId]: [...(prev[venueId] ?? []), { id: result.id, url: result.url }],
+      }))
+      addToast('success', t('photos.uploaded'))
+    } catch {
+      addToast('error', tCommon('error'))
+    } finally {
+      setUploading(false)
+      if (fileInputRef.current) fileInputRef.current.value = ''
+    }
+  }
+
+  async function handleRemovePhoto(venueId: string, photoId: string) {
+    const prevPhotos = photos[venueId] ?? []
+    setPhotos((prev) => ({
+      ...prev,
+      [venueId]: (prev[venueId] ?? []).filter((p) => p.id !== photoId),
+    }))
+    try {
+      await deleteVenuePhoto(photoId)
+    } catch {
+      setPhotos((prev) => ({ ...prev, [venueId]: prevPhotos }))
+      addToast('error', tCommon('error'))
+    }
+  }
 
   async function handleCreate(formData: FormData) {
     setPending(true)
@@ -181,6 +229,21 @@ export default function VenuesClient({ initialVenues }: Props) {
                   />
                 )}
               </div>
+
+              {(photos[venue.id]?.length ?? 0) > 0 && (
+                <div className="mt-3 flex gap-1.5 overflow-x-auto">
+                  {photos[venue.id].map((p) => (
+                    <Image
+                      key={p.id}
+                      src={p.url}
+                      alt=""
+                      width={48}
+                      height={48}
+                      className="h-12 w-12 shrink-0 rounded-lg object-cover"
+                    />
+                  ))}
+                </div>
+              )}
             </div>
           ))}
         </div>
@@ -285,6 +348,51 @@ export default function VenuesClient({ initialVenues }: Props) {
             </button>
           </div>
         </form>
+
+        {/* Photo management — only for existing venues */}
+        {isEditing && editVenue && (
+          <div className="mt-5 border-t border-slate-100 pt-4">
+            <label className="label-base">{t('photos.title')}</label>
+            <div className="mt-2 grid grid-cols-4 gap-2">
+              {(photos[editVenue.id] ?? []).map((p) => (
+                <div key={p.id} className="relative">
+                  <Image
+                    src={p.url}
+                    alt=""
+                    width={80}
+                    height={80}
+                    className="h-20 w-full rounded-lg object-cover"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleRemovePhoto(editVenue.id, p.id)}
+                    className="absolute -right-1.5 -top-1.5 rounded-full bg-white p-0.5 shadow ring-1 ring-slate-200 hover:bg-red-50"
+                    title={t('photos.remove')}
+                  >
+                    <X className="h-3.5 w-3.5 text-red-500" />
+                  </button>
+                </div>
+              ))}
+              <label className="flex h-20 cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-slate-200 text-slate-400 hover:border-brand-300 hover:text-brand-500 transition-colors">
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  disabled={uploading}
+                  onChange={(e) => {
+                    const f = e.target.files?.[0]
+                    if (f) handleUploadPhoto(editVenue.id, f)
+                  }}
+                />
+                <ImagePlus className="h-5 w-5" aria-hidden="true" />
+              </label>
+            </div>
+            {uploading && (
+              <p className="mt-1.5 text-xs text-slate-400">{t('photos.uploading')}</p>
+            )}
+          </div>
+        )}
       </Modal>
 
       <ConfirmDialog

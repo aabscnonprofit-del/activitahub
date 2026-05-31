@@ -20,5 +20,26 @@ export default async function VenuesPage({ params }: Props) {
     .eq('organizer_id', user.id)
     .order('created_at', { ascending: false })
 
-  return <VenuesClient initialVenues={(data ?? []) as Venue[]} locale={locale} />
+  const venues = (data ?? []) as Venue[]
+
+  // Fetch photos for these venues and resolve public URLs.
+  const { data: photoRows } = await supabase
+    .from('venue_photos')
+    .select('id, venue_id, storage_path, sort_order')
+    .eq('organizer_id', user.id)
+    .order('sort_order', { ascending: true })
+
+  const initialPhotos: Record<string, { id: string; url: string }[]> = {}
+  for (const p of (photoRows ?? []) as {
+    id: string
+    venue_id: string
+    storage_path: string
+  }[]) {
+    const url = supabase.storage.from('venue-photos').getPublicUrl(p.storage_path).data.publicUrl
+    ;(initialPhotos[p.venue_id] ??= []).push({ id: p.id, url })
+  }
+
+  return (
+    <VenuesClient initialVenues={venues} initialPhotos={initialPhotos} locale={locale} />
+  )
 }

@@ -418,6 +418,12 @@
       "save": "Save",
       "creating": "Creating…",
       "saving": "Saving…"
+    },
+    "photos": {
+      "title": "Photos",
+      "uploaded": "Photo added",
+      "uploading": "Uploading…",
+      "remove": "Remove photo"
     }
   },
   "clients": {
