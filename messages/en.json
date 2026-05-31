@@ -381,7 +381,35 @@
       "create": "Create",
       "save": "Save",
       "creating": "Creating…",
-      "saving": "Saving…"
+      "saving": "Saving…",
+      "category": "Category",
+      "price": "Price",
+      "city": "City",
+      "country": "Country",
+      "indoorOutdoor": "Indoor / outdoor",
+      "venue": "Venue",
+      "minAge": "Min age",
+      "maxAge": "Max age",
+      "duration": "Duration (min)",
+      "languages": "Languages",
+      "none": "None"
+    },
+    "indoorOutdoor": {
+      "indoor": "Indoor",
+      "outdoor": "Outdoor",
+      "both": "Indoor & outdoor"
+    },
+    "categories": {
+      "sports": "Sports",
+      "arts": "Arts",
+      "music": "Music",
+      "education": "Education",
+      "outdoor": "Outdoor",
+      "wellness": "Wellness",
+      "workshop": "Workshop",
+      "party": "Party",
+      "food": "Food",
+      "other": "Other"
     }
   },
   "venues": {

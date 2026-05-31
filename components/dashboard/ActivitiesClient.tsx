@@ -9,7 +9,7 @@ import {
   deleteActivity,
   setActivityStatus,
 } from '@/lib/actions/activities'
-import type { Activity } from '@/lib/types'
+import type { Activity, ActivityCategory } from '@/lib/types'
 import Modal from '@/components/ui/Modal'
 import EmptyState from '@/components/ui/EmptyState'
 import Badge from '@/components/ui/Badge'
@@ -18,12 +18,40 @@ import { Toaster, useToast } from '@/components/ui/Toast'
 
 type Props = {
   initialActivities: Activity[]
+  venues: { id: string; name: string }[]
   locale: string
 }
 
 type FormMode = { type: 'create' } | { type: 'edit'; activity: Activity }
 
-export default function ActivitiesClient({ initialActivities }: Props) {
+const CATEGORIES: ActivityCategory[] = [
+  'sports', 'arts', 'music', 'education', 'outdoor',
+  'wellness', 'workshop', 'party', 'food', 'other',
+]
+
+// Parses the marketplace fields from the form for optimistic UI.
+function marketplaceFields(formData: FormData) {
+  const priceRaw = (formData.get('price') as string)?.trim()
+  const langRaw = (formData.get('languages') as string)?.trim()
+  const minAge = (formData.get('min_age') as string)?.trim()
+  const maxAge = (formData.get('max_age') as string)?.trim()
+  const duration = (formData.get('duration_minutes') as string)?.trim()
+  return {
+    category: ((formData.get('category') as string) || null) as ActivityCategory | null,
+    price_cents: priceRaw ? Math.round(parseFloat(priceRaw) * 100) : null,
+    currency: 'usd',
+    languages: langRaw ? langRaw.split(',').map((s) => s.trim()).filter(Boolean) : null,
+    min_age: minAge ? parseInt(minAge) : null,
+    max_age: maxAge ? parseInt(maxAge) : null,
+    city: (formData.get('city') as string)?.trim() || null,
+    country: (formData.get('country') as string)?.trim() || null,
+    indoor_outdoor: ((formData.get('indoor_outdoor') as string) || null) as Activity['indoor_outdoor'],
+    venue_id: (formData.get('venue_id') as string) || null,
+    duration_minutes: duration ? parseInt(duration) : null,
+  }
+}
+
+export default function ActivitiesClient({ initialActivities, venues }: Props) {
   const t = useTranslations('activities')
   const tCommon = useTranslations('common')
   const { toasts, addToast, dismiss } = useToast()
@@ -46,6 +74,7 @@ export default function ActivitiesClient({ initialActivities }: Props) {
         title,
         description: (formData.get('description') as string) || null,
         status: (formData.get('status') as 'draft') || 'draft',
+        ...marketplaceFields(formData),
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       }
@@ -69,6 +98,7 @@ export default function ActivitiesClient({ initialActivities }: Props) {
         title: formData.get('title') as string,
         description: (formData.get('description') as string) || null,
         status: (formData.get('status') as Activity['status']) || 'draft',
+        ...marketplaceFields(formData),
         updated_at: new Date().toISOString(),
       }
       setActivities((prev) => prev.map((a) => (a.id === updated.id ? updated : a)))
@@ -238,6 +268,88 @@ export default function ActivitiesClient({ initialActivities }: Props) {
               defaultValue={editActivity?.description ?? ''}
               placeholder={t('form.descriptionPlaceholder')}
               className="input-base resize-none"
+            />
+          </div>
+
+          {/* Marketplace details */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="label-base">{t('form.category')}</label>
+              <select name="category" defaultValue={editActivity?.category ?? ''} className="input-base">
+                <option value="">{t('form.none')}</option>
+                {CATEGORIES.map((c) => (
+                  <option key={c} value={c}>{t(`categories.${c}` as 'categories.sports')}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="label-base">{t('form.price')}</label>
+              <input
+                name="price"
+                type="number"
+                min="0"
+                step="0.01"
+                defaultValue={editActivity?.price_cents != null ? editActivity.price_cents / 100 : ''}
+                placeholder="0.00"
+                className="input-base"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="label-base">{t('form.city')}</label>
+              <input name="city" defaultValue={editActivity?.city ?? ''} className="input-base" />
+            </div>
+            <div>
+              <label className="label-base">{t('form.country')}</label>
+              <input name="country" defaultValue={editActivity?.country ?? ''} className="input-base" />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="label-base">{t('form.indoorOutdoor')}</label>
+              <select name="indoor_outdoor" defaultValue={editActivity?.indoor_outdoor ?? ''} className="input-base">
+                <option value="">{t('form.none')}</option>
+                <option value="indoor">{t('indoorOutdoor.indoor')}</option>
+                <option value="outdoor">{t('indoorOutdoor.outdoor')}</option>
+                <option value="both">{t('indoorOutdoor.both')}</option>
+              </select>
+            </div>
+            <div>
+              <label className="label-base">{t('form.venue')}</label>
+              <select name="venue_id" defaultValue={editActivity?.venue_id ?? ''} className="input-base">
+                <option value="">{t('form.none')}</option>
+                {venues.map((v) => (
+                  <option key={v.id} value={v.id}>{v.name}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-3 gap-3">
+            <div>
+              <label className="label-base">{t('form.minAge')}</label>
+              <input name="min_age" type="number" min="0" defaultValue={editActivity?.min_age ?? ''} className="input-base" />
+            </div>
+            <div>
+              <label className="label-base">{t('form.maxAge')}</label>
+              <input name="max_age" type="number" min="0" defaultValue={editActivity?.max_age ?? ''} className="input-base" />
+            </div>
+            <div>
+              <label className="label-base">{t('form.duration')}</label>
+              <input name="duration_minutes" type="number" min="0" defaultValue={editActivity?.duration_minutes ?? ''} className="input-base" />
+            </div>
+          </div>
+
+          <div>
+            <label className="label-base">{t('form.languages')}</label>
+            <input
+              name="languages"
+              defaultValue={editActivity?.languages?.join(', ') ?? ''}
+              placeholder="English, Spanish"
+              className="input-base"
             />
           </div>
 

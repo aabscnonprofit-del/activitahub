@@ -381,7 +381,35 @@
       "create": "Crear",
       "save": "Guardar",
       "creating": "Creando…",
-      "saving": "Guardando…"
+      "saving": "Guardando…",
+      "category": "Categoría",
+      "price": "Precio",
+      "city": "Ciudad",
+      "country": "País",
+      "indoorOutdoor": "Interior / exterior",
+      "venue": "Lugar",
+      "minAge": "Edad mín.",
+      "maxAge": "Edad máx.",
+      "duration": "Duración (min)",
+      "languages": "Idiomas",
+      "none": "Ninguno"
+    },
+    "indoorOutdoor": {
+      "indoor": "Interior",
+      "outdoor": "Exterior",
+      "both": "Interior y exterior"
+    },
+    "categories": {
+      "sports": "Deportes",
+      "arts": "Arte",
+      "music": "Música",
+      "education": "Educación",
+      "outdoor": "Aire libre",
+      "wellness": "Bienestar",
+      "workshop": "Taller",
+      "party": "Fiesta",
+      "food": "Comida",
+      "other": "Otro"
     }
   },
   "venues": {

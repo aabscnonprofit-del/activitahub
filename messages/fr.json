@@ -381,7 +381,35 @@
       "create": "Créer",
       "save": "Enregistrer",
       "creating": "Création…",
-      "saving": "Enregistrement…"
+      "saving": "Enregistrement…",
+      "category": "Catégorie",
+      "price": "Prix",
+      "city": "Ville",
+      "country": "Pays",
+      "indoorOutdoor": "Intérieur / extérieur",
+      "venue": "Lieu",
+      "minAge": "Âge min.",
+      "maxAge": "Âge max.",
+      "duration": "Durée (min)",
+      "languages": "Langues",
+      "none": "Aucun"
+    },
+    "indoorOutdoor": {
+      "indoor": "Intérieur",
+      "outdoor": "Extérieur",
+      "both": "Intérieur et extérieur"
+    },
+    "categories": {
+      "sports": "Sports",
+      "arts": "Arts",
+      "music": "Musique",
+      "education": "Éducation",
+      "outdoor": "Plein air",
+      "wellness": "Bien-être",
+      "workshop": "Atelier",
+      "party": "Fête",
+      "food": "Cuisine",
+      "other": "Autre"
     }
   },
   "venues": {

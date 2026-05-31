@@ -99,12 +99,36 @@ export type OrganizerProfile = {
   updated_at: string
 }
 
+export type ActivityCategory =
+  | 'sports'
+  | 'arts'
+  | 'music'
+  | 'education'
+  | 'outdoor'
+  | 'wellness'
+  | 'workshop'
+  | 'party'
+  | 'food'
+  | 'other'
+
 export type Activity = {
   id: string
   organizer_id: string
   title: string
   description: string | null
   status: 'draft' | 'published' | 'archived'
+  // Marketplace fields (Phase 5)
+  category: ActivityCategory | null
+  price_cents: number | null
+  currency: string
+  languages: string[] | null
+  min_age: number | null
+  max_age: number | null
+  city: string | null
+  country: string | null
+  indoor_outdoor: 'indoor' | 'outdoor' | 'both' | null
+  venue_id: string | null
+  duration_minutes: number | null
   created_at: string
   updated_at: string
 }
@@ -307,6 +331,145 @@ export type CertificateVerification =
       score: number
       issued_at: string
     }
+
+// ── Marketplace, requests, proposals, bookings, notifications (Phase 5) ──────
+
+export type RequestStatus = 'open' | 'matched' | 'booked' | 'closed' | 'cancelled'
+export type ProposalStatus = 'sent' | 'accepted' | 'declined' | 'withdrawn'
+export type BookingStatus = 'pending' | 'confirmed' | 'completed' | 'cancelled' | 'refunded'
+export type NotificationType =
+  | 'request_match'
+  | 'proposal_received'
+  | 'proposal_accepted'
+  | 'proposal_declined'
+  | 'booking_created'
+  | 'booking_confirmed'
+  | 'booking_cancelled'
+  | 'booking_completed'
+
+// Public marketplace RPC shapes (curated, from SECURITY DEFINER functions)
+export type MarketplaceCard = {
+  id: string
+  title: string
+  description: string | null
+  category: ActivityCategory | null
+  price_cents: number | null
+  currency: string
+  languages: string[] | null
+  min_age: number | null
+  max_age: number | null
+  city: string | null
+  country: string | null
+  indoor_outdoor: 'indoor' | 'outdoor' | 'both' | null
+  organizer_id: string
+  organizer_name: string | null
+  organizer_certified: boolean
+  cover_path: string | null
+}
+
+export type MarketplaceActivityDetail = {
+  id: string
+  title: string
+  description: string | null
+  category: ActivityCategory | null
+  price_cents: number | null
+  currency: string
+  languages: string[] | null
+  min_age: number | null
+  max_age: number | null
+  city: string | null
+  country: string | null
+  indoor_outdoor: 'indoor' | 'outdoor' | 'both' | null
+  duration_minutes: number | null
+  organizer: { id: string; name: string | null; certified: boolean }
+  venue: { name: string; city: string | null; country: string | null; indoor_outdoor: string | null } | null
+  photo_paths: string[]
+  upcoming: { date: string; start_time: string | null }[]
+}
+
+export type PublicOrganizer = {
+  id: string
+  display_name: string | null
+  bio: string | null
+  city: string | null
+  country: string | null
+  languages: string[] | null
+  website: string | null
+  certified: boolean
+  member_since: string
+  activities: {
+    id: string
+    title: string
+    category: ActivityCategory | null
+    price_cents: number | null
+    currency: string
+    city: string | null
+  }[]
+}
+
+export type CustomerRequest = {
+  id: string
+  customer_id: string
+  event_type: ActivityCategory
+  city: string | null
+  country: string | null
+  desired_date: string | null
+  participant_count: number | null
+  age_min: number | null
+  age_max: number | null
+  budget_cents: number | null
+  currency: string
+  notes: string | null
+  status: RequestStatus
+  created_at: string
+  updated_at: string
+}
+
+export type Proposal = {
+  id: string
+  request_id: string
+  organizer_id: string
+  activity_id: string | null
+  message: string | null
+  price_cents: number | null
+  currency: string
+  proposed_date: string | null
+  status: ProposalStatus
+  created_at: string
+  updated_at: string
+}
+
+export type Booking = {
+  id: string
+  customer_id: string
+  organizer_id: string
+  activity_id: string | null
+  proposal_id: string | null
+  request_id: string | null
+  venue_id: string | null
+  calendar_event_id: string | null
+  date: string
+  start_time: string | null
+  end_time: string | null
+  participant_count: number | null
+  amount_cents: number | null
+  currency: string
+  status: BookingStatus
+  stripe_payment_intent_id: string | null
+  created_at: string
+  updated_at: string
+}
+
+export type AppNotification = {
+  id: string
+  profile_id: string
+  type: NotificationType
+  title: string
+  body: string | null
+  data: Record<string, unknown>
+  read_at: string | null
+  created_at: string
+}
 
 export type ActionResult<T = undefined> =
   | { success: true; data?: T; error?: never }
