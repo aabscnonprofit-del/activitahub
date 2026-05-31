@@ -632,5 +632,75 @@
       "outdoor": "Extérieur",
       "both": "Les deux"
     }
+  },
+  "requests": {
+    "new": {
+      "title": "Nouvelle demande",
+      "subtitle": "Dites aux organisateurs ce que vous cherchez et recevez des propositions.",
+      "submit": "Envoyer la demande"
+    },
+    "form": {
+      "eventType": "Type d'activité",
+      "city": "Ville",
+      "country": "Pays",
+      "date": "Date souhaitée",
+      "participants": "Participants",
+      "ageMin": "Âge min.",
+      "ageMax": "Âge max.",
+      "budget": "Budget",
+      "notes": "Notes",
+      "notesPlaceholder": "Ce que les organisateurs doivent savoir"
+    },
+    "list": {
+      "title": "Mes demandes",
+      "subtitle": "Suivez vos demandes et comparez les propositions.",
+      "empty": "Vous n'avez pas encore fait de demande.",
+      "newCta": "Nouvelle demande"
+    },
+    "status": {
+      "open": "Ouverte",
+      "matched": "Associée",
+      "booked": "Réservée",
+      "closed": "Fermée",
+      "cancelled": "Annulée"
+    },
+    "proposalStatus": {
+      "sent": "Envoyée",
+      "accepted": "Acceptée",
+      "declined": "Refusée",
+      "withdrawn": "Retirée"
+    },
+    "detail": {
+      "back": "Retour aux demandes",
+      "proposals": "Propositions",
+      "noProposals": "Aucune proposition pour l'instant — les organisateurs répondront bientôt.",
+      "accept": "Accepter et réserver",
+      "decline": "Refuser",
+      "from": "De",
+      "proposedDate": "Date proposée",
+      "organizer": "Organisateur",
+      "participants": "{n} participants",
+      "ages": "Âges",
+      "budget": "Budget",
+      "booked": "Réservée"
+    },
+    "proposalForm": {
+      "activity": "Activité (facultatif)",
+      "none": "Aucune",
+      "price": "Prix",
+      "date": "Date proposée",
+      "message": "Message",
+      "send": "Envoyer la proposition",
+      "update": "Mettre à jour"
+    },
+    "organizer": {
+      "title": "Demandes associées",
+      "subtitle": "Demandes que nous vous avons associées. Envoyez une proposition pour obtenir la réservation.",
+      "empty": "Aucune demande associée pour l'instant.",
+      "proposalSent": "Proposition envoyée",
+      "proposalsTitle": "Mes propositions",
+      "proposalsSubtitle": "Propositions envoyées aux clients.",
+      "proposalsEmpty": "Vous n'avez pas encore envoyé de proposition."
+    }
   }
 }

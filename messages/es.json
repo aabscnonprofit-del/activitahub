@@ -632,5 +632,75 @@
       "outdoor": "Exterior",
       "both": "Ambos"
     }
+  },
+  "requests": {
+    "new": {
+      "title": "Nueva solicitud",
+      "subtitle": "Cuéntales a los organizadores qué buscas y recibe propuestas.",
+      "submit": "Enviar solicitud"
+    },
+    "form": {
+      "eventType": "Tipo de actividad",
+      "city": "Ciudad",
+      "country": "País",
+      "date": "Fecha deseada",
+      "participants": "Participantes",
+      "ageMin": "Edad mín.",
+      "ageMax": "Edad máx.",
+      "budget": "Presupuesto",
+      "notes": "Notas",
+      "notesPlaceholder": "Algo que deban saber los organizadores"
+    },
+    "list": {
+      "title": "Mis solicitudes",
+      "subtitle": "Sigue tus solicitudes y compara propuestas.",
+      "empty": "Aún no has hecho solicitudes.",
+      "newCta": "Nueva solicitud"
+    },
+    "status": {
+      "open": "Abierta",
+      "matched": "Emparejada",
+      "booked": "Reservada",
+      "closed": "Cerrada",
+      "cancelled": "Cancelada"
+    },
+    "proposalStatus": {
+      "sent": "Enviada",
+      "accepted": "Aceptada",
+      "declined": "Rechazada",
+      "withdrawn": "Retirada"
+    },
+    "detail": {
+      "back": "Volver a solicitudes",
+      "proposals": "Propuestas",
+      "noProposals": "Aún no hay propuestas; los organizadores responderán pronto.",
+      "accept": "Aceptar y reservar",
+      "decline": "Rechazar",
+      "from": "De",
+      "proposedDate": "Fecha propuesta",
+      "organizer": "Organizador",
+      "participants": "{n} participantes",
+      "ages": "Edades",
+      "budget": "Presupuesto",
+      "booked": "Reservada"
+    },
+    "proposalForm": {
+      "activity": "Actividad (opcional)",
+      "none": "Ninguna",
+      "price": "Precio",
+      "date": "Fecha propuesta",
+      "message": "Mensaje",
+      "send": "Enviar propuesta",
+      "update": "Actualizar propuesta"
+    },
+    "organizer": {
+      "title": "Solicitudes emparejadas",
+      "subtitle": "Solicitudes que te hemos asignado. Envía una propuesta para ganar la reserva.",
+      "empty": "Aún no hay solicitudes emparejadas.",
+      "proposalSent": "Propuesta enviada",
+      "proposalsTitle": "Mis propuestas",
+      "proposalsSubtitle": "Propuestas que has enviado a clientes.",
+      "proposalsEmpty": "Aún no has enviado propuestas."
+    }
   }
 }

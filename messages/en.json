@@ -632,5 +632,75 @@
       "outdoor": "Outdoor",
       "both": "Both"
     }
+  },
+  "requests": {
+    "new": {
+      "title": "New request",
+      "subtitle": "Tell organizers what you're looking for and receive proposals.",
+      "submit": "Send request"
+    },
+    "form": {
+      "eventType": "Activity type",
+      "city": "City",
+      "country": "Country",
+      "date": "Desired date",
+      "participants": "Participants",
+      "ageMin": "Min age",
+      "ageMax": "Max age",
+      "budget": "Budget",
+      "notes": "Notes",
+      "notesPlaceholder": "Anything organizers should know"
+    },
+    "list": {
+      "title": "My requests",
+      "subtitle": "Track your requests and compare proposals.",
+      "empty": "You haven't made any requests yet.",
+      "newCta": "New request"
+    },
+    "status": {
+      "open": "Open",
+      "matched": "Matched",
+      "booked": "Booked",
+      "closed": "Closed",
+      "cancelled": "Cancelled"
+    },
+    "proposalStatus": {
+      "sent": "Sent",
+      "accepted": "Accepted",
+      "declined": "Declined",
+      "withdrawn": "Withdrawn"
+    },
+    "detail": {
+      "back": "Back to requests",
+      "proposals": "Proposals",
+      "noProposals": "No proposals yet — organizers will respond soon.",
+      "accept": "Accept & book",
+      "decline": "Decline",
+      "from": "From",
+      "proposedDate": "Proposed date",
+      "organizer": "Organizer",
+      "participants": "{n} participants",
+      "ages": "Ages",
+      "budget": "Budget",
+      "booked": "Booked"
+    },
+    "proposalForm": {
+      "activity": "Activity (optional)",
+      "none": "None",
+      "price": "Price",
+      "date": "Proposed date",
+      "message": "Message",
+      "send": "Send proposal",
+      "update": "Update proposal"
+    },
+    "organizer": {
+      "title": "Matched requests",
+      "subtitle": "Requests we've matched to you. Send a proposal to win the booking.",
+      "empty": "No matched requests yet.",
+      "proposalSent": "Proposal sent",
+      "proposalsTitle": "My proposals",
+      "proposalsSubtitle": "Proposals you've sent to customers.",
+      "proposalsEmpty": "You haven't sent any proposals yet."
+    }
   }
 }

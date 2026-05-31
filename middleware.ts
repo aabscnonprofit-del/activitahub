@@ -20,6 +20,9 @@ const AUTH_REQUIRED_PREFIXES = [
   '/academy',
   '/dashboard',
   '/admin',
+  '/requests',
+  '/bookings',
+  '/notifications',
 ]
 
 /**
