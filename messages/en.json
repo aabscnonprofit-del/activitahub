@@ -1,0 +1,269 @@
+{
+  "privacy": {
+    "title": "Privacy Policy",
+    "lastUpdated": "Last updated: May 2026"
+  },
+  "terms": {
+    "title": "Terms of Service",
+    "lastUpdated": "Last updated: May 2026"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong. Please try again.",
+    "save": "Save",
+    "cancel": "Cancel",
+    "continue": "Continue",
+    "back": "Back",
+    "submit": "Submit",
+    "or": "or",
+    "optional": "Optional",
+    "required": "Required",
+    "learnMore": "Learn more",
+    "getStarted": "Get Started",
+    "signIn": "Sign In",
+    "signOut": "Sign Out",
+    "signUp": "Sign Up",
+    "email": "Email address",
+    "password": "Password",
+    "fullName": "Full name"
+  },
+  "nav": {
+    "home": "Home",
+    "pricing": "Pricing",
+    "marketplace": "Marketplace",
+    "academy": "Academy",
+    "dashboard": "Dashboard",
+    "billing": "Billing",
+    "admin": "Admin",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "signOut": "Sign Out"
+  },
+  "home": {
+    "hero": {
+      "badge": "Trusted by organizers worldwide",
+      "title": "Become a Professional",
+      "titleAccent": "Activity Organizer",
+      "subtitle": "Learn from experts, get certified, and build a thriving business. Activita Hub gives you the tools, training, and clients to succeed.",
+      "ctaPrimary": "Get Certified",
+      "ctaSecondary": "Browse Activities"
+    },
+    "pillars": {
+      "headline": "Everything you need to succeed",
+      "subheadline": "Three integrated systems working together to grow your organizer business.",
+      "organizer": {
+        "title": "Organizer Platform",
+        "description": "Professional dashboard to manage activities, venues, clients, bookings, and your full business operations."
+      },
+      "academy": {
+        "title": "Academy & Certification",
+        "description": "Structured learning or fast-track qualification testing. Earn the Activita Certified Organizer credential."
+      },
+      "marketplace": {
+        "title": "Customer Marketplace",
+        "description": "Get matched with clients actively searching for activity organizers. Real leads, real bookings."
+      }
+    },
+    "stats": {
+      "organizers": "Certified Organizers",
+      "activities": "Published Activities",
+      "countries": "Countries"
+    },
+    "cta": {
+      "title": "Ready to become a certified organizer?",
+      "subtitle": "Join professionals who use Activita Hub to grow their activity businesses.",
+      "button": "Start Your Certification"
+    }
+  },
+  "auth": {
+    "signIn": {
+      "title": "Welcome back",
+      "subtitle": "Sign in to your Activita Hub account",
+      "email": "Email address",
+      "password": "Password",
+      "submit": "Sign In",
+      "submitting": "Signing in...",
+      "forgotPassword": "Forgot password?",
+      "noAccount": "Don't have an account?",
+      "signUpLink": "Sign up for free"
+    },
+    "signUp": {
+      "title": "Create your account",
+      "subtitle": "Join the Activita Hub organizer community",
+      "fullName": "Full name",
+      "fullNamePlaceholder": "Jane Smith",
+      "email": "Email address",
+      "emailPlaceholder": "jane@example.com",
+      "password": "Password",
+      "passwordHint": "Minimum 8 characters",
+      "submit": "Create Account",
+      "submitting": "Creating account...",
+      "hasAccount": "Already have an account?",
+      "signInLink": "Sign in",
+      "termsNotice": "By creating an account, you agree to our Terms of Service and Privacy Policy.",
+      "checkEmail": "Check your email",
+      "checkEmailDesc": "We've sent a confirmation link to {email}. Click it to activate your account."
+    },
+    "resetPassword": {
+      "title": "Reset your password",
+      "subtitle": "Enter your email and we'll send you a reset link",
+      "email": "Email address",
+      "emailPlaceholder": "jane@example.com",
+      "submit": "Send Reset Link",
+      "submitting": "Sending...",
+      "backToSignIn": "Back to sign in",
+      "successTitle": "Check your email",
+      "successDesc": "We've sent a password reset link to {email}. It expires in 1 hour."
+    },
+    "errors": {
+      "invalidCredentials": "Invalid email or password. Please try again.",
+      "emailInUse": "An account with this email already exists.",
+      "weakPassword": "Password must be at least 8 characters.",
+      "generic": "An error occurred. Please try again.",
+      "emailRequired": "Email address is required.",
+      "passwordRequired": "Password is required.",
+      "fullNameRequired": "Full name is required.",
+      "invalidEmail": "Please enter a valid email address.",
+      "suspended": "Your account has been suspended. Contact support."
+    }
+  },
+  "onboarding": {
+    "title": "Choose Your Certification Path",
+    "subtitle": "How would you like to become an Activita Certified Organizer?",
+    "alreadySelected": "You've selected the {path} path. Continue to payment when ready.",
+    "continueToPayment": "Continue to Payment",
+    "beginner": {
+      "badge": "Beginner",
+      "title": "New to Activity Organization",
+      "description": "Start from scratch with our comprehensive course. Learn everything you need to run professional activities.",
+      "includes": "What's included:",
+      "features": [
+        "7–8 in-depth learning modules",
+        "Video lessons and study materials",
+        "Module quizzes and a final exam",
+        "Activita Certified Organizer certificate",
+        "Monthly subscription to the Organizer Platform"
+      ],
+      "price": "$99",
+      "priceLabel": "one-time payment",
+      "cta": "Start Learning — $99"
+    },
+    "experienced": {
+      "badge": "Experienced",
+      "title": "Already an Activity Organizer",
+      "description": "Skip the course and prove your expertise with a timed qualification test. Fast-track to certification.",
+      "includes": "What's included:",
+      "features": [
+        "15–20 qualification questions",
+        "Timed assessment (30 minutes)",
+        "Pass threshold: 75%",
+        "Activita Certified Organizer certificate",
+        "Monthly subscription to the Organizer Platform"
+      ],
+      "price": "$29",
+      "priceLabel": "one-time payment",
+      "cta": "Take the Test — $29"
+    }
+  },
+  "billing": {
+    "title": "Subscription",
+    "pageSubtitle": "Manage your Organizer Platform subscription.",
+    "notCertified": {
+      "title": "Certification Required",
+      "description": "Complete your certification before activating your subscription.",
+      "goToAcademy": "Go to Academy",
+      "goToOnboarding": "Complete Onboarding"
+    },
+    "noSubscription": {
+      "title": "Activate Your Organizer Account",
+      "description": "Subscribe for $9.99/month to unlock the full Organizer Platform: manage activities, receive client requests, and accept bookings.",
+      "price": "$9.99",
+      "period": "/month",
+      "cta": "Subscribe Now",
+      "features": [
+        "Unlimited activity listings",
+        "Client request inbox",
+        "Booking management",
+        "CRM and venue tools",
+        "Analytics dashboard"
+      ]
+    },
+    "active": {
+      "title": "Subscription Active",
+      "renewsOn": "Renews {date}",
+      "manageSubscription": "Manage Subscription",
+      "goDashboard": "Go to Dashboard"
+    },
+    "pastDue": {
+      "title": "Payment Failed",
+      "description": "Your last payment failed. Update your payment method to keep your subscription active.",
+      "updatePayment": "Update Payment Method"
+    },
+    "cancelled": {
+      "title": "Subscription Cancelled",
+      "description": "Your subscription has been cancelled. Resubscribe to regain access to the Organizer Platform.",
+      "resubscribe": "Resubscribe"
+    }
+  },
+  "dashboard": {
+    "nav": {
+      "home": "Home",
+      "activities": "Activities",
+      "calendar": "Calendar",
+      "bookings": "Bookings",
+      "requests": "Requests",
+      "proposals": "Proposals",
+      "clients": "Clients",
+      "venues": "Venues",
+      "analytics": "Analytics",
+      "profile": "Profile & Certificate",
+      "billing": "Billing",
+      "admin": "Admin"
+    },
+    "home": {
+      "greeting": "Welcome back, {name}",
+      "greetingFallback": "Welcome back",
+      "subtitle": "Here's an overview of your organizer account.",
+      "metrics": {
+        "totalRequests": "Total Requests",
+        "totalBookings": "Total Bookings",
+        "totalRevenue": "Total Revenue",
+        "upcomingEvents": "Upcoming Events"
+      },
+      "upcomingEvents": {
+        "title": "Upcoming Events",
+        "empty": "No upcoming events scheduled.",
+        "viewAll": "View calendar"
+      },
+      "accountStatus": {
+        "title": "Account Status",
+        "certified": "Certified Organizer",
+        "certifiedSince": "Certified since {date}",
+        "subscriptionActive": "Subscription active",
+        "subscriptionInactive": "Subscription inactive"
+      }
+    }
+  },
+  "footer": {
+    "tagline": "Empowering professional activity organizers worldwide.",
+    "links": {
+      "about": "About",
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Service",
+      "contact": "Contact"
+    },
+    "copyright": "© {year} Activita Hub. All rights reserved."
+  },
+  "errors": {
+    "404": {
+      "title": "Page not found",
+      "description": "The page you're looking for doesn't exist.",
+      "cta": "Go home"
+    },
+    "unauthorized": {
+      "title": "Access denied",
+      "description": "You don't have permission to view this page.",
+      "cta": "Go back"
+    }
+  }
+}

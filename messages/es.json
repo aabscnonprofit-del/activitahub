@@ -1,0 +1,269 @@
+{
+  "privacy": {
+    "title": "Política de Privacidad",
+    "lastUpdated": "Última actualización: mayo de 2026"
+  },
+  "terms": {
+    "title": "Términos de Servicio",
+    "lastUpdated": "Última actualización: mayo de 2026"
+  },
+  "common": {
+    "loading": "Cargando...",
+    "error": "Algo salió mal. Por favor, inténtalo de nuevo.",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "continue": "Continuar",
+    "back": "Volver",
+    "submit": "Enviar",
+    "or": "o",
+    "optional": "Opcional",
+    "required": "Obligatorio",
+    "learnMore": "Saber más",
+    "getStarted": "Empezar",
+    "signIn": "Iniciar sesión",
+    "signOut": "Cerrar sesión",
+    "signUp": "Registrarse",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "fullName": "Nombre completo"
+  },
+  "nav": {
+    "home": "Inicio",
+    "pricing": "Precios",
+    "marketplace": "Mercado",
+    "academy": "Academia",
+    "dashboard": "Panel",
+    "billing": "Facturación",
+    "admin": "Admin",
+    "signIn": "Iniciar sesión",
+    "signUp": "Registrarse",
+    "signOut": "Cerrar sesión"
+  },
+  "home": {
+    "hero": {
+      "badge": "Con la confianza de organizadores en todo el mundo",
+      "title": "Conviértete en un Organizador",
+      "titleAccent": "de Actividades Profesional",
+      "subtitle": "Aprende de expertos, certifícate y construye un negocio próspero. Activita Hub te proporciona las herramientas, la formación y los clientes para triunfar.",
+      "ctaPrimary": "Obtener certificación",
+      "ctaSecondary": "Explorar actividades"
+    },
+    "pillars": {
+      "headline": "Todo lo que necesitas para tener éxito",
+      "subheadline": "Tres sistemas integrados que trabajan juntos para hacer crecer tu negocio.",
+      "organizer": {
+        "title": "Plataforma para Organizadores",
+        "description": "Panel profesional para gestionar actividades, venues, clientes, reservas y todas tus operaciones."
+      },
+      "academy": {
+        "title": "Academia y Certificación",
+        "description": "Aprendizaje estructurado o prueba de calificación rápida. Obtén la credencial de Organizador Certificado Activita."
+      },
+      "marketplace": {
+        "title": "Mercado de Clientes",
+        "description": "Conéctate con clientes que buscan organizadores de actividades. Leads reales, reservas reales."
+      }
+    },
+    "stats": {
+      "organizers": "Organizadores Certificados",
+      "activities": "Actividades Publicadas",
+      "countries": "Países"
+    },
+    "cta": {
+      "title": "¿Listo para convertirte en organizador certificado?",
+      "subtitle": "Únete a los profesionales que usan Activita Hub para hacer crecer sus negocios.",
+      "button": "Iniciar tu certificación"
+    }
+  },
+  "auth": {
+    "signIn": {
+      "title": "Bienvenido de nuevo",
+      "subtitle": "Inicia sesión en tu cuenta de Activita Hub",
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "submit": "Iniciar sesión",
+      "submitting": "Iniciando sesión...",
+      "forgotPassword": "¿Olvidaste tu contraseña?",
+      "noAccount": "¿No tienes cuenta?",
+      "signUpLink": "Regístrate gratis"
+    },
+    "signUp": {
+      "title": "Crea tu cuenta",
+      "subtitle": "Únete a la comunidad de organizadores de Activita Hub",
+      "fullName": "Nombre completo",
+      "fullNamePlaceholder": "Ana García",
+      "email": "Correo electrónico",
+      "emailPlaceholder": "ana@ejemplo.com",
+      "password": "Contraseña",
+      "passwordHint": "Mínimo 8 caracteres",
+      "submit": "Crear cuenta",
+      "submitting": "Creando cuenta...",
+      "hasAccount": "¿Ya tienes cuenta?",
+      "signInLink": "Inicia sesión",
+      "termsNotice": "Al crear una cuenta, aceptas nuestros Términos de Servicio y Política de Privacidad.",
+      "checkEmail": "Revisa tu correo",
+      "checkEmailDesc": "Hemos enviado un enlace de confirmación a {email}. Haz clic en él para activar tu cuenta."
+    },
+    "resetPassword": {
+      "title": "Restablecer contraseña",
+      "subtitle": "Ingresa tu correo y te enviaremos un enlace",
+      "email": "Correo electrónico",
+      "emailPlaceholder": "ana@ejemplo.com",
+      "submit": "Enviar enlace",
+      "submitting": "Enviando...",
+      "backToSignIn": "Volver al inicio de sesión",
+      "successTitle": "Revisa tu correo",
+      "successDesc": "Hemos enviado un enlace de restablecimiento a {email}. Expira en 1 hora."
+    },
+    "errors": {
+      "invalidCredentials": "Correo o contraseña incorrectos.",
+      "emailInUse": "Ya existe una cuenta con este correo.",
+      "weakPassword": "La contraseña debe tener al menos 8 caracteres.",
+      "generic": "Ocurrió un error. Por favor, inténtalo de nuevo.",
+      "emailRequired": "El correo electrónico es obligatorio.",
+      "passwordRequired": "La contraseña es obligatoria.",
+      "fullNameRequired": "El nombre completo es obligatorio.",
+      "invalidEmail": "Por favor, ingresa un correo válido.",
+      "suspended": "Tu cuenta ha sido suspendida. Contacta con soporte."
+    }
+  },
+  "onboarding": {
+    "title": "Elige tu ruta de certificación",
+    "subtitle": "¿Cómo quieres convertirte en Organizador Certificado Activita?",
+    "alreadySelected": "Has seleccionado la ruta {path}. Continúa al pago cuando estés listo.",
+    "continueToPayment": "Continuar al pago",
+    "beginner": {
+      "badge": "Principiante",
+      "title": "Nuevo en organización de actividades",
+      "description": "Empieza desde cero con nuestro curso integral. Aprende todo lo necesario para dirigir actividades profesionales.",
+      "includes": "¿Qué incluye?",
+      "features": [
+        "7–8 módulos de aprendizaje en profundidad",
+        "Lecciones en video y materiales de estudio",
+        "Quizzes por módulo y examen final",
+        "Certificado de Organizador Certificado Activita",
+        "Suscripción mensual a la Plataforma de Organizadores"
+      ],
+      "price": "$99",
+      "priceLabel": "pago único",
+      "cta": "Empezar a aprender — $99"
+    },
+    "experienced": {
+      "badge": "Experimentado",
+      "title": "Ya soy organizador de actividades",
+      "description": "Omite el curso y demuestra tu experiencia con una prueba de calificación cronometrada. Certificación acelerada.",
+      "includes": "¿Qué incluye?",
+      "features": [
+        "15–20 preguntas de calificación",
+        "Evaluación cronometrada (30 minutos)",
+        "Umbral de aprobación: 75%",
+        "Certificado de Organizador Certificado Activita",
+        "Suscripción mensual a la Plataforma de Organizadores"
+      ],
+      "price": "$29",
+      "priceLabel": "pago único",
+      "cta": "Hacer el test — $29"
+    }
+  },
+  "billing": {
+    "title": "Suscripción",
+    "pageSubtitle": "Gestiona tu suscripción a la Plataforma de Organizadores.",
+    "notCertified": {
+      "title": "Certificación requerida",
+      "description": "Completa tu certificación antes de activar tu suscripción.",
+      "goToAcademy": "Ir a la Academia",
+      "goToOnboarding": "Completar incorporación"
+    },
+    "noSubscription": {
+      "title": "Activa tu cuenta de organizador",
+      "description": "Suscríbete por $9.99/mes para desbloquear la Plataforma de Organizadores completa.",
+      "price": "$9.99",
+      "period": "/mes",
+      "cta": "Suscribirse ahora",
+      "features": [
+        "Listados de actividades ilimitados",
+        "Bandeja de entrada de solicitudes",
+        "Gestión de reservas",
+        "CRM y herramientas de venues",
+        "Panel de analíticas"
+      ]
+    },
+    "active": {
+      "title": "Suscripción activa",
+      "renewsOn": "Se renueva el {date}",
+      "manageSubscription": "Gestionar suscripción",
+      "goDashboard": "Ir al panel"
+    },
+    "pastDue": {
+      "title": "Pago fallido",
+      "description": "Tu último pago falló. Actualiza tu método de pago para mantener la suscripción activa.",
+      "updatePayment": "Actualizar método de pago"
+    },
+    "cancelled": {
+      "title": "Suscripción cancelada",
+      "description": "Tu suscripción ha sido cancelada. Vuelve a suscribirte para recuperar el acceso.",
+      "resubscribe": "Volver a suscribirse"
+    }
+  },
+  "dashboard": {
+    "nav": {
+      "home": "Inicio",
+      "activities": "Actividades",
+      "calendar": "Calendario",
+      "bookings": "Reservas",
+      "requests": "Solicitudes",
+      "proposals": "Propuestas",
+      "clients": "Clientes",
+      "venues": "Venues",
+      "analytics": "Analíticas",
+      "profile": "Perfil y Certificado",
+      "billing": "Facturación",
+      "admin": "Administrador"
+    },
+    "home": {
+      "greeting": "Bienvenido de nuevo, {name}",
+      "greetingFallback": "Bienvenido de nuevo",
+      "subtitle": "Aquí tienes un resumen de tu cuenta de organizador.",
+      "metrics": {
+        "totalRequests": "Solicitudes totales",
+        "totalBookings": "Reservas totales",
+        "totalRevenue": "Ingresos totales",
+        "upcomingEvents": "Próximos eventos"
+      },
+      "upcomingEvents": {
+        "title": "Próximos eventos",
+        "empty": "No hay eventos próximos programados.",
+        "viewAll": "Ver calendario"
+      },
+      "accountStatus": {
+        "title": "Estado de la cuenta",
+        "certified": "Organizador Certificado",
+        "certifiedSince": "Certificado desde {date}",
+        "subscriptionActive": "Suscripción activa",
+        "subscriptionInactive": "Suscripción inactiva"
+      }
+    }
+  },
+  "footer": {
+    "tagline": "Potenciando a organizadores de actividades profesionales en todo el mundo.",
+    "links": {
+      "about": "Acerca de",
+      "privacy": "Política de Privacidad",
+      "terms": "Términos de Servicio",
+      "contact": "Contacto"
+    },
+    "copyright": "© {year} Activita Hub. Todos los derechos reservados."
+  },
+  "errors": {
+    "404": {
+      "title": "Página no encontrada",
+      "description": "La página que buscas no existe.",
+      "cta": "Ir al inicio"
+    },
+    "unauthorized": {
+      "title": "Acceso denegado",
+      "description": "No tienes permiso para ver esta página.",
+      "cta": "Volver"
+    }
+  }
+}

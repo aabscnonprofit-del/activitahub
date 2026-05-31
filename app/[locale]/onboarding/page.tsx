@@ -1,0 +1,141 @@
+import { getTranslations } from 'next-intl/server'
+import { redirect } from 'next/navigation'
+import { createClient } from '@/lib/supabase/server'
+import { PathSelector } from '@/components/onboarding/PathSelector'
+import type { Locale, Profile } from '@/lib/types'
+import type { Metadata } from 'next'
+
+interface OnboardingPageProps {
+  params: Promise<{ locale: string }>
+}
+
+export async function generateMetadata({ params }: OnboardingPageProps): Promise<Metadata> {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'onboarding' })
+  return { title: t('title') }
+}
+
+export default async function OnboardingPage({ params }: OnboardingPageProps) {
+  const { locale } = await params as { locale: Locale }
+  const t = await getTranslations('onboarding')
+
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  // Middleware guarantees user is authenticated, but be defensive
+  if (!user) {
+    redirect(`/${locale}/sign-in`)
+  }
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role, onboarding_status, selected_path, full_name')
+    .eq('id', user.id)
+    .single()
+
+  const typedProfile = profile as Pick<
+    Profile,
+    'role' | 'onboarding_status' | 'selected_path' | 'full_name'
+  > | null
+
+  // Already subscribed certified organizers shouldn't be here
+  if (
+    typedProfile?.role === 'certified_organizer' &&
+    typedProfile.onboarding_status === 'subscribed'
+  ) {
+    redirect(`/${locale}/dashboard`)
+  }
+
+  // Certified but not subscribed — go to billing
+  if (typedProfile?.onboarding_status === 'certified') {
+    redirect(`/${locale}/billing`)
+  }
+
+  // payment_complete → they paid but haven't certified yet
+  // Academy handles the next step (Phase 3A will add this redirect)
+  if (
+    typedProfile?.onboarding_status === 'payment_complete' ||
+    typedProfile?.onboarding_status === 'payment_pending'
+  ) {
+    redirect(`/${locale}/academy`)
+  }
+
+  const firstName = typedProfile?.full_name?.split(' ')[0] ?? null
+
+  return (
+    <div className="min-h-screen bg-slate-50">
+      {/* Top bar */}
+      <div className="border-b border-slate-200 bg-white px-4 py-4">
+        <div className="mx-auto flex max-w-5xl items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-600">
+              <span className="text-xs font-bold text-white">A</span>
+            </div>
+            <span className="font-bold text-slate-900">Activita Hub</span>
+          </div>
+          {firstName && (
+            <p className="text-sm text-slate-500">
+              👋 {firstName}
+            </p>
+          )}
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="mx-auto max-w-5xl px-4 py-12">
+        {/* Progress indicator */}
+        <div className="mb-10 flex items-center justify-center gap-2">
+          <StepDot step={1} label="Choose path" active />
+          <StepLine />
+          <StepDot step={2} label="Payment" />
+          <StepLine />
+          <StepDot step={3} label="Learn & Certify" />
+          <StepLine />
+          <StepDot step={4} label="Subscribe" />
+        </div>
+
+        <div className="mb-10 text-center">
+          <h1 className="text-3xl font-extrabold text-slate-900 sm:text-4xl">
+            {t('title')}
+          </h1>
+          <p className="mx-auto mt-3 max-w-xl text-base text-slate-500">
+            {t('subtitle')}
+          </p>
+        </div>
+
+        <PathSelector
+          locale={locale}
+          currentPath={typedProfile?.selected_path ?? null}
+          onboardingStatus={typedProfile?.onboarding_status ?? 'not_started'}
+        />
+      </div>
+    </div>
+  )
+}
+
+// ── Step indicator components ─────────────────────────────────────────────────
+
+function StepDot({ step, label, active = false }: { step: number; label: string; active?: boolean }) {
+  return (
+    <div className="flex flex-col items-center gap-1">
+      <div
+        className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold ${
+          active
+            ? 'bg-brand-600 text-white'
+            : 'bg-slate-200 text-slate-500'
+        }`}
+      >
+        {step}
+      </div>
+      <span className={`hidden text-xs sm:block ${active ? 'font-medium text-brand-700' : 'text-slate-400'}`}>
+        {label}
+      </span>
+    </div>
+  )
+}
+
+function StepLine() {
+  return <div className="h-px w-8 bg-slate-200 sm:w-16" />
+}
