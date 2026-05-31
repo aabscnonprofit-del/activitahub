@@ -4,6 +4,7 @@ import type {
   MarketplaceCard,
   MarketplaceActivityDetail,
   PublicOrganizer,
+  PublicReview,
 } from '@/lib/types'
 
 type SupabaseServerClient = Awaited<ReturnType<typeof createClient>>
@@ -50,4 +51,22 @@ export async function getPublicOrganizer(
 ): Promise<PublicOrganizer | null> {
   const { data } = await sb.rpc('get_public_organizer', { p_user_id: userId })
   return (data as PublicOrganizer | null) ?? null
+}
+
+/** Approved public reviews for an activity. */
+export async function getActivityReviews(
+  sb: SupabaseServerClient,
+  activityId: string
+): Promise<PublicReview[]> {
+  const { data } = await sb.rpc('get_activity_reviews', { p_activity_id: activityId })
+  return (data ?? []) as PublicReview[]
+}
+
+/** Approved public reviews for an organizer. */
+export async function getOrganizerReviews(
+  sb: SupabaseServerClient,
+  organizerId: string
+): Promise<PublicReview[]> {
+  const { data } = await sb.rpc('get_organizer_reviews', { p_organizer_id: organizerId })
+  return (data ?? []) as PublicReview[]
 }

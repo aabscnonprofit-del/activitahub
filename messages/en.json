@@ -606,14 +606,16 @@
       "organizer": "Organizer",
       "certified": "Certified Organizer",
       "bookCta": "Request this activity",
-      "bookHint": "Send a request and the organizer will propose details."
+      "bookHint": "Send a request and the organizer will propose details.",
+      "reviewsTitle": "Reviews"
     },
     "organizer": {
       "anonymous": "Organizer",
       "certified": "Certified Organizer",
       "memberSince": "Member since {date}",
       "activities": "Activities",
-      "noActivities": "No published activities yet."
+      "noActivities": "No published activities yet.",
+      "reviews": "Reviews"
     },
     "categories": {
       "sports": "Sports",
@@ -721,7 +723,8 @@
       "completed": "Completed",
       "cancelled": "Cancelled",
       "refunded": "Refunded"
-    }
+    },
+    "reviewed": "Reviewed"
   },
   "notifications": {
     "title": "Notifications",
@@ -729,5 +732,11 @@
     "markAllRead": "Mark all read",
     "markRead": "Mark read",
     "empty": "No notifications yet."
+  },
+  "reviews": {
+    "submit": "Submit review",
+    "submitting": "Submitting…",
+    "placeholder": "Share your experience (optional)",
+    "yourRating": "Your rating"
   }
 }

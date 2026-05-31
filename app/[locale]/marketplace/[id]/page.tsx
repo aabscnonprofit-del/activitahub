@@ -7,7 +7,8 @@ import {
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { PublicHeader } from '@/components/layout/PublicHeader'
-import { getMarketplaceActivity } from '@/lib/marketplace/queries'
+import { getMarketplaceActivity, getActivityReviews } from '@/lib/marketplace/queries'
+import { StarRating } from '@/components/ui/StarRating'
 import { formatPrice, formatDate, formatTime } from '@/lib/utils'
 import type { Locale } from '@/lib/types'
 
@@ -25,6 +26,7 @@ export default async function ActivityDetailPage({ params }: DetailPageProps) {
   } = await supabase.auth.getUser()
   const a = await getMarketplaceActivity(supabase, id)
   if (!a) notFound()
+  const reviews = await getActivityReviews(supabase, id)
 
   const requestHref = `/${locale}/requests/new?category=${a.category ?? ''}&city=${encodeURIComponent(a.city ?? '')}`
 
@@ -64,6 +66,12 @@ export default async function ActivityDetailPage({ params }: DetailPageProps) {
                 </span>
               )}
               <h1 className="mt-1 text-3xl font-extrabold text-slate-900">{a.title}</h1>
+
+              {a.rating != null && (
+                <div className="mt-2">
+                  <StarRating rating={a.rating} count={a.review_count} />
+                </div>
+              )}
 
               <div className="mt-3 flex flex-wrap gap-4 text-sm text-slate-500">
                 {a.city && (
@@ -109,6 +117,24 @@ export default async function ActivityDetailPage({ params }: DetailPageProps) {
                       </li>
                     ))}
                   </ul>
+                </div>
+              )}
+
+              {reviews.length > 0 && (
+                <div className="mt-6">
+                  <h2 className="font-bold text-slate-900">{t('detail.reviewsTitle')}</h2>
+                  <div className="mt-2 space-y-3">
+                    {reviews.map((rv) => (
+                      <div key={rv.id} className="rounded-xl border border-slate-200 bg-white p-4">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-semibold text-slate-800">{rv.author}</span>
+                          <StarRating rating={rv.rating} />
+                        </div>
+                        {rv.comment && <p className="mt-1 text-sm text-slate-600">{rv.comment}</p>}
+                        <p className="mt-1 text-xs text-slate-400">{formatDate(rv.created_at, 'UTC', locale)}</p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>

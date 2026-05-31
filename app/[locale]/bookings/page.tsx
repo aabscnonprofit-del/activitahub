@@ -5,6 +5,8 @@ import { createClient } from '@/lib/supabase/server'
 import { PublicHeader } from '@/components/layout/PublicHeader'
 import { Badge } from '@/components/ui/Badge'
 import { cancelBooking } from '@/lib/actions/bookings'
+import { ReviewForm } from '@/components/reviews/ReviewForm'
+import { StarRating } from '@/components/ui/StarRating'
 import { formatDate, formatPrice } from '@/lib/utils'
 import type { Locale, Booking, BookingStatus } from '@/lib/types'
 
@@ -47,6 +49,16 @@ export default async function BookingsPage({ params }: Props) {
     for (const r of (a ?? []) as { id: string; title: string }[]) actTitle.set(r.id, r.title)
   }
 
+  // Which bookings already have a review (own reviews, RLS-scoped).
+  const { data: revData } = await supabase
+    .from('reviews')
+    .select('booking_id, rating')
+    .eq('customer_id', user.id)
+  const reviewedRating = new Map<string, number>()
+  for (const r of (revData ?? []) as { booking_id: string; rating: number }[]) {
+    reviewedRating.set(r.booking_id, r.rating)
+  }
+
   return (
     <div className="flex min-h-screen flex-col">
       <PublicHeader locale={locale} isAuthenticated />
@@ -85,6 +97,15 @@ export default async function BookingsPage({ params }: Props) {
                       <button className="text-sm font-medium text-red-600 hover:underline">{t('cancel')}</button>
                     </form>
                   )}
+                  {b.status === 'completed' &&
+                    (reviewedRating.has(b.id) ? (
+                      <div className="mt-3 flex items-center gap-2 border-t border-slate-100 pt-3">
+                        <span className="text-xs text-slate-500">{t('reviewed')}</span>
+                        <StarRating rating={reviewedRating.get(b.id)!} />
+                      </div>
+                    ) : (
+                      <ReviewForm bookingId={b.id} />
+                    ))}
                 </div>
               ))}
             </div>

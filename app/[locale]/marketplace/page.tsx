@@ -5,6 +5,7 @@ import { Search, MapPin, ShieldCheck, ImageOff } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { PublicHeader } from '@/components/layout/PublicHeader'
 import { searchMarketplace } from '@/lib/marketplace/queries'
+import { StarRating } from '@/components/ui/StarRating'
 import { formatPrice } from '@/lib/utils'
 import type { Locale, ActivityCategory } from '@/lib/types'
 import type { Metadata } from 'next'
@@ -158,6 +159,11 @@ export default async function MarketplacePage({ params, searchParams }: Marketpl
                             <MapPin className="h-3 w-3" />
                             {c.city}
                           </p>
+                        )}
+                        {c.rating != null && (
+                          <div className="mt-1.5">
+                            <StarRating rating={c.rating} count={c.review_count} />
+                          </div>
                         )}
                         <div className="mt-3 flex items-center justify-between">
                           <span className="text-sm font-semibold text-slate-900">

@@ -606,14 +606,16 @@
       "organizer": "Organizador",
       "certified": "Organizador Certificado",
       "bookCta": "Solicitar esta actividad",
-      "bookHint": "Envía una solicitud y el organizador propondrá los detalles."
+      "bookHint": "Envía una solicitud y el organizador propondrá los detalles.",
+      "reviewsTitle": "Reseñas"
     },
     "organizer": {
       "anonymous": "Organizador",
       "certified": "Organizador Certificado",
       "memberSince": "Miembro desde {date}",
       "activities": "Actividades",
-      "noActivities": "Aún no hay actividades publicadas."
+      "noActivities": "Aún no hay actividades publicadas.",
+      "reviews": "Reseñas"
     },
     "categories": {
       "sports": "Deportes",
@@ -721,7 +723,8 @@
       "completed": "Completada",
       "cancelled": "Cancelada",
       "refunded": "Reembolsada"
-    }
+    },
+    "reviewed": "Reseñado"
   },
   "notifications": {
     "title": "Notificaciones",
@@ -729,5 +732,11 @@
     "markAllRead": "Marcar todas leídas",
     "markRead": "Marcar leída",
     "empty": "Aún no hay notificaciones."
+  },
+  "reviews": {
+    "submit": "Enviar reseña",
+    "submitting": "Enviando…",
+    "placeholder": "Comparte tu experiencia (opcional)",
+    "yourRating": "Tu valoración"
   }
 }

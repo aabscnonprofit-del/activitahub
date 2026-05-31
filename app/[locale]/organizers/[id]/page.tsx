@@ -4,7 +4,8 @@ import Link from 'next/link'
 import { MapPin, ShieldCheck, Globe, Award } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { PublicHeader } from '@/components/layout/PublicHeader'
-import { getPublicOrganizer } from '@/lib/marketplace/queries'
+import { getPublicOrganizer, getOrganizerReviews } from '@/lib/marketplace/queries'
+import { StarRating } from '@/components/ui/StarRating'
 import { formatDate, formatPrice } from '@/lib/utils'
 import type { Locale } from '@/lib/types'
 
@@ -22,6 +23,7 @@ export default async function OrganizerProfilePage({ params }: OrganizerPageProp
   } = await supabase.auth.getUser()
   const org = await getPublicOrganizer(supabase, id)
   if (!org) notFound()
+  const reviews = await getOrganizerReviews(supabase, id)
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -55,6 +57,7 @@ export default async function OrganizerProfilePage({ params }: OrganizerPageProp
                     <span className="flex items-center gap-1"><Globe className="h-4 w-4" />{org.languages.join(', ')}</span>
                   )}
                   <span className="flex items-center gap-1"><Award className="h-4 w-4" />{t('organizer.memberSince', { date: formatDate(org.member_since, 'UTC', locale) })}</span>
+                  {org.rating != null && <StarRating rating={org.rating} count={org.review_count} />}
                 </div>
                 {org.bio && <p className="mt-3 text-sm leading-relaxed text-slate-700">{org.bio}</p>}
                 {org.website && (
@@ -95,6 +98,24 @@ export default async function OrganizerProfilePage({ params }: OrganizerPageProp
                 </Link>
               ))}
             </div>
+          )}
+
+          {reviews.length > 0 && (
+            <>
+              <h2 className="mt-8 mb-4 text-lg font-bold text-slate-900">{t('organizer.reviews')}</h2>
+              <div className="space-y-3">
+                {reviews.map((rv) => (
+                  <div key={rv.id} className="rounded-2xl border border-slate-200 bg-white p-5">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-semibold text-slate-800">{rv.author}</span>
+                      <StarRating rating={rv.rating} />
+                    </div>
+                    {rv.comment && <p className="mt-1 text-sm text-slate-600">{rv.comment}</p>}
+                    <p className="mt-1 text-xs text-slate-400">{formatDate(rv.created_at, 'UTC', locale)}</p>
+                  </div>
+                ))}
+              </div>
+            </>
           )}
         </div>
       </main>

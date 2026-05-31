@@ -606,14 +606,16 @@
       "organizer": "Organisateur",
       "certified": "Organisateur Certifié",
       "bookCta": "Demander cette activité",
-      "bookHint": "Envoyez une demande et l'organisateur proposera les détails."
+      "bookHint": "Envoyez une demande et l'organisateur proposera les détails.",
+      "reviewsTitle": "Avis"
     },
     "organizer": {
       "anonymous": "Organisateur",
       "certified": "Organisateur Certifié",
       "memberSince": "Membre depuis {date}",
       "activities": "Activités",
-      "noActivities": "Aucune activité publiée pour l'instant."
+      "noActivities": "Aucune activité publiée pour l'instant.",
+      "reviews": "Avis"
     },
     "categories": {
       "sports": "Sports",
@@ -721,7 +723,8 @@
       "completed": "Terminée",
       "cancelled": "Annulée",
       "refunded": "Remboursée"
-    }
+    },
+    "reviewed": "Évalué"
   },
   "notifications": {
     "title": "Notifications",
@@ -729,5 +732,11 @@
     "markAllRead": "Tout marquer comme lu",
     "markRead": "Marquer comme lu",
     "empty": "Aucune notification pour l'instant."
+  },
+  "reviews": {
+    "submit": "Envoyer l'avis",
+    "submitting": "Envoi…",
+    "placeholder": "Partagez votre expérience (facultatif)",
+    "yourRating": "Votre note"
   }
 }

@@ -365,6 +365,8 @@ export type MarketplaceCard = {
   organizer_name: string | null
   organizer_certified: boolean
   cover_path: string | null
+  rating: number | null
+  review_count: number
 }
 
 export type MarketplaceActivityDetail = {
@@ -381,6 +383,8 @@ export type MarketplaceActivityDetail = {
   country: string | null
   indoor_outdoor: 'indoor' | 'outdoor' | 'both' | null
   duration_minutes: number | null
+  rating: number | null
+  review_count: number
   organizer: { id: string; name: string | null; certified: boolean }
   venue: { name: string; city: string | null; country: string | null; indoor_outdoor: string | null } | null
   photo_paths: string[]
@@ -397,6 +401,8 @@ export type PublicOrganizer = {
   website: string | null
   certified: boolean
   member_since: string
+  rating: number | null
+  review_count: number
   activities: {
     id: string
     title: string
@@ -405,6 +411,30 @@ export type PublicOrganizer = {
     currency: string
     city: string | null
   }[]
+}
+
+export type ReviewStatus = 'pending' | 'approved' | 'rejected'
+
+export type Review = {
+  id: string
+  booking_id: string
+  customer_id: string
+  organizer_id: string
+  activity_id: string | null
+  rating: number
+  comment: string | null
+  status: ReviewStatus
+  created_at: string
+  updated_at: string
+}
+
+// Public review row from get_activity_reviews / get_organizer_reviews
+export type PublicReview = {
+  id: string
+  rating: number
+  comment: string | null
+  author: string
+  created_at: string
 }
 
 export type CustomerRequest = {
