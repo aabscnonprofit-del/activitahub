@@ -3,7 +3,8 @@ import { redirect } from 'next/navigation'
 import { CalendarCheck, CalendarDays, Users } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { Badge } from '@/components/ui/Badge'
-import { cancelBooking, completeBooking, refundBooking } from '@/lib/actions/bookings'
+import { cancelBooking, completeBooking } from '@/lib/actions/bookings'
+import { processRefund, rejectRefund } from '@/lib/actions/bookingPayments'
 import { formatDate, formatPrice } from '@/lib/utils'
 import type { Locale, Booking, BookingStatus } from '@/lib/types'
 
@@ -39,6 +40,16 @@ export default async function OrganizerBookingsPage({ params }: Props) {
     for (const r of (a ?? []) as { id: string; title: string }[]) actTitle.set(r.id, r.title)
   }
 
+  // Pending refund requests on this organizer's bookings (RLS-scoped).
+  const { data: rr } = await supabase
+    .from('refund_requests')
+    .select('id, booking_id, status')
+    .eq('status', 'requested')
+  const pendingRefund = new Map<string, string>()
+  for (const r of (rr ?? []) as { id: string; booking_id: string }[]) {
+    pendingRefund.set(r.booking_id, r.id)
+  }
+
   return (
     <div className="space-y-6">
       <div>
@@ -68,10 +79,13 @@ export default async function OrganizerBookingsPage({ params }: Props) {
                     {b.participant_count != null && <span className="flex items-center gap-1"><Users className="h-3.5 w-3.5" />{b.participant_count}</span>}
                   </div>
                 </div>
-                <p className="shrink-0 font-bold text-slate-900">{formatPrice(b.amount_cents, b.currency, locale) ?? '—'}</p>
+                <div className="shrink-0 text-right">
+                  <p className="font-bold text-slate-900">{formatPrice(b.amount_cents, b.currency, locale) ?? '—'}</p>
+                  <Badge label={t(`payment.${b.payment_status}` as 'payment.unpaid')} variant={b.payment_status === 'paid' ? 'success' : b.payment_status === 'refunded' ? 'error' : 'neutral'} />
+                </div>
               </div>
 
-              <div className="mt-3 flex flex-wrap gap-2 border-t border-slate-100 pt-3">
+              <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-slate-100 pt-3">
                 {b.status === 'confirmed' && (
                   <form action={completeBooking}>
                     <input type="hidden" name="booking_id" value={b.id} />
@@ -84,11 +98,19 @@ export default async function OrganizerBookingsPage({ params }: Props) {
                     <button className="rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-50">{t('cancel')}</button>
                   </form>
                 )}
-                {(b.status === 'cancelled' || b.status === 'confirmed') && (
-                  <form action={refundBooking}>
-                    <input type="hidden" name="booking_id" value={b.id} />
-                    <button className="rounded-lg border border-red-200 px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50">{t('refund')}</button>
-                  </form>
+                {pendingRefund.has(b.id) && (
+                  <>
+                    <span className="text-xs font-medium text-amber-600">{t('refundRequested')}</span>
+                    <form action={processRefund}>
+                      <input type="hidden" name="refund_id" value={pendingRefund.get(b.id)} />
+                      <input type="hidden" name="booking_id" value={b.id} />
+                      <button className="rounded-lg bg-red-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-red-700">{t('processRefund')}</button>
+                    </form>
+                    <form action={rejectRefund}>
+                      <input type="hidden" name="refund_id" value={pendingRefund.get(b.id)} />
+                      <button className="rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-50">{t('rejectRefund')}</button>
+                    </form>
+                  </>
                 )}
               </div>
             </div>

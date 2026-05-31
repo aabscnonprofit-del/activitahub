@@ -96,6 +96,27 @@ async function handleCheckoutCompleted(
 ): Promise<void> {
   const profileId = session.metadata?.profile_id
   const kind = session.metadata?.kind
+
+  // Booking payment — mark the booking paid (no profile_id in metadata).
+  if (kind === 'booking') {
+    const bookingId = session.metadata?.booking_id
+    if (bookingId) {
+      await admin
+        .from('bookings')
+        .update({
+          payment_status: 'paid',
+          status: 'confirmed',
+          stripe_payment_intent_id:
+            typeof session.payment_intent === 'string'
+              ? session.payment_intent
+              : (session.payment_intent?.id ?? null),
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', bookingId)
+    }
+    return
+  }
+
   if (!profileId) return
 
   // Persist the Stripe customer id on the profile (idempotent).

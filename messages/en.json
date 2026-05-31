@@ -724,7 +724,19 @@
       "cancelled": "Cancelled",
       "refunded": "Refunded"
     },
-    "reviewed": "Reviewed"
+    "reviewed": "Reviewed",
+    "payNow": "Pay now",
+    "requestRefund": "Request refund",
+    "refundRequested": "Refund requested",
+    "processRefund": "Process refund",
+    "rejectRefund": "Reject",
+    "payment": {
+      "unpaid": "Unpaid",
+      "processing": "Processing",
+      "paid": "Paid",
+      "refunded": "Refunded",
+      "failed": "Failed"
+    }
   },
   "notifications": {
     "title": "Notifications",

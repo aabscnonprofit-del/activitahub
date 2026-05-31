@@ -724,7 +724,19 @@
       "cancelled": "Annulée",
       "refunded": "Remboursée"
     },
-    "reviewed": "Évalué"
+    "reviewed": "Évalué",
+    "payNow": "Payer",
+    "requestRefund": "Demander un remboursement",
+    "refundRequested": "Remboursement demandé",
+    "processRefund": "Traiter le remboursement",
+    "rejectRefund": "Refuser",
+    "payment": {
+      "unpaid": "Non payé",
+      "processing": "En cours",
+      "paid": "Payé",
+      "refunded": "Remboursé",
+      "failed": "Échoué"
+    }
   },
   "notifications": {
     "title": "Notifications",

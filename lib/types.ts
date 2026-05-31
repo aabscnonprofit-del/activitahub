@@ -485,7 +485,24 @@ export type Booking = {
   amount_cents: number | null
   currency: string
   status: BookingStatus
+  payment_status: BookingPaymentStatus
   stripe_payment_intent_id: string | null
+  stripe_checkout_session_id: string | null
+  created_at: string
+  updated_at: string
+}
+
+export type BookingPaymentStatus = 'unpaid' | 'processing' | 'paid' | 'refunded' | 'failed'
+
+export type RefundRequestStatus = 'requested' | 'approved' | 'rejected' | 'refunded' | 'failed'
+
+export type RefundRequest = {
+  id: string
+  booking_id: string
+  requested_by: string
+  reason: string | null
+  status: RefundRequestStatus
+  stripe_refund_id: string | null
   created_at: string
   updated_at: string
 }

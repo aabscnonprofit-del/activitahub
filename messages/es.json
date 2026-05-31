@@ -724,7 +724,19 @@
       "cancelled": "Cancelada",
       "refunded": "Reembolsada"
     },
-    "reviewed": "Reseñado"
+    "reviewed": "Reseñado",
+    "payNow": "Pagar ahora",
+    "requestRefund": "Solicitar reembolso",
+    "refundRequested": "Reembolso solicitado",
+    "processRefund": "Procesar reembolso",
+    "rejectRefund": "Rechazar",
+    "payment": {
+      "unpaid": "Sin pagar",
+      "processing": "Procesando",
+      "paid": "Pagado",
+      "refunded": "Reembolsado",
+      "failed": "Fallido"
+    }
   },
   "notifications": {
     "title": "Notificaciones",

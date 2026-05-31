@@ -724,7 +724,19 @@
       "cancelled": "Отменена",
       "refunded": "Возвращена"
     },
-    "reviewed": "Оценено"
+    "reviewed": "Оценено",
+    "payNow": "Оплатить",
+    "requestRefund": "Запросить возврат",
+    "refundRequested": "Возврат запрошен",
+    "processRefund": "Выполнить возврат",
+    "rejectRefund": "Отклонить",
+    "payment": {
+      "unpaid": "Не оплачено",
+      "processing": "Обработка",
+      "paid": "Оплачено",
+      "refunded": "Возвращено",
+      "failed": "Ошибка"
+    }
   },
   "notifications": {
     "title": "Уведомления",

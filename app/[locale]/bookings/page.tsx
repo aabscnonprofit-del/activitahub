@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/server'
 import { PublicHeader } from '@/components/layout/PublicHeader'
 import { Badge } from '@/components/ui/Badge'
 import { cancelBooking } from '@/lib/actions/bookings'
+import { createBookingCheckout, requestRefund } from '@/lib/actions/bookingPayments'
 import { ReviewForm } from '@/components/reviews/ReviewForm'
 import { StarRating } from '@/components/ui/StarRating'
 import { formatDate, formatPrice } from '@/lib/utils'
@@ -59,6 +60,16 @@ export default async function BookingsPage({ params }: Props) {
     reviewedRating.set(r.booking_id, r.rating)
   }
 
+  // Active refund requests on these bookings (RLS via booking ownership).
+  const { data: refundData } = await supabase
+    .from('refund_requests')
+    .select('booking_id, status')
+    .in('status', ['requested', 'approved', 'refunded'])
+  const refundStatus = new Map<string, string>()
+  for (const r of (refundData ?? []) as { booking_id: string; status: string }[]) {
+    refundStatus.set(r.booking_id, r.status)
+  }
+
   return (
     <div className="flex min-h-screen flex-col">
       <PublicHeader locale={locale} isAuthenticated />
@@ -89,14 +100,38 @@ export default async function BookingsPage({ params }: Props) {
                         {formatDate(b.date, 'UTC', locale)} · {orgName.get(b.organizer_id) ?? t('organizer')}
                       </p>
                     </div>
-                    <p className="shrink-0 font-bold text-slate-900">{formatPrice(b.amount_cents, b.currency, locale) ?? '—'}</p>
+                    <div className="shrink-0 text-right">
+                      <p className="font-bold text-slate-900">{formatPrice(b.amount_cents, b.currency, locale) ?? '—'}</p>
+                      <Badge label={t(`payment.${b.payment_status}` as 'payment.unpaid')} variant={b.payment_status === 'paid' ? 'success' : b.payment_status === 'refunded' ? 'error' : 'neutral'} />
+                    </div>
                   </div>
-                  {(b.status === 'pending' || b.status === 'confirmed') && (
-                    <form action={cancelBooking} className="mt-3 border-t border-slate-100 pt-3">
-                      <input type="hidden" name="booking_id" value={b.id} />
-                      <button className="text-sm font-medium text-red-600 hover:underline">{t('cancel')}</button>
-                    </form>
-                  )}
+
+                  {/* Pay / refund actions */}
+                  <div className="mt-3 flex flex-wrap items-center gap-3 border-t border-slate-100 pt-3">
+                    {(b.status === 'pending' || b.status === 'confirmed') && (
+                      <form action={cancelBooking}>
+                        <input type="hidden" name="booking_id" value={b.id} />
+                        <button className="text-sm font-medium text-red-600 hover:underline">{t('cancel')}</button>
+                      </form>
+                    )}
+                    {(b.status === 'confirmed' || b.status === 'pending') &&
+                      b.payment_status !== 'paid' && b.payment_status !== 'refunded' && (
+                        <form action={createBookingCheckout}>
+                          <input type="hidden" name="locale" value={locale} />
+                          <input type="hidden" name="booking_id" value={b.id} />
+                          <button className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700">{t('payNow')}</button>
+                        </form>
+                      )}
+                    {b.payment_status === 'paid' && !refundStatus.has(b.id) && (
+                      <form action={requestRefund} className="flex items-center gap-2">
+                        <input type="hidden" name="booking_id" value={b.id} />
+                        <button className="text-sm font-medium text-slate-600 hover:underline">{t('requestRefund')}</button>
+                      </form>
+                    )}
+                    {refundStatus.get(b.id) === 'requested' && (
+                      <span className="text-xs text-amber-600">{t('refundRequested')}</span>
+                    )}
+                  </div>
                   {b.status === 'completed' &&
                     (reviewedRating.has(b.id) ? (
                       <div className="mt-3 flex items-center gap-2 border-t border-slate-100 pt-3">
