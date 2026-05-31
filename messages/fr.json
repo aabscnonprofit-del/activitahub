@@ -772,5 +772,59 @@
     "revenueOverTime": "Revenus dans le temps",
     "activityPopularity": "Popularité des activités",
     "noData": "Pas encore de données"
+  },
+  "admin": {
+    "brand": "Admin",
+    "nav": {
+      "dashboard": "Tableau",
+      "reviews": "Avis",
+      "bookings": "Réservations",
+      "organizers": "Organisateurs"
+    },
+    "title": "Analyses de la plateforme",
+    "unavailable": "Analyses indisponibles.",
+    "metrics": {
+      "gmv": "GMV",
+      "activeOrganizers": "Organisateurs actifs",
+      "activeCustomers": "Clients actifs",
+      "conversion": "Conversion",
+      "bookings": "Réservations",
+      "requests": "Demandes",
+      "reviews": "Avis",
+      "pendingReviews": "Avis en attente"
+    },
+    "bookingGrowth": "Croissance des réservations",
+    "topCategories": "Top catégories",
+    "noData": "Pas encore de données",
+    "reviewQueue": "{count} avis à modérer",
+    "reviews": {
+      "title": "Modération des avis",
+      "empty": "Aucun avis.",
+      "approve": "Approuver",
+      "reject": "Rejeter",
+      "status": {
+        "pending": "En attente",
+        "approved": "Approuvé",
+        "rejected": "Rejeté"
+      }
+    },
+    "bookings": {
+      "title": "Supervision des réservations",
+      "subtitle": "Toutes les réservations, paiements et litiges.",
+      "empty": "Aucune réservation.",
+      "date": "Date",
+      "amount": "Montant",
+      "status": "Statut",
+      "payment": "Paiement",
+      "dispute": "Litige"
+    },
+    "organizers": {
+      "title": "Modération des organisateurs",
+      "subtitle": "Suspendre ou restaurer des comptes.",
+      "empty": "Aucun organisateur.",
+      "suspended": "Suspendu",
+      "suspend": "Suspendre",
+      "unsuspend": "Restaurer"
+    }
   }
 }

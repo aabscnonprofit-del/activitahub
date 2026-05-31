@@ -772,5 +772,59 @@
     "revenueOverTime": "Revenue over time",
     "activityPopularity": "Activity popularity",
     "noData": "No data yet"
+  },
+  "admin": {
+    "brand": "Admin",
+    "nav": {
+      "dashboard": "Dashboard",
+      "reviews": "Reviews",
+      "bookings": "Bookings",
+      "organizers": "Organizers"
+    },
+    "title": "Platform analytics",
+    "unavailable": "Analytics unavailable.",
+    "metrics": {
+      "gmv": "GMV",
+      "activeOrganizers": "Active organizers",
+      "activeCustomers": "Active customers",
+      "conversion": "Conversion",
+      "bookings": "Bookings",
+      "requests": "Requests",
+      "reviews": "Reviews",
+      "pendingReviews": "Pending reviews"
+    },
+    "bookingGrowth": "Booking growth",
+    "topCategories": "Top categories",
+    "noData": "No data yet",
+    "reviewQueue": "{count} reviews awaiting moderation",
+    "reviews": {
+      "title": "Review moderation",
+      "empty": "No reviews.",
+      "approve": "Approve",
+      "reject": "Reject",
+      "status": {
+        "pending": "Pending",
+        "approved": "Approved",
+        "rejected": "Rejected"
+      }
+    },
+    "bookings": {
+      "title": "Booking oversight",
+      "subtitle": "All bookings, payments, and disputes.",
+      "empty": "No bookings.",
+      "date": "Date",
+      "amount": "Amount",
+      "status": "Status",
+      "payment": "Payment",
+      "dispute": "Dispute"
+    },
+    "organizers": {
+      "title": "Organizer moderation",
+      "subtitle": "Suspend or restore organizer accounts.",
+      "empty": "No organizers.",
+      "suspended": "Suspended",
+      "suspend": "Suspend",
+      "unsuspend": "Restore"
+    }
   }
 }

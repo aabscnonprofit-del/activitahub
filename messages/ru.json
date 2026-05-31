@@ -772,5 +772,59 @@
     "revenueOverTime": "Доход по времени",
     "activityPopularity": "Популярность активностей",
     "noData": "Пока нет данных"
+  },
+  "admin": {
+    "brand": "Админ",
+    "nav": {
+      "dashboard": "Панель",
+      "reviews": "Отзывы",
+      "bookings": "Бронирования",
+      "organizers": "Организаторы"
+    },
+    "title": "Аналитика платформы",
+    "unavailable": "Аналитика недоступна.",
+    "metrics": {
+      "gmv": "GMV",
+      "activeOrganizers": "Активные организаторы",
+      "activeCustomers": "Активные клиенты",
+      "conversion": "Конверсия",
+      "bookings": "Бронирования",
+      "requests": "Запросы",
+      "reviews": "Отзывы",
+      "pendingReviews": "Отзывы на модерации"
+    },
+    "bookingGrowth": "Рост бронирований",
+    "topCategories": "Топ категорий",
+    "noData": "Пока нет данных",
+    "reviewQueue": "{count} отзывов ждут модерации",
+    "reviews": {
+      "title": "Модерация отзывов",
+      "empty": "Нет отзывов.",
+      "approve": "Одобрить",
+      "reject": "Отклонить",
+      "status": {
+        "pending": "На модерации",
+        "approved": "Одобрен",
+        "rejected": "Отклонён"
+      }
+    },
+    "bookings": {
+      "title": "Контроль бронирований",
+      "subtitle": "Все бронирования, платежи и споры.",
+      "empty": "Нет бронирований.",
+      "date": "Дата",
+      "amount": "Сумма",
+      "status": "Статус",
+      "payment": "Оплата",
+      "dispute": "Спор"
+    },
+    "organizers": {
+      "title": "Модерация организаторов",
+      "subtitle": "Блокировка или восстановление аккаунтов.",
+      "empty": "Нет организаторов.",
+      "suspended": "Заблокирован",
+      "suspend": "Заблокировать",
+      "unsuspend": "Восстановить"
+    }
   }
 }

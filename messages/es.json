@@ -772,5 +772,59 @@
     "revenueOverTime": "Ingresos en el tiempo",
     "activityPopularity": "Popularidad de actividades",
     "noData": "Aún no hay datos"
+  },
+  "admin": {
+    "brand": "Admin",
+    "nav": {
+      "dashboard": "Panel",
+      "reviews": "Reseñas",
+      "bookings": "Reservas",
+      "organizers": "Organizadores"
+    },
+    "title": "Analíticas de la plataforma",
+    "unavailable": "Analíticas no disponibles.",
+    "metrics": {
+      "gmv": "GMV",
+      "activeOrganizers": "Organizadores activos",
+      "activeCustomers": "Clientes activos",
+      "conversion": "Conversión",
+      "bookings": "Reservas",
+      "requests": "Solicitudes",
+      "reviews": "Reseñas",
+      "pendingReviews": "Reseñas pendientes"
+    },
+    "bookingGrowth": "Crecimiento de reservas",
+    "topCategories": "Categorías top",
+    "noData": "Aún no hay datos",
+    "reviewQueue": "{count} reseñas por moderar",
+    "reviews": {
+      "title": "Moderación de reseñas",
+      "empty": "Sin reseñas.",
+      "approve": "Aprobar",
+      "reject": "Rechazar",
+      "status": {
+        "pending": "Pendiente",
+        "approved": "Aprobada",
+        "rejected": "Rechazada"
+      }
+    },
+    "bookings": {
+      "title": "Supervisión de reservas",
+      "subtitle": "Todas las reservas, pagos y disputas.",
+      "empty": "Sin reservas.",
+      "date": "Fecha",
+      "amount": "Importe",
+      "status": "Estado",
+      "payment": "Pago",
+      "dispute": "Disputa"
+    },
+    "organizers": {
+      "title": "Moderación de organizadores",
+      "subtitle": "Suspende o restaura cuentas.",
+      "empty": "Sin organizadores.",
+      "suspended": "Suspendido",
+      "suspend": "Suspender",
+      "unsuspend": "Restaurar"
+    }
   }
 }
