@@ -20,7 +20,7 @@ export default async function ProfilePage({ params }: Props) {
     .from('organizer_profiles')
     .select('*')
     .eq('user_id', user.id)
-    .single()
+    .maybeSingle()
 
   return (
     <div>

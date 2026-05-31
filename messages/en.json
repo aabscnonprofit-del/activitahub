@@ -332,9 +332,9 @@
       "greetingFallback": "Welcome back",
       "subtitle": "Here's an overview of your organizer account.",
       "metrics": {
-        "totalRequests": "Total Requests",
-        "totalBookings": "Total Bookings",
-        "totalRevenue": "Total Revenue",
+        "activities": "Activities",
+        "venues": "Venues",
+        "clients": "Clients",
         "upcomingEvents": "Upcoming Events"
       },
       "upcomingEvents": {
@@ -349,6 +349,130 @@
         "subscriptionActive": "Subscription active",
         "subscriptionInactive": "Subscription inactive"
       }
+    }
+  },
+  "activities": {
+    "title": "Activities",
+    "subtitle": "Create and manage your activity offerings.",
+    "create": "New activity",
+    "empty": "No activities yet",
+    "emptyDesc": "Create your first activity to start building your catalogue.",
+    "edit": "Edit",
+    "delete": "Delete",
+    "confirmDelete": "Delete this activity? This cannot be undone.",
+    "createTitle": "New activity",
+    "editTitle": "Edit activity",
+    "publish": "Publish",
+    "unpublish": "Unpublish",
+    "published": "Activity published",
+    "unpublished": "Activity unpublished",
+    "status": {
+      "draft": "Draft",
+      "published": "Published",
+      "archived": "Archived"
+    },
+    "form": {
+      "title": "Title",
+      "titlePlaceholder": "e.g. Sunset Kayak Tour",
+      "description": "Description",
+      "descriptionPlaceholder": "What does this activity involve?",
+      "status": "Status",
+      "cancel": "Cancel",
+      "create": "Create",
+      "save": "Save",
+      "creating": "Creating…",
+      "saving": "Saving…"
+    }
+  },
+  "venues": {
+    "title": "Venues",
+    "subtitle": "Manage the places where your activities happen.",
+    "create": "New venue",
+    "empty": "No venues yet",
+    "emptyDesc": "Add the places where you run your activities.",
+    "delete": "Delete",
+    "confirmDelete": "Delete this venue? This cannot be undone.",
+    "createTitle": "New venue",
+    "editTitle": "Edit venue",
+    "indoorOutdoor": {
+      "indoor": "Indoor",
+      "outdoor": "Outdoor",
+      "both": "Indoor & outdoor"
+    },
+    "form": {
+      "name": "Name",
+      "namePlaceholder": "e.g. Riverside Studio",
+      "address": "Address",
+      "addressPlaceholder": "Street address",
+      "city": "City",
+      "cityPlaceholder": "City",
+      "country": "Country",
+      "countryPlaceholder": "Country",
+      "capacity": "Capacity",
+      "capacityPlaceholder": "Max people",
+      "indoorOutdoor": "Indoor / outdoor",
+      "notes": "Notes",
+      "notesPlaceholder": "Anything useful to remember",
+      "cancel": "Cancel",
+      "create": "Create",
+      "save": "Save",
+      "creating": "Creating…",
+      "saving": "Saving…"
+    }
+  },
+  "clients": {
+    "title": "Clients",
+    "subtitle": "Your client contacts in one place.",
+    "create": "New client",
+    "empty": "No clients yet",
+    "emptyDesc": "Add your first client to start your CRM.",
+    "delete": "Delete",
+    "confirmDelete": "Delete this client? This cannot be undone.",
+    "createTitle": "New client",
+    "editTitle": "Edit client",
+    "form": {
+      "fullName": "Full name",
+      "fullNamePlaceholder": "e.g. Jordan Lee",
+      "email": "Email",
+      "emailPlaceholder": "name@example.com",
+      "phone": "Phone",
+      "phonePlaceholder": "Phone number",
+      "notes": "Notes",
+      "notesPlaceholder": "Preferences, history, etc.",
+      "cancel": "Cancel",
+      "create": "Create",
+      "save": "Save",
+      "creating": "Creating…",
+      "saving": "Saving…"
+    }
+  },
+  "profile": {
+    "title": "Organizer profile",
+    "subtitle": "How you appear to clients and on the marketplace.",
+    "saved": "Profile saved",
+    "error": "Could not save your profile.",
+    "displayName": "Display name",
+    "bio": "Bio",
+    "city": "City",
+    "country": "Country",
+    "languages": "Languages",
+    "phone": "Phone",
+    "website": "Website",
+    "save": "Save profile",
+    "saving": "Saving…",
+    "placeholders": {
+      "displayName": "Your public name",
+      "bio": "Tell clients about yourself",
+      "city": "City",
+      "country": "Country",
+      "languages": "English, Spanish",
+      "phone": "Phone number",
+      "website": "https://…"
+    },
+    "status": {
+      "draft": "Draft",
+      "published": "Published",
+      "suspended": "Suspended"
     }
   },
   "footer": {

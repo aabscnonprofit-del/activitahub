@@ -37,23 +37,25 @@ export async function createActivity(formData: FormData): Promise<void> {
     status: (formData.get('status') as string) || 'draft',
   })
 
-  // Update onboarding status
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('onboarding_status')
-    .eq('id', user.id)
-    .single()
+  revalidatePath('/dashboard/activities')
+  revalidatePath('/dashboard')
+}
 
-  if (
-    profile &&
-    (profile.onboarding_status === 'not_started' ||
-      profile.onboarding_status === 'profile_created')
-  ) {
-    await supabase
-      .from('profiles')
-      .update({ onboarding_status: 'first_activity_added' })
-      .eq('id', user.id)
-  }
+export async function setActivityStatus(
+  id: string,
+  status: 'draft' | 'published' | 'archived'
+): Promise<void> {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) return
+
+  await supabase
+    .from('activities')
+    .update({ status, updated_at: new Date().toISOString() })
+    .eq('id', id)
+    .eq('organizer_id', user.id)
 
   revalidatePath('/dashboard/activities')
   revalidatePath('/dashboard')

@@ -44,25 +44,6 @@ export async function createVenue(formData: FormData): Promise<void> {
     notes: (formData.get('notes') as string)?.trim() || null,
   })
 
-  // Update onboarding status
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('onboarding_status')
-    .eq('id', user.id)
-    .single()
-
-  if (
-    profile &&
-    (profile.onboarding_status === 'not_started' ||
-      profile.onboarding_status === 'profile_created' ||
-      profile.onboarding_status === 'first_activity_added')
-  ) {
-    await supabase
-      .from('profiles')
-      .update({ onboarding_status: 'venue_added' })
-      .eq('id', user.id)
-  }
-
   revalidatePath('/dashboard/venues')
   revalidatePath('/dashboard')
 }

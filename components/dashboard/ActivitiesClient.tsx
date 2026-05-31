@@ -2,11 +2,12 @@
 
 import { useState } from 'react'
 import { useTranslations } from 'next-intl'
-import { Plus, Layers, Pencil, Trash2 } from 'lucide-react'
+import { Plus, Layers, Pencil, Trash2, Eye, EyeOff } from 'lucide-react'
 import {
   createActivity,
   updateActivity,
   deleteActivity,
+  setActivityStatus,
 } from '@/lib/actions/activities'
 import type { Activity } from '@/lib/types'
 import Modal from '@/components/ui/Modal'
@@ -95,6 +96,24 @@ export default function ActivitiesClient({ initialActivities }: Props) {
     }
   }
 
+  async function handleTogglePublish(activity: Activity) {
+    const next = activity.status === 'published' ? 'draft' : 'published'
+    // Optimistic update
+    setActivities((prev) =>
+      prev.map((a) => (a.id === activity.id ? { ...a, status: next } : a))
+    )
+    try {
+      await setActivityStatus(activity.id, next)
+      addToast('success', next === 'published' ? t('published') : t('unpublished'))
+    } catch {
+      // Roll back on failure
+      setActivities((prev) =>
+        prev.map((a) => (a.id === activity.id ? { ...a, status: activity.status } : a))
+      )
+      addToast('error', tCommon('error'))
+    }
+  }
+
   const isEditing = formMode?.type === 'edit'
   const editActivity = isEditing ? formMode.activity : null
 
@@ -159,6 +178,19 @@ export default function ActivitiesClient({ initialActivities }: Props) {
                 </p>
               </div>
               <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+                {activity.status !== 'archived' && (
+                  <button
+                    onClick={() => handleTogglePublish(activity)}
+                    className="p-2 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
+                    title={activity.status === 'published' ? t('unpublish') : t('publish')}
+                  >
+                    {activity.status === 'published' ? (
+                      <EyeOff className="w-4 h-4" />
+                    ) : (
+                      <Eye className="w-4 h-4" />
+                    )}
+                  </button>
+                )}
                 <button
                   onClick={() => setFormMode({ type: 'edit', activity })}
                   className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"

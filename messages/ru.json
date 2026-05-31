@@ -332,9 +332,9 @@
       "greetingFallback": "С возвращением",
       "subtitle": "Обзор вашего аккаунта организатора.",
       "metrics": {
-        "totalRequests": "Всего заявок",
-        "totalBookings": "Всего бронирований",
-        "totalRevenue": "Общий доход",
+        "activities": "Активности",
+        "venues": "Площадки",
+        "clients": "Клиенты",
         "upcomingEvents": "Предстоящие события"
       },
       "upcomingEvents": {
@@ -349,6 +349,130 @@
         "subscriptionActive": "Подписка активна",
         "subscriptionInactive": "Подписка неактивна"
       }
+    }
+  },
+  "activities": {
+    "title": "Активности",
+    "subtitle": "Создавайте и управляйте своими активностями.",
+    "create": "Новая активность",
+    "empty": "Пока нет активностей",
+    "emptyDesc": "Создайте первую активность, чтобы начать каталог.",
+    "edit": "Редактировать",
+    "delete": "Удалить",
+    "confirmDelete": "Удалить эту активность? Действие необратимо.",
+    "createTitle": "Новая активность",
+    "editTitle": "Редактировать активность",
+    "publish": "Опубликовать",
+    "unpublish": "Снять с публикации",
+    "published": "Активность опубликована",
+    "unpublished": "Активность снята с публикации",
+    "status": {
+      "draft": "Черновик",
+      "published": "Опубликовано",
+      "archived": "В архиве"
+    },
+    "form": {
+      "title": "Название",
+      "titlePlaceholder": "напр. Закатный тур на каяках",
+      "description": "Описание",
+      "descriptionPlaceholder": "В чём заключается активность?",
+      "status": "Статус",
+      "cancel": "Отмена",
+      "create": "Создать",
+      "save": "Сохранить",
+      "creating": "Создание…",
+      "saving": "Сохранение…"
+    }
+  },
+  "venues": {
+    "title": "Площадки",
+    "subtitle": "Управляйте местами проведения активностей.",
+    "create": "Новая площадка",
+    "empty": "Пока нет площадок",
+    "emptyDesc": "Добавьте места, где проводите активности.",
+    "delete": "Удалить",
+    "confirmDelete": "Удалить эту площадку? Действие необратимо.",
+    "createTitle": "Новая площадка",
+    "editTitle": "Редактировать площадку",
+    "indoorOutdoor": {
+      "indoor": "В помещении",
+      "outdoor": "На улице",
+      "both": "В помещении и на улице"
+    },
+    "form": {
+      "name": "Название",
+      "namePlaceholder": "напр. Студия Riverside",
+      "address": "Адрес",
+      "addressPlaceholder": "Адрес",
+      "city": "Город",
+      "cityPlaceholder": "Город",
+      "country": "Страна",
+      "countryPlaceholder": "Страна",
+      "capacity": "Вместимость",
+      "capacityPlaceholder": "Макс. человек",
+      "indoorOutdoor": "В помещении / на улице",
+      "notes": "Заметки",
+      "notesPlaceholder": "Что-то полезное",
+      "cancel": "Отмена",
+      "create": "Создать",
+      "save": "Сохранить",
+      "creating": "Создание…",
+      "saving": "Сохранение…"
+    }
+  },
+  "clients": {
+    "title": "Клиенты",
+    "subtitle": "Все контакты клиентов в одном месте.",
+    "create": "Новый клиент",
+    "empty": "Пока нет клиентов",
+    "emptyDesc": "Добавьте первого клиента, чтобы начать CRM.",
+    "delete": "Удалить",
+    "confirmDelete": "Удалить этого клиента? Действие необратимо.",
+    "createTitle": "Новый клиент",
+    "editTitle": "Редактировать клиента",
+    "form": {
+      "fullName": "Полное имя",
+      "fullNamePlaceholder": "напр. Jordan Lee",
+      "email": "Эл. почта",
+      "emailPlaceholder": "name@example.com",
+      "phone": "Телефон",
+      "phonePlaceholder": "Номер телефона",
+      "notes": "Заметки",
+      "notesPlaceholder": "Предпочтения, история и т. д.",
+      "cancel": "Отмена",
+      "create": "Создать",
+      "save": "Сохранить",
+      "creating": "Создание…",
+      "saving": "Сохранение…"
+    }
+  },
+  "profile": {
+    "title": "Профиль организатора",
+    "subtitle": "Каким вас видят клиенты и маркетплейс.",
+    "saved": "Профиль сохранён",
+    "error": "Не удалось сохранить профиль.",
+    "displayName": "Отображаемое имя",
+    "bio": "О себе",
+    "city": "Город",
+    "country": "Страна",
+    "languages": "Языки",
+    "phone": "Телефон",
+    "website": "Сайт",
+    "save": "Сохранить профиль",
+    "saving": "Сохранение…",
+    "placeholders": {
+      "displayName": "Ваше публичное имя",
+      "bio": "Расскажите клиентам о себе",
+      "city": "Город",
+      "country": "Страна",
+      "languages": "Английский, Русский",
+      "phone": "Номер телефона",
+      "website": "https://…"
+    },
+    "status": {
+      "draft": "Черновик",
+      "published": "Опубликован",
+      "suspended": "Заблокирован"
     }
   },
   "footer": {

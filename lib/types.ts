@@ -134,16 +134,31 @@ export type Client = {
   updated_at: string
 }
 
+export type CalendarEventType = 'session' | 'block' | 'personal'
+
 export type CalendarEvent = {
   id: string
   organizer_id: string
   title: string
+  event_type: CalendarEventType
+  activity_id: string | null
+  venue_id: string | null
   date: string
   start_time: string | null
   end_time: string | null
+  all_day: boolean
   notes: string | null
   created_at: string
   updated_at: string
+}
+
+export type VenuePhoto = {
+  id: string
+  venue_id: string
+  organizer_id: string
+  storage_path: string
+  sort_order: number
+  created_at: string
 }
 
 // ── Academy (Phase 3A) ──────────────────────────────────────────────────────

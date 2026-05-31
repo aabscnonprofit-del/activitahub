@@ -32,13 +32,18 @@ export default function CalendarClient({ initialEvents }: Props) {
     setPending(true)
     try {
       await createCalendarEvent(formData)
+      const startTime = (formData.get('start_time') as string) || null
       const ev: CalendarEvent = {
         id: Math.random().toString(36).slice(2),
         organizer_id: '',
         title: formData.get('title') as string,
+        event_type: (formData.get('event_type') as CalendarEvent['event_type']) || 'session',
+        activity_id: (formData.get('activity_id') as string) || null,
+        venue_id: (formData.get('venue_id') as string) || null,
         date: formData.get('date') as string,
-        start_time: (formData.get('start_time') as string) || null,
+        start_time: startTime,
         end_time: (formData.get('end_time') as string) || null,
+        all_day: !startTime,
         notes: (formData.get('notes') as string) || null,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),

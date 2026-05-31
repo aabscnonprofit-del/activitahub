@@ -332,9 +332,9 @@
       "greetingFallback": "Bon retour",
       "subtitle": "Voici un aperçu de votre compte organisateur.",
       "metrics": {
-        "totalRequests": "Demandes totales",
-        "totalBookings": "Réservations totales",
-        "totalRevenue": "Revenus totaux",
+        "activities": "Activités",
+        "venues": "Lieux",
+        "clients": "Clients",
         "upcomingEvents": "Événements à venir"
       },
       "upcomingEvents": {
@@ -349,6 +349,130 @@
         "subscriptionActive": "Abonnement actif",
         "subscriptionInactive": "Abonnement inactif"
       }
+    }
+  },
+  "activities": {
+    "title": "Activités",
+    "subtitle": "Créez et gérez vos offres d'activités.",
+    "create": "Nouvelle activité",
+    "empty": "Aucune activité",
+    "emptyDesc": "Créez votre première activité pour commencer votre catalogue.",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "confirmDelete": "Supprimer cette activité ? Action irréversible.",
+    "createTitle": "Nouvelle activité",
+    "editTitle": "Modifier l'activité",
+    "publish": "Publier",
+    "unpublish": "Dépublier",
+    "published": "Activité publiée",
+    "unpublished": "Activité dépubliée",
+    "status": {
+      "draft": "Brouillon",
+      "published": "Publiée",
+      "archived": "Archivée"
+    },
+    "form": {
+      "title": "Titre",
+      "titlePlaceholder": "ex. Sortie kayak au coucher du soleil",
+      "description": "Description",
+      "descriptionPlaceholder": "En quoi consiste cette activité ?",
+      "status": "Statut",
+      "cancel": "Annuler",
+      "create": "Créer",
+      "save": "Enregistrer",
+      "creating": "Création…",
+      "saving": "Enregistrement…"
+    }
+  },
+  "venues": {
+    "title": "Lieux",
+    "subtitle": "Gérez les lieux où se déroulent vos activités.",
+    "create": "Nouveau lieu",
+    "empty": "Aucun lieu",
+    "emptyDesc": "Ajoutez les lieux où vous animez vos activités.",
+    "delete": "Supprimer",
+    "confirmDelete": "Supprimer ce lieu ? Action irréversible.",
+    "createTitle": "Nouveau lieu",
+    "editTitle": "Modifier le lieu",
+    "indoorOutdoor": {
+      "indoor": "Intérieur",
+      "outdoor": "Extérieur",
+      "both": "Intérieur et extérieur"
+    },
+    "form": {
+      "name": "Nom",
+      "namePlaceholder": "ex. Studio Riverside",
+      "address": "Adresse",
+      "addressPlaceholder": "Adresse",
+      "city": "Ville",
+      "cityPlaceholder": "Ville",
+      "country": "Pays",
+      "countryPlaceholder": "Pays",
+      "capacity": "Capacité",
+      "capacityPlaceholder": "Max. personnes",
+      "indoorOutdoor": "Intérieur / extérieur",
+      "notes": "Notes",
+      "notesPlaceholder": "Infos utiles à retenir",
+      "cancel": "Annuler",
+      "create": "Créer",
+      "save": "Enregistrer",
+      "creating": "Création…",
+      "saving": "Enregistrement…"
+    }
+  },
+  "clients": {
+    "title": "Clients",
+    "subtitle": "Vos contacts clients au même endroit.",
+    "create": "Nouveau client",
+    "empty": "Aucun client",
+    "emptyDesc": "Ajoutez votre premier client pour démarrer votre CRM.",
+    "delete": "Supprimer",
+    "confirmDelete": "Supprimer ce client ? Action irréversible.",
+    "createTitle": "Nouveau client",
+    "editTitle": "Modifier le client",
+    "form": {
+      "fullName": "Nom complet",
+      "fullNamePlaceholder": "ex. Jordan Lee",
+      "email": "E-mail",
+      "emailPlaceholder": "nom@exemple.com",
+      "phone": "Téléphone",
+      "phonePlaceholder": "Numéro de téléphone",
+      "notes": "Notes",
+      "notesPlaceholder": "Préférences, historique, etc.",
+      "cancel": "Annuler",
+      "create": "Créer",
+      "save": "Enregistrer",
+      "creating": "Création…",
+      "saving": "Enregistrement…"
+    }
+  },
+  "profile": {
+    "title": "Profil d'organisateur",
+    "subtitle": "Votre apparence pour les clients et sur la marketplace.",
+    "saved": "Profil enregistré",
+    "error": "Impossible d'enregistrer votre profil.",
+    "displayName": "Nom public",
+    "bio": "Bio",
+    "city": "Ville",
+    "country": "Pays",
+    "languages": "Langues",
+    "phone": "Téléphone",
+    "website": "Site web",
+    "save": "Enregistrer le profil",
+    "saving": "Enregistrement…",
+    "placeholders": {
+      "displayName": "Votre nom public",
+      "bio": "Présentez-vous aux clients",
+      "city": "Ville",
+      "country": "Pays",
+      "languages": "Anglais, Français",
+      "phone": "Numéro de téléphone",
+      "website": "https://…"
+    },
+    "status": {
+      "draft": "Brouillon",
+      "published": "Publié",
+      "suspended": "Suspendu"
     }
   },
   "footer": {

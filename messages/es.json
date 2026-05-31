@@ -332,9 +332,9 @@
       "greetingFallback": "Bienvenido de nuevo",
       "subtitle": "Aquí tienes un resumen de tu cuenta de organizador.",
       "metrics": {
-        "totalRequests": "Solicitudes totales",
-        "totalBookings": "Reservas totales",
-        "totalRevenue": "Ingresos totales",
+        "activities": "Actividades",
+        "venues": "Lugares",
+        "clients": "Clientes",
         "upcomingEvents": "Próximos eventos"
       },
       "upcomingEvents": {
@@ -349,6 +349,130 @@
         "subscriptionActive": "Suscripción activa",
         "subscriptionInactive": "Suscripción inactiva"
       }
+    }
+  },
+  "activities": {
+    "title": "Actividades",
+    "subtitle": "Crea y gestiona tus ofertas de actividades.",
+    "create": "Nueva actividad",
+    "empty": "Aún no hay actividades",
+    "emptyDesc": "Crea tu primera actividad para empezar tu catálogo.",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "confirmDelete": "¿Eliminar esta actividad? No se puede deshacer.",
+    "createTitle": "Nueva actividad",
+    "editTitle": "Editar actividad",
+    "publish": "Publicar",
+    "unpublish": "Despublicar",
+    "published": "Actividad publicada",
+    "unpublished": "Actividad despublicada",
+    "status": {
+      "draft": "Borrador",
+      "published": "Publicada",
+      "archived": "Archivada"
+    },
+    "form": {
+      "title": "Título",
+      "titlePlaceholder": "p. ej. Tour en kayak al atardecer",
+      "description": "Descripción",
+      "descriptionPlaceholder": "¿En qué consiste esta actividad?",
+      "status": "Estado",
+      "cancel": "Cancelar",
+      "create": "Crear",
+      "save": "Guardar",
+      "creating": "Creando…",
+      "saving": "Guardando…"
+    }
+  },
+  "venues": {
+    "title": "Lugares",
+    "subtitle": "Gestiona los lugares donde ocurren tus actividades.",
+    "create": "Nuevo lugar",
+    "empty": "Aún no hay lugares",
+    "emptyDesc": "Añade los lugares donde realizas tus actividades.",
+    "delete": "Eliminar",
+    "confirmDelete": "¿Eliminar este lugar? No se puede deshacer.",
+    "createTitle": "Nuevo lugar",
+    "editTitle": "Editar lugar",
+    "indoorOutdoor": {
+      "indoor": "Interior",
+      "outdoor": "Exterior",
+      "both": "Interior y exterior"
+    },
+    "form": {
+      "name": "Nombre",
+      "namePlaceholder": "p. ej. Estudio Riverside",
+      "address": "Dirección",
+      "addressPlaceholder": "Dirección",
+      "city": "Ciudad",
+      "cityPlaceholder": "Ciudad",
+      "country": "País",
+      "countryPlaceholder": "País",
+      "capacity": "Capacidad",
+      "capacityPlaceholder": "Máx. personas",
+      "indoorOutdoor": "Interior / exterior",
+      "notes": "Notas",
+      "notesPlaceholder": "Algo útil para recordar",
+      "cancel": "Cancelar",
+      "create": "Crear",
+      "save": "Guardar",
+      "creating": "Creando…",
+      "saving": "Guardando…"
+    }
+  },
+  "clients": {
+    "title": "Clientes",
+    "subtitle": "Tus contactos de clientes en un solo lugar.",
+    "create": "Nuevo cliente",
+    "empty": "Aún no hay clientes",
+    "emptyDesc": "Añade tu primer cliente para empezar tu CRM.",
+    "delete": "Eliminar",
+    "confirmDelete": "¿Eliminar este cliente? No se puede deshacer.",
+    "createTitle": "Nuevo cliente",
+    "editTitle": "Editar cliente",
+    "form": {
+      "fullName": "Nombre completo",
+      "fullNamePlaceholder": "p. ej. Jordan Lee",
+      "email": "Correo",
+      "emailPlaceholder": "nombre@ejemplo.com",
+      "phone": "Teléfono",
+      "phonePlaceholder": "Número de teléfono",
+      "notes": "Notas",
+      "notesPlaceholder": "Preferencias, historial, etc.",
+      "cancel": "Cancelar",
+      "create": "Crear",
+      "save": "Guardar",
+      "creating": "Creando…",
+      "saving": "Guardando…"
+    }
+  },
+  "profile": {
+    "title": "Perfil de organizador",
+    "subtitle": "Cómo apareces ante los clientes y en el mercado.",
+    "saved": "Perfil guardado",
+    "error": "No se pudo guardar tu perfil.",
+    "displayName": "Nombre público",
+    "bio": "Biografía",
+    "city": "Ciudad",
+    "country": "País",
+    "languages": "Idiomas",
+    "phone": "Teléfono",
+    "website": "Sitio web",
+    "save": "Guardar perfil",
+    "saving": "Guardando…",
+    "placeholders": {
+      "displayName": "Tu nombre público",
+      "bio": "Cuéntales a los clientes sobre ti",
+      "city": "Ciudad",
+      "country": "País",
+      "languages": "Inglés, Español",
+      "phone": "Número de teléfono",
+      "website": "https://…"
+    },
+    "status": {
+      "draft": "Borrador",
+      "published": "Publicado",
+      "suspended": "Suspendido"
     }
   },
   "footer": {

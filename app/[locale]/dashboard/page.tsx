@@ -2,10 +2,10 @@ import { getTranslations } from 'next-intl/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
-import { CalendarDays, Inbox, BookOpen, DollarSign, ArrowRight } from 'lucide-react'
+import { CalendarDays, Layers, MapPin, Users, ArrowRight } from 'lucide-react'
 import { Card } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
-import { formatDate } from '@/lib/utils'
+import { formatDate, formatTime } from '@/lib/utils'
 import type { Locale, Profile } from '@/lib/types'
 import type { Metadata } from 'next'
 
@@ -79,47 +79,44 @@ export default async function DashboardHomePage({ params }: DashboardHomeProps) 
   const timezone = profile?.timezone ?? 'UTC'
   const firstName = profile?.full_name?.split(' ')[0] ?? null
 
-  // ── Fetch metrics — tables added in later phases, gracefully return 0 ──────
+  // ── Real Phase 4 metrics — every count comes from a real owner-scoped query ──
+  const today = new Date().toISOString().slice(0, 10)
 
-  // Phase 5: request_matches table
-  const { count: requestCount } = await supabase
-    .from('request_matches')
-    .select('*', { count: 'exact', head: true })
-    .eq('organizer_id', user.id)
+  const [
+    { count: activityCount },
+    { count: venueCount },
+    { count: clientCount },
+    upcoming,
+  ] = await Promise.all([
+    supabase
+      .from('activities')
+      .select('*', { count: 'exact', head: true })
+      .eq('organizer_id', user.id),
+    supabase
+      .from('venues')
+      .select('*', { count: 'exact', head: true })
+      .eq('organizer_id', user.id),
+    supabase
+      .from('clients')
+      .select('*', { count: 'exact', head: true })
+      .eq('organizer_id', user.id),
+    supabase
+      .from('calendar_events')
+      .select('id, title, event_type, date, start_time', { count: 'exact' })
+      .eq('organizer_id', user.id)
+      .gte('date', today)
+      .order('date', { ascending: true })
+      .order('start_time', { ascending: true, nullsFirst: true })
+      .limit(5),
+  ])
 
-  // Phase 6A: bookings table
-  const { count: bookingCount } = await supabase
-    .from('bookings')
-    .select('*', { count: 'exact', head: true })
-    .eq('organizer_id', user.id)
-
-  // Phase 6A: payments table — sum of booking revenue
-  const { data: revenueRow } = await supabase
-    .from('payments')
-    .select('amount')
-    .eq('organizer_id', user.id)
-    .eq('status', 'succeeded')
-
-  const totalRevenue =
-    revenueRow?.reduce((sum: number, row: { amount: number }) => sum + (row.amount ?? 0), 0) ?? 0
-
-  // Phase 4: upcoming calendar events
-  const now = new Date().toISOString()
-  const { data: upcomingEvents, count: upcomingCount } = await supabase
-    .from('calendar_events')
-    .select('id, title, start_time, end_time, type', { count: 'exact' })
-    .eq('organizer_id', user.id)
-    .gte('start_time', now)
-    .order('start_time', { ascending: true })
-    .limit(5)
-
-  const eventCount = upcomingCount ?? 0
-  const events = (upcomingEvents ?? []) as Array<{
+  const eventCount = upcoming.count ?? 0
+  const events = (upcoming.data ?? []) as Array<{
     id: string
     title: string
-    start_time: string
-    end_time: string | null
-    type: string
+    event_type: string
+    date: string
+    start_time: string | null
   }>
 
   return (
@@ -135,21 +132,21 @@ export default async function DashboardHomePage({ params }: DashboardHomeProps) 
       {/* ── Metric cards ──────────────────────────────────────────────────── */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <MetricCard
-          label={t('metrics.totalRequests')}
-          value={requestCount ?? 0}
-          icon={Inbox}
-          iconColor="bg-blue-50 text-blue-600"
+          label={t('metrics.activities')}
+          value={activityCount ?? 0}
+          icon={Layers}
+          iconColor="bg-indigo-50 text-indigo-600"
         />
         <MetricCard
-          label={t('metrics.totalBookings')}
-          value={bookingCount ?? 0}
-          icon={BookOpen}
-          iconColor="bg-green-50 text-green-600"
+          label={t('metrics.venues')}
+          value={venueCount ?? 0}
+          icon={MapPin}
+          iconColor="bg-emerald-50 text-emerald-600"
         />
         <MetricCard
-          label={t('metrics.totalRevenue')}
-          value={`$${totalRevenue.toFixed(2)}`}
-          icon={DollarSign}
+          label={t('metrics.clients')}
+          value={clientCount ?? 0}
+          icon={Users}
           iconColor="bg-amber-50 text-amber-600"
         />
         <MetricCard
@@ -192,12 +189,13 @@ export default async function DashboardHomePage({ params }: DashboardHomeProps) 
                     {event.title}
                   </p>
                   <p className="text-xs text-slate-500">
-                    {formatDate(event.start_time, timezone, locale)}
+                    {formatDate(event.date, timezone, locale)}
+                    {event.start_time ? ` · ${formatTime(event.start_time)}` : ''}
                   </p>
                 </div>
                 <Badge
-                  label={event.type === 'block' ? 'Blocked' : 'Event'}
-                  variant={event.type === 'block' ? 'neutral' : 'default'}
+                  label={event.event_type === 'block' ? 'Blocked' : 'Event'}
+                  variant={event.event_type === 'block' ? 'neutral' : 'default'}
                 />
               </li>
             ))}
