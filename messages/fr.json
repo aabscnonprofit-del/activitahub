@@ -502,5 +502,47 @@
       "description": "Vous n'avez pas la permission de consulter cette page.",
       "cta": "Retour"
     }
+  },
+  "calendar": {
+    "title": "Calendrier",
+    "subtitle": "Planifiez vos sessions, blocages et événements personnels.",
+    "create": "Nouvel événement",
+    "today": "Aujourd'hui",
+    "month": "Mois",
+    "week": "Semaine",
+    "day": "Jour",
+    "more": "de plus",
+    "noEvents": "Aucun événement",
+    "allDay": "Toute la journée",
+    "created": "Événement créé",
+    "updated": "Événement mis à jour",
+    "deleted": "Événement supprimé",
+    "createTitle": "Nouvel événement",
+    "editTitle": "Modifier l'événement",
+    "delete": "Supprimer l'événement",
+    "confirmDelete": "Supprimer cet événement ? Action irréversible.",
+    "eventTypes": {
+      "session": "Session",
+      "block": "Blocage",
+      "personal": "Personnel"
+    },
+    "form": {
+      "title": "Titre",
+      "titlePlaceholder": "ex. Séance de yoga du matin",
+      "type": "Type",
+      "date": "Date",
+      "startTime": "Début",
+      "endTime": "Fin",
+      "activity": "Activité",
+      "venue": "Lieu",
+      "none": "Aucun",
+      "notes": "Notes",
+      "notesPlaceholder": "À retenir",
+      "cancel": "Annuler",
+      "save": "Enregistrer",
+      "create": "Créer",
+      "saving": "Enregistrement…",
+      "creating": "Création…"
+    }
   }
 }

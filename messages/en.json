@@ -502,5 +502,47 @@
       "description": "You don't have permission to view this page.",
       "cta": "Go back"
     }
+  },
+  "calendar": {
+    "title": "Calendar",
+    "subtitle": "Plan your sessions, blocks, and personal events.",
+    "create": "New event",
+    "today": "Today",
+    "month": "Month",
+    "week": "Week",
+    "day": "Day",
+    "more": "more",
+    "noEvents": "No events",
+    "allDay": "All day",
+    "created": "Event created",
+    "updated": "Event updated",
+    "deleted": "Event deleted",
+    "createTitle": "New event",
+    "editTitle": "Edit event",
+    "delete": "Delete event",
+    "confirmDelete": "Delete this event? This cannot be undone.",
+    "eventTypes": {
+      "session": "Session",
+      "block": "Block",
+      "personal": "Personal"
+    },
+    "form": {
+      "title": "Title",
+      "titlePlaceholder": "e.g. Morning yoga session",
+      "type": "Type",
+      "date": "Date",
+      "startTime": "Start",
+      "endTime": "End",
+      "activity": "Activity",
+      "venue": "Venue",
+      "none": "None",
+      "notes": "Notes",
+      "notesPlaceholder": "Anything to remember",
+      "cancel": "Cancel",
+      "save": "Save",
+      "create": "Create",
+      "saving": "Saving…",
+      "creating": "Creating…"
+    }
   }
 }

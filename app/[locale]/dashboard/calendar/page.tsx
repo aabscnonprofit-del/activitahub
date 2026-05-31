@@ -14,11 +14,41 @@ export default async function CalendarPage({ params }: Props) {
   } = await supabase.auth.getUser()
   if (!user) redirect(`/${locale}/auth/sign-in`)
 
-  const { data } = await supabase
-    .from('calendar_events')
-    .select('*')
-    .eq('organizer_id', user.id)
-    .order('date', { ascending: true })
+  const [{ data: eventRows }, { data: activityRows }, { data: venueRows }] =
+    await Promise.all([
+      supabase
+        .from('calendar_events')
+        .select('*')
+        .eq('organizer_id', user.id)
+        .order('date', { ascending: true }),
+      supabase
+        .from('activities')
+        .select('id, title')
+        .eq('organizer_id', user.id)
+        .order('title', { ascending: true }),
+      supabase
+        .from('venues')
+        .select('id, name')
+        .eq('organizer_id', user.id)
+        .order('name', { ascending: true }),
+    ])
 
-  return <CalendarClient initialEvents={(data ?? []) as CalendarEvent[]} locale={locale} />
+  const activities = ((activityRows ?? []) as { id: string; title: string }[]).map(
+    (a) => ({ id: a.id, label: a.title })
+  )
+  const venues = ((venueRows ?? []) as { id: string; name: string }[]).map((v) => ({
+    id: v.id,
+    label: v.name,
+  }))
+  const todayKey = new Date().toISOString().slice(0, 10)
+
+  return (
+    <CalendarClient
+      initialEvents={(eventRows ?? []) as CalendarEvent[]}
+      activities={activities}
+      venues={venues}
+      locale={locale}
+      todayKey={todayKey}
+    />
+  )
 }
