@@ -81,7 +81,9 @@ export default async function OrganizerBookingsPage({ params }: Props) {
                 </div>
                 <div className="shrink-0 text-right">
                   <p className="font-bold text-slate-900">{formatPrice(b.amount_cents, b.currency, locale) ?? '—'}</p>
-                  <Badge label={t(`payment.${b.payment_status}` as 'payment.unpaid')} variant={b.payment_status === 'paid' ? 'success' : b.payment_status === 'refunded' ? 'error' : 'neutral'} />
+                  {b.payment_status && (
+                    <Badge label={t(`payment.${b.payment_status}` as 'payment.unpaid')} variant={b.payment_status === 'paid' ? 'success' : b.payment_status === 'refunded' ? 'error' : 'neutral'} />
+                  )}
                 </div>
               </div>
 

@@ -122,7 +122,9 @@ export default async function BookingsPage({ params }: Props) {
                     </div>
                     <div className="shrink-0 text-right">
                       <p className="font-bold text-slate-900">{formatPrice(b.amount_cents, b.currency, locale) ?? '—'}</p>
-                      <Badge label={t(`payment.${b.payment_status}` as 'payment.unpaid')} variant={b.payment_status === 'paid' ? 'success' : b.payment_status === 'refunded' ? 'error' : 'neutral'} />
+                      {b.payment_status && (
+                        <Badge label={t(`payment.${b.payment_status}` as 'payment.unpaid')} variant={b.payment_status === 'paid' ? 'success' : b.payment_status === 'refunded' ? 'error' : 'neutral'} />
+                      )}
                     </div>
                   </div>
 
@@ -135,7 +137,7 @@ export default async function BookingsPage({ params }: Props) {
                       </form>
                     )}
                     {(b.status === 'confirmed' || b.status === 'pending') &&
-                      b.payment_status !== 'paid' && b.payment_status !== 'refunded' && (
+                      b.payment_status && b.payment_status !== 'paid' && b.payment_status !== 'refunded' && (
                         <form action={createBookingCheckout}>
                           <input type="hidden" name="locale" value={locale} />
                           <input type="hidden" name="booking_id" value={b.id} />
