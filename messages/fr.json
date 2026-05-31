@@ -702,5 +702,32 @@
       "proposalsSubtitle": "Propositions envoyées aux clients.",
       "proposalsEmpty": "Vous n'avez pas encore envoyé de proposition."
     }
+  },
+  "bookings": {
+    "title": "Mes réservations",
+    "subtitle": "Activités que vous avez réservées.",
+    "empty": "Vous n'avez aucune réservation.",
+    "activity": "Activité",
+    "organizer": "Organisateur",
+    "cancel": "Annuler la réservation",
+    "organizerTitle": "Réservations",
+    "organizerSubtitle": "Activités réservées par des clients.",
+    "organizerEmpty": "Aucune réservation pour l'instant.",
+    "complete": "Marquer terminée",
+    "refund": "Rembourser",
+    "status": {
+      "pending": "En attente",
+      "confirmed": "Confirmée",
+      "completed": "Terminée",
+      "cancelled": "Annulée",
+      "refunded": "Remboursée"
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "unreadCount": "{count} non lues",
+    "markAllRead": "Tout marquer comme lu",
+    "markRead": "Marquer comme lu",
+    "empty": "Aucune notification pour l'instant."
   }
 }

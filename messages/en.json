@@ -702,5 +702,32 @@
       "proposalsSubtitle": "Proposals you've sent to customers.",
       "proposalsEmpty": "You haven't sent any proposals yet."
     }
+  },
+  "bookings": {
+    "title": "My bookings",
+    "subtitle": "Activities you've booked.",
+    "empty": "You have no bookings yet.",
+    "activity": "Activity",
+    "organizer": "Organizer",
+    "cancel": "Cancel booking",
+    "organizerTitle": "Bookings",
+    "organizerSubtitle": "Activities customers have booked with you.",
+    "organizerEmpty": "No bookings yet.",
+    "complete": "Mark completed",
+    "refund": "Refund",
+    "status": {
+      "pending": "Pending",
+      "confirmed": "Confirmed",
+      "completed": "Completed",
+      "cancelled": "Cancelled",
+      "refunded": "Refunded"
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "unreadCount": "{count} unread",
+    "markAllRead": "Mark all read",
+    "markRead": "Mark read",
+    "empty": "No notifications yet."
   }
 }

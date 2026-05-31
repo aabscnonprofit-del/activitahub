@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useTranslations } from 'next-intl'
 import { usePathname } from 'next/navigation'
-import { Menu, X, Globe } from 'lucide-react'
+import { Menu, X, Globe, Bell } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { Locale } from '@/lib/types'
 
@@ -102,6 +102,17 @@ export function PublicHeader({ locale, isAuthenticated }: PublicHeaderProps) {
               </>
             )}
           </div>
+
+          {/* Notifications */}
+          {isAuthenticated && (
+            <Link
+              href={`/${locale}/notifications`}
+              className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-900 transition-colors"
+              aria-label="Notifications"
+            >
+              <Bell className="h-4 w-4" />
+            </Link>
+          )}
 
           {/* Auth buttons */}
           <div className="hidden items-center gap-2 sm:flex">
