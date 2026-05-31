@@ -2,6 +2,10 @@ import { getTranslations } from 'next-intl/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import {
+  createSubscriptionCheckout,
+  createBillingPortalSession,
+} from '@/lib/actions/billing'
 import { CheckCircle2, AlertCircle, XCircle, CreditCard } from 'lucide-react'
 import { Badge } from '@/components/ui/Badge'
 import type { Locale, Profile } from '@/lib/types'
@@ -152,17 +156,15 @@ export default async function BillingPage({ params }: BillingPageProps) {
                   ))}
                 </ul>
 
-                {/* Phase 2 will wire this button to Stripe Checkout */}
-                <button
-                  disabled
-                  className="rounded-lg bg-brand-600 px-6 py-3 text-sm font-semibold text-white opacity-60 cursor-not-allowed"
-                  title="Payment integration added in Phase 2"
-                >
-                  {t('noSubscription.cta')}
-                </button>
-                <p className="mt-2 text-xs text-slate-400">
-                  Stripe payment integration coming in Phase 2.
-                </p>
+                <form action={createSubscriptionCheckout}>
+                  <input type="hidden" name="locale" value={locale} />
+                  <button
+                    type="submit"
+                    className="rounded-lg bg-brand-600 px-6 py-3 text-sm font-semibold text-white hover:bg-brand-700 transition-colors"
+                  >
+                    {t('noSubscription.cta')}
+                  </button>
+                </form>
               </div>
             </div>
           </div>
@@ -188,13 +190,15 @@ export default async function BillingPage({ params }: BillingPageProps) {
                   </p>
                 )}
                 <div className="mt-4 flex flex-wrap gap-3">
-                  {/* Phase 2 will wire this to Stripe Customer Portal */}
-                  <button
-                    disabled
-                    className="rounded-lg border border-green-300 px-4 py-2 text-sm font-medium text-green-800 opacity-60 cursor-not-allowed"
-                  >
-                    {t('active.manageSubscription')}
-                  </button>
+                  <form action={createBillingPortalSession}>
+                    <input type="hidden" name="locale" value={locale} />
+                    <button
+                      type="submit"
+                      className="rounded-lg border border-green-300 px-4 py-2 text-sm font-medium text-green-800 hover:bg-green-100 transition-colors"
+                    >
+                      {t('active.manageSubscription')}
+                    </button>
+                  </form>
                   <Link
                     href={`/${locale}/dashboard`}
                     className="rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700 transition-colors"
@@ -218,12 +222,15 @@ export default async function BillingPage({ params }: BillingPageProps) {
                   <Badge label="Past Due" variant="error" />
                 </div>
                 <p className="mt-1 text-sm text-red-700">{t('pastDue.description')}</p>
-                <button
-                  disabled
-                  className="mt-4 rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white opacity-60 cursor-not-allowed"
-                >
-                  {t('pastDue.updatePayment')}
-                </button>
+                <form action={createBillingPortalSession} className="mt-4">
+                  <input type="hidden" name="locale" value={locale} />
+                  <button
+                    type="submit"
+                    className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 transition-colors"
+                  >
+                    {t('pastDue.updatePayment')}
+                  </button>
+                </form>
               </div>
             </div>
           </div>
@@ -240,12 +247,15 @@ export default async function BillingPage({ params }: BillingPageProps) {
                   <Badge label="Cancelled" variant="neutral" />
                 </div>
                 <p className="mt-1 text-sm text-slate-500">{t('cancelled.description')}</p>
-                <button
-                  disabled
-                  className="mt-4 rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white opacity-60 cursor-not-allowed"
-                >
-                  {t('cancelled.resubscribe')}
-                </button>
+                <form action={createSubscriptionCheckout} className="mt-4">
+                  <input type="hidden" name="locale" value={locale} />
+                  <button
+                    type="submit"
+                    className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700 transition-colors"
+                  >
+                    {t('cancelled.resubscribe')}
+                  </button>
+                </form>
               </div>
             </div>
           </div>

@@ -1,4 +1,38 @@
 {
+  "pricing": {
+    "title": "Des tarifs simples et transparents",
+    "subtitle": "Commencez gratuitement. Évoluez quand vous êtes prêt.",
+    "free": {
+      "name": "Gratuit",
+      "price": "0 €",
+      "period": "pour toujours",
+      "features": {
+        "0": "Gérez activités, lieux et clients",
+        "1": "Calendrier personnel",
+        "2": "Un profil d'organisateur",
+        "3": "Support communautaire",
+        "4": "Disponible en 4 langues"
+      },
+      "cta": "Commencer"
+    },
+    "pro": {
+      "badge": "Le plus populaire",
+      "name": "Pro",
+      "price": "29 €",
+      "period": "/mois",
+      "features": {
+        "0": "Tout ce qui est dans Gratuit",
+        "1": "Badge d'Organisateur Certifié",
+        "2": "Annonces sur la marketplace",
+        "3": "Réservations et propositions illimitées",
+        "4": "Analyses avancées",
+        "5": "Support prioritaire",
+        "6": "Accès anticipé aux nouveautés"
+      },
+      "cta": "S'abonner"
+    },
+    "comingSoon": "Abonnez-vous depuis votre page de facturation après la certification."
+  },
   "privacy": {
     "title": "Politique de Confidentialité",
     "lastUpdated": "Dernière mise à jour : mai 2026"
@@ -132,6 +166,12 @@
     "subtitle": "Comment souhaitez-vous devenir Organisateur Certifié Activita ?",
     "alreadySelected": "Vous avez choisi la voie {path}. Continuez vers le paiement quand vous êtes prêt.",
     "continueToPayment": "Continuer vers le paiement",
+    "payment": {
+      "title": "Finalisez le paiement de votre certification",
+      "subtitle": "Vous avez choisi le parcours {path}. Payez en toute sécurité pour débloquer votre certification.",
+      "cta": "Procéder au paiement",
+      "processing": "Redirection vers le paiement…"
+    },
     "beginner": {
       "badge": "Débutant",
       "title": "Nouveau dans l'organisation d'activités",

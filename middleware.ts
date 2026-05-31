@@ -154,8 +154,22 @@ export async function middleware(request: NextRequest) {
           new URL(`/${locale}/onboarding`, request.url)
         )
       }
-      // Phase 2 will add: subscription active check
-      // if subscription.status !== 'active' → redirect to /billing
+
+      // Subscription gate: organizers need an ACTIVE subscription to reach the
+      // dashboard. Admins bypass. Read is RLS-scoped to the user's own row.
+      if (role === 'certified_organizer') {
+        const { data: sub } = await supabase
+          .from('subscriptions')
+          .select('status')
+          .eq('profile_id', user.id)
+          .maybeSingle()
+
+        if (sub?.status !== 'active') {
+          return NextResponse.redirect(
+            new URL(`/${locale}/billing`, request.url)
+          )
+        }
+      }
     }
 
     // ── /admin zone: admin role only ──────────────────────────────────────

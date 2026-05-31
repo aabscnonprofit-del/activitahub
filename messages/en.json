@@ -1,4 +1,38 @@
 {
+  "pricing": {
+    "title": "Simple, transparent pricing",
+    "subtitle": "Start free. Upgrade when you're ready to grow.",
+    "free": {
+      "name": "Free",
+      "price": "$0",
+      "period": "forever",
+      "features": {
+        "0": "Manage activities, venues & clients",
+        "1": "Personal calendar",
+        "2": "One organizer profile",
+        "3": "Community support",
+        "4": "Available in 4 languages"
+      },
+      "cta": "Get started"
+    },
+    "pro": {
+      "badge": "Most popular",
+      "name": "Pro",
+      "price": "$29",
+      "period": "/month",
+      "features": {
+        "0": "Everything in Free",
+        "1": "Certified Organizer badge",
+        "2": "Marketplace listings",
+        "3": "Unlimited bookings & proposals",
+        "4": "Advanced analytics",
+        "5": "Priority support",
+        "6": "Early access to new features"
+      },
+      "cta": "Subscribe"
+    },
+    "comingSoon": "Subscribe from your billing page after certification."
+  },
   "privacy": {
     "title": "Privacy Policy",
     "lastUpdated": "Last updated: May 2026"
@@ -132,6 +166,12 @@
     "subtitle": "How would you like to become an Activita Certified Organizer?",
     "alreadySelected": "You've selected the {path} path. Continue to payment when ready.",
     "continueToPayment": "Continue to Payment",
+    "payment": {
+      "title": "Complete your certification payment",
+      "subtitle": "You selected the {path} path. Pay securely to unlock your certification.",
+      "cta": "Proceed to Payment",
+      "processing": "Redirecting to checkout…"
+    },
     "beginner": {
       "badge": "Beginner",
       "title": "New to Activity Organization",

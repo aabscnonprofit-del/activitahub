@@ -1,4 +1,38 @@
 {
+  "pricing": {
+    "title": "Precios simples y transparentes",
+    "subtitle": "Empieza gratis. Mejora cuando estés listo para crecer.",
+    "free": {
+      "name": "Gratis",
+      "price": "0 $",
+      "period": "para siempre",
+      "features": {
+        "0": "Gestiona actividades, lugares y clientes",
+        "1": "Calendario personal",
+        "2": "Un perfil de organizador",
+        "3": "Soporte de la comunidad",
+        "4": "Disponible en 4 idiomas"
+      },
+      "cta": "Comenzar"
+    },
+    "pro": {
+      "badge": "Más popular",
+      "name": "Pro",
+      "price": "29 $",
+      "period": "/mes",
+      "features": {
+        "0": "Todo lo de Gratis",
+        "1": "Insignia de Organizador Certificado",
+        "2": "Listados en el mercado",
+        "3": "Reservas y propuestas ilimitadas",
+        "4": "Analíticas avanzadas",
+        "5": "Soporte prioritario",
+        "6": "Acceso anticipado a novedades"
+      },
+      "cta": "Suscribirse"
+    },
+    "comingSoon": "Suscríbete desde tu página de facturación tras la certificación."
+  },
   "privacy": {
     "title": "Política de Privacidad",
     "lastUpdated": "Última actualización: mayo de 2026"
@@ -132,6 +166,12 @@
     "subtitle": "¿Cómo quieres convertirte en Organizador Certificado Activita?",
     "alreadySelected": "Has seleccionado la ruta {path}. Continúa al pago cuando estés listo.",
     "continueToPayment": "Continuar al pago",
+    "payment": {
+      "title": "Completa el pago de tu certificación",
+      "subtitle": "Seleccionaste la ruta {path}. Paga de forma segura para desbloquear tu certificación.",
+      "cta": "Proceder al pago",
+      "processing": "Redirigiendo al pago…"
+    },
     "beginner": {
       "badge": "Principiante",
       "title": "Nuevo en organización de actividades",

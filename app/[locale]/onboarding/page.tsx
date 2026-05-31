@@ -2,6 +2,7 @@ import { getTranslations } from 'next-intl/server'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { PathSelector } from '@/components/onboarding/PathSelector'
+import { CertificationCheckout } from '@/components/onboarding/CertificationCheckout'
 import type { Locale, Profile } from '@/lib/types'
 import type { Metadata } from 'next'
 
@@ -104,6 +105,15 @@ export default async function OnboardingPage({ params }: OnboardingPageProps) {
             {t('subtitle')}
           </p>
         </div>
+
+        {/* Payment step: a path is chosen but not yet paid for */}
+        {typedProfile?.onboarding_status === 'path_selected' &&
+          typedProfile.selected_path && (
+            <CertificationCheckout
+              locale={locale}
+              path={typedProfile.selected_path}
+            />
+          )}
 
         <PathSelector
           locale={locale}
