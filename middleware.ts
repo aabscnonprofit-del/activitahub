@@ -177,9 +177,21 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL(`/${locale}/dashboard`, request.url))
     }
 
-    // ── /academy zone: enrollment check added in Phase 3A ────────────────
-    // For Phase 1: any authenticated user can reach /academy
-    // Phase 3A middleware will add: enrollment exists check
+    // ── /academy zone: students who have paid for certification ──────────
+    if (path.startsWith('/academy') && role !== 'admin') {
+      const hasAccess =
+        role === 'certified_organizer' ||
+        status === 'payment_complete' ||
+        status === 'certified' ||
+        status === 'subscribed'
+
+      if (!hasAccess) {
+        // Not yet paid — send back to onboarding (which routes to payment).
+        return NextResponse.redirect(
+          new URL(`/${locale}/onboarding`, request.url)
+        )
+      }
+    }
 
     // ── /billing and /onboarding: any authenticated user ─────────────────
     // No additional checks needed — already passed the auth guard above

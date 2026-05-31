@@ -97,3 +97,76 @@ export interface AuthFormState {
 export interface ProfileFormState {
   error?: string
 }
+
+// ── Academy (Phase 3A) ──────────────────────────────────────────────────────
+
+export type EnrollmentStatus = 'active' | 'completed'
+
+export type LessonProgressStatus = 'in_progress' | 'completed'
+
+export type QuizQuestionType = 'single_choice' | 'multiple_choice' | 'true_false'
+
+export interface Course {
+  id: string
+  slug: string
+  path: OnboardingPath
+  title: string
+  description: string | null
+  sort_order: number
+  published: boolean
+  created_at: string
+  updated_at: string
+}
+
+export interface CourseModule {
+  id: string
+  course_id: string
+  title: string
+  description: string | null
+  sort_order: number
+  created_at: string
+  updated_at: string
+}
+
+export interface Lesson {
+  id: string
+  module_id: string
+  slug: string
+  title: string
+  content: string
+  sort_order: number
+  duration_minutes: number
+  created_at: string
+  updated_at: string
+}
+
+export interface Enrollment {
+  id: string
+  profile_id: string
+  course_id: string
+  status: EnrollmentStatus
+  enrolled_at: string
+  completed_at: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface LessonProgress {
+  id: string
+  profile_id: string
+  lesson_id: string
+  status: LessonProgressStatus
+  completed_at: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface Quiz {
+  id: string
+  lesson_id: string
+  title: string
+  description: string | null
+  passing_score: number
+  created_at: string
+  updated_at: string
+}

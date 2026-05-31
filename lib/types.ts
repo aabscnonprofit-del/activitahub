@@ -146,6 +146,98 @@ export type CalendarEvent = {
   updated_at: string
 }
 
+// ── Academy (Phase 3A) ──────────────────────────────────────────────────────
+
+export type EnrollmentStatus = 'active' | 'completed'
+
+export type LessonProgressStatus = 'in_progress' | 'completed'
+
+export type QuizQuestionType = 'single_choice' | 'multiple_choice' | 'true_false'
+
+export type Course = {
+  id: string
+  slug: string
+  path: OnboardingPath
+  title: string
+  description: string | null
+  sort_order: number
+  published: boolean
+  created_at: string
+  updated_at: string
+}
+
+export type CourseModule = {
+  id: string
+  course_id: string
+  title: string
+  description: string | null
+  sort_order: number
+  created_at: string
+  updated_at: string
+}
+
+export type Lesson = {
+  id: string
+  module_id: string
+  slug: string
+  title: string
+  content: string
+  sort_order: number
+  duration_minutes: number
+  created_at: string
+  updated_at: string
+}
+
+export type Enrollment = {
+  id: string
+  profile_id: string
+  course_id: string
+  status: EnrollmentStatus
+  enrolled_at: string
+  completed_at: string | null
+  created_at: string
+  updated_at: string
+}
+
+export type LessonProgress = {
+  id: string
+  profile_id: string
+  lesson_id: string
+  status: LessonProgressStatus
+  completed_at: string | null
+  created_at: string
+  updated_at: string
+}
+
+export type Quiz = {
+  id: string
+  lesson_id: string
+  title: string
+  description: string | null
+  passing_score: number
+  created_at: string
+  updated_at: string
+}
+
+// Composed view models used by the academy UI.
+export type LessonWithProgress = Lesson & {
+  completed: boolean
+  started: boolean
+}
+
+export type ModuleWithLessons = CourseModule & {
+  lessons: LessonWithProgress[]
+}
+
+export type CourseOutline = {
+  course: Course
+  modules: ModuleWithLessons[]
+  totalLessons: number
+  completedLessons: number
+  progressPercent: number
+  nextLessonId: string | null
+}
+
 export type ActionResult<T = undefined> =
   | { success: true; data?: T; error?: never }
   | { success?: never; error: string; data?: never }

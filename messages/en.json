@@ -1,4 +1,26 @@
 {
+  "academy": {
+    "brand": "Activita Academy",
+    "exit": "Exit to site",
+    "title": "Academy",
+    "progress": "{completed} of {total} lessons complete",
+    "startLearning": "Start learning",
+    "continueLearning": "Continue learning",
+    "courseComplete": "You've completed every lesson in this course.",
+    "module": "Module",
+    "min": "min",
+    "completed": "Completed",
+    "markComplete": "Mark as complete",
+    "continue": "Continue",
+    "saving": "Saving…",
+    "previous": "Previous",
+    "next": "Next",
+    "quizComingSoon": "Knowledge check — your certification exam unlocks in the next phase.",
+    "noCourse": {
+      "title": "No course available yet",
+      "description": "Your certification course isn't ready yet. Please check back soon."
+    }
+  },
   "pricing": {
     "title": "Simple, transparent pricing",
     "subtitle": "Start free. Upgrade when you're ready to grow.",

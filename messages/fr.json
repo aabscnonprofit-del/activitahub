@@ -1,4 +1,26 @@
 {
+  "academy": {
+    "brand": "Académie Activita",
+    "exit": "Quitter vers le site",
+    "title": "Académie",
+    "progress": "{completed} sur {total} leçons terminées",
+    "startLearning": "Commencer à apprendre",
+    "continueLearning": "Continuer l'apprentissage",
+    "courseComplete": "Vous avez terminé toutes les leçons de ce cours.",
+    "module": "Module",
+    "min": "min",
+    "completed": "Terminée",
+    "markComplete": "Marquer comme terminée",
+    "continue": "Continuer",
+    "saving": "Enregistrement…",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "quizComingSoon": "Test de connaissances : votre examen de certification sera débloqué à la prochaine phase.",
+    "noCourse": {
+      "title": "Aucun cours disponible pour l'instant",
+      "description": "Votre cours de certification n'est pas encore prêt. Revenez bientôt."
+    }
+  },
   "pricing": {
     "title": "Des tarifs simples et transparents",
     "subtitle": "Commencez gratuitement. Évoluez quand vous êtes prêt.",
