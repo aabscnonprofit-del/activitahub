@@ -415,7 +415,8 @@
           "a": "Elige abajo la ruta que coincida con tu experiencia y continúa al pago cuando estés listo."
         }
       ]
-    }
+    },
+    "confidence": "Te unes a una plataforma basada en organizadores certificados, pagos seguros y estándares de comunidad claros."
   },
   "billing": {
     "title": "Suscripción",
@@ -740,7 +741,8 @@
       "any": "Cualquiera"
     },
     "card": {
-      "free": "Gratis"
+      "free": "Gratis",
+      "new": "Nuevo"
     },
     "detail": {
       "about": "Acerca de",
@@ -752,7 +754,8 @@
       "certified": "Organizador Certificado",
       "bookCta": "Solicitar esta actividad",
       "bookHint": "Envía una solicitud y el organizador propondrá los detalles.",
-      "reviewsTitle": "Reseñas"
+      "reviewsTitle": "Reseñas",
+      "reviewsEmpty": "Aún no hay reseñas: sé el primero en vivir esta actividad."
     },
     "organizer": {
       "anonymous": "Organizador",
@@ -780,7 +783,14 @@
       "both": "Ambos"
     },
     "emptyHint": "Prueba a ajustar o limpiar los filtros para ver más actividades.",
-    "verifiedOrganizer": "Organizador verificado"
+    "verifiedOrganizer": "Organizador verificado",
+    "trustNote": "Cada organizador está certificado y verificado antes de poder publicar.",
+    "reassure": {
+      "secure": "Pago seguro con Stripe",
+      "verified": "Organizador verificado y certificado",
+      "cancel": "Cancela cuando quieras"
+    },
+    "reviewsHeading": "Lo que dicen los participantes"
   },
   "requests": {
     "new": {

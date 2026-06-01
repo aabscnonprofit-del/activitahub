@@ -415,7 +415,8 @@
           "a": "Pick the path below that matches your experience, then continue to payment when you are ready."
         }
       ]
-    }
+    },
+    "confidence": "You are joining a platform built on certified organizers, secure payments, and clear community standards."
   },
   "billing": {
     "title": "Subscription",
@@ -740,7 +741,8 @@
       "any": "Any"
     },
     "card": {
-      "free": "Free"
+      "free": "Free",
+      "new": "New"
     },
     "detail": {
       "about": "About",
@@ -752,7 +754,8 @@
       "certified": "Certified Organizer",
       "bookCta": "Request this activity",
       "bookHint": "Send a request and the organizer will propose details.",
-      "reviewsTitle": "Reviews"
+      "reviewsTitle": "Reviews",
+      "reviewsEmpty": "No reviews yet — be the first to experience this activity."
     },
     "organizer": {
       "anonymous": "Organizer",
@@ -780,7 +783,14 @@
       "both": "Both"
     },
     "emptyHint": "Try adjusting or clearing your filters to see more activities.",
-    "verifiedOrganizer": "Verified organizer"
+    "verifiedOrganizer": "Verified organizer",
+    "trustNote": "Every organizer is certified and verified before they can list.",
+    "reassure": {
+      "secure": "Secure payment via Stripe",
+      "verified": "Verified, certified organizer",
+      "cancel": "Cancel anytime"
+    },
+    "reviewsHeading": "What participants say"
   },
   "requests": {
     "new": {

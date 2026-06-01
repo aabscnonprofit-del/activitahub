@@ -415,7 +415,8 @@
           "a": "Choisissez ci-dessous le parcours qui correspond à votre expérience, puis passez au paiement quand vous êtes prêt."
         }
       ]
-    }
+    },
+    "confidence": "Vous rejoignez une plateforme fondée sur des organisateurs certifiés, des paiements sécurisés et des standards de communauté clairs."
   },
   "billing": {
     "title": "Abonnement",
@@ -740,7 +741,8 @@
       "any": "Tout"
     },
     "card": {
-      "free": "Gratuit"
+      "free": "Gratuit",
+      "new": "Nouveau"
     },
     "detail": {
       "about": "À propos",
@@ -752,7 +754,8 @@
       "certified": "Organisateur Certifié",
       "bookCta": "Demander cette activité",
       "bookHint": "Envoyez une demande et l'organisateur proposera les détails.",
-      "reviewsTitle": "Avis"
+      "reviewsTitle": "Avis",
+      "reviewsEmpty": "Pas encore d’avis — soyez le premier à vivre cette activité."
     },
     "organizer": {
       "anonymous": "Organisateur",
@@ -780,7 +783,14 @@
       "both": "Les deux"
     },
     "emptyHint": "Essayez d’ajuster ou d’effacer vos filtres pour voir plus d’activités.",
-    "verifiedOrganizer": "Organisateur vérifié"
+    "verifiedOrganizer": "Organisateur vérifié",
+    "trustNote": "Chaque organisateur est certifié et vérifié avant de pouvoir publier.",
+    "reassure": {
+      "secure": "Paiement sécurisé via Stripe",
+      "verified": "Organisateur vérifié et certifié",
+      "cancel": "Annulable à tout moment"
+    },
+    "reviewsHeading": "Ce que disent les participants"
   },
   "requests": {
     "new": {

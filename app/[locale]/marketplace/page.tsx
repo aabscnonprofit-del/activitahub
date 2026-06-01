@@ -1,7 +1,7 @@
 import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Search, MapPin, ImageOff, SearchX } from 'lucide-react'
+import { Search, MapPin, ImageOff, SearchX, ShieldCheck } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { PublicHeader } from '@/components/layout/PublicHeader'
 import { searchMarketplace } from '@/lib/marketplace/queries'
@@ -61,6 +61,10 @@ export default async function MarketplacePage({ params, searchParams }: Marketpl
         <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
           <h1 className="text-3xl font-extrabold text-slate-900">{t('title')}</h1>
           <p className="mt-1 text-slate-500">{t('subtitle')}</p>
+          <p className="mt-2 inline-flex items-center gap-1.5 text-sm font-medium text-slate-600">
+            <ShieldCheck className="h-4 w-4 shrink-0 text-green-600" aria-hidden="true" />
+            {t('trustNote')}
+          </p>
 
           <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-[260px_1fr]">
             {/* Filters — a no-JS GET form */}
@@ -171,11 +175,15 @@ export default async function MarketplacePage({ params, searchParams }: Marketpl
                             {c.city}
                           </p>
                         )}
-                        {c.rating != null && (
-                          <div className="mt-1.5">
+                        <div className="mt-1.5">
+                          {c.rating != null ? (
                             <StarRating rating={c.rating} count={c.review_count} />
-                          </div>
-                        )}
+                          ) : (
+                            <span className="inline-flex items-center rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-slate-500">
+                              {t('card.new')}
+                            </span>
+                          )}
+                        </div>
                         <div className="mt-3 flex items-center justify-between">
                           <span className="text-sm font-semibold text-slate-900">
                             {formatPrice(c.price_cents, c.currency, locale) ?? t('card.free')}

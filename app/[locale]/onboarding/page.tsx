@@ -1,7 +1,7 @@
 import { getTranslations } from 'next-intl/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight, ShieldCheck } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { PathSelector } from '@/components/onboarding/PathSelector'
 import { CertificationCheckout } from '@/components/onboarding/CertificationCheckout'
@@ -105,6 +105,10 @@ export default async function OnboardingPage({ params }: OnboardingPageProps) {
           </h1>
           <p className="mx-auto mt-3 max-w-xl text-base text-slate-500">
             {t('subtitle')}
+          </p>
+          <p className="mx-auto mt-4 flex max-w-2xl items-center justify-center gap-2 text-sm text-slate-500">
+            <ShieldCheck className="h-4 w-4 shrink-0 text-green-600" aria-hidden="true" />
+            {t('confidence')}
           </p>
           <div className="mx-auto mt-6 flex max-w-xl flex-col items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm text-slate-600 sm:flex-row sm:gap-2">
             <span>{t('notOrganizer')}</span>

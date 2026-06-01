@@ -4,6 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import {
   MapPin, Clock, Users, Globe, CalendarDays, ImageOff, ArrowRight,
+  Lock, ShieldCheck, CalendarCheck,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { PublicHeader } from '@/components/layout/PublicHeader'
@@ -121,23 +122,38 @@ export default async function ActivityDetailPage({ params }: DetailPageProps) {
                 </div>
               )}
 
-              {reviews.length > 0 && (
-                <div className="mt-6">
-                  <h2 className="font-bold text-slate-900">{t('detail.reviewsTitle')}</h2>
-                  <div className="mt-2 space-y-3">
+              {/* Reviews — authentic social proof from real bookings */}
+              <div className="mt-8">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <h2 className="text-lg font-bold text-slate-900">{t('reviewsHeading')}</h2>
+                  {a.rating != null && <StarRating rating={a.rating} count={a.review_count} />}
+                </div>
+                {reviews.length > 0 ? (
+                  <div className="mt-4 space-y-3">
                     {reviews.map((rv) => (
-                      <div key={rv.id} className="rounded-xl border border-slate-200 bg-white p-4">
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm font-semibold text-slate-800">{rv.author}</span>
-                          <StarRating rating={rv.rating} />
+                      <div key={rv.id} className="card p-4">
+                        <div className="flex items-center gap-3">
+                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-100 text-sm font-bold text-brand-700">
+                            {(rv.author ?? 'A')[0]?.toUpperCase()}
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="truncate text-sm font-semibold text-slate-800">{rv.author}</span>
+                              <StarRating rating={rv.rating} />
+                            </div>
+                            <p className="text-xs text-slate-400">{formatDate(rv.created_at, 'UTC', locale)}</p>
+                          </div>
                         </div>
-                        {rv.comment && <p className="mt-1 text-sm text-slate-600">{rv.comment}</p>}
-                        <p className="mt-1 text-xs text-slate-400">{formatDate(rv.created_at, 'UTC', locale)}</p>
+                        {rv.comment && <p className="mt-2 text-sm leading-relaxed text-slate-700">{rv.comment}</p>}
                       </div>
                     ))}
                   </div>
-                </div>
-              )}
+                ) : (
+                  <p className="card mt-4 p-6 text-center text-sm text-slate-500">
+                    {t('detail.reviewsEmpty')}
+                  </p>
+                )}
+              </div>
             </div>
 
             {/* Sidebar: price + organizer + CTA */}
@@ -165,6 +181,24 @@ export default async function ActivityDetailPage({ params }: DetailPageProps) {
                 <ArrowRight className="h-4 w-4" />
               </Link>
               <p className="text-center text-xs text-slate-400">{t('detail.bookHint')}</p>
+
+              {/* Booking reassurance — factual platform guarantees */}
+              <ul className="space-y-2 border-t border-slate-100 pt-4 text-xs text-slate-600">
+                <li className="flex items-center gap-2">
+                  <Lock className="h-3.5 w-3.5 shrink-0 text-slate-400" aria-hidden="true" />
+                  {t('reassure.secure')}
+                </li>
+                {a.organizer.certified && (
+                  <li className="flex items-center gap-2">
+                    <ShieldCheck className="h-3.5 w-3.5 shrink-0 text-green-500" aria-hidden="true" />
+                    {t('reassure.verified')}
+                  </li>
+                )}
+                <li className="flex items-center gap-2">
+                  <CalendarCheck className="h-3.5 w-3.5 shrink-0 text-slate-400" aria-hidden="true" />
+                  {t('reassure.cancel')}
+                </li>
+              </ul>
             </aside>
           </div>
         </div>
