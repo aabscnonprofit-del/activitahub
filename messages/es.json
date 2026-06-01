@@ -206,6 +206,60 @@
           "description": "Aparece en el marketplace y recibe reservas reales de clientes cercanos."
         }
       ]
+    },
+    "progression": {
+      "eyebrow": "Tu recorrido",
+      "headline": "Un camino claro: de tu primera actividad a organizador certificado",
+      "subheadline": "Empieces donde empieces, siempre sabes cuál es tu próximo paso.",
+      "stages": [
+        {
+          "title": "Descubre",
+          "description": "Explora actividades de organizadores de confianza cerca de ti."
+        },
+        {
+          "title": "Participa",
+          "description": "Reserva y únete a las experiencias que te gustan."
+        },
+        {
+          "title": "Aprende",
+          "description": "Inscríbete en la Academia para desarrollar habilidades reales."
+        },
+        {
+          "title": "Organiza",
+          "description": "Crea tus propias actividades, lugares y reservas."
+        },
+        {
+          "title": "Certifícate",
+          "description": "Obtén tu credencial de Organizador Certificado y crece."
+        }
+      ]
+    },
+    "trustband": {
+      "headline": "Construido sobre la confianza",
+      "subheadline": "Los estándares que mantienen viva una comunidad activa.",
+      "items": [
+        {
+          "title": "Organizadores verificados",
+          "description": "Cada organizador certificado es revisado y verificado con insignia."
+        },
+        {
+          "title": "Pagos seguros",
+          "description": "Los pagos y reembolsos se procesan de forma segura con Stripe."
+        },
+        {
+          "title": "Estándares de comunidad",
+          "description": "Pautas claras mantienen cada actividad segura y acogedora."
+        },
+        {
+          "title": "Acceso internacional",
+          "description": "Disponible en cuatro idiomas para organizadores de todo el mundo."
+        }
+      ]
+    },
+    "community": {
+      "headline": "Más que un marketplace: una comunidad activa",
+      "body": "ActivLife Hub conecta a organizadores y participantes que comparten la pasión por salir y hacer más, juntos.",
+      "cta": "Únete a la comunidad"
     }
   },
   "auth": {
@@ -310,7 +364,24 @@
       "Suscríbete"
     ],
     "notOrganizer": "¿Solo quieres reservar actividades?",
-    "selected": "Seleccionado"
+    "selected": "Seleccionado",
+    "guide": {
+      "headline": "Cómo funciona",
+      "items": [
+        {
+          "q": "Cómo funciona la certificación",
+          "a": "Elige una ruta, completa el curso de la Academia o la prueba de cualificación y obtén tu certificado de Organizador Certificado."
+        },
+        {
+          "q": "Cómo se gana dinero",
+          "a": "Una vez certificado, suscríbete a Pro, publica actividades en el marketplace y acepta reservas con pagos seguros."
+        },
+        {
+          "q": "Qué ocurre después",
+          "a": "Elige abajo la ruta que coincida con tu experiencia y continúa al pago cuando estés listo."
+        }
+      ]
+    }
   },
   "billing": {
     "title": "Suscripción",
@@ -674,7 +745,8 @@
       "outdoor": "Exterior",
       "both": "Ambos"
     },
-    "emptyHint": "Prueba a ajustar o limpiar los filtros para ver más actividades."
+    "emptyHint": "Prueba a ajustar o limpiar los filtros para ver más actividades.",
+    "verifiedOrganizer": "Organizador verificado"
   },
   "requests": {
     "new": {

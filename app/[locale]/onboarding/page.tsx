@@ -127,6 +127,25 @@ export default async function OnboardingPage({ params }: OnboardingPageProps) {
           currentPath={typedProfile?.selected_path ?? null}
           onboardingStatus={typedProfile?.onboarding_status ?? 'not_started'}
         />
+
+        {/* Guidance: how certification + earning works, what's next */}
+        <div className="mx-auto mt-14 max-w-3xl">
+          <h2 className="text-center text-xl font-bold text-slate-900">
+            {t('guide.headline')}
+          </h2>
+          <dl className="mt-6 space-y-3">
+            {[0, 1, 2].map((i) => (
+              <div key={i} className="card p-5">
+                <dt className="font-semibold text-slate-900">
+                  {t(`guide.items.${i}.q` as 'guide.items.0.q')}
+                </dt>
+                <dd className="mt-1 text-sm leading-relaxed text-slate-600">
+                  {t(`guide.items.${i}.a` as 'guide.items.0.a')}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </div>
       </div>
     </div>
   )

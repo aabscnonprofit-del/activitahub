@@ -206,6 +206,60 @@
           "description": "Apparaissez sur la marketplace et recevez de vraies réservations près de chez vous."
         }
       ]
+    },
+    "progression": {
+      "eyebrow": "Votre parcours",
+      "headline": "Un chemin clair — de votre première activité à organisateur certifié",
+      "subheadline": "Où que vous commenciez, vous savez toujours quelle est la prochaine étape.",
+      "stages": [
+        {
+          "title": "Découvrir",
+          "description": "Parcourez les activités d’organisateurs de confiance près de chez vous."
+        },
+        {
+          "title": "Participer",
+          "description": "Réservez et rejoignez les expériences que vous aimez."
+        },
+        {
+          "title": "Apprendre",
+          "description": "Inscrivez-vous à l’Académie pour acquérir de vraies compétences."
+        },
+        {
+          "title": "Organiser",
+          "description": "Créez vos propres activités, lieux et réservations."
+        },
+        {
+          "title": "Certifier",
+          "description": "Obtenez votre certification d’organisateur et développez-vous."
+        }
+      ]
+    },
+    "trustband": {
+      "headline": "Bâti sur la confiance",
+      "subheadline": "Les standards qui font vivre une communauté active.",
+      "items": [
+        {
+          "title": "Organisateurs vérifiés",
+          "description": "Chaque organisateur certifié est contrôlé et vérifié par badge."
+        },
+        {
+          "title": "Paiements sécurisés",
+          "description": "Paiements et remboursements traités en toute sécurité via Stripe."
+        },
+        {
+          "title": "Standards de communauté",
+          "description": "Des règles claires gardent chaque activité sûre et accueillante."
+        },
+        {
+          "title": "Accès international",
+          "description": "Disponible en quatre langues pour les organisateurs du monde entier."
+        }
+      ]
+    },
+    "community": {
+      "headline": "Plus qu’une marketplace — une communauté active",
+      "body": "ActivLife Hub réunit organisateurs et participants qui partagent la passion de sortir et de faire plus, ensemble.",
+      "cta": "Rejoindre la communauté"
     }
   },
   "auth": {
@@ -310,7 +364,24 @@
       "S’abonner"
     ],
     "notOrganizer": "Vous voulez seulement réserver des activités ?",
-    "selected": "Sélectionné"
+    "selected": "Sélectionné",
+    "guide": {
+      "headline": "Comment ça marche",
+      "items": [
+        {
+          "q": "Comment fonctionne la certification",
+          "a": "Choisissez un parcours, suivez le cours de l’Académie ou le test de qualification, et obtenez votre certificat d’organisateur."
+        },
+        {
+          "q": "Comment gagner de l’argent",
+          "a": "Une fois certifié, abonnez-vous à Pro, publiez des activités sur la marketplace et acceptez des réservations avec des paiements sécurisés."
+        },
+        {
+          "q": "Que se passe-t-il ensuite",
+          "a": "Choisissez ci-dessous le parcours qui correspond à votre expérience, puis passez au paiement quand vous êtes prêt."
+        }
+      ]
+    }
   },
   "billing": {
     "title": "Abonnement",
@@ -674,7 +745,8 @@
       "outdoor": "Extérieur",
       "both": "Les deux"
     },
-    "emptyHint": "Essayez d’ajuster ou d’effacer vos filtres pour voir plus d’activités."
+    "emptyHint": "Essayez d’ajuster ou d’effacer vos filtres pour voir plus d’activités.",
+    "verifiedOrganizer": "Organisateur vérifié"
   },
   "requests": {
     "new": {

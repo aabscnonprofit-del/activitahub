@@ -1,11 +1,12 @@
 import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Search, MapPin, ShieldCheck, ImageOff, SearchX } from 'lucide-react'
+import { Search, MapPin, ImageOff, SearchX } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { PublicHeader } from '@/components/layout/PublicHeader'
 import { searchMarketplace } from '@/lib/marketplace/queries'
 import { StarRating } from '@/components/ui/StarRating'
+import { VerifiedBadge } from '@/components/ui/VerifiedBadge'
 import { formatPrice } from '@/lib/utils'
 import type { Locale, ActivityCategory } from '@/lib/types'
 import type { Metadata } from 'next'
@@ -182,7 +183,7 @@ export default async function MarketplacePage({ params, searchParams }: Marketpl
                           {c.organizer_name && (
                             <span className="flex items-center gap-1 text-xs text-slate-500">
                               {c.organizer_certified && (
-                                <ShieldCheck className="h-3.5 w-3.5 text-green-500" aria-hidden="true" />
+                                <VerifiedBadge label={t('verifiedOrganizer')} iconOnly />
                               )}
                               {c.organizer_name}
                             </span>

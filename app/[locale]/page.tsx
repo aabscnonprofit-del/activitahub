@@ -3,9 +3,11 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { PublicHeader } from '@/components/layout/PublicHeader'
 import { PublicFooter } from '@/components/layout/PublicFooter'
+import { ProgressionPath } from '@/components/marketing/ProgressionPath'
 import {
   GraduationCap, Briefcase, Store, ArrowRight,
   ShieldCheck, BadgeCheck, Globe, CalendarCheck,
+  Lock, HeartHandshake, Users,
 } from 'lucide-react'
 import type { Locale } from '@/lib/types'
 import type { Metadata } from 'next'
@@ -66,7 +68,12 @@ export default async function HomePage({ params }: HomePageProps) {
     { icon: CalendarCheck, label: t('trust.cancel') },
   ]
 
-  const steps = [0, 1, 2] as const
+  const trustband = [
+    { icon: BadgeCheck, i: 0 },
+    { icon: Lock, i: 1 },
+    { icon: HeartHandshake, i: 2 },
+    { icon: Globe, i: 3 },
+  ]
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -132,6 +139,9 @@ export default async function HomePage({ params }: HomePageProps) {
           </div>
         </section>
 
+        {/* ── Progression path: Discover → Participate → Learn → Organize → Certify ── */}
+        <ProgressionPath locale={locale} />
+
         {/* ── Three Pillars ─────────────────────────────────────────────── */}
         <section className="px-4 py-20 sm:py-28">
           <div className="mx-auto max-w-7xl">
@@ -170,33 +180,55 @@ export default async function HomePage({ params }: HomePageProps) {
           </div>
         </section>
 
-        {/* ── How it works ──────────────────────────────────────────────── */}
+        {/* ── Built on trust ────────────────────────────────────────────── */}
         <section className="bg-slate-50 px-4 py-20 sm:py-28">
-          <div className="mx-auto max-w-5xl">
+          <div className="mx-auto max-w-6xl">
             <div className="mb-14 text-center">
               <h2 className="text-3xl font-extrabold text-slate-900 sm:text-4xl">
-                {t('how.headline')}
+                {t('trustband.headline')}
               </h2>
               <p className="mx-auto mt-3 max-w-xl text-lg text-slate-500">
-                {t('how.subheadline')}
+                {t('trustband.subheadline')}
               </p>
             </div>
 
-            <ol className="grid grid-cols-1 gap-6 md:grid-cols-3 md:gap-8">
-              {steps.map((i) => (
-                <li key={i} className="card relative p-7">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-600 text-base font-bold text-white">
-                    {i + 1}
-                  </span>
-                  <h3 className="mt-4 text-lg font-bold text-slate-900">
-                    {t(`how.steps.${i}.title` as 'how.steps.0.title')}
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              {trustband.map(({ icon: Icon, i }) => (
+                <div key={i} className="card p-6">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
+                    <Icon className="h-5 w-5" aria-hidden="true" />
+                  </div>
+                  <h3 className="mt-4 font-bold text-slate-900">
+                    {t(`trustband.items.${i}.title` as 'trustband.items.0.title')}
                   </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-slate-600">
-                    {t(`how.steps.${i}.description` as 'how.steps.0.description')}
+                  <p className="mt-1.5 text-sm leading-relaxed text-slate-600">
+                    {t(`trustband.items.${i}.description` as 'trustband.items.0.description')}
                   </p>
-                </li>
+                </div>
               ))}
-            </ol>
+            </div>
+          </div>
+        </section>
+
+        {/* ── Community ─────────────────────────────────────────────────── */}
+        <section className="px-4 py-20 sm:py-24">
+          <div className="mx-auto max-w-4xl rounded-3xl bg-gradient-to-br from-brand-50 to-amber-50 px-6 py-14 text-center ring-1 ring-brand-100 sm:px-12">
+            <div className="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-brand-600 shadow-sm">
+              <Users className="h-6 w-6" aria-hidden="true" />
+            </div>
+            <h2 className="text-3xl font-extrabold text-slate-900 sm:text-4xl">
+              {t('community.headline')}
+            </h2>
+            <p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-slate-600">
+              {t('community.body')}
+            </p>
+            <Link
+              href={`/${locale}/sign-up`}
+              className="btn-primary mt-8 px-7 py-3 text-base"
+            >
+              {t('community.cta')}
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </Link>
           </div>
         </section>
 

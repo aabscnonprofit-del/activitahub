@@ -206,6 +206,60 @@
           "description": "Appear in the marketplace and receive real bookings from nearby customers."
         }
       ]
+    },
+    "progression": {
+      "eyebrow": "Your journey",
+      "headline": "One clear path — from first activity to certified organizer",
+      "subheadline": "Wherever you start, you always know your next step.",
+      "stages": [
+        {
+          "title": "Discover",
+          "description": "Browse activities from trusted organizers near you."
+        },
+        {
+          "title": "Participate",
+          "description": "Book and join experiences you love."
+        },
+        {
+          "title": "Learn",
+          "description": "Enroll in the Academy to build real skills."
+        },
+        {
+          "title": "Organize",
+          "description": "Create your own activities, venues, and bookings."
+        },
+        {
+          "title": "Certify",
+          "description": "Earn your Certified Organizer credential and grow."
+        }
+      ]
+    },
+    "trustband": {
+      "headline": "Built on trust",
+      "subheadline": "The standards that keep an active community thriving.",
+      "items": [
+        {
+          "title": "Verified organizers",
+          "description": "Every certified organizer is reviewed and badge-verified."
+        },
+        {
+          "title": "Secure payments",
+          "description": "Payments and refunds are processed securely through Stripe."
+        },
+        {
+          "title": "Community standards",
+          "description": "Clear guidelines keep every activity safe and welcoming."
+        },
+        {
+          "title": "International access",
+          "description": "Available in four languages for organizers worldwide."
+        }
+      ]
+    },
+    "community": {
+      "headline": "More than a marketplace — an active community",
+      "body": "ActivLife Hub connects organizers and participants who share a passion for getting out and doing more, together.",
+      "cta": "Join the community"
     }
   },
   "auth": {
@@ -310,7 +364,24 @@
       "Subscribe"
     ],
     "notOrganizer": "Just here to book activities?",
-    "selected": "Selected"
+    "selected": "Selected",
+    "guide": {
+      "headline": "How it works",
+      "items": [
+        {
+          "q": "How certification works",
+          "a": "Choose a path, complete the Academy course or qualification test, and earn your Certified Organizer certificate."
+        },
+        {
+          "q": "How earning works",
+          "a": "Once certified, subscribe to Pro, list activities on the marketplace, and accept bookings with secure payouts."
+        },
+        {
+          "q": "What happens next",
+          "a": "Pick the path below that matches your experience, then continue to payment when you are ready."
+        }
+      ]
+    }
   },
   "billing": {
     "title": "Subscription",
@@ -674,7 +745,8 @@
       "outdoor": "Outdoor",
       "both": "Both"
     },
-    "emptyHint": "Try adjusting or clearing your filters to see more activities."
+    "emptyHint": "Try adjusting or clearing your filters to see more activities.",
+    "verifiedOrganizer": "Verified organizer"
   },
   "requests": {
     "new": {

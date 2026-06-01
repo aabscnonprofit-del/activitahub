@@ -3,12 +3,13 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import {
-  MapPin, ShieldCheck, Clock, Users, Globe, CalendarDays, ImageOff, ArrowRight,
+  MapPin, Clock, Users, Globe, CalendarDays, ImageOff, ArrowRight,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { PublicHeader } from '@/components/layout/PublicHeader'
 import { getMarketplaceActivity, getActivityReviews } from '@/lib/marketplace/queries'
 import { StarRating } from '@/components/ui/StarRating'
+import { VerifiedBadge } from '@/components/ui/VerifiedBadge'
 import { formatPrice, formatDate, formatTime } from '@/lib/utils'
 import type { Locale } from '@/lib/types'
 
@@ -154,9 +155,7 @@ export default async function ActivityDetailPage({ params }: DetailPageProps) {
                 <div className="min-w-0">
                   <p className="truncate text-sm font-semibold text-slate-900">{a.organizer.name ?? t('detail.organizer')}</p>
                   {a.organizer.certified && (
-                    <span className="flex items-center gap-1 text-xs text-green-600">
-                      <ShieldCheck className="h-3 w-3" />{t('detail.certified')}
-                    </span>
+                    <VerifiedBadge label={t('detail.certified')} className="mt-1" />
                   )}
                 </div>
               </Link>
