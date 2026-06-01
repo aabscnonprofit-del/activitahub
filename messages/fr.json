@@ -98,7 +98,15 @@
       },
       "cta": "S'abonner"
     },
-    "comingSoon": "Abonnez-vous depuis votre page de facturation après la certification."
+    "comingSoon": "Abonnez-vous depuis votre page de facturation après la certification.",
+    "journey": {
+      "headline": "Que se passe-t-il après l’inscription",
+      "steps": [
+        "Créez votre compte gratuit en quelques secondes",
+        "Certifiez-vous via l’Académie",
+        "Passez à Pro pour figurer sur la marketplace et accepter des réservations"
+      ]
+    }
   },
   "privacy": {
     "title": "Politique de Confidentialité",
@@ -174,6 +182,30 @@
       "title": "Prêt à devenir un organisateur certifié ?",
       "subtitle": "Rejoignez les professionnels qui utilisent ActivLife Hub pour développer leur activité.",
       "button": "Commencer votre certification"
+    },
+    "trust": {
+      "secure": "Paiements sécurisés via Stripe",
+      "certified": "Organisateurs certifiés vérifiés",
+      "languages": "Disponible en 4 langues",
+      "cancel": "Annulable à tout moment"
+    },
+    "how": {
+      "headline": "Comment ça marche",
+      "subheadline": "De la certification à votre première réservation : un parcours clair.",
+      "steps": [
+        {
+          "title": "Certifiez-vous",
+          "description": "Suivez un cours ou un test accéléré pour obtenir votre certification d’organisateur."
+        },
+        {
+          "title": "Créez votre profil",
+          "description": "Ajoutez activités, lieux et disponibilités dans votre tableau de bord."
+        },
+        {
+          "title": "Soyez réservé",
+          "description": "Apparaissez sur la marketplace et recevez de vraies réservations près de chez vous."
+        }
+      ]
     }
   },
   "auth": {
@@ -270,7 +302,15 @@
       "price": "29 $",
       "priceLabel": "paiement unique",
       "cta": "Passer le test — 29 $"
-    }
+    },
+    "steps": [
+      "Choisissez votre parcours",
+      "Paiement",
+      "Apprendre et certifier",
+      "S’abonner"
+    ],
+    "notOrganizer": "Vous voulez seulement réserver des activités ?",
+    "selected": "Sélectionné"
   },
   "billing": {
     "title": "Abonnement",
@@ -633,7 +673,8 @@
       "indoor": "Intérieur",
       "outdoor": "Extérieur",
       "both": "Les deux"
-    }
+    },
+    "emptyHint": "Essayez d’ajuster ou d’effacer vos filtres pour voir plus d’activités."
   },
   "requests": {
     "new": {

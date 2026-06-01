@@ -147,7 +147,9 @@ function PathCard({
   features,
   icon: Icon,
 }: PathCardProps) {
+  const t = useTranslations('onboarding')
   const isSelected = currentPath === path
+  const selectedLabel = t('selected')
 
   return (
     <div
@@ -216,7 +218,7 @@ function PathCard({
 
       {isSelected && (
         <p className="mt-2 text-center text-xs font-medium text-brand-600">
-          ✓ Selected
+          ✓ {selectedLabel}
         </p>
       )}
     </div>

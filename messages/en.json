@@ -98,7 +98,15 @@
       },
       "cta": "Subscribe"
     },
-    "comingSoon": "Subscribe from your billing page after certification."
+    "comingSoon": "Subscribe from your billing page after certification.",
+    "journey": {
+      "headline": "What happens after you sign up",
+      "steps": [
+        "Create your free account in seconds",
+        "Get certified through the Academy",
+        "Go Pro to list on the marketplace and accept bookings"
+      ]
+    }
   },
   "privacy": {
     "title": "Privacy Policy",
@@ -174,6 +182,30 @@
       "title": "Ready to become a certified organizer?",
       "subtitle": "Join professionals who use ActivLife Hub to grow their activity businesses.",
       "button": "Start Your Certification"
+    },
+    "trust": {
+      "secure": "Secure Stripe payments",
+      "certified": "Verified certified organizers",
+      "languages": "Available in 4 languages",
+      "cancel": "Cancel anytime"
+    },
+    "how": {
+      "headline": "How it works",
+      "subheadline": "From certification to your first booking — one clear path.",
+      "steps": [
+        {
+          "title": "Get certified",
+          "description": "Take a course or fast-track test to earn your Certified Organizer credential."
+        },
+        {
+          "title": "Build your profile",
+          "description": "Add activities, venues, and availability in your organizer dashboard."
+        },
+        {
+          "title": "Get booked",
+          "description": "Appear in the marketplace and receive real bookings from nearby customers."
+        }
+      ]
     }
   },
   "auth": {
@@ -270,7 +302,15 @@
       "price": "$29",
       "priceLabel": "one-time payment",
       "cta": "Take the Test — $29"
-    }
+    },
+    "steps": [
+      "Choose path",
+      "Payment",
+      "Learn & certify",
+      "Subscribe"
+    ],
+    "notOrganizer": "Just here to book activities?",
+    "selected": "Selected"
   },
   "billing": {
     "title": "Subscription",
@@ -633,7 +673,8 @@
       "indoor": "Indoor",
       "outdoor": "Outdoor",
       "both": "Both"
-    }
+    },
+    "emptyHint": "Try adjusting or clearing your filters to see more activities."
   },
   "requests": {
     "new": {

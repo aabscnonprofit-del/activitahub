@@ -98,7 +98,15 @@
       },
       "cta": "Suscribirse"
     },
-    "comingSoon": "Suscríbete desde tu página de facturación tras la certificación."
+    "comingSoon": "Suscríbete desde tu página de facturación tras la certificación.",
+    "journey": {
+      "headline": "Qué ocurre después de registrarte",
+      "steps": [
+        "Crea tu cuenta gratis en segundos",
+        "Certifícate a través de la Academia",
+        "Pásate a Pro para aparecer en el marketplace y aceptar reservas"
+      ]
+    }
   },
   "privacy": {
     "title": "Política de Privacidad",
@@ -174,6 +182,30 @@
       "title": "¿Listo para convertirte en organizador certificado?",
       "subtitle": "Únete a los profesionales que usan ActivLife Hub para hacer crecer sus negocios.",
       "button": "Iniciar tu certificación"
+    },
+    "trust": {
+      "secure": "Pagos seguros con Stripe",
+      "certified": "Organizadores certificados verificados",
+      "languages": "Disponible en 4 idiomas",
+      "cancel": "Cancela cuando quieras"
+    },
+    "how": {
+      "headline": "Cómo funciona",
+      "subheadline": "De la certificación a tu primera reserva: un camino claro.",
+      "steps": [
+        {
+          "title": "Certifícate",
+          "description": "Haz un curso o una prueba rápida para obtener tu credencial de Organizador Certificado."
+        },
+        {
+          "title": "Crea tu perfil",
+          "description": "Añade actividades, lugares y disponibilidad en tu panel de organizador."
+        },
+        {
+          "title": "Recibe reservas",
+          "description": "Aparece en el marketplace y recibe reservas reales de clientes cercanos."
+        }
+      ]
     }
   },
   "auth": {
@@ -270,7 +302,15 @@
       "price": "$29",
       "priceLabel": "pago único",
       "cta": "Hacer el test — $29"
-    }
+    },
+    "steps": [
+      "Elige tu ruta",
+      "Pago",
+      "Aprende y certifícate",
+      "Suscríbete"
+    ],
+    "notOrganizer": "¿Solo quieres reservar actividades?",
+    "selected": "Seleccionado"
   },
   "billing": {
     "title": "Suscripción",
@@ -633,7 +673,8 @@
       "indoor": "Interior",
       "outdoor": "Exterior",
       "both": "Ambos"
-    }
+    },
+    "emptyHint": "Prueba a ajustar o limpiar los filtros para ver más actividades."
   },
   "requests": {
     "new": {

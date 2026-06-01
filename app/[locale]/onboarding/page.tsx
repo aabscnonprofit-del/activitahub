@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server'
 import { redirect } from 'next/navigation'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { PathSelector } from '@/components/onboarding/PathSelector'
 import { CertificationCheckout } from '@/components/onboarding/CertificationCheckout'
@@ -20,6 +21,7 @@ export async function generateMetadata({ params }: OnboardingPageProps): Promise
 export default async function OnboardingPage({ params }: OnboardingPageProps) {
   const { locale } = await params as { locale: Locale }
   const t = await getTranslations('onboarding')
+  const tNav = await getTranslations('nav')
 
   const supabase = await createClient()
   const {
@@ -87,13 +89,13 @@ export default async function OnboardingPage({ params }: OnboardingPageProps) {
       <div className="mx-auto max-w-5xl px-4 py-12">
         {/* Progress indicator */}
         <div className="mb-10 flex items-center justify-center gap-2">
-          <StepDot step={1} label="Choose path" active />
+          <StepDot step={1} label={t('steps.0' as Parameters<typeof t>[0])} active />
           <StepLine />
-          <StepDot step={2} label="Payment" />
+          <StepDot step={2} label={t('steps.1' as Parameters<typeof t>[0])} />
           <StepLine />
-          <StepDot step={3} label="Learn & Certify" />
+          <StepDot step={3} label={t('steps.2' as Parameters<typeof t>[0])} />
           <StepLine />
-          <StepDot step={4} label="Subscribe" />
+          <StepDot step={4} label={t('steps.3' as Parameters<typeof t>[0])} />
         </div>
 
         <div className="mb-10 text-center">
@@ -102,6 +104,12 @@ export default async function OnboardingPage({ params }: OnboardingPageProps) {
           </h1>
           <p className="mx-auto mt-3 max-w-xl text-base text-slate-500">
             {t('subtitle')}
+          </p>
+          <p className="mt-4 text-sm text-slate-500">
+            {t('notOrganizer')}{' '}
+            <Link href={`/${locale}/marketplace`} className="font-semibold text-brand-600 hover:underline">
+              {tNav('marketplace')}
+            </Link>
           </p>
         </div>
 

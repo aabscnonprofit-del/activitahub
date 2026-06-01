@@ -1,7 +1,7 @@
 import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Search, MapPin, ShieldCheck, ImageOff } from 'lucide-react'
+import { Search, MapPin, ShieldCheck, ImageOff, SearchX } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { PublicHeader } from '@/components/layout/PublicHeader'
 import { searchMarketplace } from '@/lib/marketplace/queries'
@@ -50,6 +50,7 @@ export default async function MarketplacePage({ params, searchParams }: Marketpl
     data: { user },
   } = await supabase.auth.getUser()
   const cards = await searchMarketplace(supabase, filters)
+  const hasFilters = Object.keys(filters).length > 0
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -127,8 +128,17 @@ export default async function MarketplacePage({ params, searchParams }: Marketpl
             <div>
               <p className="mb-4 text-sm text-slate-500">{t('resultCount', { count: cards.length })}</p>
               {cards.length === 0 ? (
-                <div className="rounded-2xl border border-slate-200 bg-white p-12 text-center text-sm text-slate-400">
-                  {t('empty')}
+                <div className="card flex flex-col items-center px-6 py-16 text-center">
+                  <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100">
+                    <SearchX className="h-7 w-7 text-slate-400" aria-hidden="true" />
+                  </div>
+                  <p className="font-semibold text-slate-700">{t('empty')}</p>
+                  <p className="mt-1 max-w-sm text-sm text-slate-500">{t('emptyHint')}</p>
+                  {hasFilters && (
+                    <Link href={`/${locale}/marketplace`} className="btn-secondary mt-5">
+                      {t('filters.clear')}
+                    </Link>
+                  )}
                 </div>
               ) : (
                 <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
@@ -136,11 +146,11 @@ export default async function MarketplacePage({ params, searchParams }: Marketpl
                     <Link
                       key={c.id}
                       href={`/${locale}/marketplace/${c.id}`}
-                      className="group overflow-hidden rounded-2xl border border-slate-200 bg-white transition-shadow hover:shadow-md"
+                      className="card card-hover group overflow-hidden"
                     >
-                      <div className="relative aspect-[3/2] bg-slate-100">
+                      <div className="relative aspect-[3/2] overflow-hidden bg-slate-100">
                         {c.cover_url ? (
-                          <Image src={c.cover_url} alt="" fill className="object-cover" sizes="(max-width:768px) 100vw, 33vw" />
+                          <Image src={c.cover_url} alt="" fill className="object-cover transition-transform duration-300 group-hover:scale-105" sizes="(max-width:768px) 100vw, 33vw" />
                         ) : (
                           <div className="flex h-full items-center justify-center text-slate-300">
                             <ImageOff className="h-8 w-8" aria-hidden="true" />
