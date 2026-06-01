@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import PublicHeader from '@/components/layout/PublicHeader'
 import PublicFooter from '@/components/layout/PublicFooter'
-import { Check, Zap, ArrowRight } from 'lucide-react'
+import { Check, Zap, ArrowRight, Lock } from 'lucide-react'
 import type { Locale } from '@/lib/types'
 
 type Props = { params: Promise<{ locale: string }> }
@@ -37,7 +37,7 @@ export default async function PricingPage({ params }: Props) {
           <div className="mx-auto grid max-w-4xl grid-cols-1 items-start gap-6 md:grid-cols-2 md:gap-8">
             {/* Free plan */}
             <div className="card flex h-full flex-col p-8">
-              <div className="mb-6">
+              <div className="mb-4">
                 <p className="mb-1 text-sm font-bold uppercase tracking-wide text-slate-500">
                   {t('free.name')}
                 </p>
@@ -45,7 +45,14 @@ export default async function PricingPage({ params }: Props) {
                   <span className="text-5xl font-extrabold text-slate-900">{t('free.price')}</span>
                   <span className="mb-1.5 text-slate-400">/{t('free.period')}</span>
                 </div>
+                <p className="mt-3 text-sm leading-relaxed text-slate-500">{t('free.tagline')}</p>
               </div>
+              <span className="mb-6 inline-flex w-fit rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
+                {t('free.bestFor')}
+              </span>
+              <p className="mb-3 text-xs font-bold uppercase tracking-wide text-slate-400">
+                {t('free.includesLabel')}
+              </p>
               <ul className="mb-8 flex-1 space-y-3">
                 {freeFeatures.map((i) => (
                   <li key={i} className="flex items-center gap-3 text-sm text-slate-700">
@@ -69,7 +76,7 @@ export default async function PricingPage({ params }: Props) {
                   <Zap className="h-3 w-3" /> {t('pro.badge')}
                 </span>
               </div>
-              <div className="mb-6">
+              <div className="mb-4">
                 <p className="mb-1 text-sm font-bold uppercase tracking-wide text-brand-600">
                   {t('pro.name')}
                 </p>
@@ -77,7 +84,14 @@ export default async function PricingPage({ params }: Props) {
                   <span className="text-5xl font-extrabold text-slate-900">{t('pro.price')}</span>
                   <span className="mb-1.5 text-slate-400">{t('pro.period')}</span>
                 </div>
+                <p className="mt-3 text-sm leading-relaxed text-slate-500">{t('pro.tagline')}</p>
               </div>
+              <span className="mb-6 inline-flex w-fit rounded-full bg-brand-100 px-3 py-1 text-xs font-semibold text-brand-700">
+                {t('pro.bestFor')}
+              </span>
+              <p className="mb-3 text-xs font-bold uppercase tracking-wide text-slate-400">
+                {t('pro.includesLabel')}
+              </p>
               <ul className="mb-8 flex-1 space-y-3">
                 {proFeatures.map((i) => (
                   <li key={i} className="flex items-center gap-3 text-sm text-slate-700">
@@ -93,7 +107,10 @@ export default async function PricingPage({ params }: Props) {
                 {t('pro.cta')}
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
-              <p className="mt-3 text-center text-xs text-slate-400">{t('comingSoon')}</p>
+              <p className="mt-3 flex items-center justify-center gap-1.5 text-center text-xs text-slate-500">
+                <Lock className="h-3 w-3" aria-hidden="true" />
+                {t('pro.requirement')}
+              </p>
             </div>
           </div>
 

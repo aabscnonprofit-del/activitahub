@@ -80,7 +80,10 @@
         "3": "Community support",
         "4": "Available in 4 languages"
       },
-      "cta": "Get started"
+      "cta": "Get started",
+      "bestFor": "Best for participants & new organizers",
+      "tagline": "Everything you need to join activities and explore the platform.",
+      "includesLabel": "What you get right away"
     },
     "pro": {
       "badge": "Most popular",
@@ -96,7 +99,11 @@
         "5": "Priority support",
         "6": "Early access to new features"
       },
-      "cta": "Subscribe"
+      "cta": "Subscribe",
+      "bestFor": "Best for certified organizers ready to earn",
+      "tagline": "List on the marketplace and turn your activities into income.",
+      "includesLabel": "Everything in Free, plus",
+      "requirement": "Pro unlocks after you complete certification."
     },
     "comingSoon": "Subscribe from your billing page after certification.",
     "journey": {
@@ -155,7 +162,8 @@
       "titleAccent": "Activity Organizer",
       "subtitle": "Learn from experts, get certified, and build a thriving business. ActivLife Hub gives you the tools, training, and clients to succeed.",
       "ctaPrimary": "Get Certified",
-      "ctaSecondary": "Browse Activities"
+      "ctaSecondary": "Browse Activities",
+      "reassure": "Free to start · No credit card required · 4 languages"
     },
     "pillars": {
       "headline": "Everything you need to succeed",
@@ -260,6 +268,32 @@
       "headline": "More than a marketplace — an active community",
       "body": "ActivLife Hub connects organizers and participants who share a passion for getting out and doing more, together.",
       "cta": "Join the community"
+    },
+    "audience": {
+      "headline": "Two ways to be part of ActivLife Hub",
+      "subheadline": "Join activities as a participant, or get certified to organize and earn. Start in the right place.",
+      "join": {
+        "badge": "For participants",
+        "title": "Join activities",
+        "description": "Discover and book experiences from trusted, certified organizers near you — free to start.",
+        "points": [
+          "Browse the marketplace for free",
+          "Book and pay securely",
+          "Review and rebook your favorites"
+        ],
+        "cta": "Browse activities"
+      },
+      "organize": {
+        "badge": "For organizers",
+        "title": "Organize activities",
+        "description": "Get certified, list your activities, and earn with secure bookings and payouts.",
+        "points": [
+          "Get certified in the Academy",
+          "List activities and manage venues",
+          "Accept bookings and get paid"
+        ],
+        "cta": "Become an organizer"
+      }
     }
   },
   "auth": {

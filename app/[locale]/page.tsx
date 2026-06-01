@@ -5,7 +5,7 @@ import { PublicHeader } from '@/components/layout/PublicHeader'
 import { PublicFooter } from '@/components/layout/PublicFooter'
 import { ProgressionPath } from '@/components/marketing/ProgressionPath'
 import {
-  GraduationCap, Briefcase, Store, ArrowRight,
+  Briefcase, Store, ArrowRight, Check,
   ShieldCheck, BadgeCheck, Globe, CalendarCheck,
   Lock, HeartHandshake, Users,
 } from 'lucide-react'
@@ -36,30 +36,6 @@ export default async function HomePage({ params }: HomePageProps) {
   const {
     data: { user },
   } = await supabase.auth.getUser()
-
-  const pillars = [
-    {
-      key: 'organizer',
-      title: t('pillars.organizer.title'),
-      description: t('pillars.organizer.description'),
-      icon: Briefcase,
-      color: 'bg-brand-50 text-brand-600',
-    },
-    {
-      key: 'academy',
-      title: t('pillars.academy.title'),
-      description: t('pillars.academy.description'),
-      icon: GraduationCap,
-      color: 'bg-green-50 text-green-600',
-    },
-    {
-      key: 'marketplace',
-      title: t('pillars.marketplace.title'),
-      description: t('pillars.marketplace.description'),
-      icon: Store,
-      color: 'bg-amber-50 text-amber-600',
-    },
-  ]
 
   const trust = [
     { icon: ShieldCheck, label: t('trust.secure') },
@@ -122,6 +98,7 @@ export default async function HomePage({ params }: HomePageProps) {
                 {t('hero.ctaSecondary')}
               </Link>
             </div>
+            <p className="mt-5 text-sm text-brand-200">{t('hero.reassure')}</p>
           </div>
         </section>
 
@@ -142,40 +119,66 @@ export default async function HomePage({ params }: HomePageProps) {
         {/* ── Progression path: Discover → Participate → Learn → Organize → Certify ── */}
         <ProgressionPath locale={locale} />
 
-        {/* ── Three Pillars ─────────────────────────────────────────────── */}
+        {/* ── Two paths: Join vs Organize (customer vs organizer clarity) ── */}
         <section className="px-4 py-20 sm:py-28">
-          <div className="mx-auto max-w-7xl">
+          <div className="mx-auto max-w-5xl">
             <div className="mb-14 text-center">
               <h2 className="text-3xl font-extrabold text-slate-900 sm:text-4xl">
-                {t('pillars.headline')}
+                {t('audience.headline')}
               </h2>
-              <p className="mx-auto mt-3 max-w-xl text-lg text-slate-500">
-                {t('pillars.subheadline')}
+              <p className="mx-auto mt-3 max-w-2xl text-lg text-slate-500">
+                {t('audience.subheadline')}
               </p>
             </div>
 
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-3 md:gap-8">
-              {pillars.map((pillar) => {
-                const Icon = pillar.icon
-                return (
-                  <div
-                    key={pillar.key}
-                    className="card card-hover p-8"
-                  >
-                    <div
-                      className={`mb-5 flex h-12 w-12 items-center justify-center rounded-xl ${pillar.color}`}
-                    >
-                      <Icon className="h-6 w-6" aria-hidden="true" />
-                    </div>
-                    <h3 className="mb-3 text-lg font-bold text-slate-900">
-                      {pillar.title}
-                    </h3>
-                    <p className="text-sm leading-relaxed text-slate-600">
-                      {pillar.description}
-                    </p>
-                  </div>
-                )
-              })}
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-8">
+              {/* Join activities — participants */}
+              <div className="card flex flex-col p-8">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-50 text-amber-600">
+                  <Store className="h-6 w-6" aria-hidden="true" />
+                </div>
+                <span className="mt-5 inline-flex w-fit rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-semibold text-amber-700">
+                  {t('audience.join.badge')}
+                </span>
+                <h3 className="mt-2 text-xl font-bold text-slate-900">{t('audience.join.title')}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-slate-600">{t('audience.join.description')}</p>
+                <ul className="mt-5 flex-1 space-y-2.5">
+                  {[0, 1, 2].map((i) => (
+                    <li key={i} className="flex items-start gap-2.5 text-sm text-slate-700">
+                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-amber-500" aria-hidden="true" />
+                      {t(`audience.join.points.${i}` as 'audience.join.points.0')}
+                    </li>
+                  ))}
+                </ul>
+                <Link href={`/${locale}/marketplace`} className="btn-secondary mt-7 w-full">
+                  {t('audience.join.cta')}
+                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                </Link>
+              </div>
+
+              {/* Organize activities — organizers (primary path) */}
+              <div className="card flex flex-col p-8 ring-2 ring-brand-500">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
+                  <Briefcase className="h-6 w-6" aria-hidden="true" />
+                </div>
+                <span className="mt-5 inline-flex w-fit rounded-full bg-brand-100 px-2.5 py-0.5 text-xs font-semibold text-brand-700">
+                  {t('audience.organize.badge')}
+                </span>
+                <h3 className="mt-2 text-xl font-bold text-slate-900">{t('audience.organize.title')}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-slate-600">{t('audience.organize.description')}</p>
+                <ul className="mt-5 flex-1 space-y-2.5">
+                  {[0, 1, 2].map((i) => (
+                    <li key={i} className="flex items-start gap-2.5 text-sm text-slate-700">
+                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-brand-500" aria-hidden="true" />
+                      {t(`audience.organize.points.${i}` as 'audience.organize.points.0')}
+                    </li>
+                  ))}
+                </ul>
+                <Link href={`/${locale}/sign-up`} className="btn-primary mt-7 w-full">
+                  {t('audience.organize.cta')}
+                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                </Link>
+              </div>
             </div>
           </div>
         </section>

@@ -1,6 +1,7 @@
 import { getTranslations } from 'next-intl/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import { ArrowRight } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { PathSelector } from '@/components/onboarding/PathSelector'
 import { CertificationCheckout } from '@/components/onboarding/CertificationCheckout'
@@ -105,12 +106,13 @@ export default async function OnboardingPage({ params }: OnboardingPageProps) {
           <p className="mx-auto mt-3 max-w-xl text-base text-slate-500">
             {t('subtitle')}
           </p>
-          <p className="mt-4 text-sm text-slate-500">
-            {t('notOrganizer')}{' '}
-            <Link href={`/${locale}/marketplace`} className="font-semibold text-brand-600 hover:underline">
+          <div className="mx-auto mt-6 flex max-w-xl flex-col items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm text-slate-600 sm:flex-row sm:gap-2">
+            <span>{t('notOrganizer')}</span>
+            <Link href={`/${locale}/marketplace`} className="inline-flex items-center gap-1 font-semibold text-brand-600 hover:underline">
               {tNav('marketplace')}
+              <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
             </Link>
-          </p>
+          </div>
         </div>
 
         {/* Payment step: a path is chosen but not yet paid for */}

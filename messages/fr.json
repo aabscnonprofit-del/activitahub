@@ -80,7 +80,10 @@
         "3": "Support communautaire",
         "4": "Disponible en 4 langues"
       },
-      "cta": "Commencer"
+      "cta": "Commencer",
+      "bestFor": "Idéal pour les participants et nouveaux organisateurs",
+      "tagline": "Tout ce qu’il faut pour rejoindre des activités et explorer la plateforme.",
+      "includesLabel": "Ce que vous obtenez immédiatement"
     },
     "pro": {
       "badge": "Le plus populaire",
@@ -96,7 +99,11 @@
         "5": "Support prioritaire",
         "6": "Accès anticipé aux nouveautés"
       },
-      "cta": "S'abonner"
+      "cta": "S'abonner",
+      "bestFor": "Idéal pour les organisateurs certifiés prêts à gagner",
+      "tagline": "Publiez sur la marketplace et transformez vos activités en revenus.",
+      "includesLabel": "Tout Free, et en plus",
+      "requirement": "Pro se débloque après votre certification."
     },
     "comingSoon": "Abonnez-vous depuis votre page de facturation après la certification.",
     "journey": {
@@ -155,7 +162,8 @@
       "titleAccent": "d'Activités Professionnel",
       "subtitle": "Apprenez auprès d'experts, obtenez une certification et développez votre activité. ActivLife Hub vous offre les outils, la formation et les clients pour réussir.",
       "ctaPrimary": "Obtenir une certification",
-      "ctaSecondary": "Parcourir les activités"
+      "ctaSecondary": "Parcourir les activités",
+      "reassure": "Gratuit pour commencer · Sans carte bancaire · 4 langues"
     },
     "pillars": {
       "headline": "Tout ce dont vous avez besoin pour réussir",
@@ -260,6 +268,32 @@
       "headline": "Plus qu’une marketplace — une communauté active",
       "body": "ActivLife Hub réunit organisateurs et participants qui partagent la passion de sortir et de faire plus, ensemble.",
       "cta": "Rejoindre la communauté"
+    },
+    "audience": {
+      "headline": "Deux façons de faire partie d’ActivLife Hub",
+      "subheadline": "Rejoignez des activités en tant que participant, ou certifiez-vous pour organiser et gagner. Commencez au bon endroit.",
+      "join": {
+        "badge": "Pour les participants",
+        "title": "Rejoindre des activités",
+        "description": "Découvrez et réservez des expériences d’organisateurs certifiés de confiance près de chez vous — gratuit pour commencer.",
+        "points": [
+          "Parcourez la marketplace gratuitement",
+          "Réservez et payez en toute sécurité",
+          "Évaluez et réservez à nouveau vos favoris"
+        ],
+        "cta": "Parcourir les activités"
+      },
+      "organize": {
+        "badge": "Pour les organisateurs",
+        "title": "Organiser des activités",
+        "description": "Certifiez-vous, publiez vos activités et gagnez avec des réservations et paiements sécurisés.",
+        "points": [
+          "Certifiez-vous à l’Académie",
+          "Publiez des activités et gérez des lieux",
+          "Acceptez des réservations et soyez payé"
+        ],
+        "cta": "Devenir organisateur"
+      }
     }
   },
   "auth": {
