@@ -127,7 +127,7 @@ export function PublicHeader({ locale, isAuthenticated }: PublicHeaderProps) {
               <>
                 <Link
                   href={`/${locale}/sign-in`}
-                  className="rounded-lg px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 transition-colors"
+                  className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors"
                 >
                   {t('signIn')}
                 </Link>
@@ -184,7 +184,7 @@ export function PublicHeader({ locale, isAuthenticated }: PublicHeaderProps) {
                 <Link
                   href={`/${locale}/sign-in`}
                   onClick={() => setMobileOpen(false)}
-                  className="rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                  className="rounded-lg border border-slate-300 px-3 py-2.5 text-center text-sm font-semibold text-slate-700 hover:bg-slate-50"
                 >
                   {t('signIn')}
                 </Link>
