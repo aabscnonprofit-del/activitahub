@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { getTranslations } from 'next-intl/server'
 import { LogOut, Bell } from 'lucide-react'
 import { signOut } from '@/lib/actions/auth'
+import { BrandMark } from '@/components/brand/BrandMark'
 import type { Locale } from '@/lib/types'
 
 interface DashboardTopbarProps {
@@ -39,10 +40,8 @@ export async function DashboardTopbar({
         href={`/${locale}`}
         className="flex items-center gap-2 text-slate-900 hover:text-brand-600 transition-colors"
       >
-        <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-brand-600">
-          <span className="text-xs font-bold text-white">A</span>
-        </div>
-        <span className="hidden font-bold sm:block text-sm">Activita Hub</span>
+        <BrandMark size={28} />
+        <span className="hidden font-bold sm:block text-sm">ActivLife Hub</span>
       </Link>
 
       {/* Right side */}

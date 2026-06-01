@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
+import { BrandMark } from '@/components/brand/BrandMark'
 import type { Locale } from '@/lib/types'
 
 interface PublicFooterProps {
@@ -16,13 +17,12 @@ export async function PublicFooter({ locale }: PublicFooterProps) {
         <div className="flex flex-col items-center gap-6 sm:flex-row sm:justify-between">
           {/* Brand */}
           <div>
-            <div className="flex items-center gap-2 mb-2">
-              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-brand-600">
-                <span className="text-xs font-bold text-white">A</span>
-              </div>
-              <span className="font-bold text-slate-900">Activita Hub</span>
+            <div className="flex items-center gap-2 mb-1.5">
+              <BrandMark size={28} />
+              <span className="font-bold text-slate-900">ActivLife Hub</span>
             </div>
-            <p className="text-sm text-slate-500">{t('tagline')}</p>
+            <p className="text-sm font-semibold text-brand-600">Activate Life Together</p>
+            <p className="mt-1 text-sm text-slate-500">{t('tagline')}</p>
           </div>
 
           {/* Links */}

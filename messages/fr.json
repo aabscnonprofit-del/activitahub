@@ -1,6 +1,6 @@
 {
   "academy": {
-    "brand": "Académie Activita",
+    "brand": "Académie ActivLife",
     "exit": "Quitter vers le site",
     "title": "Académie",
     "progress": "{completed} sur {total} leçons terminées",
@@ -40,7 +40,7 @@
   "certificate": {
     "title": "Certificat de Réussite",
     "issuedTo": "Ceci certifie que",
-    "statement": "a complété avec succès {course} et est reconnu comme Organisateur Certifié Activita.",
+    "statement": "a complété avec succès {course} et est reconnu comme Organisateur Certifié ActivLife.",
     "course": "Cours",
     "score": "Score",
     "date": "Délivré",
@@ -48,7 +48,7 @@
     "scanToVerify": "Scanner pour vérifier",
     "print": "Imprimer / Enregistrer en PDF",
     "backToAcademy": "Retour à l'académie",
-    "anonymousHolder": "Organisateur Activita",
+    "anonymousHolder": "Organisateur ActivLife",
     "nextTitle": "Vous êtes certifié ! Une étape reste.",
     "nextBody": "Abonnez-vous pour activer votre tableau de bord organisateur et publier des activités.",
     "nextCta": "Aller à la facturation"
@@ -56,7 +56,7 @@
   "verify": {
     "title": "Vérifier le certificat",
     "validTitle": "Certificat vérifié",
-    "validBody": "Ceci est un véritable certificat d'Organisateur Certifié Activita.",
+    "validBody": "Ceci est un véritable certificat d'Organisateur Certifié ActivLife.",
     "invalidTitle": "Certificat introuvable",
     "invalidBody": "Nous n'avons pas pu vérifier de certificat avec ce code.",
     "holder": "Titulaire",
@@ -145,7 +145,7 @@
       "badge": "Approuvé par des organisateurs du monde entier",
       "title": "Devenez un Organisateur",
       "titleAccent": "d'Activités Professionnel",
-      "subtitle": "Apprenez auprès d'experts, obtenez une certification et développez votre activité. Activita Hub vous offre les outils, la formation et les clients pour réussir.",
+      "subtitle": "Apprenez auprès d'experts, obtenez une certification et développez votre activité. ActivLife Hub vous offre les outils, la formation et les clients pour réussir.",
       "ctaPrimary": "Obtenir une certification",
       "ctaSecondary": "Parcourir les activités"
     },
@@ -158,7 +158,7 @@
       },
       "academy": {
         "title": "Académie et Certification",
-        "description": "Apprentissage structuré ou test de qualification rapide. Obtenez la certification Organisateur Certifié Activita."
+        "description": "Apprentissage structuré ou test de qualification rapide. Obtenez la certification Organisateur Certifié ActivLife."
       },
       "marketplace": {
         "title": "Marché Client",
@@ -172,14 +172,14 @@
     },
     "cta": {
       "title": "Prêt à devenir un organisateur certifié ?",
-      "subtitle": "Rejoignez les professionnels qui utilisent Activita Hub pour développer leur activité.",
+      "subtitle": "Rejoignez les professionnels qui utilisent ActivLife Hub pour développer leur activité.",
       "button": "Commencer votre certification"
     }
   },
   "auth": {
     "signIn": {
       "title": "Bon retour",
-      "subtitle": "Connectez-vous à votre compte Activita Hub",
+      "subtitle": "Connectez-vous à votre compte ActivLife Hub",
       "email": "Adresse e-mail",
       "password": "Mot de passe",
       "submit": "Se connecter",
@@ -190,7 +190,7 @@
     },
     "signUp": {
       "title": "Créez votre compte",
-      "subtitle": "Rejoignez la communauté des organisateurs Activita Hub",
+      "subtitle": "Rejoignez la communauté des organisateurs ActivLife Hub",
       "fullName": "Nom complet",
       "fullNamePlaceholder": "Marie Dupont",
       "email": "Adresse e-mail",
@@ -230,7 +230,7 @@
   },
   "onboarding": {
     "title": "Choisissez votre voie de certification",
-    "subtitle": "Comment souhaitez-vous devenir Organisateur Certifié Activita ?",
+    "subtitle": "Comment souhaitez-vous devenir Organisateur Certifié ActivLife ?",
     "alreadySelected": "Vous avez choisi la voie {path}. Continuez vers le paiement quand vous êtes prêt.",
     "continueToPayment": "Continuer vers le paiement",
     "payment": {
@@ -248,7 +248,7 @@
         "7 à 8 modules d'apprentissage approfondis",
         "Cours vidéo et supports pédagogiques",
         "Quiz par module et examen final",
-        "Certificat d'Organisateur Certifié Activita",
+        "Certificat d'Organisateur Certifié ActivLife",
         "Abonnement mensuel à la Plateforme Organisateur"
       ],
       "price": "99 $",
@@ -264,7 +264,7 @@
         "15 à 20 questions de qualification",
         "Évaluation chronométrée (30 minutes)",
         "Seuil de réussite : 75 %",
-        "Certificat d'Organisateur Certifié Activita",
+        "Certificat d'Organisateur Certifié ActivLife",
         "Abonnement mensuel à la Plateforme Organisateur"
       ],
       "price": "29 $",
@@ -517,7 +517,7 @@
       "terms": "Conditions d'utilisation",
       "contact": "Contact"
     },
-    "copyright": "© {year} Activita Hub. Tous droits réservés."
+    "copyright": "© {year} ActivLife Hub. Tous droits réservés."
   },
   "errors": {
     "404": {

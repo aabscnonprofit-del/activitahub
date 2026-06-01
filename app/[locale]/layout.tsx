@@ -16,8 +16,8 @@ export function generateStaticParams() {
 
 export const metadata: Metadata = {
   title: {
-    default: 'Activita Hub',
-    template: '%s | Activita Hub',
+    default: 'ActivLife Hub',
+    template: '%s | ActivLife Hub',
   },
   description:
     'The professional platform for activity organizers — learn, get certified, and grow your business.',

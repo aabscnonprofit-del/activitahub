@@ -77,7 +77,7 @@ export default async function CertificatePage({ params }: CertificatePageProps) 
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-600">
               <Award className="h-5 w-5 text-white" aria-hidden="true" />
             </div>
-            <span className="font-bold">Activita Hub</span>
+            <span className="font-bold">ActivLife Hub</span>
           </div>
 
           <p className="mt-8 text-sm font-medium uppercase tracking-widest text-slate-400">

@@ -23,7 +23,7 @@ export default async function TermsPage({ params }: Props) {
         <div className="space-y-8 text-slate-700">
           <section>
             <h2 className="text-xl font-bold text-slate-900 mb-3">1. Acceptance</h2>
-            <p>By using ActivitaHub, you agree to these Terms. If you disagree, please do not use the platform.</p>
+            <p>By using ActivLife Hub, you agree to these Terms. If you disagree, please do not use the platform.</p>
           </section>
           <section>
             <h2 className="text-xl font-bold text-slate-900 mb-3">2. Your Account</h2>
@@ -31,7 +31,7 @@ export default async function TermsPage({ params }: Props) {
           </section>
           <section>
             <h2 className="text-xl font-bold text-slate-900 mb-3">3. Acceptable Use</h2>
-            <p>You may use ActivitaHub to manage your activities, venues, clients, and calendar. You may not use the platform to distribute harmful content or violate others&apos; rights.</p>
+            <p>You may use ActivLife Hub to manage your activities, venues, clients, and calendar. You may not use the platform to distribute harmful content or violate others&apos; rights.</p>
           </section>
           <section>
             <h2 className="text-xl font-bold text-slate-900 mb-3">4. Your Content</h2>
@@ -43,7 +43,7 @@ export default async function TermsPage({ params }: Props) {
           </section>
           <section>
             <h2 className="text-xl font-bold text-slate-900 mb-3">6. Limitation of Liability</h2>
-            <p>ActivitaHub is provided &ldquo;as is.&rdquo; We are not responsible for outcomes of activities organized using our platform.</p>
+            <p>ActivLife Hub is provided &ldquo;as is.&rdquo; We are not responsible for outcomes of activities organized using our platform.</p>
           </section>
           <section>
             <h2 className="text-xl font-bold text-slate-900 mb-3">7. Contact</h2>

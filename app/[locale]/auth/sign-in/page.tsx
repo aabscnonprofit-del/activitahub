@@ -2,6 +2,7 @@ import { getTranslations } from 'next-intl/server'
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { signInWithGoogle } from '@/lib/actions/auth'
+import { BrandMark } from '@/components/brand/BrandMark'
 import Link from 'next/link'
 
 type Props = { params: Promise<{ locale: string }> }
@@ -25,13 +26,12 @@ export default async function SignInPage({ params }: Props) {
         {/* Logo */}
         <div className="text-center mb-8">
           <Link href={`/${locale}`} className="inline-flex items-center gap-2">
-            <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center">
-              <span className="text-white font-extrabold text-sm">AH</span>
-            </div>
+            <BrandMark size={40} priority />
             <span className="font-extrabold text-slate-900 text-xl">
-              Activita<span className="text-indigo-600">Hub</span>
+              ActivLife<span className="text-indigo-600">Hub</span>
             </span>
           </Link>
+          <p className="mt-2 text-sm font-medium text-indigo-600">Activate Life Together</p>
         </div>
 
         <div className="card p-8">

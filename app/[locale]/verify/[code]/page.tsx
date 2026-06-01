@@ -34,7 +34,7 @@ export default async function VerifyPage({ params }: VerifyPageProps) {
         <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-600">
           <Award className="h-4 w-4 text-white" aria-hidden="true" />
         </div>
-        <span className="font-bold">Activita Hub</span>
+        <span className="font-bold">ActivLife Hub</span>
       </Link>
 
       <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm">

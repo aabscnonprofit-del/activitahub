@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { PathSelector } from '@/components/onboarding/PathSelector'
 import { CertificationCheckout } from '@/components/onboarding/CertificationCheckout'
+import { BrandMark } from '@/components/brand/BrandMark'
 import type { Locale, Profile } from '@/lib/types'
 import type { Metadata } from 'next'
 
@@ -71,10 +72,8 @@ export default async function OnboardingPage({ params }: OnboardingPageProps) {
       <div className="border-b border-slate-200 bg-white px-4 py-4">
         <div className="mx-auto flex max-w-5xl items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-600">
-              <span className="text-xs font-bold text-white">A</span>
-            </div>
-            <span className="font-bold text-slate-900">Activita Hub</span>
+            <BrandMark size={32} />
+            <span className="font-bold text-slate-900">ActivLife Hub</span>
           </div>
           {firstName && (
             <p className="text-sm text-slate-500">

@@ -6,6 +6,7 @@ import { useTranslations } from 'next-intl'
 import { usePathname } from 'next/navigation'
 import { Menu, X, Globe, Bell } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { BrandMark } from '@/components/brand/BrandMark'
 import type { Locale } from '@/lib/types'
 
 interface PublicHeaderProps {
@@ -40,10 +41,8 @@ export function PublicHeader({ locale, isAuthenticated }: PublicHeaderProps) {
           href={`/${locale}`}
           className="flex items-center gap-2 text-slate-900 hover:text-brand-600 transition-colors"
         >
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-600">
-            <span className="text-sm font-bold text-white">A</span>
-          </div>
-          <span className="hidden font-bold sm:block">Activita Hub</span>
+          <BrandMark size={32} priority />
+          <span className="hidden font-bold sm:block">ActivLife Hub</span>
         </Link>
 
         {/* Desktop navigation */}

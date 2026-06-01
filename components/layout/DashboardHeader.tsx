@@ -9,6 +9,7 @@ import {
   MapPin, Users, Settings, LogOut, Menu,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { BrandMark } from '@/components/brand/BrandMark'
 import { useState } from 'react'
 
 type Props = {
@@ -40,11 +41,9 @@ export default function DashboardHeader({ locale, userName, avatarUrl }: Props) 
       <div className="container-page h-16 flex items-center justify-between gap-4">
         {/* Logo */}
         <Link href={`/${locale}`} className="flex items-center gap-2 shrink-0">
-          <div className="w-7 h-7 bg-indigo-600 rounded-lg flex items-center justify-center">
-            <span className="text-white font-extrabold text-[10px]">AH</span>
-          </div>
+          <BrandMark size={28} />
           <span className="font-extrabold text-slate-900 text-base hidden sm:block">
-            Activita<span className="text-indigo-600">Hub</span>
+            ActivLife<span className="text-indigo-600">Hub</span>
           </span>
         </Link>
 

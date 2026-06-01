@@ -81,7 +81,10 @@ export default async function HomePage({ params }: HomePageProps) {
               {t('hero.title')}{' '}
               <span className="text-amber-300">{t('hero.titleAccent')}</span>
             </h1>
-            <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-brand-100">
+            <p className="mt-5 text-lg font-semibold text-amber-300 sm:text-xl">
+              Activate Life Together
+            </p>
+            <p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-brand-100">
               {t('hero.subtitle')}
             </p>
             <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">

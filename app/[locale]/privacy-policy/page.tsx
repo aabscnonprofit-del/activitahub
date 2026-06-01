@@ -23,7 +23,7 @@ export default async function PrivacyPage({ params }: Props) {
         <div className="space-y-8 text-slate-700">
           <section>
             <h2 className="text-xl font-bold text-slate-900 mb-3">1. What We Collect</h2>
-            <p>When you sign in with Google, we receive your name, email address, and profile picture. We store this to create and identify your account. We also collect the activities, venues, clients, and events you create in ActivitaHub.</p>
+            <p>When you sign in with Google, we receive your name, email address, and profile picture. We store this to create and identify your account. We also collect the activities, venues, clients, and events you create in ActivLife Hub.</p>
           </section>
           <section>
             <h2 className="text-xl font-bold text-slate-900 mb-3">2. How We Use Your Data</h2>
