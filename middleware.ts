@@ -204,8 +204,11 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  // Run on all paths except Next.js internals, static files, and API routes
+  // Run on all paths except Next.js internals, API routes, and any static
+  // file with an extension (favicon, icon.png, apple-icon.png,
+  // opengraph-image.png, logo.png, robots.txt, …). Without the extension
+  // exclusion these brand assets get locale-redirected and fail to load.
   matcher: [
-    '/((?!_next/static|_next/image|favicon\\.ico|api/).*)',
+    '/((?!_next/static|_next/image|favicon\\.ico|api/|.*\\.[\\w]+$).*)',
   ],
 }
