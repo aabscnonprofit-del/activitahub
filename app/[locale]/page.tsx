@@ -70,7 +70,7 @@ export default async function HomePage({ params }: HomePageProps) {
 
           <div className="relative mx-auto max-w-4xl text-center">
             <p className="mb-5 inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/10 px-4 py-1.5 text-sm font-medium text-brand-100">
-              <BadgeCheck className="h-4 w-4" aria-hidden="true" />
+              <Users className="h-4 w-4" aria-hidden="true" />
               {t('hero.badge')}
             </p>
             <h1 className="text-4xl font-extrabold leading-tight tracking-tight sm:text-6xl">

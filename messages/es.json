@@ -157,12 +157,12 @@
   },
   "home": {
     "hero": {
-      "badge": "Con la confianza de organizadores en todo el mundo",
-      "title": "Conviértete en un Organizador",
-      "titleAccent": "de Actividades Profesional",
-      "subtitle": "Aprende de expertos, certifícate y construye un negocio próspero. ActivLife Hub te proporciona las herramientas, la formación y los clientes para triunfar.",
-      "ctaPrimary": "Obtener certificación",
-      "ctaSecondary": "Explorar actividades",
+      "badge": "Una comunidad de experiencias compartidas",
+      "title": "Descubre experiencias,",
+      "titleAccent": "o crea las tuyas",
+      "subtitle": "Únete a actividades cerca de ti y conoce a personas con tus mismos intereses, o comparte tu pasión y empieza a organizar experiencias para tu comunidad.",
+      "ctaPrimary": "Empieza a organizar",
+      "ctaSecondary": "Descubre experiencias",
       "reassure": "Gratis para empezar · Sin tarjeta de crédito · 4 idiomas"
     },
     "pillars": {
@@ -187,9 +187,9 @@
       "countries": "Países"
     },
     "cta": {
-      "title": "¿Listo para convertirte en organizador certificado?",
-      "subtitle": "Únete a los profesionales que usan ActivLife Hub para hacer crecer sus negocios.",
-      "button": "Iniciar tu certificación"
+      "title": "¿Listo para compartir algo que te encanta?",
+      "subtitle": "Empieza a organizar actividades para tu comunidad, a tu ritmo y con apoyo en cada paso.",
+      "button": "Empieza a organizar"
     },
     "trust": {
       "secure": "Pagos seguros con Stripe",
@@ -244,7 +244,7 @@
     },
     "trustband": {
       "headline": "Construido sobre la confianza",
-      "subheadline": "Los estándares que mantienen viva una comunidad activa.",
+      "subheadline": "Los estándares que mantienen nuestra comunidad segura y acogedora.",
       "items": [
         {
           "title": "Organizadores verificados",
@@ -281,18 +281,18 @@
           "Reserva y paga de forma segura",
           "Valora y vuelve a reservar tus favoritas"
         ],
-        "cta": "Explorar actividades"
+        "cta": "Descubre experiencias"
       },
       "organize": {
         "badge": "Para organizadores",
         "title": "Organiza actividades",
-        "description": "Certifícate, publica tus actividades y gana con reservas y pagos seguros.",
+        "description": "Comparte tu pasión, organiza actividades y crea comunidad, ganando dinero por el camino.",
         "points": [
           "Certifícate en la Academia",
           "Publica actividades y gestiona lugares",
           "Acepta reservas y recibe pagos"
         ],
-        "cta": "Conviértete en organizador"
+        "cta": "Empieza a organizar"
       }
     }
   },
@@ -349,8 +349,8 @@
     }
   },
   "onboarding": {
-    "title": "Elige tu ruta de certificación",
-    "subtitle": "¿Cómo quieres convertirte en Organizador Certificado ActivLife?",
+    "title": "Empieza a organizar: elige tu camino",
+    "subtitle": "Un camino corto y con apoyo para empezar a organizar actividades con confianza.",
     "alreadySelected": "Has seleccionado la ruta {path}. Continúa al pago cuando estés listo.",
     "continueToPayment": "Continuar al pago",
     "payment": {
@@ -362,7 +362,7 @@
     "beginner": {
       "badge": "Principiante",
       "title": "Nuevo en organización de actividades",
-      "description": "Empieza desde cero con nuestro curso integral. Aprende todo lo necesario para dirigir actividades profesionales.",
+      "description": "Empieza desde cero con un curso cercano que te guía por todo lo necesario para organizar grandes actividades.",
       "includes": "¿Qué incluye?",
       "features": [
         "7–8 módulos de aprendizaje en profundidad",
@@ -656,7 +656,7 @@
     }
   },
   "footer": {
-    "tagline": "Potenciando a organizadores de actividades profesionales en todo el mundo.",
+    "tagline": "Ayudamos a las personas a compartir experiencias y crear comunidad.",
     "links": {
       "about": "Acerca de",
       "privacy": "Política de Privacidad",

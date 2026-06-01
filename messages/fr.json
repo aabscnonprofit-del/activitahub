@@ -157,12 +157,12 @@
   },
   "home": {
     "hero": {
-      "badge": "Approuvé par des organisateurs du monde entier",
-      "title": "Devenez un Organisateur",
-      "titleAccent": "d'Activités Professionnel",
-      "subtitle": "Apprenez auprès d'experts, obtenez une certification et développez votre activité. ActivLife Hub vous offre les outils, la formation et les clients pour réussir.",
-      "ctaPrimary": "Obtenir une certification",
-      "ctaSecondary": "Parcourir les activités",
+      "badge": "Une communauté d’expériences partagées",
+      "title": "Découvrez des expériences,",
+      "titleAccent": "ou créez les vôtres",
+      "subtitle": "Rejoignez des activités près de chez vous et rencontrez des personnes qui partagent vos centres d’intérêt — ou partagez votre passion et commencez à organiser des expériences pour votre communauté.",
+      "ctaPrimary": "Commencer à organiser",
+      "ctaSecondary": "Découvrir des expériences",
       "reassure": "Gratuit pour commencer · Sans carte bancaire · 4 langues"
     },
     "pillars": {
@@ -187,9 +187,9 @@
       "countries": "Pays"
     },
     "cta": {
-      "title": "Prêt à devenir un organisateur certifié ?",
-      "subtitle": "Rejoignez les professionnels qui utilisent ActivLife Hub pour développer leur activité.",
-      "button": "Commencer votre certification"
+      "title": "Prêt à partager ce que vous aimez ?",
+      "subtitle": "Commencez à organiser des activités pour votre communauté, à votre rythme et avec du soutien à chaque étape.",
+      "button": "Commencer à organiser"
     },
     "trust": {
       "secure": "Paiements sécurisés via Stripe",
@@ -244,7 +244,7 @@
     },
     "trustband": {
       "headline": "Bâti sur la confiance",
-      "subheadline": "Les standards qui font vivre une communauté active.",
+      "subheadline": "Les standards qui gardent notre communauté sûre et accueillante.",
       "items": [
         {
           "title": "Organisateurs vérifiés",
@@ -281,18 +281,18 @@
           "Réservez et payez en toute sécurité",
           "Évaluez et réservez à nouveau vos favoris"
         ],
-        "cta": "Parcourir les activités"
+        "cta": "Découvrir des expériences"
       },
       "organize": {
         "badge": "Pour les organisateurs",
         "title": "Organiser des activités",
-        "description": "Certifiez-vous, publiez vos activités et gagnez avec des réservations et paiements sécurisés.",
+        "description": "Partagez votre passion, organisez des activités et créez une communauté — tout en gagnant un revenu.",
         "points": [
           "Certifiez-vous à l’Académie",
           "Publiez des activités et gérez des lieux",
           "Acceptez des réservations et soyez payé"
         ],
-        "cta": "Devenir organisateur"
+        "cta": "Commencer à organiser"
       }
     }
   },
@@ -349,8 +349,8 @@
     }
   },
   "onboarding": {
-    "title": "Choisissez votre voie de certification",
-    "subtitle": "Comment souhaitez-vous devenir Organisateur Certifié ActivLife ?",
+    "title": "Commencez à organiser — choisissez votre parcours",
+    "subtitle": "Un parcours court et bienveillant pour commencer à organiser des activités en confiance.",
     "alreadySelected": "Vous avez choisi la voie {path}. Continuez vers le paiement quand vous êtes prêt.",
     "continueToPayment": "Continuer vers le paiement",
     "payment": {
@@ -362,7 +362,7 @@
     "beginner": {
       "badge": "Débutant",
       "title": "Nouveau dans l'organisation d'activités",
-      "description": "Commencez de zéro avec notre cours complet. Apprenez tout ce qu'il faut pour animer des activités professionnelles.",
+      "description": "Partez de zéro avec un cours accessible qui vous guide dans tout ce qu’il faut pour organiser de belles activités.",
       "includes": "Ce qui est inclus :",
       "features": [
         "7 à 8 modules d'apprentissage approfondis",
@@ -656,7 +656,7 @@
     }
   },
   "footer": {
-    "tagline": "Accompagnement des organisateurs d'activités professionnels dans le monde entier.",
+    "tagline": "Aider chacun à partager des expériences et à créer du lien.",
     "links": {
       "about": "À propos",
       "privacy": "Politique de confidentialité",
