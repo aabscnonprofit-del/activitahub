@@ -417,7 +417,8 @@
         }
       ]
     },
-    "confidence": "You are joining a platform built on certified organizers, secure payments, and clear community standards."
+    "confidence": "You are joining a platform built on certified organizers, secure payments, and clear community standards.",
+    "flowNote": "You can’t take the organizer test yet because certification hasn’t started. Choose a path below and complete payment — your course or qualification test unlocks immediately after."
   },
   "billing": {
     "title": "Subscription",

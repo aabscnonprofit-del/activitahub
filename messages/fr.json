@@ -417,7 +417,8 @@
         }
       ]
     },
-    "confidence": "Vous rejoignez une plateforme fondée sur des organisateurs certifiés, des paiements sécurisés et des standards de communauté clairs."
+    "confidence": "Vous rejoignez une plateforme fondée sur des organisateurs certifiés, des paiements sécurisés et des standards de communauté clairs.",
+    "flowNote": "Vous ne pouvez pas encore passer le test d’organisateur car la certification n’a pas commencé. Choisissez un parcours ci-dessous et effectuez le paiement : votre cours ou test de qualification se débloque juste après."
   },
   "billing": {
     "title": "Abonnement",

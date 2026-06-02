@@ -4,9 +4,10 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useTranslations } from 'next-intl'
 import { usePathname } from 'next/navigation'
-import { Menu, X, Globe, Bell } from 'lucide-react'
+import { Menu, X, Globe, Bell, LogOut } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { BrandMark } from '@/components/brand/BrandMark'
+import { signOut } from '@/lib/actions/auth'
 import type { Locale } from '@/lib/types'
 
 interface PublicHeaderProps {
@@ -116,12 +117,24 @@ export function PublicHeader({ locale, isAuthenticated }: PublicHeaderProps) {
           {/* Auth buttons */}
           <div className="hidden items-center gap-2 sm:flex">
             {isAuthenticated ? (
-              <Link
-                href={`/${locale}/account`}
-                className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700 transition-colors"
-              >
-                {t('account')}
-              </Link>
+              <>
+                <Link
+                  href={`/${locale}/account`}
+                  className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700 transition-colors"
+                >
+                  {t('account')}
+                </Link>
+                <form action={signOut.bind(null, locale)}>
+                  <button
+                    type="submit"
+                    className="flex items-center gap-1.5 rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50 hover:text-slate-900"
+                    title={t('signOut')}
+                  >
+                    <LogOut className="h-4 w-4" aria-hidden="true" />
+                    <span className="hidden lg:inline">{t('signOut')}</span>
+                  </button>
+                </form>
+              </>
             ) : (
               <>
                 <Link
@@ -156,6 +169,13 @@ export function PublicHeader({ locale, isAuthenticated }: PublicHeaderProps) {
         <div className="border-t border-slate-100 bg-white px-4 py-4 md:hidden">
           <nav className="flex flex-col gap-1">
             <Link
+              href={`/${locale}`}
+              onClick={() => setMobileOpen(false)}
+              className="rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
+            >
+              {t('home')}
+            </Link>
+            <Link
               href={`/${locale}/marketplace`}
               onClick={() => setMobileOpen(false)}
               className="rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
@@ -171,13 +191,24 @@ export function PublicHeader({ locale, isAuthenticated }: PublicHeaderProps) {
             </Link>
             <div className="my-2 border-t border-slate-100" />
             {isAuthenticated ? (
-              <Link
-                href={`/${locale}/account`}
-                onClick={() => setMobileOpen(false)}
-                className="rounded-lg bg-brand-600 px-3 py-2.5 text-center text-sm font-semibold text-white"
-              >
-                {t('account')}
-              </Link>
+              <>
+                <Link
+                  href={`/${locale}/account`}
+                  onClick={() => setMobileOpen(false)}
+                  className="rounded-lg bg-brand-600 px-3 py-2.5 text-center text-sm font-semibold text-white"
+                >
+                  {t('account')}
+                </Link>
+                <form action={signOut.bind(null, locale)}>
+                  <button
+                    type="submit"
+                    className="flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm font-medium text-slate-700 hover:bg-slate-50"
+                  >
+                    <LogOut className="h-4 w-4" aria-hidden="true" />
+                    {t('signOut')}
+                  </button>
+                </form>
+              </>
             ) : (
               <>
                 <Link

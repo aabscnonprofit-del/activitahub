@@ -1,7 +1,8 @@
 import { getTranslations } from 'next-intl/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowRight, ShieldCheck } from 'lucide-react'
+import { ArrowRight, ShieldCheck, LogOut, Info } from 'lucide-react'
+import { signOut } from '@/lib/actions/auth'
 import { createClient } from '@/lib/supabase/server'
 import { PathSelector } from '@/components/onboarding/PathSelector'
 import { CertificationCheckout } from '@/components/onboarding/CertificationCheckout'
@@ -72,17 +73,36 @@ export default async function OnboardingPage({ params }: OnboardingPageProps) {
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Top bar */}
-      <div className="border-b border-slate-200 bg-white px-4 py-4">
-        <div className="mx-auto flex max-w-5xl items-center justify-between">
-          <div className="flex items-center gap-2">
+      <div className="border-b border-slate-200 bg-white px-4 py-3">
+        <div className="mx-auto flex max-w-5xl items-center justify-between gap-3">
+          <Link
+            href={`/${locale}`}
+            className="flex items-center gap-2 text-slate-900 transition-colors hover:text-brand-600"
+          >
             <BrandMark size={32} />
-            <span className="font-bold text-slate-900">ActivLife Hub</span>
+            <span className="font-bold">ActivLife Hub</span>
+          </Link>
+          <div className="flex items-center gap-2 sm:gap-3">
+            <Link
+              href={`/${locale}/marketplace`}
+              className="hidden rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900 sm:inline-block"
+            >
+              {tNav('marketplace')}
+            </Link>
+            {firstName && (
+              <p className="hidden text-sm text-slate-500 sm:block">👋 {firstName}</p>
+            )}
+            <form action={signOut.bind(null, locale)}>
+              <button
+                type="submit"
+                className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm font-medium text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700"
+                title={tNav('signOut')}
+              >
+                <LogOut className="h-4 w-4" aria-hidden="true" />
+                <span className="hidden sm:inline">{tNav('signOut')}</span>
+              </button>
+            </form>
           </div>
-          {firstName && (
-            <p className="text-sm text-slate-500">
-              👋 {firstName}
-            </p>
-          )}
         </div>
       </div>
 
@@ -117,6 +137,12 @@ export default async function OnboardingPage({ params }: OnboardingPageProps) {
               <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
             </Link>
           </div>
+        </div>
+
+        {/* Why the organizer test isn't available yet + what to do next */}
+        <div className="mx-auto mb-8 flex max-w-3xl items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4">
+          <Info className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" aria-hidden="true" />
+          <p className="text-sm leading-relaxed text-amber-900">{t('flowNote')}</p>
         </div>
 
         {/* Payment step: a path is chosen but not yet paid for */}
