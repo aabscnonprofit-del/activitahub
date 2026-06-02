@@ -501,10 +501,10 @@
   },
   "activities": {
     "title": "Activités",
-    "subtitle": "Créez et gérez vos offres d'activités.",
+    "subtitle": "Partagez ce que vous aimez : créez des activités à découvrir pour votre communauté.",
     "create": "Nouvelle activité",
     "empty": "Aucune activité",
-    "emptyDesc": "Créez votre première activité pour commencer votre catalogue.",
+    "emptyDesc": "Créez votre première activité : commencez simplement, vous pourrez la modifier à tout moment.",
     "edit": "Modifier",
     "delete": "Supprimer",
     "confirmDelete": "Supprimer cette activité ? Action irréversible.",
@@ -540,7 +540,24 @@
       "maxAge": "Âge max.",
       "duration": "Durée (min)",
       "languages": "Langues",
-      "none": "Aucun"
+      "none": "Aucun",
+      "intro": "Commencez simplement : un titre suffit. Vous pourrez ajouter des détails et modifier quand vous voulez.",
+      "sectionBasics": "L’essentiel",
+      "sectionDetails": "Détails de l’activité",
+      "sectionWho": "Pour qui",
+      "sectionVisibility": "Visibilité",
+      "optional": "Facultatif",
+      "titleHint": "Donnez-lui un nom clair et attractif que les participants reconnaîtront.",
+      "descriptionHint": "Quelques phrases sur ce que vous ferez ensemble suffisent.",
+      "priceHint": "Laissez vide pour la proposer gratuitement.",
+      "statusHint": "Les brouillons restent privés. Publiez pour l’afficher sur la marketplace, où les participants peuvent la découvrir et la réserver.",
+      "examplesLabel": "Besoin d’idées ? Essayez-en une :",
+      "examples": [
+        "Sortie kayak au coucher du soleil",
+        "Atelier de poterie débutant",
+        "Course matinale sur sentier",
+        "Cours de cuisine en famille"
+      ]
     },
     "indoorOutdoor": {
       "indoor": "Intérieur",

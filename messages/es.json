@@ -501,10 +501,10 @@
   },
   "activities": {
     "title": "Actividades",
-    "subtitle": "Crea y gestiona tus ofertas de actividades.",
+    "subtitle": "Comparte lo que te gusta: crea actividades para que tu comunidad las descubra.",
     "create": "Nueva actividad",
     "empty": "Aún no hay actividades",
-    "emptyDesc": "Crea tu primera actividad para empezar tu catálogo.",
+    "emptyDesc": "Crea tu primera actividad: empieza con algo simple, siempre puedes editarla después.",
     "edit": "Editar",
     "delete": "Eliminar",
     "confirmDelete": "¿Eliminar esta actividad? No se puede deshacer.",
@@ -540,7 +540,24 @@
       "maxAge": "Edad máx.",
       "duration": "Duración (min)",
       "languages": "Idiomas",
-      "none": "Ninguno"
+      "none": "Ninguno",
+      "intro": "Empieza con algo simple: solo necesitas un título. Puedes añadir detalles y editar cuando quieras.",
+      "sectionBasics": "Lo básico",
+      "sectionDetails": "Detalles de la actividad",
+      "sectionWho": "Para quién es",
+      "sectionVisibility": "Visibilidad",
+      "optional": "Opcional",
+      "titleHint": "Ponle un nombre claro y atractivo que los participantes reconozcan.",
+      "descriptionHint": "Con unas frases sobre lo que haréis juntos es suficiente.",
+      "priceHint": "Déjalo vacío para ofrecerla gratis.",
+      "statusHint": "Los borradores son privados. Publica para que aparezca en el marketplace, donde los participantes pueden descubrirla y reservarla.",
+      "examplesLabel": "¿Necesitas ideas? Prueba una:",
+      "examples": [
+        "Tour en kayak al atardecer",
+        "Taller de cerámica para principiantes",
+        "Carrera matutina por senderos",
+        "Clase de cocina en familia"
+      ]
     },
     "indoorOutdoor": {
       "indoor": "Interior",

@@ -501,10 +501,10 @@
   },
   "activities": {
     "title": "Activities",
-    "subtitle": "Create and manage your activity offerings.",
+    "subtitle": "Share what you love — create activities for your community to discover.",
     "create": "New activity",
     "empty": "No activities yet",
-    "emptyDesc": "Create your first activity to start building your catalogue.",
+    "emptyDesc": "Create your first activity — start simple, you can always edit it later.",
     "edit": "Edit",
     "delete": "Delete",
     "confirmDelete": "Delete this activity? This cannot be undone.",
@@ -540,7 +540,24 @@
       "maxAge": "Max age",
       "duration": "Duration (min)",
       "languages": "Languages",
-      "none": "None"
+      "none": "None",
+      "intro": "Start simple — only a title is needed. You can add details and edit anytime.",
+      "sectionBasics": "The basics",
+      "sectionDetails": "Activity details",
+      "sectionWho": "Who it’s for",
+      "sectionVisibility": "Visibility",
+      "optional": "Optional",
+      "titleHint": "Give it a clear, inviting name participants will recognize.",
+      "descriptionHint": "A few sentences on what you’ll do together is plenty.",
+      "priceHint": "Leave empty to offer it for free.",
+      "statusHint": "Drafts stay private. Publish to list it on the marketplace, where participants can discover and book it.",
+      "examplesLabel": "Need ideas? Try one:",
+      "examples": [
+        "Sunset Kayak Tour",
+        "Beginner Pottery Workshop",
+        "Morning Trail Run",
+        "Family Cooking Class"
+      ]
     },
     "indoorOutdoor": {
       "indoor": "Indoor",

@@ -1,8 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useTranslations } from 'next-intl'
-import { Plus, Layers, Pencil, Trash2, Eye, EyeOff } from 'lucide-react'
+import { Plus, Layers, Pencil, Trash2, Eye, EyeOff, Sparkles } from 'lucide-react'
 import {
   createActivity,
   updateActivity,
@@ -28,6 +28,24 @@ const CATEGORIES: ActivityCategory[] = [
   'sports', 'arts', 'music', 'education', 'outdoor',
   'wellness', 'workshop', 'party', 'food', 'other',
 ]
+
+/** Friendly section header inside the activity form. */
+function SectionLabel({
+  children,
+  optionalText,
+}: {
+  children: React.ReactNode
+  optionalText?: string
+}) {
+  return (
+    <div className="flex items-center gap-2 border-t border-slate-100 pt-5 first:border-0 first:pt-0">
+      <span className="text-xs font-bold uppercase tracking-wide text-slate-500">{children}</span>
+      {optionalText && (
+        <span className="text-xs font-medium normal-case text-slate-300">· {optionalText}</span>
+      )}
+    </div>
+  )
+}
 
 // Parses the marketplace fields from the form for optimistic UI.
 function marketplaceFields(formData: FormData) {
@@ -60,6 +78,14 @@ export default function ActivitiesClient({ initialActivities, venues }: Props) {
   const [formMode, setFormMode] = useState<FormMode | null>(null)
   const [deleteTarget, setDeleteTarget] = useState<Activity | null>(null)
   const [pending, setPending] = useState(false)
+  const titleRef = useRef<HTMLInputElement>(null)
+
+  function fillTitle(value: string) {
+    if (titleRef.current) {
+      titleRef.current.value = value
+      titleRef.current.focus()
+    }
+  }
 
   async function handleCreate(formData: FormData) {
     setPending(true)
@@ -247,10 +273,21 @@ export default function ActivitiesClient({ initialActivities, venues }: Props) {
         onClose={() => setFormMode(null)}
         title={isEditing ? t('editTitle') : t('createTitle')}
       >
-        <form action={isEditing ? handleUpdate : handleCreate} className="space-y-4">
+        <form action={isEditing ? handleUpdate : handleCreate} className="space-y-5">
+          {/* Reassuring intro — "you can start simple" */}
+          {!isEditing && (
+            <div className="flex items-start gap-2.5 rounded-xl bg-brand-50 p-3.5 text-sm text-slate-600">
+              <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-brand-500" aria-hidden="true" />
+              <span>{t('form.intro')}</span>
+            </div>
+          )}
+
+          {/* ── The basics ─────────────────────────────────────────────── */}
+          <SectionLabel>{t('form.sectionBasics')}</SectionLabel>
           <div>
             <label className="label-base">{t('form.title')} *</label>
             <input
+              ref={titleRef}
               name="title"
               required
               defaultValue={editActivity?.title ?? ''}
@@ -258,8 +295,26 @@ export default function ActivitiesClient({ initialActivities, venues }: Props) {
               className="input-base"
               autoFocus
             />
+            <p className="mt-1 text-xs text-slate-400">{t('form.titleHint')}</p>
+            {!isEditing && (
+              <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                <span className="text-xs text-slate-400">{t('form.examplesLabel')}</span>
+                {[0, 1, 2, 3].map((i) => {
+                  const ex = t(`form.examples.${i}` as 'form.examples.0')
+                  return (
+                    <button
+                      key={i}
+                      type="button"
+                      onClick={() => fillTitle(ex)}
+                      className="rounded-full border border-slate-200 bg-white px-2.5 py-1 text-xs text-slate-600 transition-colors hover:border-brand-300 hover:bg-brand-50 hover:text-brand-700"
+                    >
+                      {ex}
+                    </button>
+                  )
+                })}
+              </div>
+            )}
           </div>
-
           <div>
             <label className="label-base">{t('form.description')}</label>
             <textarea
@@ -269,10 +324,12 @@ export default function ActivitiesClient({ initialActivities, venues }: Props) {
               placeholder={t('form.descriptionPlaceholder')}
               className="input-base resize-none"
             />
+            <p className="mt-1 text-xs text-slate-400">{t('form.descriptionHint')}</p>
           </div>
 
-          {/* Marketplace details */}
-          <div className="grid grid-cols-2 gap-3">
+          {/* ── Activity details (optional) ────────────────────────────── */}
+          <SectionLabel optionalText={t('form.optional')}>{t('form.sectionDetails')}</SectionLabel>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
               <label className="label-base">{t('form.category')}</label>
               <select name="category" defaultValue={editActivity?.category ?? ''} className="input-base">
@@ -293,10 +350,10 @@ export default function ActivitiesClient({ initialActivities, venues }: Props) {
                 placeholder="0.00"
                 className="input-base"
               />
+              <p className="mt-1 text-xs text-slate-400">{t('form.priceHint')}</p>
             </div>
           </div>
-
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
               <label className="label-base">{t('form.city')}</label>
               <input name="city" defaultValue={editActivity?.city ?? ''} className="input-base" />
@@ -306,8 +363,7 @@ export default function ActivitiesClient({ initialActivities, venues }: Props) {
               <input name="country" defaultValue={editActivity?.country ?? ''} className="input-base" />
             </div>
           </div>
-
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
               <label className="label-base">{t('form.indoorOutdoor')}</label>
               <select name="indoor_outdoor" defaultValue={editActivity?.indoor_outdoor ?? ''} className="input-base">
@@ -318,17 +374,23 @@ export default function ActivitiesClient({ initialActivities, venues }: Props) {
               </select>
             </div>
             <div>
-              <label className="label-base">{t('form.venue')}</label>
-              <select name="venue_id" defaultValue={editActivity?.venue_id ?? ''} className="input-base">
-                <option value="">{t('form.none')}</option>
-                {venues.map((v) => (
-                  <option key={v.id} value={v.id}>{v.name}</option>
-                ))}
-              </select>
+              <label className="label-base">{t('form.duration')}</label>
+              <input name="duration_minutes" type="number" min="0" defaultValue={editActivity?.duration_minutes ?? ''} className="input-base" />
             </div>
           </div>
+          <div>
+            <label className="label-base">{t('form.venue')}</label>
+            <select name="venue_id" defaultValue={editActivity?.venue_id ?? ''} className="input-base">
+              <option value="">{t('form.none')}</option>
+              {venues.map((v) => (
+                <option key={v.id} value={v.id}>{v.name}</option>
+              ))}
+            </select>
+          </div>
 
-          <div className="grid grid-cols-3 gap-3">
+          {/* ── Who it's for (optional) ────────────────────────────────── */}
+          <SectionLabel optionalText={t('form.optional')}>{t('form.sectionWho')}</SectionLabel>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
               <label className="label-base">{t('form.minAge')}</label>
               <input name="min_age" type="number" min="0" defaultValue={editActivity?.min_age ?? ''} className="input-base" />
@@ -337,12 +399,7 @@ export default function ActivitiesClient({ initialActivities, venues }: Props) {
               <label className="label-base">{t('form.maxAge')}</label>
               <input name="max_age" type="number" min="0" defaultValue={editActivity?.max_age ?? ''} className="input-base" />
             </div>
-            <div>
-              <label className="label-base">{t('form.duration')}</label>
-              <input name="duration_minutes" type="number" min="0" defaultValue={editActivity?.duration_minutes ?? ''} className="input-base" />
-            </div>
           </div>
-
           <div>
             <label className="label-base">{t('form.languages')}</label>
             <input
@@ -353,6 +410,8 @@ export default function ActivitiesClient({ initialActivities, venues }: Props) {
             />
           </div>
 
+          {/* ── Visibility + marketplace connection ────────────────────── */}
+          <SectionLabel>{t('form.sectionVisibility')}</SectionLabel>
           <div>
             <label className="label-base">{t('form.status')}</label>
             <select
@@ -364,9 +423,10 @@ export default function ActivitiesClient({ initialActivities, venues }: Props) {
               <option value="published">{t('status.published')}</option>
               <option value="archived">{t('status.archived')}</option>
             </select>
+            <p className="mt-1.5 text-xs leading-relaxed text-slate-500">{t('form.statusHint')}</p>
           </div>
 
-          <div className="flex gap-3 pt-2">
+          <div className="flex gap-3 border-t border-slate-100 pt-4">
             <button type="button" onClick={() => setFormMode(null)} className="btn-secondary flex-1">
               {t('form.cancel')}
             </button>
