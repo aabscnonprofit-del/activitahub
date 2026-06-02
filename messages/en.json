@@ -688,7 +688,9 @@
       "draft": "Draft",
       "published": "Published",
       "suspended": "Suspended"
-    }
+    },
+    "slug": "Profile URL",
+    "slugHint": "Your shareable link: /o/your-name. Lowercase letters, numbers and hyphens only — leave blank to auto-generate."
   },
   "footer": {
     "tagline": "Helping people share experiences and build community.",

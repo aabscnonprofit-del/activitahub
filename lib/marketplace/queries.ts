@@ -53,6 +53,15 @@ export async function getPublicOrganizer(
   return (data as PublicOrganizer | null) ?? null
 }
 
+/** Resolve a public organizer profile by its shareable slug (/o/<slug>). */
+export async function getPublicOrganizerBySlug(
+  sb: SupabaseServerClient,
+  slug: string
+): Promise<PublicOrganizer | null> {
+  const { data } = await sb.rpc('get_public_organizer_by_slug', { p_slug: slug })
+  return (data as PublicOrganizer | null) ?? null
+}
+
 /** Approved public reviews for an activity. */
 export async function getActivityReviews(
   sb: SupabaseServerClient,

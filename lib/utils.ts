@@ -52,3 +52,16 @@ export function absoluteUrl(path: string): string {
     (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000')
   return `${base}${path}`
 }
+
+/**
+ * Public URL for an organizer profile. Prefers the shareable slug route
+ * (/[locale]/o/<slug>) and falls back to the UUID route when no slug exists.
+ */
+export function organizerHref(
+  locale: string,
+  organizer: { id: string; slug?: string | null }
+): string {
+  return organizer.slug
+    ? `/${locale}/o/${organizer.slug}`
+    : `/${locale}/organizers/${organizer.id}`
+}

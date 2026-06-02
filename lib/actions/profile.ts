@@ -22,18 +22,37 @@ export async function upsertOrganizerProfile(formData: FormData): Promise<void> 
     ? languagesRaw.split(',').map((l) => l.trim()).filter(Boolean)
     : []
 
+  // Normalise the requested slug; the DB trigger re-normalises and the unique
+  // index enforces uniqueness. Reserved/blank slugs are omitted so the existing
+  // (or auto-generated) slug is preserved.
+  const RESERVED_SLUGS = new Set([
+    'admin', 'api', 'auth', 'dashboard', 'marketplace', 'pricing', 'onboarding',
+    'account', 'academy', 'requests', 'bookings', 'notifications', 'o',
+    'organizers', 'sign-in', 'sign-up', 'billing', 'reset-password', 'verify',
+    'privacy-policy', 'terms-of-service', 'settings', 'profile', 'calendar',
+    'clients', 'venues', 'proposals', 'analytics',
+  ])
+  const slug = ((formData.get('slug') as string) || '')
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+
+  const payload: Record<string, unknown> = {
+    user_id: user.id,
+    display_name: (formData.get('display_name') as string) || null,
+    bio: (formData.get('bio') as string) || null,
+    city: (formData.get('city') as string) || null,
+    country: (formData.get('country') as string) || null,
+    languages,
+    phone: (formData.get('phone') as string) || null,
+    website: (formData.get('website') as string) || null,
+  }
+  if (slug && !RESERVED_SLUGS.has(slug)) payload.slug = slug
+
   const { error } = await supabase
     .from('organizer_profiles')
-    .upsert({
-      user_id: user.id,
-      display_name: (formData.get('display_name') as string) || null,
-      bio: (formData.get('bio') as string) || null,
-      city: (formData.get('city') as string) || null,
-      country: (formData.get('country') as string) || null,
-      languages,
-      phone: (formData.get('phone') as string) || null,
-      website: (formData.get('website') as string) || null,
-    })
+    .upsert(payload, { onConflict: 'user_id' })
 
   if (error) throw new Error(error.message)
 

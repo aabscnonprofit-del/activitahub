@@ -688,7 +688,9 @@
       "draft": "Borrador",
       "published": "Publicado",
       "suspended": "Suspendido"
-    }
+    },
+    "slug": "URL del perfil",
+    "slugHint": "Tu enlace para compartir: /o/tu-nombre. Solo minúsculas, números y guiones; déjalo vacío para generarlo automáticamente."
   },
   "footer": {
     "tagline": "Ayudamos a las personas a compartir experiencias y crear comunidad.",

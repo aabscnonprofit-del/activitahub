@@ -87,6 +87,7 @@ export interface ProfileFormState {
 export type OrganizerProfile = {
   id: string
   user_id: string
+  slug: string | null
   display_name: string | null
   bio: string | null
   city: string | null
@@ -363,6 +364,7 @@ export type MarketplaceCard = {
   indoor_outdoor: 'indoor' | 'outdoor' | 'both' | null
   organizer_id: string
   organizer_name: string | null
+  organizer_slug: string | null
   organizer_certified: boolean
   cover_path: string | null
   rating: number | null
@@ -385,7 +387,7 @@ export type MarketplaceActivityDetail = {
   duration_minutes: number | null
   rating: number | null
   review_count: number
-  organizer: { id: string; name: string | null; certified: boolean }
+  organizer: { id: string; slug: string | null; name: string | null; certified: boolean }
   venue: { name: string; city: string | null; country: string | null; indoor_outdoor: string | null } | null
   photo_paths: string[]
   upcoming: { date: string; start_time: string | null }[]
@@ -393,6 +395,7 @@ export type MarketplaceActivityDetail = {
 
 export type PublicOrganizer = {
   id: string
+  slug: string | null
   display_name: string | null
   bio: string | null
   city: string | null

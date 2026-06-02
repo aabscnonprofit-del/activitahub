@@ -688,7 +688,9 @@
       "draft": "Brouillon",
       "published": "Publié",
       "suspended": "Suspendu"
-    }
+    },
+    "slug": "URL du profil",
+    "slugHint": "Votre lien à partager : /o/votre-nom. Minuscules, chiffres et tirets uniquement ; laissez vide pour le générer automatiquement."
   },
   "footer": {
     "tagline": "Aider chacun à partager des expériences et à créer du lien.",

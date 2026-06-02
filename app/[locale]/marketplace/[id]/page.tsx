@@ -11,7 +11,7 @@ import { PublicHeader } from '@/components/layout/PublicHeader'
 import { getMarketplaceActivity, getActivityReviews } from '@/lib/marketplace/queries'
 import { StarRating } from '@/components/ui/StarRating'
 import { VerifiedBadge } from '@/components/ui/VerifiedBadge'
-import { formatPrice, formatDate, formatTime } from '@/lib/utils'
+import { formatPrice, formatDate, formatTime, organizerHref } from '@/lib/utils'
 import type { Locale } from '@/lib/types'
 
 interface DetailPageProps {
@@ -190,7 +190,7 @@ export default async function ActivityDetailPage({ params }: DetailPageProps) {
                 </p>
               </div>
 
-              <Link href={`/${locale}/organizers/${a.organizer.id}`} className="flex items-center gap-2 rounded-lg border border-slate-200 p-3 hover:bg-slate-50">
+              <Link href={organizerHref(locale, a.organizer)} className="flex items-center gap-2 rounded-lg border border-slate-200 p-3 hover:bg-slate-50">
                 <div className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-100 text-sm font-bold text-brand-700">
                   {(a.organizer.name ?? 'A')[0]?.toUpperCase()}
                 </div>

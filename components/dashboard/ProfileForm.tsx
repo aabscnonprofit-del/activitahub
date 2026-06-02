@@ -49,6 +49,22 @@ export default function ProfileForm({ initialProfile }: Props) {
           </div>
 
           <div>
+            <label className="label-base">{t('slug')}</label>
+            <div className="flex items-stretch">
+              <span className="inline-flex items-center rounded-l-lg border border-r-0 border-slate-300 bg-slate-50 px-3 text-sm text-slate-400">
+                /o/
+              </span>
+              <input
+                name="slug"
+                defaultValue={initialProfile?.slug ?? ''}
+                placeholder="maria-barcelona"
+                className="input-base rounded-l-none"
+              />
+            </div>
+            <p className="mt-1.5 text-xs text-slate-400">{t('slugHint')}</p>
+          </div>
+
+          <div>
             <label className="label-base">{t('bio')}</label>
             <textarea
               name="bio"
