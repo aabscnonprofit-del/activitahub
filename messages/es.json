@@ -478,7 +478,7 @@
     "home": {
       "greeting": "Bienvenido de nuevo, {name}",
       "greetingFallback": "Bienvenido de nuevo",
-      "subtitle": "Aquí tienes un resumen de tu cuenta de organizador.",
+      "subtitle": "Tu espacio de actividades: crea, gestiona y haz crecer tu comunidad.",
       "metrics": {
         "activities": "Actividades",
         "venues": "Lugares",
@@ -487,7 +487,7 @@
       },
       "upcomingEvents": {
         "title": "Próximos eventos",
-        "empty": "No hay eventos próximos programados.",
+        "empty": "Nada programado todavía: tus próximas sesiones aparecerán aquí.",
         "viewAll": "Ver calendario"
       },
       "accountStatus": {
@@ -496,6 +496,22 @@
         "certifiedSince": "Certificado desde {date}",
         "subscriptionActive": "Suscripción activa",
         "subscriptionInactive": "Suscripción inactiva"
+      },
+      "quickActions": {
+        "title": "Acciones rápidas",
+        "createActivity": "Crear una actividad",
+        "createActivityDesc": "Comparte lo que te gusta",
+        "venue": "Añadir un lugar",
+        "venueDesc": "Define dónde ocurre",
+        "bookings": "Ver reservas",
+        "bookingsDesc": "Mira quién se apunta",
+        "profile": "Tu perfil público",
+        "profileDesc": "Cómo te ven los participantes"
+      },
+      "start": {
+        "title": "Tu comunidad empieza aquí",
+        "body": "Crea tu primera actividad para compartirla con los participantes. Empieza con algo simple: puedes añadir detalles y editar cuando quieras.",
+        "cta": "Crea tu primera actividad"
       }
     }
   },

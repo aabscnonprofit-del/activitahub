@@ -233,7 +233,7 @@ export default function ActivitiesClient({ initialActivities, venues }: Props) {
                   {new Date(activity.created_at).toLocaleDateString()}
                 </p>
               </div>
-              <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+              <div className="flex gap-0.5 shrink-0 sm:gap-1">
                 {activity.status !== 'archived' && (
                   <button
                     onClick={() => handleTogglePublish(activity)}

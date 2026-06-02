@@ -478,7 +478,7 @@
     "home": {
       "greeting": "Bon retour, {name}",
       "greetingFallback": "Bon retour",
-      "subtitle": "Voici un aperçu de votre compte organisateur.",
+      "subtitle": "Votre espace d’activités : créez, gérez et développez votre communauté.",
       "metrics": {
         "activities": "Activités",
         "venues": "Lieux",
@@ -487,7 +487,7 @@
       },
       "upcomingEvents": {
         "title": "Événements à venir",
-        "empty": "Aucun événement à venir planifié.",
+        "empty": "Rien de prévu pour l’instant — vos prochaines sessions apparaîtront ici.",
         "viewAll": "Voir le calendrier"
       },
       "accountStatus": {
@@ -496,6 +496,22 @@
         "certifiedSince": "Certifié depuis {date}",
         "subscriptionActive": "Abonnement actif",
         "subscriptionInactive": "Abonnement inactif"
+      },
+      "quickActions": {
+        "title": "Actions rapides",
+        "createActivity": "Créer une activité",
+        "createActivityDesc": "Partagez ce que vous aimez",
+        "venue": "Ajouter un lieu",
+        "venueDesc": "Définissez où ça se passe",
+        "bookings": "Voir les réservations",
+        "bookingsDesc": "Voyez qui participe",
+        "profile": "Votre profil public",
+        "profileDesc": "Comment les participants vous voient"
+      },
+      "start": {
+        "title": "Votre communauté commence ici",
+        "body": "Créez votre première activité à partager avec les participants. Commencez simplement — vous pourrez ajouter des détails et modifier à tout moment.",
+        "cta": "Créez votre première activité"
       }
     }
   },

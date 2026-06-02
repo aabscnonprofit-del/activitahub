@@ -2,7 +2,10 @@ import { getTranslations } from 'next-intl/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
-import { CalendarDays, Layers, MapPin, Users, ArrowRight } from 'lucide-react'
+import {
+  CalendarDays, Layers, MapPin, Users, ArrowRight,
+  Plus, CalendarCheck, UserCircle, Sparkles,
+} from 'lucide-react'
 import { Card } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
 import { formatDate, formatTime } from '@/lib/utils'
@@ -119,14 +122,68 @@ export default async function DashboardHomePage({ params }: DashboardHomeProps) 
     start_time: string | null
   }>
 
+  const noActivities = (activityCount ?? 0) === 0
+
+  const quickActions = [
+    { key: 'create', href: `/${locale}/dashboard/activities`, icon: Plus, color: 'bg-indigo-50 text-indigo-600', label: t('quickActions.createActivity'), desc: t('quickActions.createActivityDesc') },
+    { key: 'venue', href: `/${locale}/dashboard/venues`, icon: MapPin, color: 'bg-emerald-50 text-emerald-600', label: t('quickActions.venue'), desc: t('quickActions.venueDesc') },
+    { key: 'bookings', href: `/${locale}/dashboard/bookings`, icon: CalendarCheck, color: 'bg-brand-50 text-brand-600', label: t('quickActions.bookings'), desc: t('quickActions.bookingsDesc') },
+    { key: 'profile', href: `/${locale}/dashboard/profile`, icon: UserCircle, color: 'bg-amber-50 text-amber-600', label: t('quickActions.profile'), desc: t('quickActions.profileDesc') },
+  ]
+
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       {/* ── Greeting ──────────────────────────────────────────────────────── */}
       <div>
         <h1 className="text-2xl font-extrabold text-slate-900">
           {firstName ? t('greeting', { name: firstName }) : t('greetingFallback')}
         </h1>
         <p className="mt-1 text-sm text-slate-500">{t('subtitle')}</p>
+      </div>
+
+      {/* ── Getting started — momentum for brand-new organizers ───────────── */}
+      {noActivities && (
+        <div className="overflow-hidden rounded-2xl bg-gradient-to-br from-brand-600 to-brand-800 p-6 text-white sm:p-8">
+          <div className="flex items-start gap-4">
+            <div className="hidden h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/15 sm:flex">
+              <Sparkles className="h-6 w-6" aria-hidden="true" />
+            </div>
+            <div>
+              <h2 className="text-xl font-extrabold sm:text-2xl">{t('start.title')}</h2>
+              <p className="mt-2 max-w-xl text-sm leading-relaxed text-brand-100">{t('start.body')}</p>
+              <Link
+                href={`/${locale}/dashboard/activities`}
+                className="mt-5 inline-flex items-center gap-2 rounded-xl bg-white px-5 py-2.5 text-sm font-bold text-brand-700 transition-colors hover:bg-brand-50"
+              >
+                <Plus className="h-4 w-4" aria-hidden="true" />
+                {t('start.cta')}
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Quick actions — "what can I do" ───────────────────────────────── */}
+      <div>
+        <h2 className="mb-3 text-xs font-bold uppercase tracking-wide text-slate-500">
+          {t('quickActions.title')}
+        </h2>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
+          {quickActions.map((a) => {
+            const Icon = a.icon
+            return (
+              <Link key={a.key} href={a.href} className="card card-hover flex flex-col gap-3 p-4">
+                <div className={`flex h-9 w-9 items-center justify-center rounded-xl ${a.color}`}>
+                  <Icon className="h-5 w-5" aria-hidden="true" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-slate-900">{a.label}</p>
+                  <p className="mt-0.5 text-xs leading-snug text-slate-500">{a.desc}</p>
+                </div>
+              </Link>
+            )
+          })}
+        </div>
       </div>
 
       {/* ── Metric cards ──────────────────────────────────────────────────── */}

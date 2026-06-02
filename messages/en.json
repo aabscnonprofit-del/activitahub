@@ -478,7 +478,7 @@
     "home": {
       "greeting": "Welcome back, {name}",
       "greetingFallback": "Welcome back",
-      "subtitle": "Here's an overview of your organizer account.",
+      "subtitle": "Your activity hub — create, manage, and grow your community.",
       "metrics": {
         "activities": "Activities",
         "venues": "Venues",
@@ -487,7 +487,7 @@
       },
       "upcomingEvents": {
         "title": "Upcoming Events",
-        "empty": "No upcoming events scheduled.",
+        "empty": "Nothing scheduled yet — your upcoming sessions will appear here.",
         "viewAll": "View calendar"
       },
       "accountStatus": {
@@ -496,6 +496,22 @@
         "certifiedSince": "Certified since {date}",
         "subscriptionActive": "Subscription active",
         "subscriptionInactive": "Subscription inactive"
+      },
+      "quickActions": {
+        "title": "Quick actions",
+        "createActivity": "Create an activity",
+        "createActivityDesc": "Share something you love",
+        "venue": "Add a venue",
+        "venueDesc": "Set where it happens",
+        "bookings": "View bookings",
+        "bookingsDesc": "See who’s joining",
+        "profile": "Your public profile",
+        "profileDesc": "How participants see you"
+      },
+      "start": {
+        "title": "Your community starts here",
+        "body": "Create your first activity to share with participants. Start simple — you can add details and edit anytime.",
+        "cta": "Create your first activity"
       }
     }
   },
