@@ -15,7 +15,10 @@ import { NextResponse, type NextRequest } from 'next/server'
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url)
   const code = searchParams.get('code')
-  const next = searchParams.get('next') ?? '/en/account'
+  // Only allow same-origin relative paths to prevent open redirects.
+  const rawNext = searchParams.get('next') ?? '/en/account'
+  const next =
+    rawNext.startsWith('/') && !rawNext.startsWith('//') ? rawNext : '/en/account'
 
   if (code) {
     const cookieStore = await cookies()
@@ -42,8 +45,8 @@ export async function GET(request: NextRequest) {
     const { error } = await supabase.auth.exchangeCodeForSession(code)
 
     if (!error) {
-      // Session established — redirect to the intended destination
-      return NextResponse.redirect(`${origin}${next}`)
+      // Session established — redirect to the intended (same-origin) destination
+      return NextResponse.redirect(new URL(next, origin))
     }
   }
 

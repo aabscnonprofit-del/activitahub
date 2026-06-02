@@ -38,23 +38,31 @@ export async function upsertOrganizerProfile(formData: FormData): Promise<void> 
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
 
+  const cap = (v: FormDataEntryValue | null, n: number): string | null => {
+    const s = typeof v === 'string' ? v.trim() : ''
+    return s ? s.slice(0, n) : null
+  }
+
   const payload: Record<string, unknown> = {
     user_id: user.id,
-    display_name: (formData.get('display_name') as string) || null,
-    bio: (formData.get('bio') as string) || null,
-    city: (formData.get('city') as string) || null,
-    country: (formData.get('country') as string) || null,
-    languages,
-    phone: (formData.get('phone') as string) || null,
-    website: (formData.get('website') as string) || null,
+    display_name: cap(formData.get('display_name'), 120),
+    bio: cap(formData.get('bio'), 2000),
+    city: cap(formData.get('city'), 120),
+    country: cap(formData.get('country'), 120),
+    languages: languages.slice(0, 12),
+    phone: cap(formData.get('phone'), 40),
+    website: cap(formData.get('website'), 300),
   }
-  if (slug && !RESERVED_SLUGS.has(slug)) payload.slug = slug
+  if (slug && !RESERVED_SLUGS.has(slug)) payload.slug = slug.slice(0, 80)
 
   const { error } = await supabase
     .from('organizer_profiles')
     .upsert(payload, { onConflict: 'user_id' })
 
-  if (error) throw new Error(error.message)
+  if (error) {
+    console.error('[upsertOrganizerProfile] failed:', error.message)
+    throw new Error(error.message)
+  }
 
   revalidatePath('/dashboard/profile')
 }

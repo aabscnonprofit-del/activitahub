@@ -4,13 +4,26 @@ import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 
+const CATEGORIES = new Set([
+  'sports', 'arts', 'music', 'education', 'outdoor',
+  'wellness', 'workshop', 'party', 'food', 'other',
+])
+
 function cents(raw: string | null): number | null {
   const v = raw?.trim()
-  return v ? Math.round(parseFloat(v) * 100) : null
+  if (!v) return null
+  const n = Math.round(parseFloat(v) * 100)
+  return Number.isFinite(n) && n >= 0 ? Math.min(n, 100_000_000) : null
 }
-function int(raw: string | null): number | null {
+function int(raw: string | null, max = 100_000): number | null {
   const v = raw?.trim()
-  return v ? parseInt(v) : null
+  if (!v) return null
+  const n = parseInt(v, 10)
+  return Number.isFinite(n) && n >= 0 ? Math.min(n, max) : null
+}
+function cap(raw: string | null, max: number): string | null {
+  const v = raw?.trim()
+  return v ? v.slice(0, max) : null
 }
 
 /**
@@ -25,27 +38,31 @@ export async function createRequest(formData: FormData): Promise<void> {
   } = await supabase.auth.getUser()
   if (!user) redirect(`/${locale}/sign-in`)
 
-  const eventType = formData.get('event_type') as string
-  if (!eventType) redirect(`/${locale}/requests/new`)
+  const eventType = (formData.get('event_type') as string)?.trim()
+  // Validate against the known category set — never trust the raw value.
+  if (!eventType || !CATEGORIES.has(eventType)) redirect(`/${locale}/requests/new`)
 
   const { data: row, error } = await supabase
     .from('customer_requests')
     .insert({
       customer_id: user.id,
       event_type: eventType,
-      city: (formData.get('city') as string)?.trim() || null,
-      country: (formData.get('country') as string)?.trim() || null,
+      city: cap(formData.get('city') as string, 120),
+      country: cap(formData.get('country') as string, 120),
       desired_date: (formData.get('desired_date') as string) || null,
-      participant_count: int(formData.get('participant_count') as string),
-      age_min: int(formData.get('age_min') as string),
-      age_max: int(formData.get('age_max') as string),
+      participant_count: int(formData.get('participant_count') as string, 100_000),
+      age_min: int(formData.get('age_min') as string, 150),
+      age_max: int(formData.get('age_max') as string, 150),
       budget_cents: cents(formData.get('budget') as string),
-      notes: (formData.get('notes') as string)?.trim() || null,
+      notes: cap(formData.get('notes') as string, 2000),
     })
     .select('id')
     .single()
 
-  if (error || !row) redirect(`/${locale}/requests/new?error=1`)
+  if (error || !row) {
+    console.error('[createRequest] insert failed:', error?.message)
+    redirect(`/${locale}/requests/new?error=1`)
+  }
 
   // Server-side matching + distribution.
   await supabase.rpc('match_request', { p_request_id: row.id })

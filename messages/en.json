@@ -703,15 +703,17 @@
     "copyright": "© {year} ActivLife Hub. All rights reserved."
   },
   "errors": {
-    "404": {
+    "notFound": {
       "title": "Page not found",
-      "description": "The page you're looking for doesn't exist.",
-      "cta": "Go home"
+      "body": "The page or profile you’re looking for doesn’t exist or may have moved.",
+      "home": "Back to home",
+      "marketplace": "Browse activities"
     },
-    "unauthorized": {
-      "title": "Access denied",
-      "description": "You don't have permission to view this page.",
-      "cta": "Go back"
+    "error": {
+      "title": "Something went wrong",
+      "body": "An unexpected error occurred on our end. Please try again.",
+      "retry": "Try again",
+      "home": "Back to home"
     }
   },
   "calendar": {

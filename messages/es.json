@@ -703,15 +703,17 @@
     "copyright": "© {year} ActivLife Hub. Todos los derechos reservados."
   },
   "errors": {
-    "404": {
+    "notFound": {
       "title": "Página no encontrada",
-      "description": "La página que buscas no existe.",
-      "cta": "Ir al inicio"
+      "body": "La página o el perfil que buscas no existe o se ha movido.",
+      "home": "Volver al inicio",
+      "marketplace": "Explorar actividades"
     },
-    "unauthorized": {
-      "title": "Acceso denegado",
-      "description": "No tienes permiso para ver esta página.",
-      "cta": "Volver"
+    "error": {
+      "title": "Algo salió mal",
+      "body": "Ocurrió un error inesperado por nuestra parte. Inténtalo de nuevo.",
+      "retry": "Reintentar",
+      "home": "Volver al inicio"
     }
   },
   "calendar": {

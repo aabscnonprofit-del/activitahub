@@ -20,28 +20,53 @@ export async function getActivities(): Promise<Activity[]> {
   return (data ?? []) as Activity[]
 }
 
-// Parses the marketplace fields shared by create/update.
+const ACTIVITY_STATUSES = new Set(['draft', 'published', 'archived'])
+const ACTIVITY_CATEGORIES = new Set([
+  'sports', 'arts', 'music', 'education', 'outdoor',
+  'wellness', 'workshop', 'party', 'food', 'other',
+])
+const INDOOR_OUTDOOR = new Set(['indoor', 'outdoor', 'both'])
+
+function cap(v: FormDataEntryValue | null, n: number): string | null {
+  const s = typeof v === 'string' ? v.trim() : ''
+  return s ? s.slice(0, n) : null
+}
+function intField(v: FormDataEntryValue | null, max: number): number | null {
+  const s = typeof v === 'string' ? v.trim() : ''
+  if (!s) return null
+  const n = parseInt(s, 10)
+  return Number.isFinite(n) && n >= 0 ? Math.min(n, max) : null
+}
+function enumField(v: FormDataEntryValue | null, allowed: Set<string>): string | null {
+  const s = typeof v === 'string' ? v.trim() : ''
+  return s && allowed.has(s) ? s : null
+}
+
+// Parses + validates the marketplace fields shared by create/update. Every
+// value is bounded / whitelisted so malformed input can't reach the DB.
 function parseFields(formData: FormData) {
   const priceRaw = (formData.get('price') as string)?.trim()
+  const price = priceRaw ? Math.round(parseFloat(priceRaw) * 100) : null
   const langRaw = (formData.get('languages') as string)?.trim()
-  const minAge = (formData.get('min_age') as string)?.trim()
-  const maxAge = (formData.get('max_age') as string)?.trim()
-  const duration = (formData.get('duration_minutes') as string)?.trim()
+  const statusRaw = (formData.get('status') as string) || 'draft'
 
   return {
-    title: (formData.get('title') as string)?.trim(),
-    description: (formData.get('description') as string)?.trim() || null,
-    status: (formData.get('status') as string) || 'draft',
-    category: (formData.get('category') as string) || null,
-    price_cents: priceRaw ? Math.round(parseFloat(priceRaw) * 100) : null,
-    languages: langRaw ? langRaw.split(',').map((s) => s.trim()).filter(Boolean) : null,
-    min_age: minAge ? parseInt(minAge) : null,
-    max_age: maxAge ? parseInt(maxAge) : null,
-    city: (formData.get('city') as string)?.trim() || null,
-    country: (formData.get('country') as string)?.trim() || null,
-    indoor_outdoor: (formData.get('indoor_outdoor') as string) || null,
+    title: cap(formData.get('title'), 120),
+    description: cap(formData.get('description'), 4000),
+    status: ACTIVITY_STATUSES.has(statusRaw) ? statusRaw : 'draft',
+    category: enumField(formData.get('category'), ACTIVITY_CATEGORIES),
+    price_cents:
+      price != null && Number.isFinite(price) && price >= 0 ? Math.min(price, 100_000_000) : null,
+    languages: langRaw
+      ? langRaw.split(',').map((s) => s.trim()).filter(Boolean).slice(0, 12)
+      : null,
+    min_age: intField(formData.get('min_age'), 150),
+    max_age: intField(formData.get('max_age'), 150),
+    city: cap(formData.get('city'), 120),
+    country: cap(formData.get('country'), 120),
+    indoor_outdoor: enumField(formData.get('indoor_outdoor'), INDOOR_OUTDOOR),
     venue_id: (formData.get('venue_id') as string) || null,
-    duration_minutes: duration ? parseInt(duration) : null,
+    duration_minutes: intField(formData.get('duration_minutes'), 100_000),
   }
 }
 
