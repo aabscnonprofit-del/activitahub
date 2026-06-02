@@ -5,20 +5,25 @@ import { signInWithGoogle } from '@/lib/actions/auth'
 import { BrandMark } from '@/components/brand/BrandMark'
 import Link from 'next/link'
 
-type Props = { params: Promise<{ locale: string }> }
+type Props = {
+  params: Promise<{ locale: string }>
+  searchParams: Promise<{ next?: string }>
+}
 
-export default async function SignInPage({ params }: Props) {
+export default async function SignInPage({ params, searchParams }: Props) {
   const { locale } = await params
+  const sp = await searchParams
+  const next = typeof sp.next === 'string' && sp.next.startsWith('/') && !sp.next.startsWith('//') ? sp.next : undefined
   const t = await getTranslations('auth.signIn')
 
-  // Already logged in
+  // Already logged in → participant home (or the requested organizer-intent next)
   const supabase = await createClient()
   const {
     data: { user },
   } = await supabase.auth.getUser()
-  if (user) redirect(`/${locale}/dashboard`)
+  if (user) redirect(next ?? `/${locale}/account`)
 
-  const googleAction = signInWithGoogle.bind(null, locale)
+  const googleAction = signInWithGoogle.bind(null, locale, next)
 
   return (
     <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">

@@ -153,7 +153,8 @@
     "admin": "Admin",
     "signIn": "Se connecter",
     "signUp": "S'inscrire",
-    "signOut": "Se déconnecter"
+    "signOut": "Se déconnecter",
+    "account": "Mon espace"
   },
   "home": {
     "hero": {
@@ -982,6 +983,36 @@
       "suspended": "Suspendu",
       "suspend": "Suspendre",
       "unsuspend": "Restaurer"
+    }
+  },
+  "account": {
+    "greeting": "Content de vous revoir, {name}",
+    "greetingPlain": "Content de vous revoir",
+    "subtitle": "Vos expériences, réservations et demandes — au même endroit.",
+    "explore": {
+      "title": "Explorer les activités",
+      "description": "Découvrez des expériences d’organisateurs certifiés près de chez vous.",
+      "cta": "Voir la marketplace"
+    },
+    "request": {
+      "title": "Demander un événement privé",
+      "description": "Dites aux organisateurs ce que vous cherchez et recevez des propositions.",
+      "cta": "Demander un événement"
+    },
+    "upcoming": {
+      "title": "Réservations à venir",
+      "empty": "Aucune réservation à venir — explorez les activités pour commencer.",
+      "viewAll": "Voir toutes les réservations"
+    },
+    "organizer": {
+      "title": "Envie d’organiser vos propres activités ?",
+      "description": "Devenez organisateur pour créer des expériences et gagner un revenu — un parcours court et bienveillant.",
+      "cta": "Devenir organisateur"
+    },
+    "dashboard": {
+      "title": "Tableau de bord organisateur",
+      "description": "Gérez vos activités, lieux et réservations.",
+      "cta": "Aller au tableau de bord"
     }
   }
 }

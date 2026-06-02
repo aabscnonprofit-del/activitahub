@@ -117,10 +117,10 @@ export function PublicHeader({ locale, isAuthenticated }: PublicHeaderProps) {
           <div className="hidden items-center gap-2 sm:flex">
             {isAuthenticated ? (
               <Link
-                href={`/${locale}/dashboard`}
+                href={`/${locale}/account`}
                 className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700 transition-colors"
               >
-                {t('dashboard')}
+                {t('account')}
               </Link>
             ) : (
               <>
@@ -172,11 +172,11 @@ export function PublicHeader({ locale, isAuthenticated }: PublicHeaderProps) {
             <div className="my-2 border-t border-slate-100" />
             {isAuthenticated ? (
               <Link
-                href={`/${locale}/dashboard`}
+                href={`/${locale}/account`}
                 onClick={() => setMobileOpen(false)}
                 className="rounded-lg bg-brand-600 px-3 py-2.5 text-center text-sm font-semibold text-white"
               >
-                {t('dashboard')}
+                {t('account')}
               </Link>
             ) : (
               <>

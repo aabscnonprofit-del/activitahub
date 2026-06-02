@@ -15,6 +15,7 @@ const handleI18nRouting = createMiddleware(routing)
  * Everything NOT in this list is publicly accessible.
  */
 const AUTH_REQUIRED_PREFIXES = [
+  '/account',
   '/onboarding',
   '/billing',
   '/academy',
@@ -106,7 +107,14 @@ export async function middleware(request: NextRequest) {
   // ── Authenticated users on sign-in/sign-up → redirect to appropriate page ──
 
   if (user && shouldRedirectIfAuthed(path)) {
-    return NextResponse.redirect(new URL(`/${locale}/onboarding`, request.url))
+    // Honour an explicit organizer-intent `next` (e.g. ?next=/en/onboarding);
+    // otherwise land on the participant home, NOT organizer onboarding.
+    const nextParam = request.nextUrl.searchParams.get('next')
+    const dest =
+      nextParam && nextParam.startsWith('/') && !nextParam.startsWith('//')
+        ? nextParam
+        : `/${locale}/account`
+    return NextResponse.redirect(new URL(dest, request.url))
   }
 
   // ── Unauthenticated users on protected paths → sign-in ────────────────────

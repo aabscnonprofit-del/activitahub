@@ -153,7 +153,8 @@
     "admin": "Admin",
     "signIn": "Iniciar sesión",
     "signUp": "Registrarse",
-    "signOut": "Cerrar sesión"
+    "signOut": "Cerrar sesión",
+    "account": "Mi espacio"
   },
   "home": {
     "hero": {
@@ -982,6 +983,36 @@
       "suspended": "Suspendido",
       "suspend": "Suspender",
       "unsuspend": "Restaurar"
+    }
+  },
+  "account": {
+    "greeting": "Hola de nuevo, {name}",
+    "greetingPlain": "Hola de nuevo",
+    "subtitle": "Tus experiencias, reservas y solicitudes, todo en un solo lugar.",
+    "explore": {
+      "title": "Explora actividades",
+      "description": "Descubre experiencias de organizadores certificados cerca de ti.",
+      "cta": "Ver marketplace"
+    },
+    "request": {
+      "title": "Solicita un evento privado",
+      "description": "Cuéntales a los organizadores qué buscas y recibe propuestas.",
+      "cta": "Solicitar un evento"
+    },
+    "upcoming": {
+      "title": "Próximas reservas",
+      "empty": "Aún no tienes reservas próximas: explora actividades para empezar.",
+      "viewAll": "Ver todas las reservas"
+    },
+    "organizer": {
+      "title": "¿Quieres organizar tus propias actividades?",
+      "description": "Conviértete en organizador para crear experiencias y ganar dinero, con un camino corto y con apoyo.",
+      "cta": "Conviértete en organizador"
+    },
+    "dashboard": {
+      "title": "Panel de organizador",
+      "description": "Gestiona tus actividades, lugares y reservas.",
+      "cta": "Ir al panel"
     }
   }
 }

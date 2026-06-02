@@ -85,7 +85,7 @@ export default async function HomePage({ params }: HomePageProps) {
             </p>
             <div className="mt-7 flex flex-col items-center gap-3 sm:mt-9 sm:flex-row sm:justify-center">
               <Link
-                href={`/${locale}/sign-up`}
+                href={`/${locale}/sign-up?next=/${locale}/onboarding`}
                 className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-amber-400 px-6 py-3.5 text-base sm:px-8 sm:py-4 font-bold text-slate-900 shadow-lg transition-colors hover:bg-amber-300 sm:w-auto"
               >
                 {t('hero.ctaPrimary')}
@@ -174,7 +174,7 @@ export default async function HomePage({ params }: HomePageProps) {
                     </li>
                   ))}
                 </ul>
-                <Link href={`/${locale}/sign-up`} className="btn-primary mt-7 w-full">
+                <Link href={`/${locale}/sign-up?next=/${locale}/onboarding`} className="btn-primary mt-7 w-full">
                   {t('audience.organize.cta')}
                   <ArrowRight className="h-4 w-4" aria-hidden="true" />
                 </Link>
@@ -245,7 +245,7 @@ export default async function HomePage({ params }: HomePageProps) {
               {t('cta.subtitle')}
             </p>
             <Link
-              href={`/${locale}/sign-up`}
+              href={`/${locale}/sign-up?next=/${locale}/onboarding`}
               className="mt-8 inline-flex items-center gap-2 rounded-xl bg-brand-500 px-6 py-3.5 text-base sm:px-8 sm:py-4 font-bold text-white shadow-lg transition-colors hover:bg-brand-400"
             >
               {t('cta.button')}

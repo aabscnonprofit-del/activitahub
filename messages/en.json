@@ -153,7 +153,8 @@
     "admin": "Admin",
     "signIn": "Sign In",
     "signUp": "Sign Up",
-    "signOut": "Sign Out"
+    "signOut": "Sign Out",
+    "account": "My Hub"
   },
   "home": {
     "hero": {
@@ -982,6 +983,36 @@
       "suspended": "Suspended",
       "suspend": "Suspend",
       "unsuspend": "Restore"
+    }
+  },
+  "account": {
+    "greeting": "Welcome back, {name}",
+    "greetingPlain": "Welcome back",
+    "subtitle": "Your experiences, bookings, and requests — all in one place.",
+    "explore": {
+      "title": "Explore activities",
+      "description": "Discover experiences from certified organizers near you.",
+      "cta": "Browse marketplace"
+    },
+    "request": {
+      "title": "Request a private event",
+      "description": "Tell organizers what you are looking for and receive proposals.",
+      "cta": "Request an event"
+    },
+    "upcoming": {
+      "title": "Upcoming bookings",
+      "empty": "No upcoming bookings yet — explore activities to get started.",
+      "viewAll": "View all bookings"
+    },
+    "organizer": {
+      "title": "Want to host your own activities?",
+      "description": "Become an organizer to create experiences and earn — a short, supportive path.",
+      "cta": "Become an organizer"
+    },
+    "dashboard": {
+      "title": "Organizer dashboard",
+      "description": "Manage your activities, venues, and bookings.",
+      "cta": "Go to dashboard"
     }
   }
 }

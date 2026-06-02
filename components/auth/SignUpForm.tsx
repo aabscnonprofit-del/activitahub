@@ -10,6 +10,8 @@ import type { AuthFormState, Locale } from '@/lib/types'
 
 interface SignUpFormProps {
   locale: Locale
+  /** Post-auth destination (organizer intent carries /<locale>/onboarding). */
+  next?: string
 }
 
 const initialState: AuthFormState = {}
@@ -29,11 +31,14 @@ function SubmitButton() {
   )
 }
 
-export function SignUpForm({ locale }: SignUpFormProps) {
+export function SignUpForm({ locale, next }: SignUpFormProps) {
   const t = useTranslations('auth.signUp')
   const tCommon = useTranslations('common')
   const [rawState, formAction] = useFormState(signUp, initialState)
   const state = rawState ?? initialState
+  const signInHref = next
+    ? `/${locale}/sign-in?next=${encodeURIComponent(next)}`
+    : `/${locale}/sign-in`
 
   // On success, show check-email message instead of the form
   if (state.success) {
@@ -61,7 +66,7 @@ export function SignUpForm({ locale }: SignUpFormProps) {
           </p>
         </div>
         <Link
-          href={`/${locale}/sign-in`}
+          href={signInHref}
           className="text-sm font-medium text-brand-600 hover:text-brand-800"
         >
           {tCommon('signIn')}
@@ -72,8 +77,9 @@ export function SignUpForm({ locale }: SignUpFormProps) {
 
   return (
     <form action={formAction} className="space-y-4" noValidate>
-      {/* Hidden locale field — passed to server action */}
+      {/* Hidden fields — passed to server action */}
       <input type="hidden" name="locale" value={locale} />
+      {next && <input type="hidden" name="next" value={next} />}
 
       {state.error && (
         <Alert variant="error" message={state.error} />
@@ -115,7 +121,7 @@ export function SignUpForm({ locale }: SignUpFormProps) {
       <p className="text-center text-sm text-slate-600">
         {t('hasAccount')}{' '}
         <Link
-          href={`/${locale}/sign-in`}
+          href={signInHref}
           className="font-medium text-brand-600 hover:text-brand-800"
         >
           {t('signInLink')}

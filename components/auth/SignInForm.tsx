@@ -10,6 +10,8 @@ import type { AuthFormState, Locale } from '@/lib/types'
 
 interface SignInFormProps {
   locale: Locale
+  /** Post-auth destination (organizer intent carries /<locale>/onboarding). */
+  next?: string
 }
 
 const initialState: AuthFormState = {}
@@ -29,14 +31,18 @@ function SubmitButton() {
   )
 }
 
-export function SignInForm({ locale }: SignInFormProps) {
+export function SignInForm({ locale, next }: SignInFormProps) {
   const t = useTranslations('auth.signIn')
   const [rawState, formAction] = useFormState(signIn, initialState)
   const state = rawState ?? initialState
+  const signUpHref = next
+    ? `/${locale}/sign-up?next=${encodeURIComponent(next)}`
+    : `/${locale}/sign-up`
 
   return (
     <form action={formAction} className="space-y-4" noValidate>
       <input type="hidden" name="locale" value={locale} />
+      {next && <input type="hidden" name="next" value={next} />}
 
       {state.error && (
         <Alert variant="error" message={state.error} />
@@ -77,7 +83,7 @@ export function SignInForm({ locale }: SignInFormProps) {
       <p className="text-center text-sm text-slate-600">
         {t('noAccount')}{' '}
         <Link
-          href={`/${locale}/sign-up`}
+          href={signUpHref}
           className="font-medium text-brand-600 hover:text-brand-800"
         >
           {t('signUpLink')}

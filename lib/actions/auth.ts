@@ -26,6 +26,18 @@ const resetPasswordSchema = z.object({
   locale: z.string(),
 })
 
+/**
+ * Validate a post-auth `next` destination. Only same-origin absolute paths are
+ * allowed; anything else falls back to the participant home (`/account`).
+ * This is how organizer *intent* is carried — organizer CTAs pass
+ * `next=/<locale>/onboarding`; ordinary participants pass nothing.
+ */
+function safeNext(next: FormDataEntryValue | string | null, locale: string): string {
+  const s = typeof next === 'string' ? next : ''
+  if (s.startsWith('/') && !s.startsWith('//')) return s
+  return `/${locale}/account`
+}
+
 // ── Actions ───────────────────────────────────────────────────────────────────
 
 /**
@@ -53,13 +65,17 @@ export async function signUp(
   const { fullName, email, password, locale } = parsed.data
   const supabase = await createClient()
 
+  // Default new users are participants → land on /account after confirmation.
+  // Organizer-intent sign-ups carry next=/<locale>/onboarding.
+  const dest = safeNext(formData.get('next'), locale)
+
   const { error } = await supabase.auth.signUp({
     email,
     password,
     options: {
       data: { full_name: fullName },
       emailRedirectTo: absoluteUrl(
-        `/api/auth/callback?next=/${locale}/onboarding`
+        `/api/auth/callback?next=${encodeURIComponent(dest)}`
       ),
     },
   })
@@ -119,9 +135,13 @@ export async function signIn(
     .eq('id', data.user.id)
     .single()
 
+  // Default destination = participant home, unless an organizer-intent `next`
+  // was provided (e.g. signing in to reach /onboarding).
+  const dest = safeNext(formData.get('next'), locale)
+
   if (!profile) {
-    // Profile not yet created (trigger may still be running) — go to onboarding
-    redirect(`/${locale}/onboarding`)
+    // Profile not yet created (trigger may still be running) — participant home.
+    redirect(dest)
   }
 
   if (profile.suspended) {
@@ -145,7 +165,13 @@ export async function signIn(
     redirect(`/${locale}/billing`)
   }
 
-  redirect(`/${locale}/onboarding`)
+  // Organizer path already in progress (a path was chosen) → resume onboarding.
+  if (profile.onboarding_status && profile.onboarding_status !== 'not_started') {
+    redirect(`/${locale}/onboarding`)
+  }
+
+  // Pure participant (or explicit organizer intent via `next`).
+  redirect(dest)
 }
 
 /**
@@ -161,13 +187,14 @@ export async function signOut(locale: string): Promise<void> {
 /**
  * Initiates Google OAuth sign-in flow.
  */
-export async function signInWithGoogle(locale: string): Promise<void> {
+export async function signInWithGoogle(locale: string, next?: string): Promise<void> {
   const supabase = await createClient()
 
+  const dest = safeNext(next ?? null, locale)
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: absoluteUrl(`/api/auth/callback?next=/${locale}/onboarding`),
+      redirectTo: absoluteUrl(`/api/auth/callback?next=${encodeURIComponent(dest)}`),
     },
   })
 

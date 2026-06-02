@@ -7,6 +7,7 @@ import type { Metadata } from 'next'
 
 interface SignInPageProps {
   params: Promise<{ locale: string }>
+  searchParams: Promise<{ next?: string }>
 }
 
 export async function generateMetadata({ params }: SignInPageProps): Promise<Metadata> {
@@ -15,8 +16,10 @@ export async function generateMetadata({ params }: SignInPageProps): Promise<Met
   return { title: t('title') }
 }
 
-export default async function SignInPage({ params }: SignInPageProps) {
+export default async function SignInPage({ params, searchParams }: SignInPageProps) {
   const { locale } = await params as { locale: Locale }
+  const sp = await searchParams
+  const next = typeof sp.next === 'string' && sp.next.startsWith('/') && !sp.next.startsWith('//') ? sp.next : undefined
   const t = await getTranslations('auth.signIn')
 
   return (
@@ -34,7 +37,7 @@ export default async function SignInPage({ params }: SignInPageProps) {
           <p className="mt-1 text-sm text-slate-500">{t('subtitle')}</p>
         </div>
 
-        <SignInForm locale={locale} />
+        <SignInForm locale={locale} next={next} />
       </div>
     </div>
   )

@@ -101,7 +101,7 @@ export default async function PricingPage({ params }: Props) {
                 ))}
               </ul>
               <Link
-                href={`/${locale}/sign-up`}
+                href={`/${locale}/sign-up?next=/${locale}/onboarding`}
                 className="btn-primary w-full py-3 text-base"
               >
                 {t('pro.cta')}
