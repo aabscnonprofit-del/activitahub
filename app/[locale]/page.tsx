@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { PublicHeader } from '@/components/layout/PublicHeader'
 import { PublicFooter } from '@/components/layout/PublicFooter'
 import { ProgressionPath } from '@/components/marketing/ProgressionPath'
+import { HeroBackground } from '@/components/marketing/HeroBackground'
 import {
   Briefcase, Store, ArrowRight, Check,
   ShieldCheck, BadgeCheck, Globe, CalendarCheck,
@@ -57,19 +58,12 @@ export default async function HomePage({ params }: HomePageProps) {
 
       <main className="flex-1">
         {/* ── Hero ───────────────────────────────────────────────────────── */}
-        <section className="relative overflow-hidden bg-gradient-to-b from-brand-700 via-brand-800 to-brand-900 px-4 pb-16 pt-14 text-white sm:pb-24 sm:pt-24">
-          {/* Background decoration */}
-          <div
-            className="absolute inset-0 opacity-10"
-            aria-hidden="true"
-            style={{
-              backgroundImage:
-                'radial-gradient(circle at 50% 0%, white 0%, transparent 60%)',
-            }}
-          />
+        <section className="relative overflow-hidden px-4 pb-16 pt-14 text-white sm:pb-24 sm:pt-24">
+          {/* Cinematic golden-hour photo background + readability overlay */}
+          <HeroBackground />
 
-          <div className="relative mx-auto max-w-4xl text-center">
-            <p className="mb-5 inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/10 px-4 py-1.5 text-sm font-medium text-brand-100">
+          <div className="relative z-10 mx-auto max-w-4xl text-center [text-shadow:0_1px_14px_rgba(0,0,0,0.35)]">
+            <p className="mb-5 inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-sm font-medium text-white backdrop-blur-sm">
               <Users className="h-4 w-4" aria-hidden="true" />
               {t('hero.badge')}
             </p>
@@ -80,7 +74,7 @@ export default async function HomePage({ params }: HomePageProps) {
             <p className="mt-4 text-base font-semibold text-amber-300 sm:mt-5 sm:text-xl">
               Activate Life Together
             </p>
-            <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-brand-100 sm:text-lg">
+            <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-white/90 sm:text-lg">
               {t('hero.subtitle')}
             </p>
             <div className="mt-7 flex flex-col items-center gap-3 sm:mt-9 sm:flex-row sm:justify-center">
@@ -98,7 +92,7 @@ export default async function HomePage({ params }: HomePageProps) {
                 {t('hero.ctaSecondary')}
               </Link>
             </div>
-            <p className="mt-5 text-sm text-brand-200">{t('hero.reassure')}</p>
+            <p className="mt-5 text-sm text-white/75">{t('hero.reassure')}</p>
           </div>
         </section>
 
