@@ -28,7 +28,7 @@ export default async function ResetPasswordPage({ params }: ResetPasswordPagePro
       </Link>
       <p className="mb-8 text-sm font-medium text-brand-600">Activate Life Together</p>
 
-      <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
+      <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
         <div className="mb-6 text-center">
           <h1 className="text-2xl font-extrabold text-slate-900">{t('title')}</h1>
           <p className="mt-1 text-sm text-slate-500">{t('subtitle')}</p>

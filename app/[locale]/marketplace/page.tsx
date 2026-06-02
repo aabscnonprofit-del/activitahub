@@ -58,15 +58,15 @@ export default async function MarketplacePage({ params, searchParams }: Marketpl
       <PublicHeader locale={locale} isAuthenticated={!!user} />
 
       <main className="flex-1 bg-slate-50">
-        <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-          <h1 className="text-3xl font-extrabold text-slate-900">{t('title')}</h1>
+        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-10 lg:px-8">
+          <h1 className="text-2xl font-extrabold text-slate-900 sm:text-3xl">{t('title')}</h1>
           <p className="mt-1 text-slate-500">{t('subtitle')}</p>
           <p className="mt-2 inline-flex items-center gap-1.5 text-sm font-medium text-slate-600">
             <ShieldCheck className="h-4 w-4 shrink-0 text-green-600" aria-hidden="true" />
             {t('trustNote')}
           </p>
 
-          <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-[260px_1fr]">
+          <div className="mt-6 grid grid-cols-1 gap-6 sm:mt-8 lg:grid-cols-[260px_1fr] lg:gap-8">
             {/* Filters — a no-JS GET form */}
             <form method="get" className="h-fit space-y-3 rounded-2xl border border-slate-200 bg-white p-5">
               <div>
@@ -146,7 +146,7 @@ export default async function MarketplacePage({ params, searchParams }: Marketpl
                   )}
                 </div>
               ) : (
-                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 xl:grid-cols-3">
                   {cards.map((c) => (
                     <Link
                       key={c.id}

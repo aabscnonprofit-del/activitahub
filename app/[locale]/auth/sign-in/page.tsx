@@ -34,7 +34,7 @@ export default async function SignInPage({ params }: Props) {
           <p className="mt-2 text-sm font-medium text-indigo-600">Activate Life Together</p>
         </div>
 
-        <div className="card p-8">
+        <div className="card p-6 sm:p-8">
           <div className="text-center mb-7">
             <h1 className="text-2xl font-extrabold text-slate-900 mb-1">{t('title')}</h1>
             <p className="text-slate-500 text-sm">{t('subtitle')}</p>

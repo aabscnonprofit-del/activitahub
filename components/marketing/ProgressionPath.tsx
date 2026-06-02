@@ -28,21 +28,21 @@ export async function ProgressionPath({ locale }: { locale: Locale }) {
   const stages = [0, 1, 2, 3, 4] as const
 
   return (
-    <section className="bg-slate-50 px-4 py-20 sm:py-28">
+    <section className="bg-slate-50 px-4 py-14 sm:py-20 lg:py-28">
       <div className="mx-auto max-w-6xl">
-        <div className="mb-14 text-center">
+        <div className="mb-10 text-center sm:mb-14">
           <p className="text-sm font-bold uppercase tracking-wide text-brand-600">
             {t('progression.eyebrow')}
           </p>
-          <h2 className="mt-2 text-3xl font-extrabold text-slate-900 sm:text-4xl">
+          <h2 className="mt-2 text-2xl font-extrabold text-slate-900 sm:text-3xl lg:text-4xl">
             {t('progression.headline')}
           </h2>
-          <p className="mx-auto mt-3 max-w-2xl text-lg text-slate-500">
+          <p className="mx-auto mt-3 max-w-2xl text-base text-slate-500 sm:text-lg">
             {t('progression.subheadline')}
           </p>
         </div>
 
-        <ol className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-5 lg:gap-3">
+        <ol className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-8 lg:grid-cols-5 lg:gap-3">
           {stages.map((i) => {
             const Icon = STAGE_ICONS[i]
             return (

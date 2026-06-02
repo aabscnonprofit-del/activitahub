@@ -57,7 +57,7 @@ export default async function HomePage({ params }: HomePageProps) {
 
       <main className="flex-1">
         {/* ── Hero ───────────────────────────────────────────────────────── */}
-        <section className="relative overflow-hidden bg-gradient-to-b from-brand-700 via-brand-800 to-brand-900 px-4 pb-20 pt-20 text-white sm:pb-28 sm:pt-28">
+        <section className="relative overflow-hidden bg-gradient-to-b from-brand-700 via-brand-800 to-brand-900 px-4 pb-16 pt-14 text-white sm:pb-24 sm:pt-24">
           {/* Background decoration */}
           <div
             className="absolute inset-0 opacity-10"
@@ -73,27 +73,27 @@ export default async function HomePage({ params }: HomePageProps) {
               <Users className="h-4 w-4" aria-hidden="true" />
               {t('hero.badge')}
             </p>
-            <h1 className="text-4xl font-extrabold leading-tight tracking-tight sm:text-6xl">
+            <h1 className="text-3xl font-extrabold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
               {t('hero.title')}{' '}
               <span className="text-amber-300">{t('hero.titleAccent')}</span>
             </h1>
-            <p className="mt-5 text-lg font-semibold text-amber-300 sm:text-xl">
+            <p className="mt-4 text-base font-semibold text-amber-300 sm:mt-5 sm:text-xl">
               Activate Life Together
             </p>
-            <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-brand-100">
+            <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-brand-100 sm:text-lg">
               {t('hero.subtitle')}
             </p>
-            <div className="mt-9 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+            <div className="mt-7 flex flex-col items-center gap-3 sm:mt-9 sm:flex-row sm:justify-center">
               <Link
                 href={`/${locale}/sign-up`}
-                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-amber-400 px-8 py-4 text-base font-bold text-slate-900 shadow-lg transition-colors hover:bg-amber-300 sm:w-auto"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-amber-400 px-6 py-3.5 text-base sm:px-8 sm:py-4 font-bold text-slate-900 shadow-lg transition-colors hover:bg-amber-300 sm:w-auto"
               >
                 {t('hero.ctaPrimary')}
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
               <Link
                 href={`/${locale}/marketplace`}
-                className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-white/25 bg-white/10 px-8 py-4 text-base font-semibold text-white transition-colors hover:bg-white/20 sm:w-auto"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-white/25 bg-white/10 px-6 py-3.5 text-base sm:px-8 sm:py-4 font-semibold text-white transition-colors hover:bg-white/20 sm:w-auto"
               >
                 {t('hero.ctaSecondary')}
               </Link>
@@ -120,20 +120,20 @@ export default async function HomePage({ params }: HomePageProps) {
         <ProgressionPath locale={locale} />
 
         {/* ── Two paths: Join vs Organize (customer vs organizer clarity) ── */}
-        <section className="px-4 py-20 sm:py-28">
+        <section className="px-4 py-14 sm:py-20 lg:py-28">
           <div className="mx-auto max-w-5xl">
-            <div className="mb-14 text-center">
-              <h2 className="text-3xl font-extrabold text-slate-900 sm:text-4xl">
+            <div className="mb-10 text-center sm:mb-14">
+              <h2 className="text-2xl font-extrabold text-slate-900 sm:text-3xl lg:text-4xl">
                 {t('audience.headline')}
               </h2>
-              <p className="mx-auto mt-3 max-w-2xl text-lg text-slate-500">
+              <p className="mx-auto mt-3 max-w-2xl text-base text-slate-500 sm:text-lg">
                 {t('audience.subheadline')}
               </p>
             </div>
 
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-8">
               {/* Join activities — participants */}
-              <div className="card flex flex-col p-8">
+              <div className="card flex flex-col p-6 sm:p-8">
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-50 text-amber-600">
                   <Store className="h-6 w-6" aria-hidden="true" />
                 </div>
@@ -157,7 +157,7 @@ export default async function HomePage({ params }: HomePageProps) {
               </div>
 
               {/* Organize activities — organizers (primary path) */}
-              <div className="card flex flex-col p-8 ring-2 ring-brand-500">
+              <div className="card flex flex-col p-6 sm:p-8 ring-2 ring-brand-500">
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
                   <Briefcase className="h-6 w-6" aria-hidden="true" />
                 </div>
@@ -184,13 +184,13 @@ export default async function HomePage({ params }: HomePageProps) {
         </section>
 
         {/* ── Built on trust ────────────────────────────────────────────── */}
-        <section className="bg-slate-50 px-4 py-20 sm:py-28">
+        <section className="bg-slate-50 px-4 py-14 sm:py-20 lg:py-28">
           <div className="mx-auto max-w-6xl">
-            <div className="mb-14 text-center">
-              <h2 className="text-3xl font-extrabold text-slate-900 sm:text-4xl">
+            <div className="mb-10 text-center sm:mb-14">
+              <h2 className="text-2xl font-extrabold text-slate-900 sm:text-3xl lg:text-4xl">
                 {t('trustband.headline')}
               </h2>
-              <p className="mx-auto mt-3 max-w-xl text-lg text-slate-500">
+              <p className="mx-auto mt-3 max-w-xl text-base text-slate-500 sm:text-lg">
                 {t('trustband.subheadline')}
               </p>
             </div>
@@ -214,15 +214,15 @@ export default async function HomePage({ params }: HomePageProps) {
         </section>
 
         {/* ── Community ─────────────────────────────────────────────────── */}
-        <section className="px-4 py-20 sm:py-24">
-          <div className="mx-auto max-w-4xl rounded-3xl bg-gradient-to-br from-brand-50 to-amber-50 px-6 py-14 text-center ring-1 ring-brand-100 sm:px-12">
+        <section className="px-4 py-14 sm:py-20 lg:py-24">
+          <div className="mx-auto max-w-4xl rounded-3xl bg-gradient-to-br from-brand-50 to-amber-50 px-5 py-10 text-center ring-1 ring-brand-100 sm:px-12 sm:py-14">
             <div className="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-brand-600 shadow-sm">
               <Users className="h-6 w-6" aria-hidden="true" />
             </div>
-            <h2 className="text-3xl font-extrabold text-slate-900 sm:text-4xl">
+            <h2 className="text-2xl font-extrabold text-slate-900 sm:text-3xl lg:text-4xl">
               {t('community.headline')}
             </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-slate-600">
+            <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
               {t('community.body')}
             </p>
             <Link
@@ -236,17 +236,17 @@ export default async function HomePage({ params }: HomePageProps) {
         </section>
 
         {/* ── CTA ───────────────────────────────────────────────────────── */}
-        <section className="bg-slate-900 px-4 py-20 sm:py-24">
+        <section className="bg-slate-900 px-4 py-14 sm:py-20 lg:py-24">
           <div className="mx-auto max-w-3xl text-center">
-            <h2 className="text-3xl font-extrabold text-white sm:text-4xl">
+            <h2 className="text-2xl font-extrabold text-white sm:text-3xl lg:text-4xl">
               {t('cta.title')}
             </h2>
-            <p className="mx-auto mt-4 max-w-xl text-lg text-slate-400">
+            <p className="mx-auto mt-4 max-w-xl text-base text-slate-400 sm:text-lg">
               {t('cta.subtitle')}
             </p>
             <Link
               href={`/${locale}/sign-up`}
-              className="mt-8 inline-flex items-center gap-2 rounded-xl bg-brand-500 px-8 py-4 text-base font-bold text-white shadow-lg transition-colors hover:bg-brand-400"
+              className="mt-8 inline-flex items-center gap-2 rounded-xl bg-brand-500 px-6 py-3.5 text-base sm:px-8 sm:py-4 font-bold text-white shadow-lg transition-colors hover:bg-brand-400"
             >
               {t('cta.button')}
               <ArrowRight className="h-4 w-4" aria-hidden="true" />

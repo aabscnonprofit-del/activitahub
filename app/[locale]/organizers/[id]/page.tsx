@@ -31,9 +31,9 @@ export default async function OrganizerProfilePage({ params }: OrganizerPageProp
       <PublicHeader locale={locale} isAuthenticated={!!user} />
 
       <main className="flex-1 bg-slate-50">
-        <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-4xl px-4 py-6 sm:px-6 sm:py-10 lg:px-8">
           {/* Header */}
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+          <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-8">
             <div className="flex items-start gap-5">
               <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-brand-100 text-2xl font-bold text-brand-700">
                 {(org.display_name ?? 'A')[0]?.toUpperCase()}

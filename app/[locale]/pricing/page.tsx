@@ -26,23 +26,23 @@ export default async function PricingPage({ params }: Props) {
       <PublicHeader locale={locale} isAuthenticated={!!user} />
 
       <main className="flex-1 bg-slate-50">
-        <div className="container-page py-16 sm:py-20">
-          <div className="mb-12 text-center sm:mb-14">
-            <h1 className="text-4xl font-extrabold text-slate-900 lg:text-5xl">
+        <div className="container-page py-12 sm:py-16 lg:py-20">
+          <div className="mb-8 text-center sm:mb-12">
+            <h1 className="text-3xl font-extrabold text-slate-900 sm:text-4xl lg:text-5xl">
               {t('title')}
             </h1>
-            <p className="mx-auto mt-4 max-w-xl text-lg text-slate-500">{t('subtitle')}</p>
+            <p className="mx-auto mt-3 max-w-xl text-base text-slate-500 sm:mt-4 sm:text-lg">{t('subtitle')}</p>
           </div>
 
           <div className="mx-auto grid max-w-4xl grid-cols-1 items-start gap-6 md:grid-cols-2 md:gap-8">
             {/* Free plan */}
-            <div className="card flex h-full flex-col p-8">
+            <div className="card flex h-full flex-col p-6 sm:p-8">
               <div className="mb-4">
                 <p className="mb-1 text-sm font-bold uppercase tracking-wide text-slate-500">
                   {t('free.name')}
                 </p>
                 <div className="flex items-end gap-1">
-                  <span className="text-5xl font-extrabold text-slate-900">{t('free.price')}</span>
+                  <span className="text-4xl font-extrabold text-slate-900 sm:text-5xl">{t('free.price')}</span>
                   <span className="mb-1.5 text-slate-400">/{t('free.period')}</span>
                 </div>
                 <p className="mt-3 text-sm leading-relaxed text-slate-500">{t('free.tagline')}</p>
@@ -70,7 +70,7 @@ export default async function PricingPage({ params }: Props) {
             </div>
 
             {/* Pro plan */}
-            <div className="card relative flex h-full flex-col border-2 border-brand-500 p-8 shadow-lg shadow-brand-100">
+            <div className="card relative flex h-full flex-col border-2 border-brand-500 p-6 shadow-lg shadow-brand-100 sm:p-8">
               <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-600 px-4 py-1.5 text-xs font-bold text-white">
                   <Zap className="h-3 w-3" /> {t('pro.badge')}
@@ -81,7 +81,7 @@ export default async function PricingPage({ params }: Props) {
                   {t('pro.name')}
                 </p>
                 <div className="flex items-end gap-1">
-                  <span className="text-5xl font-extrabold text-slate-900">{t('pro.price')}</span>
+                  <span className="text-4xl font-extrabold text-slate-900 sm:text-5xl">{t('pro.price')}</span>
                   <span className="mb-1.5 text-slate-400">{t('pro.period')}</span>
                 </div>
                 <p className="mt-3 text-sm leading-relaxed text-slate-500">{t('pro.tagline')}</p>
@@ -115,7 +115,7 @@ export default async function PricingPage({ params }: Props) {
           </div>
 
           {/* ── Post-signup journey ──────────────────────────────────────── */}
-          <div className="mx-auto mt-16 max-w-4xl sm:mt-20">
+          <div className="mx-auto mt-12 max-w-4xl sm:mt-16 lg:mt-20">
             <h2 className="text-center text-2xl font-extrabold text-slate-900">
               {t('journey.headline')}
             </h2>

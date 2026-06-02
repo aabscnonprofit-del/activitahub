@@ -37,7 +37,7 @@ export default async function ActivityDetailPage({ params }: DetailPageProps) {
       <PublicHeader locale={locale} isAuthenticated={!!user} />
 
       <main className="flex-1 bg-slate-50">
-        <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-5xl px-4 py-6 sm:px-6 sm:py-10 lg:px-8">
           <Link href={`/${locale}/marketplace`} className="text-sm text-slate-500 hover:text-slate-800">
             ← {t('backToMarketplace')}
           </Link>
@@ -59,7 +59,7 @@ export default async function ActivityDetailPage({ params }: DetailPageProps) {
             )}
           </div>
 
-          <div className="mt-6 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_320px]">
+          <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-[1fr_320px] lg:gap-8">
             {/* Main */}
             <div>
               {a.category && (
@@ -67,7 +67,7 @@ export default async function ActivityDetailPage({ params }: DetailPageProps) {
                   {t(`categories.${a.category}` as 'categories.sports')}
                 </span>
               )}
-              <h1 className="mt-1 text-3xl font-extrabold text-slate-900">{a.title}</h1>
+              <h1 className="mt-1 text-2xl font-extrabold text-slate-900 sm:text-3xl">{a.title}</h1>
 
               {a.rating != null && (
                 <div className="mt-2">
@@ -157,7 +157,7 @@ export default async function ActivityDetailPage({ params }: DetailPageProps) {
             </div>
 
             {/* Sidebar: price + organizer + CTA */}
-            <aside className="h-fit space-y-4 rounded-2xl border border-slate-200 bg-white p-6">
+            <aside className="h-fit space-y-4 rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
               <div>
                 <p className="text-2xl font-extrabold text-slate-900">
                   {formatPrice(a.price_cents, a.currency, locale) ?? t('card.free')}

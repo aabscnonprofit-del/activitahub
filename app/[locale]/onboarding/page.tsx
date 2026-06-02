@@ -87,9 +87,9 @@ export default async function OnboardingPage({ params }: OnboardingPageProps) {
       </div>
 
       {/* Content */}
-      <div className="mx-auto max-w-5xl px-4 py-12">
+      <div className="mx-auto max-w-5xl px-4 py-8 sm:py-12">
         {/* Progress indicator */}
-        <div className="mb-10 flex items-center justify-center gap-2">
+        <div className="mb-8 flex items-center justify-center gap-2 sm:mb-10">
           <StepDot step={1} label={t('steps.0' as Parameters<typeof t>[0])} active />
           <StepLine />
           <StepDot step={2} label={t('steps.1' as Parameters<typeof t>[0])} />
@@ -99,8 +99,8 @@ export default async function OnboardingPage({ params }: OnboardingPageProps) {
           <StepDot step={4} label={t('steps.3' as Parameters<typeof t>[0])} />
         </div>
 
-        <div className="mb-10 text-center">
-          <h1 className="text-3xl font-extrabold text-slate-900 sm:text-4xl">
+        <div className="mb-8 text-center sm:mb-10">
+          <h1 className="text-2xl font-extrabold text-slate-900 sm:text-3xl lg:text-4xl">
             {t('title')}
           </h1>
           <p className="mx-auto mt-3 max-w-xl text-base text-slate-500">
@@ -135,7 +135,7 @@ export default async function OnboardingPage({ params }: OnboardingPageProps) {
         />
 
         {/* Guidance: how certification + earning works, what's next */}
-        <div className="mx-auto mt-14 max-w-3xl">
+        <div className="mx-auto mt-10 max-w-3xl sm:mt-14">
           <h2 className="text-center text-xl font-bold text-slate-900">
             {t('guide.headline')}
           </h2>
