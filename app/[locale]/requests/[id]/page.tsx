@@ -1,7 +1,7 @@
 import { getTranslations } from 'next-intl/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { Check, X, CalendarDays } from 'lucide-react'
+import { Check, X, CalendarDays, Info } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { PublicHeader } from '@/components/layout/PublicHeader'
 import { Badge } from '@/components/ui/Badge'
@@ -58,6 +58,13 @@ export default async function RequestDetailPage({ params, searchParams }: Reques
 
   const canAct = request.status !== 'booked' && request.status !== 'cancelled'
   const error = typeof sp.error === 'string' ? sp.error : null
+  const nextMsg =
+    request.status === 'booked'
+      ? t('detail.nextBooked')
+      : proposals.length > 0
+        ? t('detail.nextProposals')
+        : t('detail.nextOpen')
+  const hasActionable = canAct && proposals.some((p) => p.status === 'sent')
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -84,8 +91,15 @@ export default async function RequestDetailPage({ params, searchParams }: Reques
             {request.notes && <p className="mt-3 text-sm text-slate-600">{request.notes}</p>}
           </div>
 
+          {/* What happens now — status-aware reassurance */}
+          <div className="mt-4 flex items-start gap-2.5 rounded-xl border border-brand-100 bg-brand-50 p-4 text-sm leading-relaxed text-slate-700">
+            <Info className="mt-0.5 h-4 w-4 shrink-0 text-brand-600" aria-hidden="true" />
+            <span>{nextMsg}</span>
+          </div>
+
           {/* Proposals */}
           <h2 className="mt-8 mb-3 text-lg font-bold text-slate-900">{t('detail.proposals')} ({proposals.length})</h2>
+          {hasActionable && <p className="mb-3 -mt-1 text-xs text-slate-500">{t('detail.acceptHint')}</p>}
           {error && <div className="mb-3"><Alert variant="error" message={error} /></div>}
 
           {proposals.length === 0 ? (

@@ -809,7 +809,25 @@
       "verified": "Organisateur vérifié et certifié",
       "cancel": "Annulable à tout moment"
     },
-    "reviewsHeading": "Ce que disent les participants"
+    "reviewsHeading": "Ce que disent les participants",
+    "howBooking": {
+      "title": "Comment fonctionne la réservation",
+      "noPayment": "Vous ne serez débité qu’après avoir accepté une proposition.",
+      "steps": [
+        {
+          "title": "Envoyez une demande",
+          "description": "Dites à l’organisateur ce que vous souhaitez — c’est gratuit et rapide."
+        },
+        {
+          "title": "Recevez une proposition",
+          "description": "L’organisateur répond avec une date et un prix. Aucun paiement pour l’instant."
+        },
+        {
+          "title": "Confirmez et réservez",
+          "description": "Acceptez la proposition de votre choix, puis payez en toute sécurité pour la confirmer."
+        }
+      ]
+    }
   },
   "requests": {
     "new": {
@@ -860,7 +878,11 @@
       "participants": "{n} participants",
       "ages": "Âges",
       "budget": "Budget",
-      "booked": "Réservée"
+      "booked": "Réservée",
+      "nextOpen": "Votre demande est active. Les organisateurs certifiés l’examinent et répondront avec des propositions — aucun paiement avant votre acceptation.",
+      "nextProposals": "Comparez les propositions ci-dessous et acceptez celle qui vous convient. L’acceptation crée une réservation, puis vous payez en toute sécurité pour confirmer.",
+      "nextBooked": "C’est réservé ! Payez et gérez cela dans Mes réservations.",
+      "acceptHint": "L’acceptation crée une réservation — vous paierez en toute sécurité à l’étape suivante."
     },
     "proposalForm": {
       "activity": "Activité (facultatif)",
@@ -879,6 +901,23 @@
       "proposalsTitle": "Mes propositions",
       "proposalsSubtitle": "Propositions envoyées aux clients.",
       "proposalsEmpty": "Vous n'avez pas encore envoyé de proposition."
+    },
+    "flow": {
+      "title": "Que se passe-t-il ensuite",
+      "steps": [
+        {
+          "title": "Vous envoyez cette demande",
+          "description": "Elle est transmise aux organisateurs certifiés correspondants — sans paiement maintenant."
+        },
+        {
+          "title": "Les organisateurs proposent",
+          "description": "Vous recevrez des propositions avec dates et prix dans Mes demandes."
+        },
+        {
+          "title": "Vous choisissez et réservez",
+          "description": "Acceptez la meilleure et payez en toute sécurité pour confirmer votre réservation."
+        }
+      ]
     }
   },
   "bookings": {
@@ -1031,6 +1070,7 @@
       "title": "Tableau de bord organisateur",
       "description": "Gérez vos activités, lieux et réservations.",
       "cta": "Aller au tableau de bord"
-    }
+    },
+    "requestsLink": "Vos demandes"
   }
 }

@@ -102,11 +102,16 @@ export default async function AccountPage({ params }: AccountPageProps) {
           </div>
 
           {/* Upcoming bookings */}
-          <div className="mt-8 flex items-center justify-between">
+          <div className="mt-8 flex items-center justify-between gap-3">
             <h2 className="text-lg font-bold text-slate-900">{t('upcoming.title')}</h2>
-            <Link href={`/${locale}/bookings`} className="text-sm font-semibold text-brand-600 hover:underline">
-              {t('upcoming.viewAll')}
-            </Link>
+            <div className="flex items-center gap-4">
+              <Link href={`/${locale}/requests`} className="text-sm font-semibold text-brand-600 hover:underline">
+                {t('requestsLink')}
+              </Link>
+              <Link href={`/${locale}/bookings`} className="text-sm font-semibold text-brand-600 hover:underline">
+                {t('upcoming.viewAll')}
+              </Link>
+            </div>
           </div>
           {bookings.length === 0 ? (
             <p className="card mt-3 p-6 text-center text-sm text-slate-500">{t('upcoming.empty')}</p>

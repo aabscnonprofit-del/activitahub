@@ -809,7 +809,25 @@
       "verified": "Organizador verificado y certificado",
       "cancel": "Cancela cuando quieras"
     },
-    "reviewsHeading": "Lo que dicen los participantes"
+    "reviewsHeading": "Lo que dicen los participantes",
+    "howBooking": {
+      "title": "Cómo funciona la reserva",
+      "noPayment": "No se te cobrará hasta que aceptes una propuesta.",
+      "steps": [
+        {
+          "title": "Envía una solicitud",
+          "description": "Dile al organizador qué te gustaría — es gratis y lleva un minuto."
+        },
+        {
+          "title": "Recibe una propuesta",
+          "description": "El organizador responde con fecha y precio. Aún sin pago."
+        },
+        {
+          "title": "Confirma y reserva",
+          "description": "Acepta la propuesta que prefieras y paga de forma segura para confirmarla."
+        }
+      ]
+    }
   },
   "requests": {
     "new": {
@@ -860,7 +878,11 @@
       "participants": "{n} participantes",
       "ages": "Edades",
       "budget": "Presupuesto",
-      "booked": "Reservada"
+      "booked": "Reservada",
+      "nextOpen": "Tu solicitud está activa. Los organizadores certificados la están revisando y responderán con propuestas — sin pago hasta que aceptes una.",
+      "nextProposals": "Compara las propuestas de abajo y acepta la que prefieras. Al aceptar se crea una reserva y luego pagas de forma segura para confirmar.",
+      "nextBooked": "¡Reservado! Paga y gestiona esto en Mis reservas.",
+      "acceptHint": "Al aceptar se crea una reserva — pagarás de forma segura en el siguiente paso."
     },
     "proposalForm": {
       "activity": "Actividad (opcional)",
@@ -879,6 +901,23 @@
       "proposalsTitle": "Mis propuestas",
       "proposalsSubtitle": "Propuestas que has enviado a clientes.",
       "proposalsEmpty": "Aún no has enviado propuestas."
+    },
+    "flow": {
+      "title": "Qué ocurre después",
+      "steps": [
+        {
+          "title": "Envías esta solicitud",
+          "description": "Llega a organizadores certificados que coinciden — sin pago ahora."
+        },
+        {
+          "title": "Los organizadores proponen",
+          "description": "Recibirás propuestas con fechas y precios en Mis solicitudes."
+        },
+        {
+          "title": "Eliges y reservas",
+          "description": "Acepta la mejor y paga de forma segura para confirmar tu reserva."
+        }
+      ]
     }
   },
   "bookings": {
@@ -1031,6 +1070,7 @@
       "title": "Panel de organizador",
       "description": "Gestiona tus actividades, lugares y reservas.",
       "cta": "Ir al panel"
-    }
+    },
+    "requestsLink": "Tus solicitudes"
   }
 }

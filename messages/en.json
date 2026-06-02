@@ -809,7 +809,25 @@
       "verified": "Verified, certified organizer",
       "cancel": "Cancel anytime"
     },
-    "reviewsHeading": "What participants say"
+    "reviewsHeading": "What participants say",
+    "howBooking": {
+      "title": "How booking works",
+      "noPayment": "You won’t be charged until you accept a proposal.",
+      "steps": [
+        {
+          "title": "Send a request",
+          "description": "Tell the organizer what you’d like — it’s free and takes a minute."
+        },
+        {
+          "title": "Get a proposal",
+          "description": "The organizer replies with a date and price. No payment yet."
+        },
+        {
+          "title": "Confirm & book",
+          "description": "Accept the proposal you like, then pay securely to lock it in."
+        }
+      ]
+    }
   },
   "requests": {
     "new": {
@@ -860,7 +878,11 @@
       "participants": "{n} participants",
       "ages": "Ages",
       "budget": "Budget",
-      "booked": "Booked"
+      "booked": "Booked",
+      "nextOpen": "Your request is live. Certified organizers are reviewing it and will reply with proposals — no payment until you accept one.",
+      "nextProposals": "Compare the proposals below and accept the one you like. Accepting creates a booking, then you pay securely to confirm.",
+      "nextBooked": "You’re booked! Pay and manage this under My bookings.",
+      "acceptHint": "Accepting creates a booking — you’ll pay securely on the next step."
     },
     "proposalForm": {
       "activity": "Activity (optional)",
@@ -879,6 +901,23 @@
       "proposalsTitle": "My proposals",
       "proposalsSubtitle": "Proposals you've sent to customers.",
       "proposalsEmpty": "You haven't sent any proposals yet."
+    },
+    "flow": {
+      "title": "What happens next",
+      "steps": [
+        {
+          "title": "You send this request",
+          "description": "It goes to certified organizers who match — no payment now."
+        },
+        {
+          "title": "Organizers propose",
+          "description": "You’ll receive proposals with dates and prices under My requests."
+        },
+        {
+          "title": "You choose & book",
+          "description": "Accept the best one and pay securely to confirm your booking."
+        }
+      ]
     }
   },
   "bookings": {
@@ -1031,6 +1070,7 @@
       "title": "Organizer dashboard",
       "description": "Manage your activities, venues, and bookings.",
       "cta": "Go to dashboard"
-    }
+    },
+    "requestsLink": "Your requests"
   }
 }

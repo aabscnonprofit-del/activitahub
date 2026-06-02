@@ -38,7 +38,25 @@ export default async function NewRequestPage({ params, searchParams }: NewReques
           <h1 className="text-2xl font-extrabold text-slate-900">{t('new.title')}</h1>
           <p className="mt-1 text-sm text-slate-500">{t('new.subtitle')}</p>
 
-          <form action={createRequest} className="mt-6 space-y-4 rounded-2xl border border-slate-200 bg-white p-6">
+          {/* What happens next — reduce "did it send / will anyone respond / am I paying" uncertainty */}
+          <div className="mt-5 rounded-2xl border border-brand-100 bg-brand-50 p-5">
+            <h2 className="text-sm font-bold text-slate-900">{t('flow.title')}</h2>
+            <ol className="mt-3 space-y-2.5">
+              {[0, 1, 2].map((i) => (
+                <li key={i} className="flex gap-3 text-sm leading-relaxed">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-600 text-xs font-bold text-white">
+                    {i + 1}
+                  </span>
+                  <p>
+                    <span className="font-semibold text-slate-900">{t(`flow.steps.${i}.title` as 'flow.steps.0.title')}</span>
+                    <span className="text-slate-600"> — {t(`flow.steps.${i}.description` as 'flow.steps.0.description')}</span>
+                  </p>
+                </li>
+              ))}
+            </ol>
+          </div>
+
+          <form action={createRequest} className="mt-6 space-y-4 rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
             <input type="hidden" name="locale" value={locale} />
             <div>
               <label className="label-base">{t('form.eventType')} *</label>
@@ -49,7 +67,7 @@ export default async function NewRequestPage({ params, searchParams }: NewReques
                 ))}
               </select>
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div>
                 <label className="label-base">{t('form.city')}</label>
                 <input name="city" defaultValue={prefillCity} className="input-base" />
@@ -59,7 +77,7 @@ export default async function NewRequestPage({ params, searchParams }: NewReques
                 <input name="country" className="input-base" />
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div>
                 <label className="label-base">{t('form.date')}</label>
                 <input name="desired_date" type="date" className="input-base" />
@@ -69,7 +87,7 @@ export default async function NewRequestPage({ params, searchParams }: NewReques
                 <input name="participant_count" type="number" min="1" className="input-base" />
               </div>
             </div>
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
               <div>
                 <label className="label-base">{t('form.ageMin')}</label>
                 <input name="age_min" type="number" min="0" className="input-base" />

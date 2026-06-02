@@ -122,6 +122,32 @@ export default async function ActivityDetailPage({ params }: DetailPageProps) {
                 </div>
               )}
 
+              {/* How booking works — set expectations (request-based, no upfront charge) */}
+              <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
+                <h2 className="text-lg font-bold text-slate-900">{t('howBooking.title')}</h2>
+                <ol className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
+                  {[0, 1, 2].map((i) => (
+                    <li key={i} className="flex gap-3 sm:flex-col sm:gap-2">
+                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-100 text-sm font-bold text-brand-700">
+                        {i + 1}
+                      </span>
+                      <div className="min-w-0">
+                        <p className="font-semibold text-slate-900">
+                          {t(`howBooking.steps.${i}.title` as 'howBooking.steps.0.title')}
+                        </p>
+                        <p className="mt-0.5 text-sm leading-relaxed text-slate-600">
+                          {t(`howBooking.steps.${i}.description` as 'howBooking.steps.0.description')}
+                        </p>
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+                <p className="mt-4 flex items-center gap-1.5 border-t border-slate-100 pt-3 text-xs font-medium text-slate-500">
+                  <Lock className="h-3.5 w-3.5 shrink-0 text-slate-400" aria-hidden="true" />
+                  {t('howBooking.noPayment')}
+                </p>
+              </div>
+
               {/* Reviews — authentic social proof from real bookings */}
               <div className="mt-8">
                 <div className="flex flex-wrap items-center justify-between gap-2">
