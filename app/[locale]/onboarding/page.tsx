@@ -139,10 +139,10 @@ export default async function OnboardingPage({ params }: OnboardingPageProps) {
           </div>
         </div>
 
-        {/* Why the organizer test isn't available yet + what to do next */}
-        <div className="mx-auto mb-8 flex max-w-3xl items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4">
-          <Info className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" aria-hidden="true" />
-          <p className="text-sm leading-relaxed text-amber-900">{t('flowNote')}</p>
+        {/* How the two organizer paths work */}
+        <div className="mx-auto mb-8 flex max-w-3xl items-start gap-3 rounded-xl border border-brand-100 bg-brand-50 p-4">
+          <Info className="mt-0.5 h-5 w-5 shrink-0 text-brand-600" aria-hidden="true" />
+          <p className="text-sm leading-relaxed text-slate-700">{t('flowNote')}</p>
         </div>
 
         {/* Payment step: a path is chosen but not yet paid for */}
