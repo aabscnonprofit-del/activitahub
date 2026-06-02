@@ -10,6 +10,7 @@ import {
   setActivityStatus,
 } from '@/lib/actions/activities'
 import type { Activity, ActivityCategory } from '@/lib/types'
+import { CATEGORY_GROUPS, CATEGORIES_BY_GROUP } from '@/lib/categories'
 import Modal from '@/components/ui/Modal'
 import EmptyState from '@/components/ui/EmptyState'
 import Badge from '@/components/ui/Badge'
@@ -23,11 +24,6 @@ type Props = {
 }
 
 type FormMode = { type: 'create' } | { type: 'edit'; activity: Activity }
-
-const CATEGORIES: ActivityCategory[] = [
-  'sports', 'arts', 'music', 'education', 'outdoor',
-  'wellness', 'workshop', 'party', 'food', 'other',
-]
 
 /** Friendly section header inside the activity form. */
 function SectionLabel({
@@ -71,6 +67,7 @@ function marketplaceFields(formData: FormData) {
 
 export default function ActivitiesClient({ initialActivities, venues }: Props) {
   const t = useTranslations('activities')
+  const tMarket = useTranslations('marketplace')
   const tCommon = useTranslations('common')
   const { toasts, addToast, dismiss } = useToast()
 
@@ -334,8 +331,12 @@ export default function ActivitiesClient({ initialActivities, venues }: Props) {
               <label className="label-base">{t('form.category')}</label>
               <select name="category" defaultValue={editActivity?.category ?? ''} className="input-base">
                 <option value="">{t('form.none')}</option>
-                {CATEGORIES.map((c) => (
-                  <option key={c} value={c}>{t(`categories.${c}` as 'categories.sports')}</option>
+                {CATEGORY_GROUPS.map((g) => (
+                  <optgroup key={g} label={tMarket(`groups.${g}.name` as 'groups.personal.name')}>
+                    {CATEGORIES_BY_GROUP[g].map((c) => (
+                      <option key={c.key} value={c.key}>{tMarket(`categories.${c.key}` as 'categories.birthday')}</option>
+                    ))}
+                  </optgroup>
                 ))}
               </select>
             </div>

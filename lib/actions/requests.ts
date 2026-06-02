@@ -5,8 +5,13 @@ import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 
 const CATEGORIES = new Set([
+  // legacy
   'sports', 'arts', 'music', 'education', 'outdoor',
   'wellness', 'workshop', 'party', 'food', 'other',
+  // Phase 9 emotional taxonomy (migration 016)
+  'birthday', 'kids_party', 'wedding', 'anniversary', 'baby_shower', 'reunion', 'graduation',
+  'hiking_club', 'language_meetup', 'cultural_community', 'faith_community', 'hobby_group', 'alumni', 'fan_community',
+  'luxury_picnic', 'sunset_yacht', 'private_chef', 'glamping', 'volcano_dinner', 'survival_camp', 'underwater_photography',
 ])
 
 function cents(raw: string | null): number | null {

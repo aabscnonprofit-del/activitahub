@@ -295,6 +295,12 @@
         ],
         "cta": "Empieza a organizar"
       }
+    },
+    "discover": {
+      "eyebrow": "Descubre",
+      "headline": "Encuentra tu próximo momento",
+      "subheadline": "De cumpleaños a paseos al atardecer: explora experiencias para cada ocasión, comunidad y sueño.",
+      "cta": "Explorar el marketplace"
     }
   },
   "auth": {
@@ -814,7 +820,28 @@
       "workshop": "Taller",
       "party": "Fiesta",
       "food": "Comida",
-      "other": "Otro"
+      "other": "Otro",
+      "birthday": "Cumpleaños",
+      "kids_party": "Fiestas infantiles",
+      "wedding": "Bodas",
+      "anniversary": "Aniversarios",
+      "baby_shower": "Baby showers",
+      "reunion": "Reencuentros",
+      "graduation": "Graduaciones",
+      "hiking_club": "Clubes de senderismo",
+      "language_meetup": "Intercambios de idiomas",
+      "cultural_community": "Encuentros culturales",
+      "faith_community": "Comunidades de fe",
+      "hobby_group": "Grupos de afición",
+      "alumni": "Antiguos alumnos",
+      "fan_community": "Comunidades de fans",
+      "luxury_picnic": "Pícnics de lujo",
+      "sunset_yacht": "Yate al atardecer",
+      "private_chef": "Chef privado",
+      "glamping": "Glamping de lujo",
+      "volcano_dinner": "Cenas junto al volcán",
+      "survival_camp": "Campamentos de supervivencia",
+      "underwater_photography": "Fotografía submarina"
     },
     "indoorOutdoor": {
       "indoor": "Interior",
@@ -847,6 +874,20 @@
           "description": "Acepta la propuesta que prefieras y paga de forma segura para confirmarla."
         }
       ]
+    },
+    "groups": {
+      "personal": {
+        "name": "Personal y familia",
+        "tagline": "Celebra los momentos importantes"
+      },
+      "community": {
+        "name": "Comunidades y grupos",
+        "tagline": "Reúnete en torno a lo que amas"
+      },
+      "premium": {
+        "name": "Premium y exclusivo",
+        "tagline": "Experiencias únicas en la vida"
+      }
     }
   },
   "requests": {

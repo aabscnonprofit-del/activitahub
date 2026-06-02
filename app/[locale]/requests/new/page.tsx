@@ -3,12 +3,8 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { PublicHeader } from '@/components/layout/PublicHeader'
 import { createRequest } from '@/lib/actions/requests'
-import type { Locale, ActivityCategory } from '@/lib/types'
-
-const CATEGORIES: ActivityCategory[] = [
-  'sports', 'arts', 'music', 'education', 'outdoor',
-  'wellness', 'workshop', 'party', 'food', 'other',
-]
+import { CATEGORY_GROUPS, CATEGORIES_BY_GROUP } from '@/lib/categories'
+import type { Locale } from '@/lib/types'
 
 interface NewRequestPageProps {
   params: Promise<{ locale: string }>
@@ -62,8 +58,12 @@ export default async function NewRequestPage({ params, searchParams }: NewReques
               <label className="label-base">{t('form.eventType')} *</label>
               <select name="event_type" required defaultValue={prefillCategory} className="input-base">
                 <option value="">—</option>
-                {CATEGORIES.map((c) => (
-                  <option key={c} value={c}>{tm(`categories.${c}` as 'categories.sports')}</option>
+                {CATEGORY_GROUPS.map((g) => (
+                  <optgroup key={g} label={tm(`groups.${g}.name` as 'groups.personal.name')}>
+                    {CATEGORIES_BY_GROUP[g].map((c) => (
+                      <option key={c.key} value={c.key}>{tm(`categories.${c.key}` as 'categories.birthday')}</option>
+                    ))}
+                  </optgroup>
                 ))}
               </select>
             </div>

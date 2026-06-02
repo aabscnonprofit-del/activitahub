@@ -5,6 +5,7 @@ import { PublicHeader } from '@/components/layout/PublicHeader'
 import { PublicFooter } from '@/components/layout/PublicFooter'
 import { ProgressionPath } from '@/components/marketing/ProgressionPath'
 import { HeroBackground } from '@/components/marketing/HeroBackground'
+import { CATEGORY_GROUPS, CATEGORIES_BY_GROUP, GROUP_ACCENT } from '@/lib/categories'
 import {
   Briefcase, Store, ArrowRight, Check,
   ShieldCheck, BadgeCheck, Globe, CalendarCheck,
@@ -31,6 +32,7 @@ export async function generateMetadata({
 export default async function HomePage({ params }: HomePageProps) {
   const { locale } = await params as { locale: Locale }
   const t = await getTranslations('home')
+  const tMarket = await getTranslations('marketplace')
 
   // Check auth state to show correct header CTA
   const supabase = await createClient()
@@ -173,6 +175,58 @@ export default async function HomePage({ params }: HomePageProps) {
                   <ArrowRight className="h-4 w-4" aria-hidden="true" />
                 </Link>
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── Discover by occasion / community / experience ─────────────── */}
+        <section className="bg-slate-50 px-4 py-14 sm:py-20 lg:py-28">
+          <div className="mx-auto max-w-6xl">
+            <div className="mb-10 text-center sm:mb-14">
+              <p className="text-sm font-bold uppercase tracking-wide text-brand-600">
+                {t('discover.eyebrow')}
+              </p>
+              <h2 className="mt-2 text-2xl font-extrabold text-slate-900 sm:text-3xl lg:text-4xl">
+                {t('discover.headline')}
+              </h2>
+              <p className="mx-auto mt-3 max-w-2xl text-base text-slate-500 sm:text-lg">
+                {t('discover.subheadline')}
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+              {CATEGORY_GROUPS.map((g) => (
+                <div key={g} className="card p-6">
+                  <h3 className="text-lg font-bold text-slate-900">
+                    {tMarket(`groups.${g}.name` as 'groups.personal.name')}
+                  </h3>
+                  <p className="mt-0.5 text-sm text-slate-500">
+                    {tMarket(`groups.${g}.tagline` as 'groups.personal.tagline')}
+                  </p>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {CATEGORIES_BY_GROUP[g].map((c) => {
+                      const Icon = c.icon
+                      return (
+                        <Link
+                          key={c.key}
+                          href={`/${locale}/marketplace?category=${c.key}`}
+                          className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-opacity hover:opacity-80 ${GROUP_ACCENT[g]}`}
+                        >
+                          <Icon className="h-3.5 w-3.5" aria-hidden="true" />
+                          {tMarket(`categories.${c.key}` as 'categories.birthday')}
+                        </Link>
+                      )
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-10 text-center">
+              <Link href={`/${locale}/marketplace`} className="btn-primary px-7 py-3">
+                {t('discover.cta')}
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </Link>
             </div>
           </div>
         </section>

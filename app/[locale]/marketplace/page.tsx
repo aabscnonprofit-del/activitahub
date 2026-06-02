@@ -1,20 +1,17 @@
 import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Search, MapPin, ImageOff, SearchX, ShieldCheck } from 'lucide-react'
+import { Search, MapPin, SearchX, ShieldCheck } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { PublicHeader } from '@/components/layout/PublicHeader'
 import { searchMarketplace } from '@/lib/marketplace/queries'
 import { StarRating } from '@/components/ui/StarRating'
 import { VerifiedBadge } from '@/components/ui/VerifiedBadge'
+import { categoryArt, CATEGORY_GROUPS, CATEGORIES_BY_GROUP } from '@/lib/categories'
 import { formatPrice } from '@/lib/utils'
-import type { Locale, ActivityCategory } from '@/lib/types'
+import type { Locale } from '@/lib/types'
 import type { Metadata } from 'next'
 
-const CATEGORIES: ActivityCategory[] = [
-  'sports', 'arts', 'music', 'education', 'outdoor',
-  'wellness', 'workshop', 'party', 'food', 'other',
-]
 const LANGUAGES = ['English', 'Spanish', 'French', 'Russian']
 const IO = ['indoor', 'outdoor', 'both'] as const
 
@@ -81,8 +78,12 @@ export default async function MarketplacePage({ params, searchParams }: Marketpl
                 <label className="label-base">{t('filters.category')}</label>
                 <select name="category" defaultValue={str(sp.category)} className="input-base">
                   <option value="">{t('filters.any')}</option>
-                  {CATEGORIES.map((c) => (
-                    <option key={c} value={c}>{t(`categories.${c}` as 'categories.sports')}</option>
+                  {CATEGORY_GROUPS.map((g) => (
+                    <optgroup key={g} label={t(`groups.${g}.name` as 'groups.personal.name')}>
+                      {CATEGORIES_BY_GROUP[g].map((c) => (
+                        <option key={c.key} value={c.key}>{t(`categories.${c.key}` as 'categories.birthday')}</option>
+                      ))}
+                    </optgroup>
                   ))}
                 </select>
               </div>
@@ -147,7 +148,9 @@ export default async function MarketplacePage({ params, searchParams }: Marketpl
                 </div>
               ) : (
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 xl:grid-cols-3">
-                  {cards.map((c) => (
+                  {cards.map((c) => {
+                    const art = categoryArt(c.category)
+                    return (
                     <Link
                       key={c.id}
                       href={`/${locale}/marketplace/${c.id}`}
@@ -157,8 +160,8 @@ export default async function MarketplacePage({ params, searchParams }: Marketpl
                         {c.cover_url ? (
                           <Image src={c.cover_url} alt="" fill className="object-cover transition-transform duration-300 group-hover:scale-105" sizes="(max-width:768px) 100vw, 33vw" />
                         ) : (
-                          <div className="flex h-full items-center justify-center text-slate-300">
-                            <ImageOff className="h-8 w-8" aria-hidden="true" />
+                          <div className={`flex h-full items-center justify-center bg-gradient-to-br ${art.gradient} transition-transform duration-300 group-hover:scale-105`}>
+                            <art.Icon className="h-10 w-10 text-white/85" aria-hidden="true" />
                           </div>
                         )}
                       </div>
@@ -199,7 +202,8 @@ export default async function MarketplacePage({ params, searchParams }: Marketpl
                         </div>
                       </div>
                     </Link>
-                  ))}
+                    )
+                  })}
                 </div>
               )}
             </div>

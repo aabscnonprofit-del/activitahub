@@ -295,6 +295,12 @@
         ],
         "cta": "Start organizing"
       }
+    },
+    "discover": {
+      "eyebrow": "Discover",
+      "headline": "Find your next moment",
+      "subheadline": "From birthdays to sunset sails — explore experiences for every occasion, community, and dream.",
+      "cta": "Explore the marketplace"
     }
   },
   "auth": {
@@ -814,7 +820,28 @@
       "workshop": "Workshop",
       "party": "Party",
       "food": "Food",
-      "other": "Other"
+      "other": "Other",
+      "birthday": "Birthdays",
+      "kids_party": "Kids Parties",
+      "wedding": "Weddings",
+      "anniversary": "Anniversaries",
+      "baby_shower": "Baby Showers",
+      "reunion": "Reunions",
+      "graduation": "Graduations",
+      "hiking_club": "Hiking Clubs",
+      "language_meetup": "Language Meetups",
+      "cultural_community": "Cultural Gatherings",
+      "faith_community": "Faith Communities",
+      "hobby_group": "Hobby Groups",
+      "alumni": "Alumni Groups",
+      "fan_community": "Fan Communities",
+      "luxury_picnic": "Luxury Picnics",
+      "sunset_yacht": "Sunset Yacht",
+      "private_chef": "Private Chef",
+      "glamping": "Luxury Glamping",
+      "volcano_dinner": "Volcano Dinners",
+      "survival_camp": "Survival Camps",
+      "underwater_photography": "Underwater Photography"
     },
     "indoorOutdoor": {
       "indoor": "Indoor",
@@ -847,6 +874,20 @@
           "description": "Accept the proposal you like, then pay securely to lock it in."
         }
       ]
+    },
+    "groups": {
+      "personal": {
+        "name": "Personal & Family",
+        "tagline": "Celebrate the moments that matter"
+      },
+      "community": {
+        "name": "Communities & Groups",
+        "tagline": "Gather around what you love"
+      },
+      "premium": {
+        "name": "Premium & Niche",
+        "tagline": "Once-in-a-lifetime experiences"
+      }
     }
   },
   "requests": {

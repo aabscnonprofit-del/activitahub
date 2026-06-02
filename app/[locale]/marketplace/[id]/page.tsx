@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import {
-  MapPin, Clock, Users, Globe, CalendarDays, ImageOff, ArrowRight,
+  MapPin, Clock, Users, Globe, CalendarDays, ArrowRight,
   Lock, ShieldCheck, CalendarCheck,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
@@ -11,6 +11,7 @@ import { PublicHeader } from '@/components/layout/PublicHeader'
 import { getMarketplaceActivity, getActivityReviews } from '@/lib/marketplace/queries'
 import { StarRating } from '@/components/ui/StarRating'
 import { VerifiedBadge } from '@/components/ui/VerifiedBadge'
+import { categoryArt } from '@/lib/categories'
 import { formatPrice, formatDate, formatTime, organizerHref } from '@/lib/utils'
 import type { Locale } from '@/lib/types'
 
@@ -29,6 +30,7 @@ export default async function ActivityDetailPage({ params }: DetailPageProps) {
   const a = await getMarketplaceActivity(supabase, id)
   if (!a) notFound()
   const reviews = await getActivityReviews(supabase, id)
+  const detailArt = categoryArt(a.category)
 
   const requestHref = `/${locale}/requests/new?category=${a.category ?? ''}&city=${encodeURIComponent(a.city ?? '')}`
 
@@ -53,8 +55,8 @@ export default async function ActivityDetailPage({ params }: DetailPageProps) {
                 ))}
               </div>
             ) : (
-              <div className="flex aspect-[16/6] items-center justify-center text-slate-300">
-                <ImageOff className="h-10 w-10" aria-hidden="true" />
+              <div className={`flex aspect-[16/6] items-center justify-center bg-gradient-to-br ${detailArt.gradient}`}>
+                <detailArt.Icon className="h-14 w-14 text-white/85" aria-hidden="true" />
               </div>
             )}
           </div>

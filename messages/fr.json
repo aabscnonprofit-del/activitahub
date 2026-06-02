@@ -295,6 +295,12 @@
         ],
         "cta": "Commencer à organiser"
       }
+    },
+    "discover": {
+      "eyebrow": "Découvrir",
+      "headline": "Trouvez votre prochain moment",
+      "subheadline": "Des anniversaires aux balades au coucher du soleil — explorez des expériences pour chaque occasion, communauté et rêve.",
+      "cta": "Explorer la marketplace"
     }
   },
   "auth": {
@@ -814,7 +820,28 @@
       "workshop": "Atelier",
       "party": "Fête",
       "food": "Cuisine",
-      "other": "Autre"
+      "other": "Autre",
+      "birthday": "Anniversaires",
+      "kids_party": "Fêtes d’enfants",
+      "wedding": "Mariages",
+      "anniversary": "Anniversaires de mariage",
+      "baby_shower": "Baby showers",
+      "reunion": "Retrouvailles",
+      "graduation": "Remises de diplômes",
+      "hiking_club": "Clubs de randonnée",
+      "language_meetup": "Échanges linguistiques",
+      "cultural_community": "Rencontres culturelles",
+      "faith_community": "Communautés de foi",
+      "hobby_group": "Groupes de loisirs",
+      "alumni": "Anciens élèves",
+      "fan_community": "Communautés de fans",
+      "luxury_picnic": "Pique-niques de luxe",
+      "sunset_yacht": "Yacht au coucher du soleil",
+      "private_chef": "Chef privé",
+      "glamping": "Glamping de luxe",
+      "volcano_dinner": "Dîners face au volcan",
+      "survival_camp": "Camps de survie",
+      "underwater_photography": "Photographie sous-marine"
     },
     "indoorOutdoor": {
       "indoor": "Intérieur",
@@ -847,6 +874,20 @@
           "description": "Acceptez la proposition de votre choix, puis payez en toute sécurité pour la confirmer."
         }
       ]
+    },
+    "groups": {
+      "personal": {
+        "name": "Personnel & famille",
+        "tagline": "Célébrez les moments qui comptent"
+      },
+      "community": {
+        "name": "Communautés & groupes",
+        "tagline": "Rassemblez-vous autour de vos passions"
+      },
+      "premium": {
+        "name": "Premium & exclusif",
+        "tagline": "Des expériences uniques"
+      }
     }
   },
   "requests": {
