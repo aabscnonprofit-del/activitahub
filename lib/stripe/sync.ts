@@ -52,7 +52,21 @@ export async function syncSubscription(
   }
 
   const status = mapStripeStatus(subscription.status)
-  const priceId = subscription.items.data[0]?.price.id ?? null
+  const firstItem = subscription.items.data[0]
+  const priceId = firstItem?.price.id ?? null
+
+  // `current_period_end` moved from the Subscription to its items in newer
+  // Stripe API versions (clover). Read the item value first and fall back to
+  // the legacy top-level field, so this is correct whether the object arrived
+  // via a webhook (serialised with the account's default API version) or an SDK
+  // retrieve (our pinned version). Missing/invalid → null (column is nullable).
+  const periodEndUnix =
+    (firstItem as { current_period_end?: number })?.current_period_end ??
+    (subscription as { current_period_end?: number }).current_period_end
+  const currentPeriodEnd =
+    typeof periodEndUnix === 'number'
+      ? new Date(periodEndUnix * 1000).toISOString()
+      : null
 
   await admin.from('subscriptions').upsert(
     {
@@ -61,9 +75,7 @@ export async function syncSubscription(
       stripe_customer_id: customerId,
       stripe_subscription_id: subscription.id,
       stripe_price_id: priceId,
-      current_period_end: new Date(
-        subscription.current_period_end * 1000
-      ).toISOString(),
+      current_period_end: currentPeriodEnd,
       cancel_at_period_end: subscription.cancel_at_period_end,
       updated_at: new Date().toISOString(),
     },
