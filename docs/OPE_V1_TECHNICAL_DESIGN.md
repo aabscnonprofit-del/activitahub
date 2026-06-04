@@ -242,7 +242,7 @@ const ScenarioParams = z.object({
 - **Immutability:** editing inputs creates a *new plan* under the same scenario (or
   a new scenario) rather than mutating a generated plan — keeps cost/plan reproducible.
 - **PII:** scenarios may contain client hints; covered by RLS (owner-only) and never
-  sent to third parties except the LLM provider (see §9 privacy note).
+  sent to third parties except the LLM provider (see §10 privacy note).
 
 ---
 
@@ -450,7 +450,103 @@ Add a **"Planner"** entry to the dashboard nav (alongside Activities, Requests�
 
 ---
 
-## 9. Cross-cutting concerns
+## 9. Event Request Marketplace
+
+The platform supports **two independent models** of supply and demand. OPE is the
+intelligence layer that makes the second one viable.
+
+### 9.1 The two models
+
+| | **Ready Activities** | **Event Requests** |
+|---|---|---|
+| Direction | Supply-first | Demand-first |
+| Who acts | Organizer creates an activity in advance | User requests an event that does not yet exist |
+| User does | Discovers and joins | Describes the event they want |
+| Examples | Yoga on Lisbon Beach · Painting Workshop near the Louvre · Sunset Run around Diamond Head | Wedding · Birthday · Community Festival · Charity Run · Corporate Event · Custom Event |
+| Backing data | `activities` (existing) | `customer_requests` (existing, migration 008) |
+
+Ready Activities are already fully modeled (marketplace, `activities`,
+`search_marketplace`). This section specifies how **Event Requests** flow through OPE
+and reach organizers. It reuses the existing request/proposal primitives
+(`customer_requests`, `request_matches`, `proposals`, and the `match_request` /
+`send_proposal` / `accept_proposal` RPCs) — OPE adds a **planning assessment** in front
+of them.
+
+### 9.2 OPE preliminary planning assessment
+
+Before a request reaches any organizer, OPE generates a **preliminary assessment** so
+both sides start from a grounded, realistic picture instead of a one-line wish. The
+assessment is produced by the **planner workflow (§6)** and priced by the
+**deterministic cost engine (§7)** — same separation of concerns: the LLM proposes
+*what*, the engine computes *how much*.
+
+The assessment estimates:
+
+- **Preparation hours** — total lead-time effort to deliver the event.
+- **Staffing estimate** — roles and headcount (coordinators, servers, security, etc.).
+- **Equipment estimate** — gear/rentals (sound, seating, lighting, tents…).
+- **Vendor estimate** — third-party services to source (catering, photography…).
+- **Logistics estimate** — transport, setup/teardown windows, permits, access.
+- **Budget estimate** — low / likely / high range from the cost engine.
+- **Operational risks** — flagged concerns (weather exposure, capacity, compliance,
+  tight timelines) with severity, surfaced — never silently dropped.
+
+**Design-level data touch points (no migration created here):** the assessment is a
+**`plan`** (status `ready`) generated for the request, linked to the originating
+`customer_requests` row (e.g. via a `request_id` on `plans`, or a small
+`request_assessments` join — to be finalized at build time). Staffing/equipment/vendor/
+logistics map to `plan_items` (`kind = resource | cost_driver`) with their
+`cost_basis`/`quantity`; preparation hours and risks live in the plan `summary` /
+`generation_meta` / a typed `assessment` block in `cost_summary`. No new tables are
+introduced in this document — only the mapping is specified.
+
+### 9.3 Request-delivery modes
+
+The system must support **two delivery modes** for an event request. The mode is a
+property of the request (design-level: a `request_delivery_mode` enum —
+`marketplace | direct` — on `customer_requests`).
+
+**A. Marketplace Mode**
+1. Request (with its OPE assessment) becomes visible to **qualified organizers**
+   (matched via `match_request`: category, region, capability).
+2. Organizers submit **proposals** (`send_proposal`), each able to start from the
+   OPE draft (§9.4).
+3. Client **selects an organizer** by accepting a proposal (`accept_proposal` →
+   booking), exactly as the existing flow does.
+
+**B. Direct Organizer Mode**
+1. Client **selects an organizer first** (e.g. from a public profile / `/o/<slug>`).
+2. The request — with its OPE assessment — is routed **only to that organizer**
+   (a single targeted `request_match` rather than a fan-out).
+3. That organizer responds with a proposal; no marketplace visibility.
+
+Both modes converge on the same proposal → booking → payment path already designed
+(bookings, `createBookingCheckout`), so no payment changes are implied.
+
+### 9.4 Organizer editing & recalculation
+
+Whichever mode delivered the request, the organizer receives the **OPE-generated
+draft** and can modify:
+
+- **Quantities** (guests, units, durations)
+- **Staffing** (roles, headcount)
+- **Schedule** (phases, timeline, setup/teardown)
+- **Budget** (targets, margins, line removal/addition)
+- **Requirements** (equipment, vendors, logistics, constraints)
+
+After any edit, **OPE recalculates the estimates** by re-running the **cost engine
+(§7) only** — a deterministic recompute over the edited `plan_items`, **no new LLM
+call** (fast, free, reproducible). A full **Regenerate** (new LLM pass) remains an
+explicit, quota-aware action (§6, §7.6). Edits are the organizer's working copy of the
+plan; the client sees the resulting proposal, not the raw draft, unless shared.
+
+> This reuses the planner editing surface (§8): the same plan view/edit components
+> serve both organizer-authored plans and request-derived assessments — one engine,
+> two entry points (a Ready-Activity scenario, or an inbound Event Request).
+
+---
+
+## 10. Cross-cutting concerns
 
 - **Security / RLS:** organizer-owned rows are owner-or-admin only; KB is read-only;
   generation writes via service-role with RPC ownership re-checks (Stripe-webhook pattern).
@@ -467,7 +563,7 @@ Add a **"Planner"** entry to the dashboard nav (alongside Activities, Requests�
 
 ---
 
-## 10. New artifacts (when we implement — not now)
+## 11. New artifacts (when we implement — not now)
 
 | Layer | Artifact |
 |---|---|
@@ -480,7 +576,7 @@ Add a **"Planner"** entry to the dashboard nav (alongside Activities, Requests�
 
 ---
 
-## 11. Phasing
+## 12. Phasing
 
 - **v1 (this design):** scenario → grounded plan → deterministic cost → review/edit →
   convert to activity. Inline generation, tag-based KB retrieval, admin-seeded KB.
@@ -490,7 +586,7 @@ Add a **"Planner"** entry to the dashboard nav (alongside Activities, Requests�
 
 ---
 
-## 12. Open questions (need product decisions before build)
+## 13. Open questions (need product decisions before build)
 
 1. **Pricing data source:** who curates `knowledge_pricing`, and at what regional
    granularity for v1 (global + a few launch cities)?
@@ -505,4 +601,4 @@ Add a **"Planner"** entry to the dashboard nav (alongside Activities, Requests�
 ---
 
 _End of design. No code has been written or scheduled; implementation awaits sign-off
-and the answers in §12._
+and the answers in §13._
