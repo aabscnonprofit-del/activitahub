@@ -112,6 +112,16 @@ export async function createSubscriptionCheckout(formData: FormData): Promise<vo
   const locale = (formData.get('locale') as string) || 'en'
   const { supabase, profile } = await getAuthedProfile()
 
+  // No subscription before certification — certification is the gateway to the
+  // Organizer Platform. A non-certified profile (status not yet 'certified' or
+  // 'subscribed') is routed back to onboarding instead of being charged.
+  if (
+    profile.onboarding_status !== 'certified' &&
+    profile.onboarding_status !== 'subscribed'
+  ) {
+    redirect(`/${locale}/onboarding`)
+  }
+
   const customerId = await ensureStripeCustomer(supabase, profile)
   const priceId = getSubscriptionPriceId()
 

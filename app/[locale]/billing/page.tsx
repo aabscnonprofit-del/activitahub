@@ -6,7 +6,8 @@ import {
   createSubscriptionCheckout,
   createBillingPortalSession,
 } from '@/lib/actions/billing'
-import { CheckCircle2, AlertCircle, XCircle, CreditCard } from 'lucide-react'
+import { CheckCircle2, AlertCircle, XCircle, CreditCard, Clock } from 'lucide-react'
+import { hasIncludedAccess } from '@/lib/auth/organizer-access'
 import { Badge } from '@/components/ui/Badge'
 import { BrandMark } from '@/components/brand/BrandMark'
 import type { Locale, Profile } from '@/lib/types'
@@ -38,13 +39,13 @@ export default async function BillingPage({ params }: BillingPageProps) {
   // Fetch profile — always exists for authenticated users
   const { data: profileRow } = await supabase
     .from('profiles')
-    .select('role, onboarding_status, full_name')
+    .select('role, onboarding_status, full_name, organizer_access_until')
     .eq('id', user.id)
     .single()
 
   const profile = profileRow as Pick<
     Profile,
-    'role' | 'onboarding_status' | 'full_name'
+    'role' | 'onboarding_status' | 'full_name' | 'organizer_access_until'
   > | null
 
   // Fetch subscription — table added in Phase 2; returns null until then
@@ -63,6 +64,11 @@ export default async function BillingPage({ params }: BillingPageProps) {
     profile?.onboarding_status === 'certified' ||
     profile?.onboarding_status === 'subscribed' ||
     profile?.role === 'certified_organizer'
+
+  // Certification-included 30-day window (granted at certification, not payment).
+  const windowActive = hasIncludedAccess(profile?.organizer_access_until)
+  const hasPaidSub =
+    subscription?.status === 'active' || subscription?.status === 'trialing'
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -115,8 +121,46 @@ export default async function BillingPage({ params }: BillingPageProps) {
           </div>
         )}
 
-        {/* ── Certified, no subscription ── */}
-        {isCertified && !subscription && (
+        {/* ── Certified, included 30-day window active (no paid subscription) ── */}
+        {isCertified && windowActive && !hasPaidSub && (
+          <div className="rounded-2xl border border-brand-200 bg-brand-50 p-8">
+            <div className="flex items-start gap-4">
+              <Clock className="mt-0.5 h-8 w-8 shrink-0 text-brand-600" aria-hidden="true" />
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <h2 className="text-lg font-bold text-slate-900">{t('includedAccess.title')}</h2>
+                  <Badge label={t('includedAccess.badge')} variant="success" />
+                </div>
+                <p className="mt-1 text-sm text-slate-700">
+                  {t('includedAccess.until', {
+                    date: new Date(profile!.organizer_access_until as string).toLocaleDateString(),
+                  })}
+                </p>
+                <p className="mt-2 text-sm text-slate-500">{t('includedAccess.description')}</p>
+                <div className="mt-4 flex flex-wrap gap-3">
+                  <Link
+                    href={`/${locale}/dashboard`}
+                    className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700 transition-colors"
+                  >
+                    {t('includedAccess.goDashboard')}
+                  </Link>
+                  <form action={createSubscriptionCheckout}>
+                    <input type="hidden" name="locale" value={locale} />
+                    <button
+                      type="submit"
+                      className="rounded-lg border border-brand-300 px-4 py-2 text-sm font-medium text-brand-800 hover:bg-brand-100 transition-colors"
+                    >
+                      {t('includedAccess.subscribeCta')}
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ── Certified, no subscription and no live included window ── */}
+        {isCertified && !subscription && !windowActive && (
           <div className="rounded-2xl border border-slate-200 bg-white p-8">
             <div className="flex items-start gap-4">
               <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-brand-100">
@@ -170,7 +214,7 @@ export default async function BillingPage({ params }: BillingPageProps) {
         )}
 
         {/* ── Active subscription ── */}
-        {isCertified && subscription?.status === 'active' && (
+        {isCertified && hasPaidSub && (
           <div className="rounded-2xl border border-green-200 bg-green-50 p-8">
             <div className="flex items-start gap-4">
               <CheckCircle2 className="mt-0.5 h-8 w-8 shrink-0 text-green-500" aria-hidden="true" />

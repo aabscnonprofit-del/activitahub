@@ -87,7 +87,7 @@
         "name": "Certificación",
         "audience": "Para organizadores con experiencia",
         "tagline": "¿Ya tienes experiencia? Demuéstralo y certifícate.",
-        "price": "$29.99",
+        "price": "$29",
         "priceNote": "Pago único · prueba de competencias",
         "features": [
           "Prueba rápida de competencias",
@@ -100,7 +100,7 @@
         "name": "Academia + Certificación",
         "audience": "Para futuros organizadores",
         "tagline": "Aprende el oficio y obtén la credencial.",
-        "price": "$99.99",
+        "price": "$99",
         "priceNote": "Pago único · curso + certificación",
         "features": [
           "Curso estructurado para principiantes",
@@ -114,7 +114,7 @@
         "audience": "Para organizadores en activo",
         "badge": "Para ganar",
         "tagline": "Gestiona tu negocio, consigue clientes y usa OPE.",
-        "price": "$19.99",
+        "price": "$9.99",
         "priceNote": "/mes",
         "features": [
           "Planificación y propuestas con OPE",
@@ -424,14 +424,14 @@
     "beginner": {
       "badge": "Principiante",
       "title": "Nuevo en organización de actividades",
-      "description": "Empieza desde cero con un curso cercano que te guía por todo lo necesario para organizar grandes actividades.",
+      "description": "Empieza desde cero con un curso cercano que te guía por todo lo necesario para organizar grandes actividades. Los $99 son un pago único: incluyen el curso, el examen de calificación, tu Certificado de Organizador ActivLife y 30 días de acceso a la Plataforma de Organizadores que comienzan cuando completas con éxito la certificación. Después, se necesita una suscripción activa a la Plataforma de Organizadores para seguir publicando.",
       "includes": "¿Qué incluye?",
       "features": [
         "7–8 módulos de aprendizaje en profundidad",
         "Lecciones en video y materiales de estudio",
         "Quizzes por módulo y examen final",
         "Certificado de Organizador Certificado ActivLife",
-        "Suscripción mensual a la Plataforma de Organizadores"
+        "30 días de acceso a la Plataforma de Organizadores (comienza al certificarte)"
       ],
       "price": "$99",
       "priceLabel": "pago único",
@@ -440,14 +440,14 @@
     "experienced": {
       "badge": "Experimentado",
       "title": "Ya soy organizador de actividades",
-      "description": "Omite el curso y demuestra tu experiencia con una prueba de calificación cronometrada. Certificación acelerada.",
+      "description": "Omite el curso y demuestra tu experiencia con una prueba de calificación cronometrada. Los $29 son un pago único de certificación: incluyen la prueba de calificación, tu Certificado de Organizador ActivLife y 30 días de acceso a la Plataforma de Organizadores que comienzan cuando completas con éxito la certificación. Después, se necesita una suscripción activa a la Plataforma de Organizadores para seguir publicando.",
       "includes": "¿Qué incluye?",
       "features": [
         "15–20 preguntas de calificación",
         "Evaluación cronometrada (30 minutos)",
         "Umbral de aprobación: 75%",
         "Certificado de Organizador Certificado ActivLife",
-        "Suscripción mensual a la Plataforma de Organizadores"
+        "30 días de acceso a la Plataforma de Organizadores (comienza al certificarte)"
       ],
       "price": "$29",
       "priceLabel": "pago único",
@@ -457,7 +457,7 @@
       "Elige tu ruta",
       "Pago",
       "Aprende y certifícate",
-      "Suscríbete"
+      "Empezar a organizar"
     ],
     "notOrganizer": "¿Solo quieres reservar actividades?",
     "selected": "Seleccionado",
@@ -470,7 +470,7 @@
         },
         {
           "q": "Cómo se gana dinero",
-          "a": "Una vez certificado, suscríbete a Pro, publica actividades en el marketplace y acepta reservas con pagos seguros."
+          "a": "Cuando completas la certificación, obtienes 30 días de acceso a la Plataforma de Organizadores incluidos. Después, necesitas una suscripción activa a la Plataforma de Organizadores para seguir publicando actividades y aceptando reservas."
         },
         {
           "q": "Qué ocurre después",
@@ -489,6 +489,14 @@
       "description": "Completa tu certificación antes de activar tu suscripción.",
       "goToAcademy": "Ir a la Academia",
       "goToOnboarding": "Completar incorporación"
+    },
+    "includedAccess": {
+      "title": "Acceso a la Plataforma de Organizadores incluido",
+      "badge": "Incluido",
+      "until": "Tu acceso incluido está activo hasta el {date}.",
+      "description": "Cuando termine tu acceso incluido, necesitarás una suscripción activa a la Plataforma de Organizadores para seguir publicando, gestionando y aceptando reservas.",
+      "goDashboard": "Ir al panel",
+      "subscribeCta": "Suscribirme ahora"
     },
     "noSubscription": {
       "title": "Activa tu cuenta de organizador",

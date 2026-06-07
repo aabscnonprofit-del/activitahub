@@ -3,6 +3,7 @@
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
+import { userHasOrganizerAccess } from '@/lib/auth/organizer-access.server'
 
 const CATEGORIES = new Set([
   // legacy
@@ -97,6 +98,12 @@ export async function sendProposal(formData: FormData): Promise<void> {
     data: { user },
   } = await supabase.auth.getUser()
   if (!user) redirect(`/${locale}/sign-in`)
+
+  // Organizer entitlement: only certified organizers with a live included
+  // window or active/trialing subscription may pursue bookings.
+  if (!(await userHasOrganizerAccess(supabase, user.id))) {
+    redirect(`/${locale}/billing`)
+  }
 
   const requestId = formData.get('request_id') as string
   const { error } = await supabase.rpc('send_proposal', {

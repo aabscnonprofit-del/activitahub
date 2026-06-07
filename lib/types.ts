@@ -28,6 +28,8 @@ export type Profile = {
   timezone: string
   suspended: boolean
   stripe_customer_id: string | null
+  /** End of the 30-day Organizer Platform access included with certification. NULL = none. */
+  organizer_access_until: string | null
   created_at: string
   updated_at: string
 }

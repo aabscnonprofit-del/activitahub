@@ -82,11 +82,20 @@ export async function syncSubscription(
     { onConflict: 'profile_id' }
   )
 
-  // An active/trialing subscription certifies the profile as a subscribed
-  // organizer. We never auto-downgrade the role here — losing an active
-  // subscription gates dashboard access (middleware) without revoking
-  // certification.
-  if (status === 'active' || status === 'trialing') {
+  // A subscription NEVER confers certification. We grant the certified_organizer
+  // role + 'subscribed' status only to a profile that is ALREADY certified —
+  // signalled by onboarding_status ('certified'/'subscribed', set only on a real
+  // exam pass) or the role already present (post-migration-017 certifications).
+  // A profile that has not certified (e.g. 'payment_complete') gets a
+  // subscription row but no role and no access (hasOrganizerAccess requires the
+  // certified_organizer role). The createSubscriptionCheckout guard also blocks
+  // non-certified users from subscribing in the first place. We never downgrade.
+  const isCertified =
+    profile.onboarding_status === 'certified' ||
+    profile.onboarding_status === 'subscribed' ||
+    profile.role === 'certified_organizer'
+
+  if ((status === 'active' || status === 'trialing') && isCertified) {
     await admin
       .from('profiles')
       .update({ role: 'certified_organizer', onboarding_status: 'subscribed' })

@@ -2,6 +2,7 @@ import createMiddleware from 'next-intl/middleware'
 import { type NextRequest, NextResponse } from 'next/server'
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { routing } from '@/i18n/routing'
+import { hasOrganizerAccess } from '@/lib/auth/organizer-access'
 import type { UserRole, OnboardingStatus } from '@/lib/types'
 
 // ── i18n middleware ───────────────────────────────────────────────────────────
@@ -135,7 +136,7 @@ export async function middleware(request: NextRequest) {
   if (user && requiresAuth(path)) {
     const { data: profileRow } = await supabase
       .from('profiles')
-      .select('role, onboarding_status, suspended')
+      .select('role, onboarding_status, suspended, organizer_access_until')
       .eq('id', user.id)
       .single()
 
@@ -170,8 +171,9 @@ export async function middleware(request: NextRequest) {
         )
       }
 
-      // Subscription gate: organizers need an ACTIVE subscription to reach the
-      // dashboard. Admins bypass. Read is RLS-scoped to the user's own row.
+      // Access gate: organizers reach the dashboard with EITHER an active/
+      // trialing paid subscription OR a live certification-included 30-day
+      // window. Admins bypass. Reads are RLS-scoped to the user's own rows.
       if (role === 'certified_organizer') {
         const { data: sub } = await supabase
           .from('subscriptions')
@@ -179,7 +181,13 @@ export async function middleware(request: NextRequest) {
           .eq('profile_id', user.id)
           .maybeSingle()
 
-        if (sub?.status !== 'active') {
+        const allowed = hasOrganizerAccess({
+          role,
+          subscriptionStatus: (sub as { status?: string } | null)?.status,
+          organizerAccessUntil: (profileRow as { organizer_access_until?: string | null } | null)?.organizer_access_until,
+        })
+
+        if (!allowed) {
           return NextResponse.redirect(
             new URL(`/${locale}/billing`, request.url)
           )

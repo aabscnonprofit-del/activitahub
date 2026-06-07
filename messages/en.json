@@ -87,7 +87,7 @@
         "name": "Certification",
         "audience": "For experienced organizers",
         "tagline": "Already experienced? Prove it and get certified.",
-        "price": "$29.99",
+        "price": "$29",
         "priceNote": "One-time · skills test",
         "features": [
           "Fast-track skills test",
@@ -100,7 +100,7 @@
         "name": "Academy + Certification",
         "audience": "For aspiring organizers",
         "tagline": "Learn the craft and earn the credential.",
-        "price": "$99.99",
+        "price": "$99",
         "priceNote": "One-time · course + certification",
         "features": [
           "Structured beginner course",
@@ -114,7 +114,7 @@
         "audience": "For working organizers",
         "badge": "For earning",
         "tagline": "Run your business, win clients, and use OPE.",
-        "price": "$19.99",
+        "price": "$9.99",
         "priceNote": "/month",
         "features": [
           "OPE planning & client proposals",
@@ -424,14 +424,14 @@
     "beginner": {
       "badge": "Beginner",
       "title": "New to Activity Organization",
-      "description": "Start from scratch with a friendly course that walks you through everything you need to host great activities.",
+      "description": "Start from scratch with a friendly course that walks you through everything you need to host great activities. The $99 is a one-time fee — it includes the course, the qualification exam, your ActivLife Organizer Certificate, and 30 days of Organizer Platform Access that begins when you successfully complete certification. After that, an active Organizer Platform subscription is required to keep publishing.",
       "includes": "What's included:",
       "features": [
         "7–8 in-depth learning modules",
         "Video lessons and study materials",
         "Module quizzes and a final exam",
         "ActivLife Certified Organizer certificate",
-        "Monthly subscription to the Organizer Platform"
+        "30 days of Organizer Platform access (starts at certification)"
       ],
       "price": "$99",
       "priceLabel": "one-time payment",
@@ -440,14 +440,14 @@
     "experienced": {
       "badge": "Experienced",
       "title": "Already an Activity Organizer",
-      "description": "Skip the course and prove your expertise with a timed qualification test. Fast-track to certification.",
+      "description": "Skip the course and prove your expertise with a timed qualification test. The $29 is a one-time certification fee — it includes the qualification test, your ActivLife Organizer Certificate, and 30 days of Organizer Platform Access that begins when you successfully complete certification. After that, an active Organizer Platform subscription is required to keep publishing.",
       "includes": "What's included:",
       "features": [
         "15–20 qualification questions",
         "Timed assessment (30 minutes)",
         "Pass threshold: 75%",
         "ActivLife Certified Organizer certificate",
-        "Monthly subscription to the Organizer Platform"
+        "30 days of Organizer Platform access (starts at certification)"
       ],
       "price": "$29",
       "priceLabel": "one-time payment",
@@ -457,7 +457,7 @@
       "Choose path",
       "Payment",
       "Learn & certify",
-      "Subscribe"
+      "Start organizing"
     ],
     "notOrganizer": "Just here to book activities?",
     "selected": "Selected",
@@ -470,7 +470,7 @@
         },
         {
           "q": "How earning works",
-          "a": "Once certified, subscribe to Pro, list activities on the marketplace, and accept bookings with secure payouts."
+          "a": "Once you complete certification, you get 30 days of Organizer Platform access included. After that, an active Organizer Platform subscription is required to keep listing activities and accepting bookings."
         },
         {
           "q": "What happens next",
@@ -489,6 +489,14 @@
       "description": "Complete your certification before activating your subscription.",
       "goToAcademy": "Go to Academy",
       "goToOnboarding": "Complete Onboarding"
+    },
+    "includedAccess": {
+      "title": "Organizer Platform access included",
+      "badge": "Included",
+      "until": "Your included access is active until {date}.",
+      "description": "After your included access ends, an active Organizer Platform subscription is required to keep publishing, managing, and accepting bookings.",
+      "goDashboard": "Go to Dashboard",
+      "subscribeCta": "Subscribe now"
     },
     "noSubscription": {
       "title": "Activate Your Organizer Account",

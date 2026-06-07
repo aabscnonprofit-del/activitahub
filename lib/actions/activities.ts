@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
+import { userHasOrganizerAccess } from '@/lib/auth/organizer-access.server'
 import type { Activity } from '@/lib/types'
 
 export async function getActivities(): Promise<Activity[]> {
@@ -85,6 +86,8 @@ export async function createActivity(formData: FormData): Promise<void> {
   const fields = parseFields(formData)
   if (!fields.title) return
 
+  if (!(await userHasOrganizerAccess(supabase, user.id))) return
+
   await supabase.from('activities').insert({ organizer_id: user.id, ...fields })
 
   revalidatePath('/dashboard/activities')
@@ -100,6 +103,8 @@ export async function updateActivity(id: string, formData: FormData): Promise<vo
 
   const fields = parseFields(formData)
   if (!fields.title) return
+
+  if (!(await userHasOrganizerAccess(supabase, user.id))) return
 
   await supabase
     .from('activities')
@@ -120,6 +125,8 @@ export async function setActivityStatus(
   } = await supabase.auth.getUser()
   if (!user) return
 
+  if (!(await userHasOrganizerAccess(supabase, user.id))) return
+
   await supabase
     .from('activities')
     .update({ status, updated_at: new Date().toISOString() })
@@ -136,6 +143,8 @@ export async function deleteActivity(id: string): Promise<void> {
     data: { user },
   } = await supabase.auth.getUser()
   if (!user) return
+
+  if (!(await userHasOrganizerAccess(supabase, user.id))) return
 
   await supabase.from('activities').delete().eq('id', id).eq('organizer_id', user.id)
 

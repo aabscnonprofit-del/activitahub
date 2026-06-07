@@ -87,7 +87,7 @@
         "name": "Certification",
         "audience": "Pour les organisateurs expérimentés",
         "tagline": "Déjà expérimenté ? Prouvez-le et certifiez-vous.",
-        "price": "$29.99",
+        "price": "$29",
         "priceNote": "Paiement unique · test de compétences",
         "features": [
           "Test rapide de compétences",
@@ -100,7 +100,7 @@
         "name": "Académie + Certification",
         "audience": "Pour les futurs organisateurs",
         "tagline": "Apprenez le métier et obtenez la certification.",
-        "price": "$99.99",
+        "price": "$99",
         "priceNote": "Paiement unique · cours + certification",
         "features": [
           "Cours structuré pour débutants",
@@ -114,7 +114,7 @@
         "audience": "Pour les organisateurs en activité",
         "badge": "Pour gagner",
         "tagline": "Gérez votre activité, trouvez des clients et utilisez OPE.",
-        "price": "$19.99",
+        "price": "$9.99",
         "priceNote": "/mois",
         "features": [
           "Planification et propositions avec OPE",
@@ -424,14 +424,14 @@
     "beginner": {
       "badge": "Débutant",
       "title": "Nouveau dans l'organisation d'activités",
-      "description": "Partez de zéro avec un cours accessible qui vous guide dans tout ce qu’il faut pour organiser de belles activités.",
+      "description": "Partez de zéro avec un cours accessible qui vous guide dans tout ce qu’il faut pour organiser de belles activités. Les 99 $ correspondent à un paiement unique : ils incluent le cours, l’examen de qualification, votre Certificat d’Organisateur ActivLife et 30 jours d’accès à la Plateforme Organisateur qui commencent lorsque vous réussissez votre certification. Ensuite, un abonnement actif à la Plateforme Organisateur est requis pour continuer à publier.",
       "includes": "Ce qui est inclus :",
       "features": [
         "7 à 8 modules d'apprentissage approfondis",
         "Cours vidéo et supports pédagogiques",
         "Quiz par module et examen final",
         "Certificat d'Organisateur Certifié ActivLife",
-        "Abonnement mensuel à la Plateforme Organisateur"
+        "30 jours d'accès à la Plateforme Organisateur (à partir de la certification)"
       ],
       "price": "99 $",
       "priceLabel": "paiement unique",
@@ -440,14 +440,14 @@
     "experienced": {
       "badge": "Expérimenté",
       "title": "Déjà organisateur d'activités",
-      "description": "Passez le cours et prouvez votre expertise avec un test de qualification chronométré. Certification accélérée.",
+      "description": "Passez le cours et prouvez votre expertise avec un test de qualification chronométré. Les 29 $ correspondent à des frais de certification uniques : ils incluent le test de qualification, votre Certificat d’Organisateur ActivLife et 30 jours d’accès à la Plateforme Organisateur qui commencent lorsque vous réussissez votre certification. Ensuite, un abonnement actif à la Plateforme Organisateur est requis pour continuer à publier.",
       "includes": "Ce qui est inclus :",
       "features": [
         "15 à 20 questions de qualification",
         "Évaluation chronométrée (30 minutes)",
         "Seuil de réussite : 75 %",
         "Certificat d'Organisateur Certifié ActivLife",
-        "Abonnement mensuel à la Plateforme Organisateur"
+        "30 jours d'accès à la Plateforme Organisateur (à partir de la certification)"
       ],
       "price": "29 $",
       "priceLabel": "paiement unique",
@@ -457,7 +457,7 @@
       "Choisissez votre parcours",
       "Paiement",
       "Apprendre et certifier",
-      "S’abonner"
+      "Commencer à organiser"
     ],
     "notOrganizer": "Vous voulez seulement réserver des activités ?",
     "selected": "Sélectionné",
@@ -470,7 +470,7 @@
         },
         {
           "q": "Comment gagner de l’argent",
-          "a": "Une fois certifié, abonnez-vous à Pro, publiez des activités sur la marketplace et acceptez des réservations avec des paiements sécurisés."
+          "a": "Une fois votre certification obtenue, vous bénéficiez de 30 jours d’accès inclus à la Plateforme Organisateur. Ensuite, un abonnement actif à la Plateforme Organisateur est requis pour continuer à publier des activités et accepter des réservations."
         },
         {
           "q": "Que se passe-t-il ensuite",
@@ -489,6 +489,14 @@
       "description": "Complétez votre certification avant d'activer votre abonnement.",
       "goToAcademy": "Aller à l'Académie",
       "goToOnboarding": "Terminer l'intégration"
+    },
+    "includedAccess": {
+      "title": "Accès à la Plateforme Organisateur inclus",
+      "badge": "Inclus",
+      "until": "Votre accès inclus est actif jusqu’au {date}.",
+      "description": "À la fin de votre accès inclus, un abonnement actif à la Plateforme Organisateur est requis pour continuer à publier, gérer et accepter des réservations.",
+      "goDashboard": "Aller au tableau de bord",
+      "subscribeCta": "S’abonner maintenant"
     },
     "noSubscription": {
       "title": "Activez votre compte organisateur",
