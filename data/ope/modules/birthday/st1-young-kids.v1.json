@@ -1,0 +1,121 @@
+{
+  "_meta": {
+    "module": "MOD-BIRTHDAY-ST1-YOUNG-KIDS",
+    "version": "1",
+    "category": "birthday",
+    "kind": "subtype",
+    "extends": "MOD-BIRTHDAY-CORE",
+    "applies": "Birthday events for young children, approximately ages 3–7.",
+    "builds_on": ["OPE_KB_BIRTHDAY_ARCHITECTURE_V1", "OPE_UNIVERSAL_ACTIVITY_ARCHITECTURE_V1"],
+    "status": "production-data",
+    "note": "Subtype-specific additions only. Inherits all core tasks/milestones/cost drivers/risks/templates from MOD-BIRTHDAY-CORE; references core IDs (BC-*) where it extends them."
+  },
+
+  "applies_when": {
+    "all_of": [
+      { "input": "category", "equals": "birthday" },
+      { "any_of": [
+        { "input": "age_group", "equals": "young_kids" },
+        { "input": "honoree_age", "in_range": [3, 7] }
+      ] }
+    ]
+  },
+
+  "config_defaults": {
+    "kids_per_adult": 5,
+    "recommended_duration_hours": [1.5, 2],
+    "game_count": 3,
+    "daytime_only": true
+  },
+
+  "scenario_inputs_used": ["honoree_age", "kid_count", "guest_count", "special_requirements", "venue_type"],
+
+  "derived_quantities": {
+    "kid_count": "scenario.kid_count (else estimate from guest_count for a kids-only party)",
+    "supervising_adults": "ceil(kid_count / kids_per_adult)",
+    "favors_count": "kid_count",
+    "game_count": "config_defaults.game_count"
+  },
+
+  "tasks": [
+    { "id": "ST1-T01", "phase": "P1", "priority": "high", "deps": ["BC-T02"],            "title": "Plan supervision: set adult-to-child ratio and assign watchers" },
+    { "id": "ST1-T02", "phase": "P2", "priority": "high", "deps": ["BC-T06"],            "title": "Confirm parent presence (stay vs drop-off) and collect emergency contacts" },
+    { "id": "ST1-T03", "phase": "P2", "priority": "medium", "deps": ["BC-T10"],          "title": "Plan age-appropriate games (simple, short, plus 1–2 backups)" },
+    { "id": "ST1-T04", "phase": "P2", "priority": "high", "deps": ["BC-T10"],            "title": "Keep the schedule short & well-paced (1.5–2h; alternate active/calm; build in wind-down)" },
+    { "id": "ST1-T05", "phase": "P3", "priority": "medium", "deps": ["BC-T02"],          "title": "Plan & buy favors / goodie bags (per child)" },
+    { "id": "ST1-T06", "phase": "P4", "priority": "high", "deps": ["BC-T04"],            "title": "Child-proof & safety-check the space (hazards, choking risks, boundaries, water)" },
+    { "id": "ST1-T07", "phase": "P4", "priority": "high", "deps": ["BC-T05"],            "title": "Prepare first-aid kit + allergy action items; note nearest help" },
+    { "id": "ST1-T08", "phase": "P5", "priority": "high", "deps": ["ST1-T01", "BC-T13"], "title": "Brief helpers on roles, ratio, and the allergy plan before guests arrive" },
+    { "id": "ST1-T09", "phase": "P5", "priority": "high", "deps": ["ST1-T08"],           "title": "Actively supervise during the party (headcounts, boundaries, water)" },
+    { "id": "ST1-T10", "phase": "P5", "priority": "medium", "deps": ["BC-T21"],          "title": "Calm wind-down before pickup (quiet activity; avoid over-tired meltdown)" },
+    { "id": "ST1-T11", "phase": "P5", "priority": "high", "deps": ["ST1-T05", "ST1-T02"],"title": "Hand out favors at exit; reunite each child with parent/approved contact" }
+  ],
+
+  "dependencies": {
+    "critical_chains": [
+      { "id": "ST1-CHAIN-SUPERVISION", "never_drop": true, "chain": ["ST1-T01", "ST1-T08", "ST1-T09"], "note": "Supervision: set ratio → brief helpers → active supervision" },
+      { "id": "ST1-CHAIN-SAFE-PICKUP", "never_drop": true, "chain": ["ST1-T02", "ST1-T09", "ST1-T11"], "note": "Parent contacts → headcounts → reunite correctly at pickup" },
+      { "id": "ST1-CHAIN-PACING", "chain": ["ST1-T03", "ST1-T04", "ST1-T10"], "note": "Games planned → short paced schedule → calm wind-down" },
+      { "id": "ST1-CHAIN-HAZARD", "never_drop": true, "chain": ["ST1-T06", "ST1-T07"], "note": "Child-proof space + first-aid readiness" }
+    ],
+    "reinforces_core_chains": ["CHAIN-SAFETY"]
+  },
+
+  "milestones": [
+    { "id": "ST1-M1", "universal": "UM6", "label": "Supervision & safety ready", "satisfied_by": ["ST1-T01", "ST1-T06", "ST1-T08"] },
+    { "id": "ST1-M2", "universal": "UM4", "label": "Parent presence & contacts confirmed", "satisfied_by": ["ST1-T02"] }
+  ],
+
+  "resources": [
+    { "id": "ST1-R01", "type": "people",    "scaling": "per_ratio", "name": "Supervising adults / helpers (to ratio)", "pricing_ref": null },
+    { "id": "ST1-R02", "type": "supply",    "scaling": "per_unit",  "name": "Age-appropriate games & activity materials", "pricing_ref": "activity_materials" },
+    { "id": "ST1-R03", "type": "supply",    "scaling": "per_kid",   "name": "Favors / goodie bags", "pricing_ref": "favors_per_kid" },
+    { "id": "ST1-R04", "type": "equipment", "scaling": "flat",      "name": "First-aid kit + allergy action items", "pricing_ref": null },
+    { "id": "ST1-R05", "type": "supply",    "scaling": "flat",      "name": "Safety items (boundary markers, outlet covers as needed)", "pricing_ref": null },
+    { "id": "ST1-R06", "type": "supply",    "scaling": "per_unit",  "name": "Small prizes (optional)", "pricing_ref": "prizes" }
+  ],
+
+  "cost_drivers": [
+    { "id": "ST1-CD01", "item_key": "favors_per_kid",     "basis": "per_unit", "driver": "kid_count",  "cost_category": "UCD6" },
+    { "id": "ST1-CD02", "item_key": "activity_materials", "basis": "flat",     "driver": "game_count", "cost_category": "UCD6" },
+    { "id": "ST1-CD03", "item_key": "prizes",             "basis": "per_unit", "driver": "kid_count",  "cost_category": "UCD6", "optional": true }
+  ],
+
+  "risks": [
+    { "id": "ST1-RK01", "category": "URK5", "name": "Child supervision lapse", "severity": "high", "probability": "medium", "applies_if": "always", "never_drop": true, "mitigation": "Maintain ratio (ST1-T01); brief helpers (ST1-T08); active supervision + headcounts (ST1-T09); secure boundaries/water (ST1-T06)." },
+    { "id": "ST1-RK02", "category": "URK7", "name": "Over-tired / over-sugared meltdown", "severity": "medium", "probability": "medium", "applies_if": "always", "mitigation": "Short paced schedule (ST1-T04); calm wind-down (ST1-T10); pace sweets/cake." },
+    { "id": "ST1-RK03", "category": "URK5", "name": "Choking / age-inappropriate hazard", "severity": "high", "probability": "low", "applies_if": "always", "never_drop": true, "mitigation": "Child-proof space + age-appropriate food/toys (ST1-T06); first-aid ready (ST1-T07)." },
+    { "id": "ST1-RK04", "category": "URK7", "name": "Games fall flat (short attention span)", "severity": "medium", "probability": "medium", "applies_if": "always", "mitigation": "Simple short games with 1–2 backups (ST1-T03); pacing (ST1-T04)." },
+    { "id": "ST1-RK05", "category": "URK5", "name": "Child leaves with wrong adult / unaccounted", "severity": "high", "probability": "low", "applies_if": "drop_off_children", "never_drop": true, "mitigation": "Collect parent/approved contacts (ST1-T02); headcounts (ST1-T09); supervised reunite at pickup (ST1-T11)." }
+  ],
+
+  "communication_templates": [
+    { "id": "ST1-TPL01", "universal": "UCN4", "name": "parent_info", "required": true, "variables": ["honoree_name", "date", "time", "location", "dropoff_or_stay", "pickup_time", "emergency_contact_request"] }
+  ],
+
+  "decision_rules": [
+    { "rule": "Set supervision ratio from config (kids_per_adult = 5); supervising_adults = ceil(kid_count / 5)." },
+    { "rule": "Default entertainment = DIY simple games; a hired entertainer is opt-in via MOD-OPT-ENTERTAINER." },
+    { "rule": "Favors default ON for this subtype (per child)." },
+    { "rule": "Recommend duration 1.5–2h, daytime; warn if requested runtime exceeds 2.5h." },
+    { "rule": "If any children are drop-off, require emergency contacts (activates ST1-RK05 + ST1-T02)." },
+    { "rule": "Reinforce core allergy chain (CHAIN-SAFETY): ST1-T08 helper brief must include the allergy plan from BC-T13." }
+  ],
+
+  "success_conditions": [
+    { "id": "ST1-SC01", "universal": "USC3", "condition": "Ratio maintained; no supervision/safety incidents." },
+    { "id": "ST1-SC02", "universal": "USC6", "condition": "Honoree happy; kids engaged for the (short) duration." },
+    { "id": "ST1-SC03", "universal": "USC4", "condition": "On time, well-paced; calm wind-down; no meltdown crisis." },
+    { "id": "ST1-SC04", "universal": "USC3", "condition": "Every child reunited correctly with parent/approved contact." },
+    { "id": "ST1-SC05", "universal": "USC3", "condition": "Allergy-safe throughout (reinforces core BC-RK01)." }
+  ],
+
+  "failure_modes": [
+    { "id": "ST1-FM01", "binds_risk": "ST1-RK01", "mode": "Supervision lapse → injury or lost child" },
+    { "id": "ST1-FM02", "binds_risk": "ST1-RK02", "mode": "Over-tired / over-sugared meltdown" },
+    { "id": "ST1-FM03", "binds_risk": "ST1-RK04", "mode": "Runtime too long → restlessness / chaos" },
+    { "id": "ST1-FM04", "binds_risk": "ST1-RK04", "mode": "Games underplanned / fell flat" },
+    { "id": "ST1-FM05", "binds_risk": "BC-RK01",  "mode": "Allergy incident (core risk, reinforced here)" },
+    { "id": "ST1-FM06", "binds_risk": "ST1-RK03", "mode": "Choking / hazard from age-inappropriate item" }
+  ]
+}
