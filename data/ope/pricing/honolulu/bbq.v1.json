@@ -1,0 +1,95 @@
+{
+  "_meta": {
+    "kind": "pricing-seed",
+    "version": "1",
+    "region": "Honolulu",
+    "category": "bbq",
+    "engine": "cost-mvp-1",
+    "currency": "USD",
+    "modules_covered": ["MOD-BBQ-CORE"],
+    "spec": "OPE_COST_ENGINE_MVP_V1.md",
+    "status": "production-data",
+    "disclaimer": "Illustrative placeholder seed values for Honolulu — not researched market rates. These estimate the EVENT's costs, never ActivLife Hub fees. Calibrate before launch."
+  },
+
+  "seeds": [
+    {
+      "item_key": "bbq_food_per_head",
+      "driver_id": "BQ-CD01",
+      "module": "MOD-BBQ-CORE",
+      "basis": "per_guest",
+      "unit": "per guest (meals)",
+      "cost_category": "UCD3",
+      "optional": false,
+      "low": 6.00,
+      "likely": 9.00,
+      "high": 15.00,
+      "notes": "Driver = meals (guest_count + food buffer). Meat + vegetarian per head."
+    },
+    {
+      "item_key": "drinks_per_head",
+      "driver_id": "BQ-CD02",
+      "module": "MOD-BBQ-CORE",
+      "basis": "per_guest",
+      "unit": "per guest",
+      "cost_category": "UCD3",
+      "optional": false,
+      "low": 2.00,
+      "likely": 3.00,
+      "high": 5.00,
+      "notes": "Soft drinks / water (no alcohol in MVP)."
+    },
+    {
+      "item_key": "fuel",
+      "driver_id": "BQ-CD03",
+      "module": "MOD-BBQ-CORE",
+      "basis": "flat",
+      "unit": "flat",
+      "cost_category": "UCD4",
+      "optional": false,
+      "low": 10,
+      "likely": 18,
+      "high": 30,
+      "notes": "Charcoal or propane."
+    },
+    {
+      "item_key": "ice",
+      "driver_id": "BQ-CD04",
+      "module": "MOD-BBQ-CORE",
+      "basis": "per_guest",
+      "unit": "per guest",
+      "cost_category": "UCD3",
+      "optional": false,
+      "low": 0.40,
+      "likely": 0.65,
+      "high": 1.00,
+      "notes": "Module basis = per_guest (driver guest_count). Approx. one bag (~$5, warm climate) per 8 guests, expressed per head to match the module."
+    },
+    {
+      "item_key": "disposables_per_head",
+      "driver_id": "BQ-CD05",
+      "module": "MOD-BBQ-CORE",
+      "basis": "per_guest",
+      "unit": "per unit (disposables_units)",
+      "cost_category": "UCD6",
+      "optional": false,
+      "low": 1.00,
+      "likely": 1.50,
+      "high": 2.50,
+      "notes": "Driver = disposables_units (guest_count + buffer). Plates, cutlery, foil, trash bags."
+    },
+    {
+      "item_key": "grill_rental",
+      "driver_id": "BQ-CD06",
+      "module": "MOD-BBQ-CORE",
+      "basis": "flat",
+      "unit": "flat",
+      "cost_category": "UCD4",
+      "optional": true,
+      "low": 0,
+      "likely": 0,
+      "high": 60,
+      "notes": "Optional (High-only by default). 0 if grill owned; rental enters all bands if grill_owned=false."
+    }
+  ]
+}

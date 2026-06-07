@@ -1,0 +1,121 @@
+{
+  "_meta": {
+    "kind": "pricing-seed",
+    "version": "1",
+    "region": "Honolulu",
+    "category": "birthday",
+    "engine": "cost-mvp-1",
+    "currency": "USD",
+    "modules_covered": ["MOD-BIRTHDAY-CORE", "MOD-BIRTHDAY-ST1-YOUNG-KIDS"],
+    "spec": "OPE_COST_ENGINE_MVP_V1.md",
+    "status": "production-data",
+    "disclaimer": "Illustrative placeholder seed values for Honolulu — not researched market rates. These estimate the EVENT's costs, never ActivLife Hub fees. Calibrate before launch."
+  },
+
+  "seeds": [
+    {
+      "item_key": "cake",
+      "driver_id": "BC-CD01",
+      "module": "MOD-BIRTHDAY-CORE",
+      "basis": "per_unit",
+      "unit": "per serving",
+      "cost_category": "UCD3",
+      "optional": false,
+      "low": 2.00,
+      "likely": 3.00,
+      "high": 5.00,
+      "notes": "Servings ~= guest_count. Low = store-bought sheet cake; high = custom/bakery."
+    },
+    {
+      "item_key": "party_food_per_head",
+      "driver_id": "BC-CD02",
+      "module": "MOD-BIRTHDAY-CORE",
+      "basis": "per_guest",
+      "unit": "per guest",
+      "cost_category": "UCD3",
+      "optional": false,
+      "low": 6.00,
+      "likely": 9.00,
+      "high": 14.00,
+      "notes": "Low = simple DIY kid food; high = catered spread for kids + adults."
+    },
+    {
+      "item_key": "drinks_per_head",
+      "driver_id": "BC-CD03",
+      "module": "MOD-BIRTHDAY-CORE",
+      "basis": "per_guest",
+      "unit": "per guest",
+      "cost_category": "UCD3",
+      "optional": false,
+      "low": 2.00,
+      "likely": 3.00,
+      "high": 5.00,
+      "notes": "Low = juice/water; high = bottled variety + adult options (non-alcoholic in MVP)."
+    },
+    {
+      "item_key": "decorations",
+      "driver_id": "BC-CD04",
+      "module": "MOD-BIRTHDAY-CORE",
+      "basis": "flat",
+      "unit": "flat",
+      "cost_category": "UCD6",
+      "optional": false,
+      "low": 30,
+      "likely": 60,
+      "high": 120,
+      "notes": "Low = DIY/minimal; high = full themed décor kit."
+    },
+    {
+      "item_key": "tableware_per_head",
+      "driver_id": "BC-CD05",
+      "module": "MOD-BIRTHDAY-CORE",
+      "basis": "per_guest",
+      "unit": "per unit (tableware_units)",
+      "cost_category": "UCD6",
+      "optional": false,
+      "low": 1.00,
+      "likely": 1.50,
+      "high": 2.50,
+      "notes": "Driver = tableware_units (guest_count + buffer). Plates, cups, napkins, cutlery."
+    },
+    {
+      "item_key": "favors_per_kid",
+      "driver_id": "ST1-CD01",
+      "module": "MOD-BIRTHDAY-ST1-YOUNG-KIDS",
+      "basis": "per_unit",
+      "unit": "per child",
+      "cost_category": "UCD6",
+      "optional": false,
+      "low": 3.00,
+      "likely": 5.00,
+      "high": 9.00,
+      "notes": "Driver = kid_count. One goodie bag per child."
+    },
+    {
+      "item_key": "activity_materials",
+      "driver_id": "ST1-CD02",
+      "module": "MOD-BIRTHDAY-ST1-YOUNG-KIDS",
+      "basis": "flat",
+      "unit": "flat",
+      "cost_category": "UCD6",
+      "optional": false,
+      "low": 15,
+      "likely": 30,
+      "high": 60,
+      "notes": "DIY game supplies for ~3 games. Hired entertainer is a separate module, not seeded here."
+    },
+    {
+      "item_key": "prizes",
+      "driver_id": "ST1-CD03",
+      "module": "MOD-BIRTHDAY-ST1-YOUNG-KIDS",
+      "basis": "per_unit",
+      "unit": "per child",
+      "cost_category": "UCD6",
+      "optional": true,
+      "low": 0.00,
+      "likely": 0.00,
+      "high": 3.00,
+      "notes": "Optional (High-only by default). Driver = kid_count. Small game prizes."
+    }
+  ]
+}
