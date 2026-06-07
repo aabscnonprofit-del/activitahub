@@ -67,51 +67,57 @@
     "backHome": "Back to home"
   },
   "pricing": {
-    "title": "Simple, transparent pricing",
-    "subtitle": "Start free. Upgrade when you're ready to grow.",
-    "free": {
-      "name": "Free",
-      "price": "$0",
-      "period": "forever",
-      "features": {
-        "0": "Manage activities, venues & clients",
-        "1": "Personal calendar",
-        "2": "One organizer profile",
-        "3": "Community support",
-        "4": "Available in 4 languages"
+    "title": "Pricing",
+    "subtitle": "Every part of ActivLife Hub is a real product with a clear price — and real value at every layer.",
+    "products": {
+      "planner": {
+        "name": "Activity Planner",
+        "audience": "For everyone",
+        "tagline": "Plan one great event — without becoming an organizer.",
+        "price": "Coming soon",
+        "priceNote": "For people planning their own birthday, picnic, gathering and more.",
+        "features": [
+          "Guided event planning",
+          "A clear plan, checklist & budget",
+          "Key risks and reminders"
+        ]
       },
-      "cta": "Get started",
-      "bestFor": "Best for participants & new organizers",
-      "tagline": "Everything you need to join activities and explore the platform.",
-      "includesLabel": "What you get right away"
-    },
-    "pro": {
-      "badge": "Most popular",
-      "name": "Pro",
-      "price": "$29",
-      "period": "/month",
-      "features": {
-        "0": "Everything in Free",
-        "1": "Certified Organizer badge",
-        "2": "Marketplace listings",
-        "3": "Unlimited bookings & proposals",
-        "4": "Advanced analytics",
-        "5": "Priority support",
-        "6": "Early access to new features"
+      "academy": {
+        "name": "Organizer Academy",
+        "audience": "For aspiring organizers",
+        "tagline": "Learn the craft and earn the Certified Organizer credential.",
+        "price": "From $29",
+        "priceNote": "One-time · Experienced skills test $29 · Beginner course $99.",
+        "features": [
+          "Structured course or fast-track test",
+          "Certified Organizer credential",
+          "The skills clients trust"
+        ],
+        "cta": "Get certified"
       },
-      "cta": "Subscribe",
-      "bestFor": "Best for certified organizers ready to earn",
-      "tagline": "List on the marketplace and turn your activities into income.",
-      "includesLabel": "Everything in Free, plus",
-      "requirement": "Pro unlocks after you complete certification."
+      "platform": {
+        "name": "Organizer Platform",
+        "audience": "For working organizers",
+        "badge": "For earning",
+        "tagline": "Run your business, win clients, and use OPE.",
+        "price": "Monthly subscription",
+        "priceNote": "Your plan is shown at checkout.",
+        "features": [
+          "OPE planning & client proposals",
+          "Marketplace listings & client requests",
+          "Bookings, payments & analytics",
+          "Certified & verified badges"
+        ],
+        "cta": "Start",
+        "requirement": "Unlocks after certification."
+      }
     },
-    "comingSoon": "Subscribe from your billing page after certification.",
     "journey": {
       "headline": "What happens after you sign up",
       "steps": [
-        "Create your free account in seconds",
+        "Plan or join an activity",
         "Get certified through the Academy",
-        "Go Pro to list on the marketplace and accept bookings"
+        "Subscribe to the Organizer Platform and start earning"
       ]
     }
   },
@@ -154,17 +160,18 @@
     "signIn": "Sign In",
     "signUp": "Sign Up",
     "signOut": "Sign Out",
-    "account": "My Hub"
+    "account": "My Hub",
+    "becomeOrganizer": "Become an Organizer"
   },
   "home": {
     "hero": {
-      "badge": "A community for shared experiences",
-      "title": "Discover experiences,",
-      "titleAccent": "or create your own",
-      "subtitle": "Join activities near you and meet people who share your interests — or share your own passion and start hosting experiences for your community.",
-      "ctaPrimary": "Start organizing",
-      "ctaSecondary": "Discover experiences",
-      "reassure": "Free to start · No credit card required · 4 languages"
+      "badge": "The world needs more organizers",
+      "title": "The best moments in life",
+      "titleAccent": "are made by someone",
+      "subtitle": "Discover activities near you, plan your own event, or become the organizer your community is waiting for.",
+      "ctaPrimary": "Explore activities",
+      "ctaSecondary": "Become an organizer",
+      "reassure": "Certified organizers · Secure payments · Available in 4 languages"
     },
     "pillars": {
       "headline": "Everything you need to succeed",
@@ -188,13 +195,13 @@
       "countries": "Countries"
     },
     "cta": {
-      "title": "Ready to share something you love?",
-      "subtitle": "Start hosting activities for your community — at your own pace, with support every step.",
-      "button": "Start organizing"
+      "title": "Ready to turn organizing into a profession?",
+      "subtitle": "Learn the craft, get certified, and start earning as an organizer — with support every step.",
+      "button": "Become an organizer"
     },
     "trust": {
       "secure": "Secure Stripe payments",
-      "certified": "Verified certified organizers",
+      "certified": "Certified organizers",
       "languages": "Available in 4 languages",
       "cancel": "Cancel anytime"
     },
@@ -248,8 +255,8 @@
       "subheadline": "The standards that keep our community safe and welcoming.",
       "items": [
         {
-          "title": "Verified organizers",
-          "description": "Every certified organizer is reviewed and badge-verified."
+          "title": "Certified organizers",
+          "description": "Every certified organizer has completed training and earned the credential."
         },
         {
           "title": "Secure payments",
@@ -276,24 +283,24 @@
       "join": {
         "badge": "For participants",
         "title": "Join activities",
-        "description": "Discover and book experiences from trusted, certified organizers near you — free to start.",
+        "description": "Discover and book experiences from trusted, certified organizers near you.",
         "points": [
-          "Browse the marketplace for free",
+          "Browse activities near you",
           "Book and pay securely",
           "Review and rebook your favorites"
         ],
-        "cta": "Discover experiences"
+        "cta": "Explore activities"
       },
       "organize": {
         "badge": "For organizers",
         "title": "Organize activities",
-        "description": "Share your passion, host activities, and build a community — earning along the way.",
+        "description": "Build a profession: get certified, win clients, and earn from the events you run.",
         "points": [
           "Get certified in the Academy",
           "List activities and manage venues",
           "Accept bookings and get paid"
         ],
-        "cta": "Start organizing"
+        "cta": "Become an organizer"
       }
     },
     "discover": {
@@ -301,6 +308,34 @@
       "headline": "Find your next moment",
       "subheadline": "From birthdays to sunset sails — explore experiences for every occasion, community, and dream.",
       "cta": "Explore the marketplace"
+    },
+    "mission": {
+      "headline": "The World Needs More Organizers",
+      "subheadline": "People create the best moments of real life. We help.",
+      "body": "Friendship, community, and celebration don't happen on their own — someone makes them happen. We exist to help more people become the organizers their communities need, and to turn that ability into a profession.",
+      "cta": "Become an organizer"
+    },
+    "becomeOrganizer": {
+      "headline": "Turn bringing people together into a profession",
+      "subheadline": "A clear path from first lesson to first income — with the tools to look professional from day one.",
+      "steps": [
+        "Learn",
+        "Get Certified",
+        "First Client",
+        "First Event",
+        "First Income"
+      ],
+      "cta": "Start your organizer path"
+    },
+    "ope": {
+      "headline": "Look professional from day one",
+      "subheadline": "Our planning engine turns a few details into a complete client proposal — timeline, plan, and budget — in minutes instead of hours.",
+      "cta": "See how it works"
+    },
+    "academyTeaser": {
+      "headline": "Learn the craft. Earn the credential.",
+      "subheadline": "The Organizer Academy turns enthusiasm into a certified profession — two ways in, one recognized credential.",
+      "cta": "Explore the Academy"
     }
   },
   "auth": {
@@ -313,7 +348,7 @@
       "submitting": "Signing in...",
       "forgotPassword": "Forgot password?",
       "noAccount": "Don't have an account?",
-      "signUpLink": "Sign up for free"
+      "signUpLink": "Sign up"
     },
     "signUp": {
       "title": "Create your account",
@@ -704,7 +739,10 @@
       "about": "About",
       "privacy": "Privacy Policy",
       "terms": "Terms of Service",
-      "contact": "Contact"
+      "contact": "Contact",
+      "becomeOrganizer": "Become an Organizer",
+      "academy": "Academy",
+      "philosophy": "Organizer Philosophy"
     },
     "copyright": "© {year} ActivLife Hub. All rights reserved."
   },
@@ -863,7 +901,7 @@
       "steps": [
         {
           "title": "Send a request",
-          "description": "Tell the organizer what you’d like — it’s free and takes a minute."
+          "description": "Tell the organizer what you’d like — it only takes a minute."
         },
         {
           "title": "Get a proposal",
@@ -1133,5 +1171,203 @@
       "cta": "Go to dashboard"
     },
     "requestsLink": "Your requests"
+  },
+  "becomeOrganizerPage": {
+    "meta": {
+      "title": "Become an Organizer",
+      "description": "Learn, get certified and start earning as an organizer on ActivLife Hub."
+    },
+    "hero": {
+      "title": "Turn bringing people together into a profession",
+      "subtitle": "Learn the craft, get certified, win your first client, and earn — with tools that make you look professional from day one.",
+      "cta": "Start your organizer path",
+      "ctaSecondary": "Explore the Academy"
+    },
+    "path": {
+      "headline": "Your path",
+      "steps": [
+        "Learn",
+        "Get Certified",
+        "First Client",
+        "First Event",
+        "First Income"
+      ]
+    },
+    "why": {
+      "headline": "Who it's for",
+      "body": "Career changers, side-income seekers, parents returning to work, immigrants building a new life, and natural community-builders — anyone ready to turn bringing people together into income."
+    },
+    "ope": {
+      "headline": "Look professional from day one",
+      "body": "OPE, our planning engine, turns a few details into a complete client proposal — timeline, plan, and budget — in minutes."
+    },
+    "academy": {
+      "headline": "Learn in the Academy",
+      "body": "A guided path from beginner course or experienced fast-track to a recognized credential.",
+      "cta": "Explore the Academy"
+    },
+    "certification": {
+      "headline": "Earn the credential clients trust",
+      "body": "Become a Certified Organizer — proof you can deliver safely and reliably."
+    },
+    "income": {
+      "headline": "Build real income",
+      "body": "Win clients, deliver great events, get paid, and grow into repeat business — your first income is the goal, not just certification."
+    },
+    "trust": {
+      "headline": "Built on trust",
+      "body": "Certified and verified organizers, secure payments, and clear standards keep every event safe and welcoming."
+    },
+    "cta": {
+      "headline": "Ready to begin?",
+      "body": "Start your path to becoming a Certified Organizer.",
+      "button": "Start your organizer path"
+    },
+    "pricing": {
+      "headline": "What it costs",
+      "body": "The Academy and certification are paid programs, and operating as an organizer is a paid subscription. See what each part costs.",
+      "cta": "View pricing"
+    }
+  },
+  "organizerPhilosophy": {
+    "meta": {
+      "title": "Organizer Philosophy",
+      "description": "What it means to be an ActivLife Hub Organizer."
+    },
+    "intro": {
+      "eyebrow": "Our philosophy",
+      "headline": "What it means to be an ActivLife Hub Organizer",
+      "lead": "Great organizers prevent problems before they happen. Being an ActivLife Hub Organizer is less about reacting brilliantly in a crisis and more about quietly making sure one never arrives — and that everyone in your care feels looked after."
+    },
+    "closing": "People create the best moments of real life. We help.",
+    "principles": [
+      {
+        "title": "Why Organizers Matter",
+        "body": "Communities, friendships and celebrations exist because someone makes them happen."
+      },
+      {
+        "title": "Organizer Comes First",
+        "body": "Guests see the activity; the organizer sees the responsibility."
+      },
+      {
+        "title": "People Before Activities",
+        "body": "Activities exist for people, not people for activities."
+      },
+      {
+        "title": "Prevention Over Recovery",
+        "body": "The best organizer prevents problems rather than saving the day."
+      },
+      {
+        "title": "Promise Only What You Can Deliver",
+        "body": "Trust is built through reliability, not ambition."
+      },
+      {
+        "title": "Respect People's Time",
+        "body": "Start on time, communicate clearly, plan reliably."
+      },
+      {
+        "title": "Safety Is Not Optional",
+        "body": "When it involves children, sports, water, the outdoors or transport, the duty of care comes first."
+      },
+      {
+        "title": "Organizers Create Trust",
+        "body": "Every event affects trust in every organizer on the platform."
+      },
+      {
+        "title": "Communities Over Events",
+        "body": "Events end; communities remain."
+      },
+      {
+        "title": "Continuous Improvement",
+        "body": "Every event teaches something."
+      },
+      {
+        "title": "The ActivLife Hub Organizer",
+        "body": "Not a flawless performer — a trustworthy one."
+      }
+    ],
+    "ctaSection": {
+      "headline": "Ready to live it?",
+      "become": "Become an organizer",
+      "academy": "Explore the Academy"
+    }
+  },
+  "academyLanding": {
+    "hero": {
+      "title": "The Organizer Academy",
+      "subtitle": "Learn the craft, earn the credential, and become a Certified Organizer — two ways in, one recognized standard.",
+      "cta": "Get certified",
+      "ctaSecondary": "Become an organizer"
+    },
+    "paths": {
+      "headline": "Two ways in",
+      "beginnerTitle": "Beginner Course",
+      "beginnerBody": "New to organizing? Learn it step by step.",
+      "fastTitle": "Experienced Fast-Track",
+      "fastBody": "Already experienced? Prove it with the skills test."
+    },
+    "curriculum": {
+      "headline": "What you'll learn",
+      "subheadline": "Eight modules from first principles to your first paid event.",
+      "modules": [
+        {
+          "title": "Introduction to ActivLife Hub",
+          "desc": "Mission, philosophy and the platform."
+        },
+        {
+          "title": "Working Inside ActivLife Hub",
+          "desc": "Marketplace, requests, profiles and reviews."
+        },
+        {
+          "title": "Using OPE",
+          "desc": "Plans, budgets and client proposals."
+        },
+        {
+          "title": "Fundamentals of Organizing",
+          "desc": "Lifecycle, resources, dependencies, execution."
+        },
+        {
+          "title": "Working with Participants",
+          "desc": "Communication, expectations and reviews."
+        },
+        {
+          "title": "Working with Vendors",
+          "desc": "Venues, contractors and negotiation."
+        },
+        {
+          "title": "Safety & Responsibility",
+          "desc": "Risk, duty of care and prevention. Mandatory."
+        },
+        {
+          "title": "Building an Organizer Career",
+          "desc": "First client, first event, first income."
+        }
+      ]
+    },
+    "certification": {
+      "headline": "Certification",
+      "body": "Pass a knowledge exam and a practical demonstration to earn the Certified Organizer credential — proof clients can verify."
+    },
+    "badges": {
+      "headline": "Verified vs Certified",
+      "certifiedTitle": "Certified",
+      "certifiedBody": "Proof of skill — you can plan and deliver safely and reliably.",
+      "verifiedTitle": "Verified",
+      "verifiedBody": "Proof of identity — a real, accountable organizer. Stackable with Certified."
+    },
+    "mastery": {
+      "headline": "Mastery-based, not pass-or-fail",
+      "body": "The exam exists to help you reach the standard, not to eliminate you. Retakes are encouraged, mistakes teach, and safety competency is mandatory. Certification confirms you have reached the standard."
+    },
+    "philosophy": {
+      "headline": "Built on the Organizer Philosophy",
+      "body": "Prevention over recovery. Safety first. People before activities. The Academy builds the character of a trustworthy organizer, not just the mechanics.",
+      "cta": "Read the Organizer Philosophy"
+    },
+    "cta": {
+      "headline": "Start your certification",
+      "body": "Begin the path to becoming a Certified Organizer.",
+      "button": "Get certified"
+    }
   }
 }

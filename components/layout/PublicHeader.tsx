@@ -55,6 +55,18 @@ export function PublicHeader({ locale, isAuthenticated }: PublicHeaderProps) {
             {t('marketplace')}
           </Link>
           <Link
+            href={`/${locale}/become-an-organizer`}
+            className="text-sm font-medium text-slate-600 hover:text-brand-600 transition-colors"
+          >
+            {t('becomeOrganizer')}
+          </Link>
+          <Link
+            href={`/${locale}/academy`}
+            className="text-sm font-medium text-slate-600 hover:text-brand-600 transition-colors"
+          >
+            {t('academy')}
+          </Link>
+          <Link
             href={`/${locale}/pricing`}
             className="text-sm font-medium text-slate-600 hover:text-brand-600 transition-colors"
           >
@@ -181,6 +193,20 @@ export function PublicHeader({ locale, isAuthenticated }: PublicHeaderProps) {
               className="rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
             >
               {t('marketplace')}
+            </Link>
+            <Link
+              href={`/${locale}/become-an-organizer`}
+              onClick={() => setMobileOpen(false)}
+              className="rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
+            >
+              {t('becomeOrganizer')}
+            </Link>
+            <Link
+              href={`/${locale}/academy`}
+              onClick={() => setMobileOpen(false)}
+              className="rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
+            >
+              {t('academy')}
             </Link>
             <Link
               href={`/${locale}/pricing`}

@@ -67,51 +67,57 @@
     "backHome": "Volver al inicio"
   },
   "pricing": {
-    "title": "Precios simples y transparentes",
-    "subtitle": "Empieza gratis. Mejora cuando estés listo para crecer.",
-    "free": {
-      "name": "Gratis",
-      "price": "0 $",
-      "period": "para siempre",
-      "features": {
-        "0": "Gestiona actividades, lugares y clientes",
-        "1": "Calendario personal",
-        "2": "Un perfil de organizador",
-        "3": "Soporte de la comunidad",
-        "4": "Disponible en 4 idiomas"
+    "title": "Precios",
+    "subtitle": "Cada parte de ActivLife Hub es un producto real con un precio claro, y valor real en cada nivel.",
+    "products": {
+      "planner": {
+        "name": "Planificador de actividades",
+        "audience": "Para todos",
+        "tagline": "Organiza un gran evento, sin tener que ser organizador.",
+        "price": "Próximamente",
+        "priceNote": "Para quienes planifican su cumpleaños, picnic, reunión y más.",
+        "features": [
+          "Planificación guiada de eventos",
+          "Un plan, lista y presupuesto claros",
+          "Riesgos clave y recordatorios"
+        ]
       },
-      "cta": "Comenzar",
-      "bestFor": "Ideal para participantes y nuevos organizadores",
-      "tagline": "Todo lo que necesitas para unirte a actividades y explorar la plataforma.",
-      "includesLabel": "Lo que obtienes de inmediato"
-    },
-    "pro": {
-      "badge": "Más popular",
-      "name": "Pro",
-      "price": "29 $",
-      "period": "/mes",
-      "features": {
-        "0": "Todo lo de Gratis",
-        "1": "Insignia de Organizador Certificado",
-        "2": "Listados en el mercado",
-        "3": "Reservas y propuestas ilimitadas",
-        "4": "Analíticas avanzadas",
-        "5": "Soporte prioritario",
-        "6": "Acceso anticipado a novedades"
+      "academy": {
+        "name": "Academia de Organizadores",
+        "audience": "Para futuros organizadores",
+        "tagline": "Aprende el oficio y obtén la credencial de Organizador Certificado.",
+        "price": "Desde 29 $",
+        "priceNote": "Pago único · Prueba para experimentados 29 $ · Curso para principiantes 99 $.",
+        "features": [
+          "Curso estructurado o prueba rápida",
+          "Credencial de Organizador Certificado",
+          "Las habilidades en las que confían los clientes"
+        ],
+        "cta": "Certifícate"
       },
-      "cta": "Suscribirse",
-      "bestFor": "Ideal para organizadores certificados listos para ganar",
-      "tagline": "Publica en el marketplace y convierte tus actividades en ingresos.",
-      "includesLabel": "Todo lo de Free, y además",
-      "requirement": "Pro se desbloquea cuando completas la certificación."
+      "platform": {
+        "name": "Plataforma de Organizadores",
+        "audience": "Para organizadores en activo",
+        "badge": "Para ganar",
+        "tagline": "Gestiona tu negocio, consigue clientes y usa OPE.",
+        "price": "Suscripción mensual",
+        "priceNote": "Tu plan se muestra al finalizar la compra.",
+        "features": [
+          "Planificación y propuestas con OPE",
+          "Listados del mercado y solicitudes de clientes",
+          "Reservas, pagos y analíticas",
+          "Insignias de Certificado y Verificado"
+        ],
+        "cta": "Empezar",
+        "requirement": "Se activa tras la certificación."
+      }
     },
-    "comingSoon": "Suscríbete desde tu página de facturación tras la certificación.",
     "journey": {
-      "headline": "Qué ocurre después de registrarte",
+      "headline": "Qué pasa después de registrarte",
       "steps": [
-        "Crea tu cuenta gratis en segundos",
-        "Certifícate a través de la Academia",
-        "Pásate a Pro para aparecer en el marketplace y aceptar reservas"
+        "Planifica o únete a una actividad",
+        "Certifícate en la Academia",
+        "Suscríbete a la Plataforma de Organizadores y empieza a ganar"
       ]
     }
   },
@@ -154,17 +160,18 @@
     "signIn": "Iniciar sesión",
     "signUp": "Registrarse",
     "signOut": "Cerrar sesión",
-    "account": "Mi espacio"
+    "account": "Mi espacio",
+    "becomeOrganizer": "Conviértete en organizador"
   },
   "home": {
     "hero": {
-      "badge": "Una comunidad de experiencias compartidas",
-      "title": "Descubre experiencias,",
-      "titleAccent": "o crea las tuyas",
-      "subtitle": "Únete a actividades cerca de ti y conoce a personas con tus mismos intereses, o comparte tu pasión y empieza a organizar experiencias para tu comunidad.",
-      "ctaPrimary": "Empieza a organizar",
-      "ctaSecondary": "Descubre experiencias",
-      "reassure": "Gratis para empezar · Sin tarjeta de crédito · 4 idiomas"
+      "badge": "El mundo necesita más organizadores",
+      "title": "Los mejores momentos de la vida",
+      "titleAccent": "los crea alguien",
+      "subtitle": "Descubre actividades cerca de ti, organiza tu propio evento o conviértete en el organizador que tu comunidad está esperando.",
+      "ctaPrimary": "Explorar actividades",
+      "ctaSecondary": "Conviértete en organizador",
+      "reassure": "Organizadores certificados · Pagos seguros · Disponible en 4 idiomas"
     },
     "pillars": {
       "headline": "Todo lo que necesitas para tener éxito",
@@ -188,13 +195,13 @@
       "countries": "Países"
     },
     "cta": {
-      "title": "¿Listo para compartir algo que te encanta?",
-      "subtitle": "Empieza a organizar actividades para tu comunidad, a tu ritmo y con apoyo en cada paso.",
-      "button": "Empieza a organizar"
+      "title": "¿Listo para convertir la organización en una profesión?",
+      "subtitle": "Aprende el oficio, certifícate y empieza a ganar como organizador, con apoyo en cada paso.",
+      "button": "Conviértete en organizador"
     },
     "trust": {
       "secure": "Pagos seguros con Stripe",
-      "certified": "Organizadores certificados verificados",
+      "certified": "Organizadores certificados",
       "languages": "Disponible en 4 idiomas",
       "cancel": "Cancela cuando quieras"
     },
@@ -248,8 +255,8 @@
       "subheadline": "Los estándares que mantienen nuestra comunidad segura y acogedora.",
       "items": [
         {
-          "title": "Organizadores verificados",
-          "description": "Cada organizador certificado es revisado y verificado con insignia."
+          "title": "Organizadores certificados",
+          "description": "Cada organizador certificado ha completado la formación y obtenido la credencial."
         },
         {
           "title": "Pagos seguros",
@@ -276,24 +283,24 @@
       "join": {
         "badge": "Para participantes",
         "title": "Únete a actividades",
-        "description": "Descubre y reserva experiencias de organizadores certificados de confianza cerca de ti, gratis para empezar.",
+        "description": "Descubre y reserva experiencias de organizadores certificados de confianza cerca de ti.",
         "points": [
-          "Explora el marketplace gratis",
+          "Explora actividades cerca de ti",
           "Reserva y paga de forma segura",
           "Valora y vuelve a reservar tus favoritas"
         ],
-        "cta": "Descubre experiencias"
+        "cta": "Explorar actividades"
       },
       "organize": {
         "badge": "Para organizadores",
         "title": "Organiza actividades",
-        "description": "Comparte tu pasión, organiza actividades y crea comunidad, ganando dinero por el camino.",
+        "description": "Construye una profesión: certifícate, consigue clientes y gana con los eventos que organizas.",
         "points": [
           "Certifícate en la Academia",
           "Publica actividades y gestiona lugares",
           "Acepta reservas y recibe pagos"
         ],
-        "cta": "Empieza a organizar"
+        "cta": "Conviértete en organizador"
       }
     },
     "discover": {
@@ -301,6 +308,34 @@
       "headline": "Encuentra tu próximo momento",
       "subheadline": "De cumpleaños a paseos al atardecer: explora experiencias para cada ocasión, comunidad y sueño.",
       "cta": "Explorar el marketplace"
+    },
+    "mission": {
+      "headline": "El mundo necesita más organizadores",
+      "subheadline": "Las personas crean los mejores momentos de la vida real. Nosotros ayudamos.",
+      "body": "La amistad, la comunidad y las celebraciones no surgen solas: alguien las hace posibles. Existimos para ayudar a más personas a convertirse en los organizadores que sus comunidades necesitan, y a transformar esa capacidad en una profesión.",
+      "cta": "Conviértete en organizador"
+    },
+    "becomeOrganizer": {
+      "headline": "Convierte tu don de reunir a la gente en una profesión",
+      "subheadline": "Un camino claro desde la primera lección hasta el primer ingreso, con las herramientas para verte profesional desde el primer día.",
+      "steps": [
+        "Aprende",
+        "Certifícate",
+        "Primer cliente",
+        "Primer evento",
+        "Primer ingreso"
+      ],
+      "cta": "Comienza tu camino como organizador"
+    },
+    "ope": {
+      "headline": "Profesional desde el primer día",
+      "subheadline": "Nuestro motor de planificación convierte unos pocos datos en una propuesta completa para el cliente —cronograma, plan y presupuesto— en minutos, no en horas.",
+      "cta": "Descubre cómo funciona"
+    },
+    "academyTeaser": {
+      "headline": "Aprende el oficio. Obtén la credencial.",
+      "subheadline": "La Academia de Organizadores convierte el entusiasmo en una profesión certificada: dos formas de entrar, una credencial reconocida.",
+      "cta": "Explorar la Academia"
     }
   },
   "auth": {
@@ -313,7 +348,7 @@
       "submitting": "Iniciando sesión...",
       "forgotPassword": "¿Olvidaste tu contraseña?",
       "noAccount": "¿No tienes cuenta?",
-      "signUpLink": "Regístrate gratis"
+      "signUpLink": "Regístrate"
     },
     "signUp": {
       "title": "Crea tu cuenta",
@@ -704,7 +739,10 @@
       "about": "Acerca de",
       "privacy": "Política de Privacidad",
       "terms": "Términos de Servicio",
-      "contact": "Contacto"
+      "contact": "Contacto",
+      "becomeOrganizer": "Conviértete en organizador",
+      "academy": "Academia",
+      "philosophy": "Filosofía del organizador"
     },
     "copyright": "© {year} ActivLife Hub. Todos los derechos reservados."
   },
@@ -863,7 +901,7 @@
       "steps": [
         {
           "title": "Envía una solicitud",
-          "description": "Dile al organizador qué te gustaría — es gratis y lleva un minuto."
+          "description": "Dile al organizador qué te gustaría — solo lleva un minuto."
         },
         {
           "title": "Recibe una propuesta",
@@ -1133,5 +1171,203 @@
       "cta": "Ir al panel"
     },
     "requestsLink": "Tus solicitudes"
+  },
+  "becomeOrganizerPage": {
+    "meta": {
+      "title": "Conviértete en organizador",
+      "description": "Aprende, certifícate y empieza a ganar como organizador en ActivLife Hub."
+    },
+    "hero": {
+      "title": "Convierte tu don de reunir a la gente en una profesión",
+      "subtitle": "Aprende el oficio, certifícate, consigue tu primer cliente y empieza a ganar — con herramientas que te hacen ver profesional desde el primer día.",
+      "cta": "Comienza tu camino como organizador",
+      "ctaSecondary": "Explorar la Academia"
+    },
+    "path": {
+      "headline": "Tu camino",
+      "steps": [
+        "Aprende",
+        "Certifícate",
+        "Primer cliente",
+        "Primer evento",
+        "Primer ingreso"
+      ]
+    },
+    "why": {
+      "headline": "Para quién es",
+      "body": "Personas que cambian de carrera, buscan ingresos extra, regresan al trabajo, construyen una nueva vida o ya reúnen a la gente de forma natural — cualquiera listo para convertir esa capacidad en ingresos."
+    },
+    "ope": {
+      "headline": "Profesional desde el primer día",
+      "body": "OPE, nuestro motor de planificación, convierte unos pocos datos en una propuesta completa para el cliente —cronograma, plan y presupuesto— en minutos."
+    },
+    "academy": {
+      "headline": "Aprende en la Academia",
+      "body": "Un camino guiado, desde el curso para principiantes o la vía rápida para experimentados, hasta una credencial reconocida.",
+      "cta": "Explorar la Academia"
+    },
+    "certification": {
+      "headline": "Obtén la credencial en la que confían los clientes",
+      "body": "Conviértete en Organizador Certificado: la prueba de que puedes entregar de forma segura y fiable."
+    },
+    "income": {
+      "headline": "Genera ingresos reales",
+      "body": "Consigue clientes, entrega grandes eventos, cobra y crece con clientes recurrentes — tu primer ingreso es la meta, no solo la certificación."
+    },
+    "trust": {
+      "headline": "Construido sobre la confianza",
+      "body": "Organizadores certificados y verificados, pagos seguros y normas claras mantienen cada evento seguro y acogedor."
+    },
+    "cta": {
+      "headline": "¿Listo para empezar?",
+      "body": "Comienza tu camino para convertirte en Organizador Certificado.",
+      "button": "Comienza tu camino como organizador"
+    },
+    "pricing": {
+      "headline": "Cuánto cuesta",
+      "body": "La Academia y la certificación son programas de pago, y operar como organizador requiere una suscripción de pago. Mira cuánto cuesta cada parte.",
+      "cta": "Ver precios"
+    }
+  },
+  "organizerPhilosophy": {
+    "meta": {
+      "title": "Filosofía del organizador",
+      "description": "Qué significa ser un organizador de ActivLife Hub."
+    },
+    "intro": {
+      "eyebrow": "Nuestra filosofía",
+      "headline": "Qué significa ser un organizador de ActivLife Hub",
+      "lead": "Los grandes organizadores previenen los problemas antes de que ocurran. Ser organizador de ActivLife Hub tiene menos que ver con reaccionar de forma brillante ante una crisis y más con asegurarse, en silencio, de que nunca llegue, y de que todas las personas a tu cargo se sientan bien atendidas."
+    },
+    "closing": "Las personas crean los mejores momentos de la vida real. Nosotros ayudamos.",
+    "principles": [
+      {
+        "title": "Por qué importan los organizadores",
+        "body": "Las comunidades, las amistades y las celebraciones existen porque alguien las hace posibles."
+      },
+      {
+        "title": "El organizador va primero",
+        "body": "Los invitados ven la actividad; el organizador ve la responsabilidad."
+      },
+      {
+        "title": "Las personas antes que las actividades",
+        "body": "Las actividades existen para las personas, no las personas para las actividades."
+      },
+      {
+        "title": "Prevención antes que recuperación",
+        "body": "El mejor organizador previene los problemas en lugar de salvar el día."
+      },
+      {
+        "title": "Promete solo lo que puedas cumplir",
+        "body": "La confianza se construye con fiabilidad, no con ambición."
+      },
+      {
+        "title": "Respeta el tiempo de las personas",
+        "body": "Empieza puntual, comunica con claridad, planifica con fiabilidad."
+      },
+      {
+        "title": "La seguridad no es opcional",
+        "body": "Con niños, deporte, agua, aire libre o transporte, el deber de cuidado va primero."
+      },
+      {
+        "title": "Los organizadores crean confianza",
+        "body": "Cada evento afecta la confianza en todos los organizadores de la plataforma."
+      },
+      {
+        "title": "Comunidades antes que eventos",
+        "body": "Los eventos terminan; las comunidades permanecen."
+      },
+      {
+        "title": "Mejora continua",
+        "body": "Cada evento enseña algo."
+      },
+      {
+        "title": "El organizador de ActivLife Hub",
+        "body": "No un ejecutante perfecto, sino uno confiable."
+      }
+    ],
+    "ctaSection": {
+      "headline": "¿Listo para vivirlo?",
+      "become": "Conviértete en organizador",
+      "academy": "Explorar la Academia"
+    }
+  },
+  "academyLanding": {
+    "hero": {
+      "title": "La Academia de Organizadores",
+      "subtitle": "Aprende el oficio, obtén la credencial y conviértete en Organizador Certificado: dos formas de entrar, un estándar reconocido.",
+      "cta": "Certifícate",
+      "ctaSecondary": "Conviértete en organizador"
+    },
+    "paths": {
+      "headline": "Dos formas de entrar",
+      "beginnerTitle": "Curso para principiantes",
+      "beginnerBody": "¿Nuevo en la organización? Apréndelo paso a paso.",
+      "fastTitle": "Vía rápida para experimentados",
+      "fastBody": "¿Ya tienes experiencia? Demuéstralo con la prueba de competencias."
+    },
+    "curriculum": {
+      "headline": "Qué aprenderás",
+      "subheadline": "Ocho módulos, desde los principios básicos hasta tu primer evento pagado.",
+      "modules": [
+        {
+          "title": "Introducción a ActivLife Hub",
+          "desc": "Misión, filosofía y la plataforma."
+        },
+        {
+          "title": "Trabajar dentro de ActivLife Hub",
+          "desc": "Mercado, solicitudes, perfiles y reseñas."
+        },
+        {
+          "title": "Uso de OPE",
+          "desc": "Planes, presupuestos y propuestas para clientes."
+        },
+        {
+          "title": "Fundamentos de la organización",
+          "desc": "Ciclo, recursos, dependencias y ejecución."
+        },
+        {
+          "title": "Trabajar con participantes",
+          "desc": "Comunicación, expectativas y reseñas."
+        },
+        {
+          "title": "Trabajar con proveedores",
+          "desc": "Locales, contratistas y negociación."
+        },
+        {
+          "title": "Seguridad y responsabilidad",
+          "desc": "Riesgo, deber de cuidado y prevención. Obligatorio."
+        },
+        {
+          "title": "Construir una carrera de organizador",
+          "desc": "Primer cliente, primer evento, primer ingreso."
+        }
+      ]
+    },
+    "certification": {
+      "headline": "Certificación",
+      "body": "Aprueba un examen de conocimientos y una demostración práctica para obtener la credencial de Organizador Certificado, una prueba que los clientes pueden verificar."
+    },
+    "badges": {
+      "headline": "Verificado vs Certificado",
+      "certifiedTitle": "Certificado",
+      "certifiedBody": "Prueba de competencia: puedes planificar y entregar de forma segura y fiable.",
+      "verifiedTitle": "Verificado",
+      "verifiedBody": "Prueba de identidad: un organizador real y responsable. Compatible con Certificado."
+    },
+    "mastery": {
+      "headline": "Basado en el dominio, no en aprobar o reprobar",
+      "body": "El examen existe para ayudarte a alcanzar el estándar, no para eliminarte. Se anima a repetir, los errores enseñan y la competencia en seguridad es obligatoria. La certificación confirma que has alcanzado el estándar."
+    },
+    "philosophy": {
+      "headline": "Construida sobre la Filosofía del organizador",
+      "body": "Prevención antes que recuperación. La seguridad primero. Las personas antes que las actividades. La Academia forma el carácter de un organizador confiable, no solo la mecánica.",
+      "cta": "Lee la Filosofía del organizador"
+    },
+    "cta": {
+      "headline": "Comienza tu certificación",
+      "body": "Inicia el camino para convertirte en Organizador Certificado.",
+      "button": "Certifícate"
+    }
   }
 }

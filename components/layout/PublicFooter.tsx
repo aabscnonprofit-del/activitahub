@@ -28,6 +28,24 @@ export async function PublicFooter({ locale }: PublicFooterProps) {
           {/* Links */}
           <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
             <Link
+              href={`/${locale}/become-an-organizer`}
+              className="text-sm text-slate-500 hover:text-slate-900 transition-colors"
+            >
+              {t('links.becomeOrganizer')}
+            </Link>
+            <Link
+              href={`/${locale}/academy`}
+              className="text-sm text-slate-500 hover:text-slate-900 transition-colors"
+            >
+              {t('links.academy')}
+            </Link>
+            <Link
+              href={`/${locale}/organizer-philosophy`}
+              className="text-sm text-slate-500 hover:text-slate-900 transition-colors"
+            >
+              {t('links.philosophy')}
+            </Link>
+            <Link
               href={`/${locale}/privacy-policy`}
               className="text-sm text-slate-500 hover:text-slate-900 transition-colors"
             >

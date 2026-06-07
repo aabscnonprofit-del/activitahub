@@ -81,14 +81,14 @@ export default async function HomePage({ params }: HomePageProps) {
             </p>
             <div className="mt-7 flex flex-col items-center gap-3 sm:mt-9 sm:flex-row sm:justify-center">
               <Link
-                href={`/${locale}/sign-up?next=/${locale}/onboarding`}
+                href={`/${locale}/marketplace`}
                 className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-amber-400 px-6 py-3.5 text-base sm:px-8 sm:py-4 font-bold text-slate-900 shadow-lg transition-colors hover:bg-amber-300 sm:w-auto"
               >
                 {t('hero.ctaPrimary')}
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
               <Link
-                href={`/${locale}/marketplace`}
+                href={`/${locale}/become-an-organizer`}
                 className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-white/25 bg-white/10 px-6 py-3.5 text-base sm:px-8 sm:py-4 font-semibold text-white transition-colors hover:bg-white/20 sm:w-auto"
               >
                 {t('hero.ctaSecondary')}
@@ -109,6 +109,76 @@ export default async function HomePage({ params }: HomePageProps) {
                 </li>
               ))}
             </ul>
+          </div>
+        </section>
+
+        {/* ── Mission band ──────────────────────────────────────────────── */}
+        <section className="px-4 py-14 sm:py-20">
+          <div className="mx-auto max-w-3xl text-center">
+            <div className="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-50 text-brand-600">
+              <HeartHandshake className="h-6 w-6" aria-hidden="true" />
+            </div>
+            <h2 className="text-2xl font-extrabold text-slate-900 sm:text-3xl lg:text-4xl">
+              {t('mission.headline')}
+            </h2>
+            <p className="mt-3 text-lg font-semibold text-brand-600">{t('mission.subheadline')}</p>
+            <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-slate-600">
+              {t('mission.body')}
+            </p>
+            <Link href={`/${locale}/become-an-organizer`} className="btn-primary mt-7 px-7 py-3">
+              {t('mission.cta')}
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </Link>
+          </div>
+        </section>
+
+        {/* ── Become an organizer: the path ─────────────────────────────── */}
+        <section className="bg-slate-50 px-4 py-14 sm:py-20 lg:py-28">
+          <div className="mx-auto max-w-5xl text-center">
+            <div className="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-50 text-brand-600">
+              <Briefcase className="h-6 w-6" aria-hidden="true" />
+            </div>
+            <h2 className="text-2xl font-extrabold text-slate-900 sm:text-3xl lg:text-4xl">
+              {t('becomeOrganizer.headline')}
+            </h2>
+            <p className="mx-auto mt-3 max-w-2xl text-base text-slate-500 sm:text-lg">
+              {t('becomeOrganizer.subheadline')}
+            </p>
+            <ol className="mx-auto mt-9 grid max-w-4xl grid-cols-2 gap-3 sm:grid-cols-5 sm:gap-4">
+              {[0, 1, 2, 3, 4].map((i) => (
+                <li key={i} className="card flex flex-col items-center gap-2 p-4 text-center">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-100 text-sm font-bold text-brand-700">
+                    {i + 1}
+                  </span>
+                  <span className="text-sm font-semibold text-slate-800">
+                    {t(`becomeOrganizer.steps.${i}` as 'becomeOrganizer.steps.0')}
+                  </span>
+                </li>
+              ))}
+            </ol>
+            <Link href={`/${locale}/become-an-organizer`} className="btn-primary mt-9 px-7 py-3">
+              {t('becomeOrganizer.cta')}
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </Link>
+          </div>
+        </section>
+
+        {/* ── OPE — look professional from day one ──────────────────────── */}
+        <section className="px-4 py-14 sm:py-20 lg:py-24">
+          <div className="mx-auto flex max-w-4xl flex-col items-center gap-5 rounded-3xl bg-gradient-to-br from-brand-50 to-amber-50 px-5 py-10 text-center ring-1 ring-brand-100 sm:px-12 sm:py-14">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-brand-600 shadow-sm">
+              <CalendarCheck className="h-6 w-6" aria-hidden="true" />
+            </div>
+            <h2 className="text-2xl font-extrabold text-slate-900 sm:text-3xl lg:text-4xl">
+              {t('ope.headline')}
+            </h2>
+            <p className="max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
+              {t('ope.subheadline')}
+            </p>
+            <Link href={`/${locale}/become-an-organizer`} className="btn-secondary px-6 py-3">
+              {t('ope.cta')}
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </Link>
           </div>
         </section>
 
@@ -170,7 +240,7 @@ export default async function HomePage({ params }: HomePageProps) {
                     </li>
                   ))}
                 </ul>
-                <Link href={`/${locale}/sign-up?next=/${locale}/onboarding`} className="btn-primary mt-7 w-full">
+                <Link href={`/${locale}/become-an-organizer`} className="btn-primary mt-7 w-full">
                   {t('audience.organize.cta')}
                   <ArrowRight className="h-4 w-4" aria-hidden="true" />
                 </Link>
@@ -228,6 +298,25 @@ export default async function HomePage({ params }: HomePageProps) {
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
             </div>
+          </div>
+        </section>
+
+        {/* ── Academy teaser ────────────────────────────────────────────── */}
+        <section className="px-4 py-14 sm:py-20">
+          <div className="mx-auto max-w-3xl text-center">
+            <div className="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-50 text-brand-600">
+              <BadgeCheck className="h-6 w-6" aria-hidden="true" />
+            </div>
+            <h2 className="text-2xl font-extrabold text-slate-900 sm:text-3xl lg:text-4xl">
+              {t('academyTeaser.headline')}
+            </h2>
+            <p className="mx-auto mt-3 max-w-2xl text-base text-slate-500 sm:text-lg">
+              {t('academyTeaser.subheadline')}
+            </p>
+            <Link href={`/${locale}/academy`} className="btn-primary mt-7 px-7 py-3">
+              {t('academyTeaser.cta')}
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </Link>
           </div>
         </section>
 
@@ -293,7 +382,7 @@ export default async function HomePage({ params }: HomePageProps) {
               {t('cta.subtitle')}
             </p>
             <Link
-              href={`/${locale}/sign-up?next=/${locale}/onboarding`}
+              href={`/${locale}/become-an-organizer`}
               className="mt-8 inline-flex items-center gap-2 rounded-xl bg-brand-500 px-6 py-3.5 text-base sm:px-8 sm:py-4 font-bold text-white shadow-lg transition-colors hover:bg-brand-400"
             >
               {t('cta.button')}

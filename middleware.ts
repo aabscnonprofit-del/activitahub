@@ -18,7 +18,11 @@ const AUTH_REQUIRED_PREFIXES = [
   '/account',
   '/onboarding',
   '/billing',
-  '/academy',
+  // /academy itself is a PUBLIC marketing landing; only the gated course
+  // surfaces below require auth (and the academy access check still applies).
+  '/academy/exam',
+  '/academy/certificate',
+  '/academy/lessons',
   '/dashboard',
   '/admin',
   '/requests',
