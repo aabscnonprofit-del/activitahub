@@ -1,0 +1,107 @@
+{
+  "_meta": {
+    "module": "MOD-BBQ-CORE",
+    "version": "1",
+    "category": "bbq",
+    "kind": "core",
+    "applies": "every BBQ / cookout (invariant). Venue/audience/optional content lives in separate modules.",
+    "builds_on": ["OPE_UNIVERSAL_ACTIVITY_ARCHITECTURE_V1", "OPE_KB_BIRTHDAY_CORE_V1 (structure reference)"],
+    "status": "production-data",
+    "note": "Invariant BBQ core. Weather/permit/shade belong to MOD-VEN-OUTDOOR; alcohol, music, kids' area, transport are optional/audience modules."
+  },
+
+  "config_defaults": {
+    "contingency_pct": 10,
+    "food_buffer_pct": 10,
+    "tableware_buffer_pct": 10
+  },
+
+  "scenario_inputs_used": ["guest_count", "date", "budget", "venue_type", "region", "special_requirements"],
+
+  "derived_quantities": {
+    "meals": "ceil(guest_count * (1 + food_buffer_pct/100))",
+    "drinks_servings": "guest_count",
+    "disposables_units": "ceil(guest_count * (1 + tableware_buffer_pct/100))",
+    "ice_units": "scaled from guest_count + ambient temperature"
+  },
+
+  "phases": [
+    { "id": "P1", "name": "Foundations",       "window_days_before": [10, 14], "goal": "Date, guest list, budget, location, dietary needs" },
+    { "id": "P2", "name": "Planning & Invites","window_days_before": [7, 10],  "goal": "Invites sent; menu, drinks, grill & fuel planned" },
+    { "id": "P3", "name": "Preparation",       "window_days_before": [3, 5],   "goal": "RSVPs confirmed; supplies bought; quantities finalized" },
+    { "id": "P4", "name": "Final days",        "window_days_before": [1, 2],   "goal": "Fresh shop + ice; prep; grill & food-safety ready" },
+    { "id": "P5", "name": "Day-of",            "window_days_before": [0, 0],   "goal": "Set up, grill safely, serve, wind down" },
+    { "id": "P6", "name": "Wrap-up",           "window_days_before": [-3, 0],  "goal": "Cleanup, leftovers, thank-yous" }
+  ],
+
+  "tasks": [
+    { "id": "BQ-T01", "phase": "P1", "priority": "high", "deps": [],                               "title": "Confirm date & time (consider season/weather)" },
+    { "id": "BQ-T02", "phase": "P1", "priority": "high", "deps": ["BQ-T01"],                       "title": "Decide guest count / list" },
+    { "id": "BQ-T03", "phase": "P1", "priority": "high", "deps": [],                               "title": "Set budget target" },
+    { "id": "BQ-T04", "phase": "P1", "priority": "high", "deps": ["BQ-T01", "BQ-T02"],             "title": "Confirm location" },
+    { "id": "BQ-T05", "phase": "P1", "priority": "high", "deps": ["BQ-T02"],                       "title": "Capture dietary/allergy & non-meat needs" },
+    { "id": "BQ-T06", "phase": "P2", "priority": "high", "deps": ["BQ-T01", "BQ-T02", "BQ-T04"],   "title": "Send invitations with RSVP + dietary ask" },
+    { "id": "BQ-T07", "phase": "P2", "priority": "high", "deps": ["BQ-T02", "BQ-T03"],             "title": "Plan the menu (grill mains, sides, dessert)" },
+    { "id": "BQ-T08", "phase": "P2", "priority": "high", "deps": ["BQ-T02", "BQ-T03"],             "title": "Plan drinks, ice & coolers" },
+    { "id": "BQ-T09", "phase": "P2", "priority": "high", "deps": ["BQ-T02"],                       "title": "Plan grill & fuel (type, capacity for headcount)" },
+    { "id": "BQ-T10", "phase": "P2", "priority": "medium", "deps": ["BQ-T01"],                     "title": "Plan the run-of-day (arrival → grill in batches → eat → wind-down)" },
+    { "id": "BQ-T11", "phase": "P3", "priority": "high", "deps": ["BQ-T06"],                       "title": "Track & confirm RSVPs" },
+    { "id": "BQ-T12", "phase": "P3", "priority": "high", "deps": ["BQ-T07", "BQ-T08", "BQ-T09"],   "title": "Buy supplies (fuel, tools, coolers, foil, disposables, trash bags)" },
+    { "id": "BQ-T13", "phase": "P3", "priority": "high", "deps": ["BQ-T05", "BQ-T07"],             "title": "Confirm dietary/allergy-safe plan (separate veg/allergy items & utensils)" },
+    { "id": "BQ-T14", "phase": "P3", "priority": "medium", "deps": ["BQ-T11"],                     "title": "Finalize quantities (meat/veg per head, drinks, ice)" },
+    { "id": "BQ-T15", "phase": "P4", "priority": "high", "deps": ["BQ-T07", "BQ-T14"],             "title": "Shop for fresh food & drinks; buy ice" },
+    { "id": "BQ-T16", "phase": "P4", "priority": "medium", "deps": ["BQ-T07"],                     "title": "Prep marinades & sides; pre-cook where possible" },
+    { "id": "BQ-T17", "phase": "P4", "priority": "high", "deps": ["BQ-T09", "BQ-T12"],             "title": "Ready & check the grill; set up food-safety (coolers, thermometer, separate boards/tongs)" },
+    { "id": "BQ-T18", "phase": "P5", "priority": "high", "deps": ["BQ-T17"],                       "title": "Set up grill station, food/drink tables, seating" },
+    { "id": "BQ-T19", "phase": "P5", "priority": "high", "deps": ["BQ-T17"],                       "title": "Keep raw meat cold & separate; cook to safe temperatures; avoid cross-contamination" },
+    { "id": "BQ-T20", "phase": "P5", "priority": "high", "deps": ["BQ-T13", "BQ-T15", "BQ-T19"],   "title": "Grill in batches; serve (veg/allergy items separated & labeled); keep drinks flowing" },
+    { "id": "BQ-T21", "phase": "P5", "priority": "medium", "deps": ["BQ-T20"],                     "title": "Wind down; handle leftovers safely (don't leave perishables out too long)" },
+    { "id": "BQ-T22", "phase": "P6", "priority": "medium", "deps": ["BQ-T21"],                     "title": "Pack up & clean (grill cleanup, waste removal)" },
+    { "id": "BQ-T23", "phase": "P6", "priority": "low", "deps": ["BQ-T22"],                        "title": "Send thank-you messages" }
+  ],
+
+  "dependencies": {
+    "critical_chains": [
+      { "id": "CHAIN-FOOD-SAFETY", "never_drop": true, "chain": ["BQ-T17", "BQ-T19", "BQ-T21"], "note": "Cold/separate setup → safe cooking temps → safe leftovers" },
+      { "id": "CHAIN-ALLERGY",     "never_drop": true, "chain": ["BQ-T05", "BQ-T13", "BQ-T20"], "note": "Capture → safe plan → separated & labeled service" },
+      { "id": "CHAIN-HEADCOUNT",   "chain": ["BQ-T06", "BQ-T11", "BQ-T14", "BQ-T15"], "note": "Don't buy fresh food before headcount" },
+      { "id": "CHAIN-GRILL",       "chain": ["BQ-T09", "BQ-T17", "BQ-T19"], "note": "Grill planned → ready → cook" },
+      { "id": "CHAIN-VENUE",       "chain": ["BQ-T01", "BQ-T02", "BQ-T04"], "note": "Location sizing needs date + count" }
+    ]
+  },
+
+  "milestones": [
+    { "id": "BQ-M1", "universal": "UM1", "label": "Scope set (date, guests, budget)", "satisfied_by": ["BQ-T01", "BQ-T02", "BQ-T03"] },
+    { "id": "BQ-M2", "universal": "UM2", "label": "Location confirmed",               "satisfied_by": ["BQ-T04"] },
+    { "id": "BQ-M3", "universal": "UM3", "label": "Invitations sent",                 "satisfied_by": ["BQ-T06"] },
+    { "id": "BQ-M4", "universal": "UM4", "label": "Headcount confirmed",              "satisfied_by": ["BQ-T11", "BQ-T14"] },
+    { "id": "BQ-M5", "universal": "UM5", "label": "Food, drinks & fuel secured",      "satisfied_by": ["BQ-T15", "BQ-T12"] },
+    { "id": "BQ-M6", "universal": "UM6", "label": "Grill & food-safety ready",        "satisfied_by": ["BQ-T17", "BQ-T13"] },
+    { "id": "BQ-M7", "universal": "UM7", "label": "BBQ executed",                     "satisfied_by": ["BQ-T20"] },
+    { "id": "BQ-M8", "universal": "UM8", "label": "Closed out",                       "satisfied_by": ["BQ-T22", "BQ-T23"] }
+  ],
+
+  "cost_drivers": [
+    { "id": "BQ-CD01", "item_key": "bbq_food_per_head",    "basis": "per_guest", "driver": "meals",       "cost_category": "UCD3" },
+    { "id": "BQ-CD02", "item_key": "drinks_per_head",      "basis": "per_guest", "driver": "guest_count", "cost_category": "UCD3" },
+    { "id": "BQ-CD03", "item_key": "fuel",                 "basis": "flat",      "driver": null,          "cost_category": "UCD4", "note": "charcoal or propane" },
+    { "id": "BQ-CD04", "item_key": "ice",                  "basis": "per_guest", "driver": "guest_count", "cost_category": "UCD3" },
+    { "id": "BQ-CD05", "item_key": "disposables_per_head", "basis": "per_guest", "driver": "disposables_units", "cost_category": "UCD6" },
+    { "id": "BQ-CD06", "item_key": "grill_rental",         "basis": "flat",      "driver": null,          "cost_category": "UCD4", "note": "0 if grill owned" }
+  ],
+
+  "risks": [
+    { "id": "BQ-RK01", "category": "URK5", "name": "Food safety (raw meat / cross-contamination / undercooking)", "severity": "high", "probability": "medium", "applies_if": "always", "never_drop": true, "mitigation": "Keep raw meat cold (coolers); separate boards/tongs; cook to safe temperatures (thermometer); don't leave perishables out (BQ-T17/BQ-T19/BQ-T21)." },
+    { "id": "BQ-RK02", "category": "URK5", "name": "Food allergy / dietary", "severity": "high", "probability": "medium", "applies_if": "always", "never_drop": true, "mitigation": "Capture at RSVP (BQ-T05/BQ-T06); confirm safe plan (BQ-T13); separate & label veg/allergy items and utensils at service (BQ-T20)." },
+    { "id": "BQ-RK03", "category": "URK1", "name": "Headcount uncertainty / no-shows", "severity": "medium", "probability": "high", "applies_if": "always", "mitigation": "Chase RSVPs (BQ-T11); confirm before fresh shopping (BQ-T14/BQ-T15)." },
+    { "id": "BQ-RK04", "category": "URK2", "name": "Budget overrun", "severity": "medium", "probability": "medium", "applies_if": "always", "mitigation": "Track spend vs target (BQ-T03); food & drinks are the main levers." },
+    { "id": "BQ-RK05", "category": "URK3", "name": "Running out of food / fuel / ice", "severity": "medium", "probability": "medium", "applies_if": "always", "mitigation": "Size quantities to headcount + buffer; carry spare fuel and ice (BQ-T12/BQ-T14)." }
+  ],
+
+  "communication_templates": [
+    { "id": "BQ-TPL01", "universal": "UCN1", "name": "invitation",      "required": true,  "variables": ["host_name", "date", "time", "location", "rsvp_deadline", "dietary_ask", "what_to_bring"] },
+    { "id": "BQ-TPL02", "universal": "UCN3", "name": "rsvp_reminder",   "required": true,  "variables": ["guest_name", "host_name", "date", "time", "location"] },
+    { "id": "BQ-TPL03", "universal": "UCN6", "name": "thank_you",       "required": true,  "variables": ["guest_name", "host_name"] },
+    { "id": "BQ-TPL04", "universal": "UCN7", "name": "feedback_request","required": false, "variables": ["guest_name"] }
+  ]
+}
