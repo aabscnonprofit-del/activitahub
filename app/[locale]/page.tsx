@@ -112,6 +112,28 @@ export default async function HomePage({ params }: HomePageProps) {
           </div>
         </section>
 
+        {/* ── Activity Planner (consumer, available) ────────────────────── */}
+        <section className="px-4 pt-10 sm:pt-14">
+          <div className="mx-auto flex max-w-4xl flex-col items-center gap-4 rounded-2xl bg-white p-5 text-center ring-1 ring-slate-200 sm:flex-row sm:justify-between sm:text-left">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
+                <CalendarCheck className="h-5 w-5" aria-hidden="true" />
+              </div>
+              <div>
+                <p className="font-bold text-slate-900">{t('planner.headline')}</p>
+                <p className="text-sm text-slate-600">
+                  {t('planner.body')}{' '}
+                  <span className="font-semibold text-slate-900">{t('planner.price')}</span>
+                </p>
+              </div>
+            </div>
+            <Link href={`/${locale}/plan-an-event`} className="btn-secondary shrink-0 px-6 py-2.5">
+              {t('planner.cta')}
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </Link>
+          </div>
+        </section>
+
         {/* ── Mission band ──────────────────────────────────────────────── */}
         <section className="px-4 py-14 sm:py-20">
           <div className="mx-auto max-w-3xl text-center">

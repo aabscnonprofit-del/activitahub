@@ -74,34 +74,48 @@
         "name": "Activity Planner",
         "audience": "For everyone",
         "tagline": "Plan one great event — without becoming an organizer.",
-        "price": "Coming soon",
-        "priceNote": "For people planning their own birthday, picnic, gathering and more.",
+        "price": "$9.99",
+        "priceNote": "One-time payment",
         "features": [
           "Guided event planning",
           "A clear plan, checklist & budget",
           "Key risks and reminders"
-        ]
+        ],
+        "cta": "Plan your event"
       },
-      "academy": {
-        "name": "Organizer Academy",
-        "audience": "For aspiring organizers",
-        "tagline": "Learn the craft and earn the Certified Organizer credential.",
-        "price": "From $29",
-        "priceNote": "One-time · Experienced skills test $29 · Beginner course $99.",
+      "certification": {
+        "name": "Certification",
+        "audience": "For experienced organizers",
+        "tagline": "Already experienced? Prove it and get certified.",
+        "price": "$29.99",
+        "priceNote": "One-time · skills test",
         "features": [
-          "Structured course or fast-track test",
+          "Fast-track skills test",
           "Certified Organizer credential",
           "The skills clients trust"
         ],
         "cta": "Get certified"
+      },
+      "academy": {
+        "name": "Academy + Certification",
+        "audience": "For aspiring organizers",
+        "tagline": "Learn the craft and earn the credential.",
+        "price": "$99.99",
+        "priceNote": "One-time · course + certification",
+        "features": [
+          "Structured beginner course",
+          "Certified Organizer credential",
+          "Everything you need to start"
+        ],
+        "cta": "Start learning"
       },
       "platform": {
         "name": "Organizer Platform",
         "audience": "For working organizers",
         "badge": "For earning",
         "tagline": "Run your business, win clients, and use OPE.",
-        "price": "Monthly subscription",
-        "priceNote": "Your plan is shown at checkout.",
+        "price": "$19.99",
+        "priceNote": "/month",
         "features": [
           "OPE planning & client proposals",
           "Marketplace listings & client requests",
@@ -336,6 +350,12 @@
       "headline": "Learn the craft. Earn the credential.",
       "subheadline": "The Organizer Academy turns enthusiasm into a certified profession — two ways in, one recognized credential.",
       "cta": "Explore the Academy"
+    },
+    "planner": {
+      "headline": "Planning your own event?",
+      "body": "Get a complete, personalized plan — checklist, budget and reminders — in minutes.",
+      "price": "$9.99 one-time",
+      "cta": "Plan your event"
     }
   },
   "auth": {
@@ -1368,6 +1388,71 @@
       "headline": "Start your certification",
       "body": "Begin the path to becoming a Certified Organizer.",
       "button": "Get certified"
+    }
+  },
+  "plannerLanding": {
+    "meta": {
+      "title": "Activity Planner — Launching soon",
+      "description": "Plan your event in minutes. Launching soon — $9.99 one-time."
+    },
+    "hero": {
+      "badge": "Launching soon",
+      "title": "Activity Planner is launching soon",
+      "subtitle": "Go from 'I want to organize something' to a complete, ready-to-use plan in minutes."
+    },
+    "whatItDoes": {
+      "headline": "What the Planner does",
+      "items": [
+        "Asks you a few quick questions about your event",
+        "Builds a complete plan tailored to you",
+        "Helps you pull it off — on time and on budget"
+      ]
+    },
+    "receive": {
+      "headline": "What you'll receive",
+      "items": [
+        "A clear checklist & timeline (before, day-of, after)",
+        "Everything you'll need, sized to your guest count",
+        "A realistic budget estimate",
+        "Key safety & logistics reminders",
+        "Ready-to-send invitations & messages"
+      ]
+    },
+    "price": {
+      "amount": "$9.99",
+      "note": "One-time payment · per plan"
+    },
+    "examples": {
+      "headline": "Plans for real events",
+      "items": [
+        {
+          "title": "Kids Birthday Party",
+          "line": "Theme, games, allergy-safe food, and a stress-free timeline."
+        },
+        {
+          "title": "BBQ / Family Picnic",
+          "line": "Permits, grilling logistics, veg options, and a rain backup."
+        },
+        {
+          "title": "Community Meetup",
+          "line": "Welcoming setup, multilingual details, kids' corner, accessibility."
+        }
+      ]
+    },
+    "benefits": {
+      "headline": "Why people love it",
+      "items": [
+        "Hours of planning, done in minutes",
+        "Nothing important forgotten",
+        "Know what it'll cost before you start",
+        "A safety net: hand it to a pro anytime"
+      ]
+    },
+    "cta": {
+      "headline": "Be the first to try it",
+      "body": "Join the waitlist and we'll let you know the moment the Activity Planner is live.",
+      "button": "Join the waitlist",
+      "note": "$9.99 one-time when it launches."
     }
   }
 }

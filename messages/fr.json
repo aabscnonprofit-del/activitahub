@@ -74,34 +74,48 @@
         "name": "Planificateur d’activités",
         "audience": "Pour tout le monde",
         "tagline": "Organisez un bel événement, sans devenir organisateur.",
-        "price": "Bientôt",
-        "priceNote": "Pour ceux qui planifient leur anniversaire, pique-nique, réunion, etc.",
+        "price": "$9.99",
+        "priceNote": "Paiement unique",
         "features": [
           "Planification guidée d’événements",
           "Un plan, une checklist et un budget clairs",
           "Risques clés et rappels"
-        ]
+        ],
+        "cta": "Planifier mon événement"
       },
-      "academy": {
-        "name": "Académie des organisateurs",
-        "audience": "Pour les futurs organisateurs",
-        "tagline": "Apprenez le métier et obtenez la certification d’Organisateur Certifié.",
-        "price": "À partir de 29 $",
-        "priceNote": "Paiement unique · Test pour expérimentés 29 $ · Cours pour débutants 99 $.",
+      "certification": {
+        "name": "Certification",
+        "audience": "Pour les organisateurs expérimentés",
+        "tagline": "Déjà expérimenté ? Prouvez-le et certifiez-vous.",
+        "price": "$29.99",
+        "priceNote": "Paiement unique · test de compétences",
         "features": [
-          "Cours structuré ou test rapide",
+          "Test rapide de compétences",
           "Certification d’Organisateur Certifié",
           "Les compétences que les clients recherchent"
         ],
         "cta": "Se certifier"
+      },
+      "academy": {
+        "name": "Académie + Certification",
+        "audience": "Pour les futurs organisateurs",
+        "tagline": "Apprenez le métier et obtenez la certification.",
+        "price": "$99.99",
+        "priceNote": "Paiement unique · cours + certification",
+        "features": [
+          "Cours structuré pour débutants",
+          "Certification d’Organisateur Certifié",
+          "Tout ce qu’il faut pour commencer"
+        ],
+        "cta": "Commencer à apprendre"
       },
       "platform": {
         "name": "Plateforme des organisateurs",
         "audience": "Pour les organisateurs en activité",
         "badge": "Pour gagner",
         "tagline": "Gérez votre activité, trouvez des clients et utilisez OPE.",
-        "price": "Abonnement mensuel",
-        "priceNote": "Votre offre s’affiche au paiement.",
+        "price": "$19.99",
+        "priceNote": "/mois",
         "features": [
           "Planification et propositions avec OPE",
           "Annonces du marché et demandes clients",
@@ -336,6 +350,12 @@
       "headline": "Apprenez le métier. Obtenez la certification.",
       "subheadline": "L’Académie des organisateurs transforme l’enthousiasme en une profession certifiée : deux voies d’accès, une certification reconnue.",
       "cta": "Découvrir l’Académie"
+    },
+    "planner": {
+      "headline": "Vous organisez votre propre événement ?",
+      "body": "Obtenez un plan complet et personnalisé — checklist, budget et rappels — en quelques minutes.",
+      "price": "$9.99 paiement unique",
+      "cta": "Planifier mon événement"
     }
   },
   "auth": {
@@ -1368,6 +1388,71 @@
       "headline": "Commencez votre certification",
       "body": "Lancez votre parcours pour devenir Organisateur Certifié.",
       "button": "Se certifier"
+    }
+  },
+  "plannerLanding": {
+    "meta": {
+      "title": "Planificateur d’activités — Bientôt disponible",
+      "description": "Planifiez votre événement en minutes. Bientôt — $9.99 paiement unique."
+    },
+    "hero": {
+      "badge": "Bientôt disponible",
+      "title": "Le Planificateur d’activités arrive bientôt",
+      "subtitle": "Passez de « je veux organiser quelque chose » à un plan complet et prêt à l’emploi en quelques minutes."
+    },
+    "whatItDoes": {
+      "headline": "Ce que fait le Planificateur",
+      "items": [
+        "Vous pose quelques questions rapides sur votre événement",
+        "Crée un plan complet adapté à vous",
+        "Vous aide à le réaliser — à temps et dans le budget"
+      ]
+    },
+    "receive": {
+      "headline": "Ce que vous recevrez",
+      "items": [
+        "Une checklist et un calendrier clairs (avant, le jour J, après)",
+        "Tout ce qu’il vous faudra, selon votre nombre d’invités",
+        "Une estimation réaliste du budget",
+        "Des rappels clés de sécurité et de logistique",
+        "Des invitations et messages prêts à envoyer"
+      ]
+    },
+    "price": {
+      "amount": "$9.99",
+      "note": "Paiement unique · par plan"
+    },
+    "examples": {
+      "headline": "Des plans pour de vrais événements",
+      "items": [
+        {
+          "title": "Anniversaire d’enfant",
+          "line": "Thème, jeux, repas sans allergènes et un planning sans stress."
+        },
+        {
+          "title": "BBQ / Pique-nique en famille",
+          "line": "Permis, logistique du grill, options végé et plan B en cas de pluie."
+        },
+        {
+          "title": "Rencontre communautaire",
+          "line": "Accueil chaleureux, détails multilingues, coin enfants, accessibilité."
+        }
+      ]
+    },
+    "benefits": {
+      "headline": "Pourquoi on l’adore",
+      "items": [
+        "Des heures de planification, en minutes",
+        "Rien d’important oublié",
+        "Sachez ce que ça coûtera avant de commencer",
+        "Un filet de sécurité : confiez-le à un pro à tout moment"
+      ]
+    },
+    "cta": {
+      "headline": "Soyez le premier à l’essayer",
+      "body": "Inscrivez-vous sur la liste d’attente et nous vous préviendrons dès que le Planificateur sera disponible.",
+      "button": "Rejoindre la liste d’attente",
+      "note": "$9.99 paiement unique au lancement."
     }
   }
 }

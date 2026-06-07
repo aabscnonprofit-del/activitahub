@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import PublicHeader from '@/components/layout/PublicHeader'
 import PublicFooter from '@/components/layout/PublicFooter'
-import { Check, ArrowRight, Lock, Sparkles, GraduationCap, Briefcase } from 'lucide-react'
+import { Check, ArrowRight, Lock, Sparkles, GraduationCap, Briefcase, BadgeCheck } from 'lucide-react'
 import type { Locale } from '@/lib/types'
 
 type Props = { params: Promise<{ locale: string }> }
@@ -18,8 +18,10 @@ export default async function PricingPage({ params }: Props) {
   } = await supabase.auth.getUser()
 
   const ctaHref = `/${locale}/sign-up?next=/${locale}/onboarding`
+  const plannerHref = `/${locale}/plan-an-event`
   const products = [
-    { key: 'planner', icon: Sparkles, features: 3, highlight: false, comingSoon: true, badge: false, requirement: false, ctaHref: '' },
+    { key: 'planner', icon: Sparkles, features: 3, highlight: false, comingSoon: false, badge: false, requirement: false, ctaHref: plannerHref },
+    { key: 'certification', icon: BadgeCheck, features: 3, highlight: false, comingSoon: false, badge: false, requirement: false, ctaHref },
     { key: 'academy', icon: GraduationCap, features: 3, highlight: false, comingSoon: false, badge: false, requirement: false, ctaHref },
     { key: 'platform', icon: Briefcase, features: 4, highlight: true, comingSoon: false, badge: true, requirement: true, ctaHref },
   ] as const
@@ -37,7 +39,7 @@ export default async function PricingPage({ params }: Props) {
             <p className="mx-auto mt-3 max-w-2xl text-base text-slate-500 sm:mt-4 sm:text-lg">{t('subtitle')}</p>
           </div>
 
-          <div className="mx-auto grid max-w-6xl grid-cols-1 items-stretch gap-6 md:grid-cols-3 md:gap-8">
+          <div className="mx-auto grid max-w-6xl grid-cols-1 items-stretch gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {products.map((p) => {
               const Icon = p.icon
               const base = `products.${p.key}`
