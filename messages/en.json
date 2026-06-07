@@ -1392,12 +1392,12 @@
   },
   "plannerLanding": {
     "meta": {
-      "title": "Activity Planner — Launching soon",
-      "description": "Plan your event in minutes. Launching soon — $9.99 one-time."
+      "title": "Activity Planner — Early Access",
+      "description": "Plan your event in minutes. Early access — $9.99 one-time."
     },
     "hero": {
-      "badge": "Launching soon",
-      "title": "Activity Planner is launching soon",
+      "badge": "Early access",
+      "title": "Activity Planner is opening for early access",
       "subtitle": "Go from 'I want to organize something' to a complete, ready-to-use plan in minutes."
     },
     "whatItDoes": {
@@ -1452,7 +1452,7 @@
       "headline": "Be the first to try it",
       "body": "Join the waitlist and we'll let you know the moment the Activity Planner is live.",
       "button": "Join the waitlist",
-      "note": "$9.99 one-time when it launches."
+      "note": "$9.99 one-time in early access."
     }
   }
 }

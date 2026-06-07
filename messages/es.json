@@ -1392,12 +1392,12 @@
   },
   "plannerLanding": {
     "meta": {
-      "title": "Planificador de actividades — Próximamente",
-      "description": "Planifica tu evento en minutos. Próximamente — $9.99 pago único."
+      "title": "Planificador de actividades — Acceso anticipado",
+      "description": "Planifica tu evento en minutos. Acceso anticipado — $9.99 pago único."
     },
     "hero": {
-      "badge": "Próximamente",
-      "title": "El Planificador de actividades llega pronto",
+      "badge": "Acceso anticipado",
+      "title": "El Planificador de actividades abre su acceso anticipado",
       "subtitle": "Pasa de «quiero organizar algo» a un plan completo y listo para usar en minutos."
     },
     "whatItDoes": {
@@ -1452,7 +1452,7 @@
       "headline": "Sé el primero en probarlo",
       "body": "Únete a la lista de espera y te avisaremos en cuanto el Planificador esté disponible.",
       "button": "Unirme a la lista de espera",
-      "note": "$9.99 pago único al lanzarse."
+      "note": "$9.99 pago único en acceso anticipado."
     }
   }
 }

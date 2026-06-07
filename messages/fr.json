@@ -1392,12 +1392,12 @@
   },
   "plannerLanding": {
     "meta": {
-      "title": "Planificateur d’activités — Bientôt disponible",
-      "description": "Planifiez votre événement en minutes. Bientôt — $9.99 paiement unique."
+      "title": "Planificateur d’activités — Accès anticipé",
+      "description": "Planifiez votre événement en minutes. Accès anticipé — $9.99 paiement unique."
     },
     "hero": {
-      "badge": "Bientôt disponible",
-      "title": "Le Planificateur d’activités arrive bientôt",
+      "badge": "Accès anticipé",
+      "title": "Le Planificateur d’activités ouvre son accès anticipé",
       "subtitle": "Passez de « je veux organiser quelque chose » à un plan complet et prêt à l’emploi en quelques minutes."
     },
     "whatItDoes": {
@@ -1452,7 +1452,7 @@
       "headline": "Soyez le premier à l’essayer",
       "body": "Inscrivez-vous sur la liste d’attente et nous vous préviendrons dès que le Planificateur sera disponible.",
       "button": "Rejoindre la liste d’attente",
-      "note": "$9.99 paiement unique au lancement."
+      "note": "$9.99 paiement unique en accès anticipé."
     }
   }
 }
