@@ -1,0 +1,103 @@
+{
+  "_meta": {
+    "module": "MOD-BIRTHDAY-CORE",
+    "version": "1",
+    "category": "birthday",
+    "kind": "core",
+    "applies": "every birthday event (invariant). Subtype/venue/optional content lives in separate modules.",
+    "builds_on": ["OPE_KB_BIRTHDAY_ARCHITECTURE_V1", "OPE_UNIVERSAL_ACTIVITY_ARCHITECTURE_V1"],
+    "status": "production-data"
+  },
+
+  "config_defaults": {
+    "contingency_pct": 10,
+    "tableware_buffer_pct": 10
+  },
+
+  "scenario_inputs_used": ["guest_count", "date", "budget", "venue_type", "region", "special_requirements"],
+
+  "derived_quantities": {
+    "cake_servings": "guest_count",
+    "meals": "guest_count",
+    "drinks_servings": "guest_count",
+    "tableware_units": "ceil(guest_count * (1 + tableware_buffer_pct/100))"
+  },
+
+  "phases": [
+    { "id": "P1", "name": "Foundations",        "window_days_before": [21, 28], "goal": "Date, guest list, budget, venue, needs" },
+    { "id": "P2", "name": "Bookings & Invites", "window_days_before": [14, 21], "goal": "Invitations sent; cake, food, décor, flow decided" },
+    { "id": "P3", "name": "Preparation",        "window_days_before": [5, 9],   "goal": "RSVPs confirmed; supplies bought; quantities finalized" },
+    { "id": "P4", "name": "Final days",         "window_days_before": [1, 2],   "goal": "Fresh shopping; cake ready; partial setup" },
+    { "id": "P5", "name": "Day-of",             "window_days_before": [0, 0],   "goal": "Decorate, run the party, wind down" },
+    { "id": "P6", "name": "Wrap-up",            "window_days_before": [-7, 0],  "goal": "Cleanup, thank-yous" }
+  ],
+
+  "tasks": [
+    { "id": "BC-T01", "phase": "P1", "priority": "high", "deps": [],                               "title": "Confirm date & time window" },
+    { "id": "BC-T02", "phase": "P1", "priority": "high", "deps": ["BC-T01"],                       "title": "Decide guest count / list" },
+    { "id": "BC-T03", "phase": "P1", "priority": "high", "deps": [],                               "title": "Set budget target" },
+    { "id": "BC-T04", "phase": "P1", "priority": "high", "deps": ["BC-T01", "BC-T02"],             "title": "Confirm venue / location" },
+    { "id": "BC-T05", "phase": "P1", "priority": "high", "deps": ["BC-T02"],                       "title": "Capture dietary/allergy & accessibility needs" },
+    { "id": "BC-T06", "phase": "P2", "priority": "high", "deps": ["BC-T01", "BC-T02", "BC-T04"],   "title": "Send invitations with RSVP + allergy ask" },
+    { "id": "BC-T07", "phase": "P2", "priority": "high", "deps": ["BC-T03"],                       "title": "Decide & order the cake" },
+    { "id": "BC-T08", "phase": "P2", "priority": "high", "deps": ["BC-T02", "BC-T03"],             "title": "Plan the menu (food & drinks)" },
+    { "id": "BC-T09", "phase": "P2", "priority": "medium", "deps": ["BC-T03"],                     "title": "Plan decorations" },
+    { "id": "BC-T10", "phase": "P2", "priority": "medium", "deps": ["BC-T01"],                     "title": "Plan the run-of-day (arrival → activities → food → cake → wind-down)" },
+    { "id": "BC-T11", "phase": "P3", "priority": "high", "deps": ["BC-T06"],                       "title": "Track & confirm RSVPs" },
+    { "id": "BC-T12", "phase": "P3", "priority": "high", "deps": ["BC-T08", "BC-T09"],             "title": "Buy supplies, tableware & décor" },
+    { "id": "BC-T13", "phase": "P3", "priority": "high", "deps": ["BC-T05", "BC-T07", "BC-T08"],   "title": "Confirm dietary/allergy-safe provisioning" },
+    { "id": "BC-T14", "phase": "P3", "priority": "medium", "deps": ["BC-T11"],                     "title": "Finalize headcount-based quantities" },
+    { "id": "BC-T15", "phase": "P4", "priority": "high", "deps": ["BC-T08", "BC-T14"],             "title": "Shop for fresh food & drinks" },
+    { "id": "BC-T16", "phase": "P4", "priority": "high", "deps": ["BC-T07"],                       "title": "Bake or collect the cake; store correctly" },
+    { "id": "BC-T17", "phase": "P4", "priority": "medium", "deps": ["BC-T12"],                     "title": "Pre-decorate / stage setup" },
+    { "id": "BC-T18", "phase": "P5", "priority": "high", "deps": ["BC-T17"],                       "title": "Decorate & set up stations" },
+    { "id": "BC-T19", "phase": "P5", "priority": "high", "deps": ["BC-T13", "BC-T15"],             "title": "Set out food; allergy-safe items separated & labeled" },
+    { "id": "BC-T20", "phase": "P5", "priority": "high", "deps": ["BC-T18"],                       "title": "Welcome guests; run the party" },
+    { "id": "BC-T21", "phase": "P5", "priority": "high", "deps": ["BC-T16"],                       "title": "Cake & candles moment" },
+    { "id": "BC-T22", "phase": "P6", "priority": "medium", "deps": ["BC-T20"],                     "title": "Pack up & clean" },
+    { "id": "BC-T23", "phase": "P6", "priority": "low", "deps": ["BC-T22"],                        "title": "Send thank-you messages" }
+  ],
+
+  "dependencies": {
+    "critical_chains": [
+      { "id": "CHAIN-SAFETY",   "never_drop": true, "chain": ["BC-T05", "BC-T13", "BC-T19"], "note": "Allergy: capture → confirm safe → serve safe" },
+      { "id": "CHAIN-HEADCOUNT", "chain": ["BC-T06", "BC-T11", "BC-T14", "BC-T15"], "note": "Don't buy fresh food before headcount" },
+      { "id": "CHAIN-CAKE",      "chain": ["BC-T07", "BC-T16", "BC-T21"], "note": "Cake decided → ready → served" },
+      { "id": "CHAIN-VENUE",     "chain": ["BC-T01", "BC-T02", "BC-T04"], "note": "Venue sizing needs date + count" },
+      { "id": "CHAIN-DECOR",     "chain": ["BC-T09", "BC-T12", "BC-T17", "BC-T18"], "note": "Theme/décor → buy → stage → set up" }
+    ]
+  },
+
+  "milestones": [
+    { "id": "BC-M1", "universal": "UM1", "label": "Scope set (date, guests, budget)", "satisfied_by": ["BC-T01", "BC-T02", "BC-T03"] },
+    { "id": "BC-M2", "universal": "UM2", "label": "Location confirmed",               "satisfied_by": ["BC-T04"] },
+    { "id": "BC-M3", "universal": "UM3", "label": "Invitations sent",                 "satisfied_by": ["BC-T06"] },
+    { "id": "BC-M4", "universal": "UM4", "label": "Headcount confirmed",              "satisfied_by": ["BC-T11", "BC-T14"] },
+    { "id": "BC-M5", "universal": "UM5", "label": "Cake & food secured",             "satisfied_by": ["BC-T15", "BC-T16"] },
+    { "id": "BC-M6", "universal": "UM6", "label": "Readiness confirmed",              "satisfied_by": ["BC-T13", "BC-T17"] },
+    { "id": "BC-M7", "universal": "UM7", "label": "Party executed",                   "satisfied_by": ["BC-T20", "BC-T21"] },
+    { "id": "BC-M8", "universal": "UM8", "label": "Closed out",                       "satisfied_by": ["BC-T22", "BC-T23"] }
+  ],
+
+  "cost_drivers": [
+    { "id": "BC-CD01", "item_key": "cake",                "basis": "per_unit",  "driver": "cake_servings", "cost_category": "UCD3", "note": "servings ~= guest_count" },
+    { "id": "BC-CD02", "item_key": "party_food_per_head", "basis": "per_guest", "driver": "guest_count",   "cost_category": "UCD3" },
+    { "id": "BC-CD03", "item_key": "drinks_per_head",     "basis": "per_guest", "driver": "guest_count",   "cost_category": "UCD3" },
+    { "id": "BC-CD04", "item_key": "decorations",         "basis": "flat",      "driver": null,            "cost_category": "UCD6" },
+    { "id": "BC-CD05", "item_key": "tableware_per_head",  "basis": "per_guest", "driver": "guest_count",   "cost_category": "UCD6" }
+  ],
+
+  "risks": [
+    { "id": "BC-RK01", "category": "URK5", "name": "Food allergy / dietary", "severity": "high", "probability": "medium", "applies_if": "always", "never_drop": true, "mitigation": "Capture at RSVP (BC-T05/BC-T06); confirm allergy-safe provisioning (BC-T13); separate & label at service (BC-T19); keep an action plan." },
+    { "id": "BC-RK02", "category": "URK1", "name": "Headcount uncertainty / late RSVPs", "severity": "medium", "probability": "high", "applies_if": "always", "mitigation": "Chase RSVPs (BC-T11); confirm count before fresh shopping (BC-T14/BC-T15)." },
+    { "id": "BC-RK03", "category": "URK2", "name": "Budget overrun", "severity": "medium", "probability": "medium", "applies_if": "always", "mitigation": "Track spend vs target (BC-T03); cake and food are the main levers." },
+    { "id": "BC-RK04", "category": "URK3", "name": "Cake problem (late / melt / wrong)", "severity": "medium", "probability": "low", "applies_if": "always", "mitigation": "Confirm pickup/bake timing (BC-T16); cool storage; have a backup dessert." }
+  ],
+
+  "communication_templates": [
+    { "id": "BC-TPL01", "universal": "UCN1", "name": "invitation",     "required": true,  "variables": ["honoree_name", "date", "time", "location", "rsvp_deadline", "allergy_ask"] },
+    { "id": "BC-TPL02", "universal": "UCN3", "name": "rsvp_reminder",  "required": true,  "variables": ["guest_name", "honoree_name", "date", "time", "location"] },
+    { "id": "BC-TPL03", "universal": "UCN6", "name": "thank_you",      "required": true,  "variables": ["guest_name", "honoree_name"] },
+    { "id": "BC-TPL04", "universal": "UCN7", "name": "feedback_request","required": false, "variables": ["guest_name"] }
+  ]
+}
