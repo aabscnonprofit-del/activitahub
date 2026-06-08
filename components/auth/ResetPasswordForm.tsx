@@ -1,6 +1,7 @@
 'use client'
 
-import { useFormState, useFormStatus } from 'react-dom'
+import { useActionState } from 'react'
+import { useFormStatus } from 'react-dom'
 import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 import { resetPassword } from '@/lib/actions/auth'
@@ -32,7 +33,7 @@ function SubmitButton() {
 export function ResetPasswordForm({ locale }: ResetPasswordFormProps) {
   const t = useTranslations('auth.resetPassword')
 
-  const [rawState, formAction] = useFormState(resetPassword, initialState)
+  const [rawState, formAction] = useActionState(resetPassword, initialState)
   const state = rawState ?? initialState
 
   if (state.success) {

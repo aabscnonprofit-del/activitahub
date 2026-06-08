@@ -1,6 +1,7 @@
 'use client'
 
-import { useFormState, useFormStatus } from 'react-dom'
+import { useActionState } from 'react'
+import { useFormStatus } from 'react-dom'
 import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 import { signUp } from '@/lib/actions/auth'
@@ -34,7 +35,7 @@ function SubmitButton() {
 export function SignUpForm({ locale, next }: SignUpFormProps) {
   const t = useTranslations('auth.signUp')
   const tCommon = useTranslations('common')
-  const [rawState, formAction] = useFormState(signUp, initialState)
+  const [rawState, formAction] = useActionState(signUp, initialState)
   const state = rawState ?? initialState
   const signInHref = next
     ? `/${locale}/sign-in?next=${encodeURIComponent(next)}`

@@ -87,7 +87,7 @@ export type ActionResult<T = undefined> =
   | { success: true; data?: T }
   | { success: false; error: string }
 
-// Auth form state shapes (used with useFormState)
+// Auth form state shapes (used with useActionState)
 export interface AuthFormState {
   error?: string
   success?: boolean

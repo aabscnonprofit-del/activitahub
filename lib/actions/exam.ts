@@ -14,7 +14,7 @@ export type ExamState = {
  * function. The DB records the attempt and — on a pass — issues the certificate
  * and advances the profile to 'certified'. Answer keys never reach the client.
  *
- * Used with useFormState in the exam UI.
+ * Used with useActionState in the exam UI.
  */
 export async function submitExam(
   _prev: ExamState,

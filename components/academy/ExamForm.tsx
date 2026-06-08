@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { useFormState, useFormStatus } from 'react-dom'
+import { useState, useActionState } from 'react'
+import { useFormStatus } from 'react-dom'
 import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 import { CheckCircle2, XCircle, Award } from 'lucide-react'
@@ -28,7 +28,7 @@ function SubmitButton() {
 
 export function ExamForm({ exam, locale }: { exam: Exam; locale: Locale }) {
   const t = useTranslations('exam')
-  const [rawState, formAction] = useFormState(submitExam, initialState)
+  const [rawState, formAction] = useActionState(submitExam, initialState)
   const state = rawState ?? initialState
   const [answers, setAnswers] = useState<Record<string, string[]>>({})
 

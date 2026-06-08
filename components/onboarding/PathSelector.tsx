@@ -1,6 +1,7 @@
 'use client'
 
-import { useFormState, useFormStatus } from 'react-dom'
+import { useActionState } from 'react'
+import { useFormStatus } from 'react-dom'
 import { useTranslations } from 'next-intl'
 import { CheckCircle2, GraduationCap, Zap } from 'lucide-react'
 import { selectOnboardingPath } from '@/lib/actions/profile'
@@ -55,9 +56,9 @@ export function PathSelector({
   onboardingStatus,
 }: PathSelectorProps) {
   const t = useTranslations('onboarding')
-  // useFormState can yield an undefined initial state under Next 15 + React 18;
+  // useActionState can yield an undefined initial state under Next 15 + React 19;
   // coalesce so `state.*` access never crashes.
-  const [rawState, formAction] = useFormState(selectOnboardingPath, initialState)
+  const [rawState, formAction] = useActionState(selectOnboardingPath, initialState)
   const state = rawState ?? initialState
 
   const pathSelected = onboardingStatus !== 'not_started' && currentPath !== null
