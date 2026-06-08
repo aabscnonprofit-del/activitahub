@@ -960,6 +960,7 @@
     "new": {
       "title": "New request",
       "subtitle": "Tell organizers what you're looking for and receive proposals.",
+      "requestingActivity": "You're requesting this activity",
       "submit": "Send request"
     },
     "form": {

@@ -32,7 +32,16 @@ export default async function ActivityDetailPage({ params }: DetailPageProps) {
   const reviews = await getActivityReviews(supabase, id)
   const detailArt = categoryArt(a.category)
 
-  const requestHref = `/${locale}/requests/new?category=${a.category ?? ''}&city=${encodeURIComponent(a.city ?? '')}`
+  // Preserve the specific activity being requested. category/city are kept as a
+  // fallback for the generic prefill path (when no activity is loaded).
+  const requestHref = `/${locale}/requests/new?activityId=${id}&category=${a.category ?? ''}&city=${encodeURIComponent(a.city ?? '')}`
+
+  // Viewing is public; the ACTION (Request this activity) requires sign-in.
+  // Anonymous users go to sign-in with a `next` that preserves the full request
+  // URL (incl. activityId) so they return to the right place after auth.
+  const ctaHref = user
+    ? requestHref
+    : `/${locale}/sign-in?next=${encodeURIComponent(requestHref)}`
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -204,7 +213,7 @@ export default async function ActivityDetailPage({ params }: DetailPageProps) {
                 </div>
               </Link>
 
-              <Link href={requestHref} className="btn-primary w-full justify-center">
+              <Link href={ctaHref} className="btn-primary w-full justify-center">
                 {t('detail.bookCta')}
                 <ArrowRight className="h-4 w-4" />
               </Link>

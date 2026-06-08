@@ -960,6 +960,7 @@
     "new": {
       "title": "Nouvelle demande",
       "subtitle": "Dites aux organisateurs ce que vous cherchez et recevez des propositions.",
+      "requestingActivity": "Vous demandez cette activité",
       "submit": "Envoyer la demande"
     },
     "form": {
