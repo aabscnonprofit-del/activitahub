@@ -80,6 +80,8 @@ export default async function SettingsPage({ params }: Props) {
               { code: 'es', label: 'Español' },
               { code: 'fr', label: 'Français' },
               { code: 'ru', label: 'Русский' },
+              { code: 'de', label: 'Deutsch' },
+              { code: 'pt', label: 'Português' },
             ].map((l) => (
               <a
                 key={l.code}

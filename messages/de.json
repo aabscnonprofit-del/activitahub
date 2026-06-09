@@ -1,0 +1,1467 @@
+{
+  "academy": {
+    "brand": "ActivLife Akademie",
+    "exit": "Zur Website",
+    "title": "Akademie",
+    "progress": "{completed} von {total} Lektionen abgeschlossen",
+    "startLearning": "Lernen starten",
+    "continueLearning": "Weiterlernen",
+    "courseComplete": "Du hast jede Lektion dieses Kurses abgeschlossen.",
+    "takeExam": "Abschlussprüfung ablegen",
+    "certified": "Zertifiziert – du hast die Abschlussprüfung bestanden.",
+    "viewCertificate": "Zertifikat ansehen",
+    "module": "Modul",
+    "min": "Min",
+    "completed": "Abgeschlossen",
+    "markComplete": "Als abgeschlossen markieren",
+    "continue": "Weiter",
+    "saving": "Wird gespeichert…",
+    "previous": "Zurück",
+    "next": "Weiter",
+    "quizComingSoon": "Wissensüberprüfung – deine Zertifizierungsprüfung wird in der nächsten Phase freigeschaltet.",
+    "noCourse": {
+      "title": "Noch kein Kurs verfügbar",
+      "description": "Dein Zertifizierungskurs ist noch nicht bereit. Bitte schau bald wieder vorbei."
+    }
+  },
+  "exam": {
+    "backToAcademy": "Zurück zur Akademie",
+    "passingScore": "Bestehensgrenze: {score}%",
+    "question": "Frage {n} von {total}",
+    "submit": "Prüfung absenden",
+    "grading": "Wird bewertet…",
+    "allAnswered": "Alle Fragen beantwortet",
+    "answeredCount": "{answered}/{total} beantwortet",
+    "passedTitle": "Herzlichen Glückwunsch – bestanden!",
+    "passedBody": "Du hast {score}% erreicht. Dein Zertifikat ist bereit.",
+    "viewCertificate": "Zertifikat ansehen",
+    "failed": "Du hast {score}% erreicht. Du brauchst {passing}% zum Bestehen – wiederhole die Lektionen und versuche es erneut."
+  },
+  "certificate": {
+    "title": "Abschlusszertifikat",
+    "issuedTo": "Hiermit wird bestätigt, dass",
+    "statement": "{course} erfolgreich abgeschlossen hat und als zertifizierter ActivLife-Organisator anerkannt ist.",
+    "course": "Kurs",
+    "score": "Ergebnis",
+    "date": "Ausgestellt",
+    "code": "Zertifikat-ID",
+    "scanToVerify": "Zum Überprüfen scannen",
+    "print": "Drucken / als PDF speichern",
+    "backToAcademy": "Zurück zur Akademie",
+    "anonymousHolder": "ActivLife-Organisator",
+    "nextTitle": "Du bist zertifiziert! Ein Schritt fehlt noch.",
+    "nextBody": "Abonniere, um dein Organisator-Dashboard zu aktivieren und Aktivitäten einzustellen.",
+    "nextCta": "Zur Abrechnung"
+  },
+  "verify": {
+    "title": "Zertifikat überprüfen",
+    "validTitle": "Zertifikat bestätigt",
+    "validBody": "Dies ist ein echtes Zertifikat eines zertifizierten ActivLife-Organisators.",
+    "invalidTitle": "Zertifikat nicht gefunden",
+    "invalidBody": "Wir konnten kein Zertifikat mit diesem Code überprüfen.",
+    "holder": "Inhaber",
+    "course": "Kurs",
+    "score": "Ergebnis",
+    "issued": "Ausgestellt",
+    "code": "Zertifikat-ID",
+    "backHome": "Zur Startseite"
+  },
+  "pricing": {
+    "title": "Preise",
+    "subtitle": "Jeder Teil von ActivLife Hub ist ein echtes Produkt mit klarem Preis – und echtem Mehrwert auf jeder Ebene.",
+    "products": {
+      "planner": {
+        "name": "Aktivitätsplaner",
+        "audience": "Für alle",
+        "tagline": "Plane ein tolles Event – ohne Organisator zu werden.",
+        "price": "$9.99",
+        "priceNote": "Einmalige Zahlung",
+        "features": [
+          "Geführte Eventplanung",
+          "Ein klarer Plan, Checkliste & Budget",
+          "Wichtige Risiken und Hinweise"
+        ],
+        "cta": "Event planen"
+      },
+      "certification": {
+        "name": "Zertifizierung",
+        "audience": "Für erfahrene Organisatoren",
+        "tagline": "Schon erfahren? Beweise es und werde zertifiziert.",
+        "price": "$29",
+        "priceNote": "Einmalig · Kompetenztest",
+        "features": [
+          "Schnelltest der Fähigkeiten",
+          "Nachweis als zertifizierter Organisator",
+          "Die Fähigkeiten, denen Kunden vertrauen"
+        ],
+        "cta": "Zertifizieren lassen"
+      },
+      "academy": {
+        "name": "Akademie + Zertifizierung",
+        "audience": "Für angehende Organisatoren",
+        "tagline": "Lerne das Handwerk und erwirb den Nachweis.",
+        "price": "$99",
+        "priceNote": "Einmalig · Kurs + Zertifizierung",
+        "features": [
+          "Strukturierter Einsteigerkurs",
+          "Nachweis als zertifizierter Organisator",
+          "Alles, was du für den Start brauchst"
+        ],
+        "cta": "Lernen starten"
+      },
+      "platform": {
+        "name": "Organisator-Plattform",
+        "audience": "Für aktive Organisatoren",
+        "badge": "Zum Verdienen",
+        "tagline": "Führe dein Geschäft, gewinne Kunden und nutze OPE.",
+        "price": "$9.99",
+        "priceNote": "/Monat",
+        "features": [
+          "OPE-Planung & Kundenangebote",
+          "Marktplatz-Einträge & Kundenanfragen",
+          "Buchungen, Zahlungen & Analysen",
+          "Zertifiziert- und Verifiziert-Abzeichen"
+        ],
+        "cta": "Starten",
+        "requirement": "Wird nach der Zertifizierung freigeschaltet."
+      }
+    },
+    "journey": {
+      "headline": "Was nach der Registrierung passiert",
+      "steps": [
+        "Plane eine Aktivität oder mach mit",
+        "Werde über die Akademie zertifiziert",
+        "Abonniere die Organisator-Plattform und verdiene"
+      ]
+    }
+  },
+  "privacy": {
+    "title": "Datenschutzerklärung",
+    "lastUpdated": "Zuletzt aktualisiert: Mai 2026"
+  },
+  "terms": {
+    "title": "Nutzungsbedingungen",
+    "lastUpdated": "Zuletzt aktualisiert: Mai 2026"
+  },
+  "common": {
+    "loading": "Wird geladen…",
+    "error": "Etwas ist schiefgelaufen. Bitte versuche es erneut.",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "continue": "Weiter",
+    "back": "Zurück",
+    "submit": "Absenden",
+    "or": "oder",
+    "optional": "Optional",
+    "required": "Erforderlich",
+    "learnMore": "Mehr erfahren",
+    "getStarted": "Loslegen",
+    "signIn": "Anmelden",
+    "signOut": "Abmelden",
+    "signUp": "Registrieren",
+    "email": "E-Mail-Adresse",
+    "password": "Passwort",
+    "fullName": "Vollständiger Name"
+  },
+  "nav": {
+    "home": "Start",
+    "pricing": "Preise",
+    "marketplace": "Marktplatz",
+    "academy": "Akademie",
+    "dashboard": "Dashboard",
+    "billing": "Abrechnung",
+    "admin": "Admin",
+    "signIn": "Anmelden",
+    "signUp": "Registrieren",
+    "signOut": "Abmelden",
+    "account": "Mein Hub",
+    "becomeOrganizer": "Organisator werden"
+  },
+  "home": {
+    "hero": {
+      "badge": "Die Welt braucht mehr Organisatoren",
+      "title": "Die besten Momente im Leben",
+      "titleAccent": "werden von Menschen geschaffen",
+      "subtitle": "Entdecke Aktivitäten in deiner Nähe, plane dein eigenes Event oder werde der Organisator, auf den deine Gemeinschaft wartet.",
+      "ctaPrimary": "Aktivitäten entdecken",
+      "ctaSecondary": "Organisator werden",
+      "reassure": "Zertifizierte Organisatoren · Sichere Zahlungen · In 4 Sprachen verfügbar"
+    },
+    "pillars": {
+      "headline": "Alles, was du für deinen Erfolg brauchst",
+      "subheadline": "Drei integrierte Systeme, die zusammenarbeiten, um dein Organisator-Geschäft wachsen zu lassen.",
+      "organizer": {
+        "title": "Organisator-Plattform",
+        "description": "Professionelles Dashboard zur Verwaltung von Aktivitäten, Veranstaltungsorten, Kunden, Buchungen und deinem gesamten Geschäftsbetrieb."
+      },
+      "academy": {
+        "title": "Akademie & Zertifizierung",
+        "description": "Strukturiertes Lernen oder Schnelltest. Erwirb den Nachweis als zertifizierter ActivLife-Organisator."
+      },
+      "marketplace": {
+        "title": "Kundenmarktplatz",
+        "description": "Werde mit Kunden zusammengebracht, die aktiv nach Aktivitäts-Organisatoren suchen. Echte Leads, echte Buchungen."
+      }
+    },
+    "stats": {
+      "organizers": "Zertifizierte Organisatoren",
+      "activities": "Veröffentlichte Aktivitäten",
+      "countries": "Länder"
+    },
+    "cta": {
+      "title": "Bereit, das Organisieren zum Beruf zu machen?",
+      "subtitle": "Lerne das Handwerk, werde zertifiziert und beginne als Organisator zu verdienen – mit Unterstützung bei jedem Schritt.",
+      "button": "Organisator werden"
+    },
+    "trust": {
+      "secure": "Sichere Stripe-Zahlungen",
+      "certified": "Zertifizierte Organisatoren",
+      "languages": "In 4 Sprachen verfügbar",
+      "cancel": "Jederzeit kündbar"
+    },
+    "how": {
+      "headline": "So funktioniert es",
+      "subheadline": "Von der Zertifizierung bis zur ersten Buchung – ein klarer Weg.",
+      "steps": [
+        {
+          "title": "Zertifizieren",
+          "description": "Belege einen Kurs oder Schnelltest, um deinen Nachweis als zertifizierter Organisator zu erwerben."
+        },
+        {
+          "title": "Profil aufbauen",
+          "description": "Füge Aktivitäten, Veranstaltungsorte und Verfügbarkeit in deinem Organisator-Dashboard hinzu."
+        },
+        {
+          "title": "Gebucht werden",
+          "description": "Erscheine im Marktplatz und erhalte echte Buchungen von Kunden in deiner Nähe."
+        }
+      ]
+    },
+    "progression": {
+      "eyebrow": "Deine Reise",
+      "headline": "Beginne mit einer Aktivität. Wachse zum zertifizierten Organisator.",
+      "subheadline": "Wo du auch startest – du kennst immer deinen nächsten Schritt.",
+      "stages": [
+        {
+          "title": "Entdecken",
+          "description": "Durchstöbere Aktivitäten von vertrauenswürdigen Organisatoren in deiner Nähe."
+        },
+        {
+          "title": "Teilnehmen",
+          "description": "Buche Erlebnisse, die du liebst, und mach mit."
+        },
+        {
+          "title": "Lernen",
+          "description": "Schreibe dich in die Akademie ein und baue echte Fähigkeiten auf."
+        },
+        {
+          "title": "Organisieren",
+          "description": "Erstelle eigene Aktivitäten, Veranstaltungsorte und Buchungen."
+        },
+        {
+          "title": "Zertifizieren",
+          "description": "Erwirb deinen Nachweis als zertifizierter Organisator und wachse."
+        }
+      ]
+    },
+    "trustband": {
+      "headline": "Auf Vertrauen gebaut",
+      "subheadline": "Die Standards, die unsere Gemeinschaft sicher und einladend halten.",
+      "items": [
+        {
+          "title": "Zertifizierte Organisatoren",
+          "description": "Jeder zertifizierte Organisator hat die Ausbildung abgeschlossen und den Nachweis erworben."
+        },
+        {
+          "title": "Sichere Zahlungen",
+          "description": "Zahlungen und Rückerstattungen werden sicher über Stripe abgewickelt."
+        },
+        {
+          "title": "Gemeinschaftsstandards",
+          "description": "Klare Richtlinien halten jede Aktivität sicher und einladend."
+        },
+        {
+          "title": "Internationaler Zugang",
+          "description": "In vier Sprachen für Organisatoren weltweit verfügbar."
+        }
+      ]
+    },
+    "community": {
+      "headline": "Mehr als ein Marktplatz – eine aktive Gemeinschaft",
+      "body": "ActivLife Hub verbindet Organisatoren und Teilnehmer, die die Leidenschaft teilen, gemeinsam rauszugehen und mehr zu erleben.",
+      "cta": "Der Gemeinschaft beitreten"
+    },
+    "audience": {
+      "headline": "Zwei Wege, Teil von ActivLife Hub zu sein",
+      "subheadline": "Nimm als Teilnehmer an Aktivitäten teil oder lass dich zertifizieren, um zu organisieren und zu verdienen. Starte am richtigen Ort.",
+      "join": {
+        "badge": "Für Teilnehmer",
+        "title": "An Aktivitäten teilnehmen",
+        "description": "Entdecke und buche Erlebnisse von vertrauenswürdigen, zertifizierten Organisatoren in deiner Nähe.",
+        "points": [
+          "Aktivitäten in deiner Nähe durchstöbern",
+          "Sicher buchen und bezahlen",
+          "Bewerten und Favoriten erneut buchen"
+        ],
+        "cta": "Aktivitäten entdecken"
+      },
+      "organize": {
+        "badge": "Für Organisatoren",
+        "title": "Aktivitäten organisieren",
+        "description": "Baue einen Beruf auf: werde zertifiziert, gewinne Kunden und verdiene mit den Events, die du durchführst.",
+        "points": [
+          "In der Akademie zertifiziert werden",
+          "Aktivitäten einstellen und Veranstaltungsorte verwalten",
+          "Buchungen annehmen und bezahlt werden"
+        ],
+        "cta": "Organisator werden"
+      }
+    },
+    "discover": {
+      "eyebrow": "Entdecken",
+      "headline": "Finde deinen nächsten Moment",
+      "subheadline": "Von Geburtstagen bis zu Sonnenuntergangsfahrten – entdecke Erlebnisse für jeden Anlass, jede Gemeinschaft und jeden Traum.",
+      "cta": "Marktplatz entdecken"
+    },
+    "mission": {
+      "headline": "Die Welt braucht mehr Organisatoren",
+      "subheadline": "Menschen schaffen die besten Momente des echten Lebens. Wir helfen.",
+      "body": "Freundschaft, Gemeinschaft und Feiern entstehen nicht von allein – jemand macht sie möglich. Wir helfen mehr Menschen, die Organisatoren zu werden, die ihre Gemeinschaften brauchen, und diese Fähigkeit in einen Beruf zu verwandeln.",
+      "cta": "Organisator werden"
+    },
+    "becomeOrganizer": {
+      "headline": "Mach das Zusammenbringen von Menschen zum Beruf",
+      "subheadline": "Ein klarer Weg von der ersten Lektion bis zum ersten Einkommen – mit den Tools, um vom ersten Tag an professionell zu wirken.",
+      "steps": [
+        "Lernen",
+        "Zertifizieren",
+        "Erster Kunde",
+        "Erstes Event",
+        "Erstes Einkommen"
+      ],
+      "cta": "Starte deinen Organisator-Weg"
+    },
+    "ope": {
+      "headline": "Wirke vom ersten Tag an professionell",
+      "subheadline": "Unsere Planungs-Engine verwandelt ein paar Angaben in ein vollständiges Kundenangebot – Zeitplan, Plan und Budget – in Minuten statt Stunden.",
+      "cta": "So funktioniert es"
+    },
+    "academyTeaser": {
+      "headline": "Lerne das Handwerk. Erwirb den Nachweis.",
+      "subheadline": "Die Organisator-Akademie macht aus Begeisterung einen zertifizierten Beruf – zwei Wege hinein, ein anerkannter Nachweis.",
+      "cta": "Akademie entdecken"
+    },
+    "planner": {
+      "headline": "Planst du dein eigenes Event?",
+      "body": "Erhalte einen vollständigen, persönlichen Plan – Checkliste, Budget und Hinweise – in wenigen Minuten.",
+      "price": "$9.99 einmalig",
+      "cta": "Event planen"
+    }
+  },
+  "auth": {
+    "signIn": {
+      "title": "Willkommen zurück",
+      "subtitle": "Melde dich bei deinem ActivLife-Hub-Konto an",
+      "email": "E-Mail-Adresse",
+      "password": "Passwort",
+      "submit": "Anmelden",
+      "submitting": "Anmeldung läuft…",
+      "forgotPassword": "Passwort vergessen?",
+      "noAccount": "Noch kein Konto?",
+      "signUpLink": "Registrieren"
+    },
+    "signUp": {
+      "title": "Konto erstellen",
+      "subtitle": "Tritt der ActivLife-Hub-Organisator-Community bei",
+      "fullName": "Vollständiger Name",
+      "fullNamePlaceholder": "Jana Schmidt",
+      "email": "E-Mail-Adresse",
+      "emailPlaceholder": "jana@beispiel.de",
+      "password": "Passwort",
+      "passwordHint": "Mindestens 8 Zeichen",
+      "submit": "Konto erstellen",
+      "submitting": "Konto wird erstellt…",
+      "hasAccount": "Bereits ein Konto?",
+      "signInLink": "Anmelden",
+      "termsNotice": "Mit der Erstellung eines Kontos stimmst du unseren Nutzungsbedingungen und der Datenschutzerklärung zu.",
+      "checkEmail": "Prüfe deine E-Mails",
+      "checkEmailDesc": "Wir haben einen Bestätigungslink an {email} gesendet. Klicke darauf, um dein Konto zu aktivieren."
+    },
+    "resetPassword": {
+      "title": "Passwort zurücksetzen",
+      "subtitle": "Gib deine E-Mail ein und wir senden dir einen Link zum Zurücksetzen",
+      "email": "E-Mail-Adresse",
+      "emailPlaceholder": "jana@beispiel.de",
+      "submit": "Link senden",
+      "submitting": "Wird gesendet…",
+      "backToSignIn": "Zurück zur Anmeldung",
+      "successTitle": "Prüfe deine E-Mails",
+      "successDesc": "Wir haben einen Link zum Zurücksetzen an {email} gesendet. Er läuft in 1 Stunde ab."
+    },
+    "errors": {
+      "invalidCredentials": "Ungültige E-Mail oder Passwort. Bitte versuche es erneut.",
+      "emailInUse": "Mit dieser E-Mail existiert bereits ein Konto.",
+      "weakPassword": "Das Passwort muss mindestens 8 Zeichen lang sein.",
+      "generic": "Ein Fehler ist aufgetreten. Bitte versuche es erneut.",
+      "emailRequired": "Die E-Mail-Adresse ist erforderlich.",
+      "passwordRequired": "Das Passwort ist erforderlich.",
+      "fullNameRequired": "Der vollständige Name ist erforderlich.",
+      "invalidEmail": "Bitte gib eine gültige E-Mail-Adresse ein.",
+      "suspended": "Dein Konto wurde gesperrt. Kontaktiere den Support."
+    }
+  },
+  "onboarding": {
+    "title": "Mit dem Organisieren beginnen – wähle deinen Weg",
+    "subtitle": "Ein kurzer, unterstützender Weg, um selbstbewusst Aktivitäten anzubieten.",
+    "alreadySelected": "Du hast den Weg „{path}“ gewählt. Fahre fort zur Zahlung, wenn du bereit bist.",
+    "continueToPayment": "Weiter zur Zahlung",
+    "payment": {
+      "title": "Schließe deine Zertifizierungszahlung ab",
+      "subtitle": "Du hast den Weg „{path}“ gewählt. Zahle sicher, um deine Zertifizierung freizuschalten.",
+      "cta": "Weiter zur Zahlung",
+      "processing": "Weiterleitung zur Kasse…"
+    },
+    "beginner": {
+      "badge": "Einsteiger",
+      "title": "Neu im Organisieren von Aktivitäten",
+      "description": "Beginne von Grund auf mit einem freundlichen Kurs, der dich durch alles führt, was du für großartige Aktivitäten brauchst. Die $99 sind eine einmalige Gebühr – sie umfassen den Kurs, die Qualifikationsprüfung, dein ActivLife-Organisator-Zertifikat und 30 Tage Zugang zur Organisator-Plattform, der mit dem erfolgreichen Abschluss der Zertifizierung beginnt. Danach ist ein aktives Organisator-Plattform-Abonnement erforderlich, um weiter zu veröffentlichen.",
+      "includes": "Inbegriffen:",
+      "features": [
+        "7–8 ausführliche Lernmodule",
+        "Videolektionen und Lernmaterialien",
+        "Modul-Quizze und eine Abschlussprüfung",
+        "ActivLife-Zertifikat als zertifizierter Organisator",
+        "30 Tage Zugang zur Organisator-Plattform (ab Zertifizierung)"
+      ],
+      "price": "$99",
+      "priceLabel": "einmalige Zahlung",
+      "cta": "Lernen starten – $99"
+    },
+    "experienced": {
+      "badge": "Erfahren",
+      "title": "Bereits Aktivitäts-Organisator",
+      "description": "Überspringe den Kurs und beweise dein Können mit einem zeitlich begrenzten Qualifikationstest. Die $29 sind eine einmalige Zertifizierungsgebühr – sie umfassen den Qualifikationstest, dein ActivLife-Organisator-Zertifikat und 30 Tage Zugang zur Organisator-Plattform, der mit dem erfolgreichen Abschluss der Zertifizierung beginnt. Danach ist ein aktives Organisator-Plattform-Abonnement erforderlich, um weiter zu veröffentlichen.",
+      "includes": "Inbegriffen:",
+      "features": [
+        "15–20 Qualifikationsfragen",
+        "Zeitlich begrenzter Test (30 Minuten)",
+        "Bestehensgrenze: 75%",
+        "ActivLife-Zertifikat als zertifizierter Organisator",
+        "30 Tage Zugang zur Organisator-Plattform (ab Zertifizierung)"
+      ],
+      "price": "$29",
+      "priceLabel": "einmalige Zahlung",
+      "cta": "Test ablegen – $29"
+    },
+    "steps": [
+      "Weg wählen",
+      "Zahlung",
+      "Lernen & zertifizieren",
+      "Organisieren beginnen"
+    ],
+    "notOrganizer": "Nur hier, um Aktivitäten zu buchen?",
+    "selected": "Ausgewählt",
+    "guide": {
+      "headline": "So funktioniert es",
+      "items": [
+        {
+          "q": "Wie die Zertifizierung funktioniert",
+          "a": "Wähle einen Weg, absolviere den Akademiekurs oder den Qualifikationstest und erwirb dein Zertifikat als zertifizierter Organisator."
+        },
+        {
+          "q": "Wie das Verdienen funktioniert",
+          "a": "Sobald du die Zertifizierung abgeschlossen hast, erhältst du 30 Tage Zugang zur Organisator-Plattform inklusive. Danach ist ein aktives Organisator-Plattform-Abonnement erforderlich, um weiter Aktivitäten einzustellen und Buchungen anzunehmen."
+        },
+        {
+          "q": "Was als Nächstes passiert",
+          "a": "Wähle unten den Weg, der zu deiner Erfahrung passt, und fahre dann fort zur Zahlung, wenn du bereit bist."
+        }
+      ]
+    },
+    "confidence": "Du trittst einer Plattform bei, die auf zertifizierten Organisatoren, sicheren Zahlungen und klaren Gemeinschaftsstandards aufgebaut ist.",
+    "flowNote": "Wähle unten deinen Organisator-Weg. Einsteiger – lerne die Grundlagen und werde zertifiziert. Erfahren – beweise dein Können mit einem kurzen Qualifikationstest. Nach der Zahlung wird dein Kurs oder Test automatisch freigeschaltet."
+  },
+  "billing": {
+    "title": "Abonnement",
+    "pageSubtitle": "Verwalte dein Organisator-Plattform-Abonnement.",
+    "notCertified": {
+      "title": "Zertifizierung erforderlich",
+      "description": "Schließe deine Zertifizierung ab, bevor du dein Abonnement aktivierst.",
+      "goToAcademy": "Zur Akademie",
+      "goToOnboarding": "Onboarding abschließen"
+    },
+    "includedAccess": {
+      "title": "Organisator-Plattform-Zugang inklusive",
+      "badge": "Inklusive",
+      "until": "Dein inkludierter Zugang ist aktiv bis {date}.",
+      "description": "Nach Ablauf deines inkludierten Zugangs ist ein aktives Organisator-Plattform-Abonnement erforderlich, um weiter zu veröffentlichen, zu verwalten und Buchungen anzunehmen.",
+      "goDashboard": "Zum Dashboard",
+      "subscribeCta": "Jetzt abonnieren"
+    },
+    "noSubscription": {
+      "title": "Aktiviere dein Organisator-Konto",
+      "description": "Abonniere für $9.99/Monat, um die volle Organisator-Plattform freizuschalten: Aktivitäten verwalten, Kundenanfragen erhalten und Buchungen annehmen.",
+      "price": "$9.99",
+      "period": "/Monat",
+      "cta": "Jetzt abonnieren",
+      "features": [
+        "Unbegrenzte Aktivitätseinträge",
+        "Posteingang für Kundenanfragen",
+        "Buchungsverwaltung",
+        "CRM- und Veranstaltungsort-Tools",
+        "Analyse-Dashboard"
+      ]
+    },
+    "active": {
+      "title": "Abonnement aktiv",
+      "renewsOn": "Verlängert sich am {date}",
+      "manageSubscription": "Abonnement verwalten",
+      "goDashboard": "Zum Dashboard"
+    },
+    "pastDue": {
+      "title": "Zahlung fehlgeschlagen",
+      "description": "Deine letzte Zahlung ist fehlgeschlagen. Aktualisiere deine Zahlungsmethode, um dein Abonnement aktiv zu halten.",
+      "updatePayment": "Zahlungsmethode aktualisieren"
+    },
+    "cancelled": {
+      "title": "Abonnement gekündigt",
+      "description": "Dein Abonnement wurde gekündigt. Abonniere erneut, um wieder Zugang zur Organisator-Plattform zu erhalten.",
+      "resubscribe": "Erneut abonnieren"
+    }
+  },
+  "dashboard": {
+    "nav": {
+      "home": "Start",
+      "activities": "Aktivitäten",
+      "calendar": "Kalender",
+      "bookings": "Buchungen",
+      "requests": "Anfragen",
+      "proposals": "Angebote",
+      "clients": "Kunden",
+      "venues": "Veranstaltungsorte",
+      "analytics": "Analysen",
+      "profile": "Profil & Zertifikat",
+      "billing": "Abrechnung",
+      "admin": "Admin"
+    },
+    "home": {
+      "greeting": "Willkommen zurück, {name}",
+      "greetingFallback": "Willkommen zurück",
+      "subtitle": "Dein Aktivitäts-Hub – erstelle, verwalte und lasse deine Gemeinschaft wachsen.",
+      "metrics": {
+        "activities": "Aktivitäten",
+        "venues": "Veranstaltungsorte",
+        "clients": "Kunden",
+        "upcomingEvents": "Anstehende Termine"
+      },
+      "upcomingEvents": {
+        "title": "Anstehende Termine",
+        "empty": "Noch nichts geplant – deine anstehenden Sitzungen erscheinen hier.",
+        "viewAll": "Kalender ansehen"
+      },
+      "accountStatus": {
+        "title": "Kontostatus",
+        "certified": "Zertifizierter Organisator",
+        "certifiedSince": "Zertifiziert seit {date}",
+        "subscriptionActive": "Abonnement aktiv",
+        "subscriptionInactive": "Abonnement inaktiv"
+      },
+      "quickActions": {
+        "title": "Schnellaktionen",
+        "createActivity": "Aktivität erstellen",
+        "createActivityDesc": "Teile etwas, das du liebst",
+        "venue": "Ort hinzufügen",
+        "venueDesc": "Lege fest, wo es stattfindet",
+        "bookings": "Buchungen ansehen",
+        "bookingsDesc": "Sieh, wer teilnimmt",
+        "profile": "Dein öffentliches Profil",
+        "profileDesc": "Wie Teilnehmer dich sehen"
+      },
+      "start": {
+        "title": "Deine Gemeinschaft beginnt hier",
+        "body": "Erstelle deine erste Aktivität, um sie mit Teilnehmern zu teilen. Fang einfach an – du kannst Details jederzeit ergänzen und bearbeiten.",
+        "cta": "Erstelle deine erste Aktivität"
+      }
+    }
+  },
+  "activities": {
+    "title": "Aktivitäten",
+    "subtitle": "Teile, was du liebst – erstelle Aktivitäten, die deine Gemeinschaft entdecken kann.",
+    "create": "Neue Aktivität",
+    "empty": "Noch keine Aktivitäten",
+    "emptyDesc": "Erstelle deine erste Aktivität – fang einfach an, du kannst sie jederzeit bearbeiten.",
+    "edit": "Bearbeiten",
+    "delete": "Löschen",
+    "confirmDelete": "Diese Aktivität löschen? Das kann nicht rückgängig gemacht werden.",
+    "createTitle": "Neue Aktivität",
+    "editTitle": "Aktivität bearbeiten",
+    "publish": "Veröffentlichen",
+    "unpublish": "Veröffentlichung aufheben",
+    "published": "Aktivität veröffentlicht",
+    "unpublished": "Veröffentlichung aufgehoben",
+    "status": {
+      "draft": "Entwurf",
+      "published": "Veröffentlicht",
+      "archived": "Archiviert"
+    },
+    "form": {
+      "title": "Titel",
+      "titlePlaceholder": "z. B. Sonnenuntergangs-Kajaktour",
+      "description": "Beschreibung",
+      "descriptionPlaceholder": "Worum geht es bei dieser Aktivität?",
+      "status": "Status",
+      "cancel": "Abbrechen",
+      "create": "Erstellen",
+      "save": "Speichern",
+      "creating": "Wird erstellt…",
+      "saving": "Wird gespeichert…",
+      "category": "Kategorie",
+      "price": "Preis",
+      "city": "Stadt",
+      "country": "Land",
+      "indoorOutdoor": "Innen / außen",
+      "venue": "Veranstaltungsort",
+      "minAge": "Mindestalter",
+      "maxAge": "Höchstalter",
+      "duration": "Dauer (Min)",
+      "languages": "Sprachen",
+      "none": "Keiner",
+      "intro": "Fang einfach an – nur ein Titel ist nötig. Du kannst Details jederzeit ergänzen und bearbeiten.",
+      "sectionBasics": "Die Grundlagen",
+      "sectionDetails": "Aktivitätsdetails",
+      "sectionWho": "Für wen es ist",
+      "sectionVisibility": "Sichtbarkeit",
+      "optional": "Optional",
+      "titleHint": "Gib ihr einen klaren, einladenden Namen, den Teilnehmer wiedererkennen.",
+      "descriptionHint": "Ein paar Sätze dazu, was ihr gemeinsam macht, reichen völlig.",
+      "priceHint": "Leer lassen, um sie kostenlos anzubieten.",
+      "statusHint": "Entwürfe bleiben privat. Veröffentliche, um sie auf dem Marktplatz zu listen, wo Teilnehmer sie entdecken und buchen können.",
+      "examplesLabel": "Brauchst du Ideen? Probiere eine:",
+      "examples": [
+        "Sonnenuntergangs-Kajaktour",
+        "Töpfer-Workshop für Anfänger",
+        "Morgendlicher Trailrun",
+        "Familien-Kochkurs"
+      ]
+    },
+    "indoorOutdoor": {
+      "indoor": "Innen",
+      "outdoor": "Außen",
+      "both": "Innen & außen"
+    },
+    "categories": {
+      "sports": "Sport",
+      "arts": "Kunst",
+      "music": "Musik",
+      "education": "Bildung",
+      "outdoor": "Outdoor",
+      "wellness": "Wellness",
+      "workshop": "Workshop",
+      "party": "Party",
+      "food": "Essen",
+      "other": "Sonstiges"
+    }
+  },
+  "venues": {
+    "title": "Veranstaltungsorte",
+    "subtitle": "Verwalte die Orte, an denen deine Aktivitäten stattfinden.",
+    "create": "Neuer Ort",
+    "empty": "Noch keine Orte",
+    "emptyDesc": "Füge die Orte hinzu, an denen du deine Aktivitäten durchführst.",
+    "delete": "Löschen",
+    "confirmDelete": "Diesen Ort löschen? Das kann nicht rückgängig gemacht werden.",
+    "createTitle": "Neuer Ort",
+    "editTitle": "Ort bearbeiten",
+    "indoorOutdoor": {
+      "indoor": "Innen",
+      "outdoor": "Außen",
+      "both": "Innen & außen"
+    },
+    "form": {
+      "name": "Name",
+      "namePlaceholder": "z. B. Riverside Studio",
+      "address": "Adresse",
+      "addressPlaceholder": "Straße und Hausnummer",
+      "city": "Stadt",
+      "cityPlaceholder": "Stadt",
+      "country": "Land",
+      "countryPlaceholder": "Land",
+      "capacity": "Kapazität",
+      "capacityPlaceholder": "Max. Personen",
+      "indoorOutdoor": "Innen / außen",
+      "notes": "Notizen",
+      "notesPlaceholder": "Alles Nützliche zum Merken",
+      "cancel": "Abbrechen",
+      "create": "Erstellen",
+      "save": "Speichern",
+      "creating": "Wird erstellt…",
+      "saving": "Wird gespeichert…"
+    },
+    "photos": {
+      "title": "Fotos",
+      "uploaded": "Foto hinzugefügt",
+      "uploading": "Wird hochgeladen…",
+      "remove": "Foto entfernen"
+    }
+  },
+  "clients": {
+    "title": "Kunden",
+    "subtitle": "Deine Kundenkontakte an einem Ort.",
+    "create": "Neuer Kunde",
+    "empty": "Noch keine Kunden",
+    "emptyDesc": "Füge deinen ersten Kunden hinzu, um dein CRM zu starten.",
+    "delete": "Löschen",
+    "confirmDelete": "Diesen Kunden löschen? Das kann nicht rückgängig gemacht werden.",
+    "createTitle": "Neuer Kunde",
+    "editTitle": "Kunde bearbeiten",
+    "form": {
+      "fullName": "Vollständiger Name",
+      "fullNamePlaceholder": "z. B. Jordan Lee",
+      "email": "E-Mail",
+      "emailPlaceholder": "name@beispiel.de",
+      "phone": "Telefon",
+      "phonePlaceholder": "Telefonnummer",
+      "notes": "Notizen",
+      "notesPlaceholder": "Vorlieben, Verlauf usw.",
+      "cancel": "Abbrechen",
+      "create": "Erstellen",
+      "save": "Speichern",
+      "creating": "Wird erstellt…",
+      "saving": "Wird gespeichert…"
+    }
+  },
+  "profile": {
+    "title": "Organisator-Profil",
+    "subtitle": "Wie du Kunden und auf dem Marktplatz erscheinst.",
+    "saved": "Profil gespeichert",
+    "error": "Dein Profil konnte nicht gespeichert werden.",
+    "displayName": "Anzeigename",
+    "bio": "Bio",
+    "city": "Stadt",
+    "country": "Land",
+    "languages": "Sprachen",
+    "phone": "Telefon",
+    "website": "Website",
+    "save": "Profil speichern",
+    "saving": "Wird gespeichert…",
+    "placeholders": {
+      "displayName": "Dein öffentlicher Name",
+      "bio": "Erzähle Kunden von dir",
+      "city": "Stadt",
+      "country": "Land",
+      "languages": "Englisch, Spanisch",
+      "phone": "Telefonnummer",
+      "website": "https://…"
+    },
+    "status": {
+      "draft": "Entwurf",
+      "published": "Veröffentlicht",
+      "suspended": "Gesperrt"
+    },
+    "slug": "Profil-URL",
+    "slugHint": "Dein teilbarer Link: /o/dein-name. Nur Kleinbuchstaben, Zahlen und Bindestriche – leer lassen für automatische Erstellung."
+  },
+  "footer": {
+    "tagline": "Wir helfen Menschen, Erlebnisse zu teilen und Gemeinschaft aufzubauen.",
+    "links": {
+      "about": "Über uns",
+      "privacy": "Datenschutz",
+      "terms": "Nutzungsbedingungen",
+      "contact": "Kontakt",
+      "becomeOrganizer": "Organisator werden",
+      "academy": "Akademie",
+      "philosophy": "Organisator-Philosophie"
+    },
+    "copyright": "© {year} ActivLife Hub. Alle Rechte vorbehalten."
+  },
+  "errors": {
+    "notFound": {
+      "title": "Seite nicht gefunden",
+      "body": "Die gesuchte Seite oder das Profil existiert nicht oder wurde verschoben.",
+      "home": "Zur Startseite",
+      "marketplace": "Aktivitäten durchsuchen"
+    },
+    "error": {
+      "title": "Etwas ist schiefgelaufen",
+      "body": "Bei uns ist ein unerwarteter Fehler aufgetreten. Bitte versuche es erneut.",
+      "retry": "Erneut versuchen",
+      "home": "Zur Startseite"
+    }
+  },
+  "calendar": {
+    "title": "Kalender",
+    "subtitle": "Plane deine Sitzungen, Blöcke und persönlichen Termine.",
+    "create": "Neuer Termin",
+    "today": "Heute",
+    "month": "Monat",
+    "week": "Woche",
+    "day": "Tag",
+    "more": "mehr",
+    "noEvents": "Keine Termine",
+    "allDay": "Ganztägig",
+    "created": "Termin erstellt",
+    "updated": "Termin aktualisiert",
+    "deleted": "Termin gelöscht",
+    "createTitle": "Neuer Termin",
+    "editTitle": "Termin bearbeiten",
+    "delete": "Termin löschen",
+    "confirmDelete": "Diesen Termin löschen? Das kann nicht rückgängig gemacht werden.",
+    "eventTypes": {
+      "session": "Sitzung",
+      "block": "Block",
+      "personal": "Persönlich"
+    },
+    "form": {
+      "title": "Titel",
+      "titlePlaceholder": "z. B. Morgendliche Yoga-Sitzung",
+      "type": "Typ",
+      "date": "Datum",
+      "startTime": "Beginn",
+      "endTime": "Ende",
+      "activity": "Aktivität",
+      "venue": "Veranstaltungsort",
+      "none": "Keiner",
+      "notes": "Notizen",
+      "notesPlaceholder": "Alles zum Merken",
+      "cancel": "Abbrechen",
+      "save": "Speichern",
+      "create": "Erstellen",
+      "saving": "Wird gespeichert…",
+      "creating": "Wird erstellt…"
+    }
+  },
+  "marketplace": {
+    "title": "Marktplatz",
+    "subtitle": "Entdecke Aktivitäten von zertifizierten Organisatoren in deiner Nähe.",
+    "resultCount": "{count} Aktivitäten",
+    "empty": "Keine Aktivitäten passen zu deinen Filtern.",
+    "backToMarketplace": "Zurück zum Marktplatz",
+    "filters": {
+      "search": "Suche",
+      "searchPlaceholder": "Stichwörter…",
+      "city": "Stadt",
+      "country": "Land",
+      "category": "Kategorie",
+      "language": "Sprache",
+      "indoorOutdoor": "Innen / außen",
+      "maxPrice": "Höchstpreis",
+      "childAge": "Alter des Kindes",
+      "date": "Datum",
+      "apply": "Anwenden",
+      "clear": "Zurücksetzen",
+      "any": "Beliebig"
+    },
+    "card": {
+      "free": "Kostenlos",
+      "new": "Neu"
+    },
+    "detail": {
+      "about": "Über",
+      "venue": "Veranstaltungsort",
+      "upcoming": "Anstehende Sitzungen",
+      "minutes": "Min",
+      "ages": "Alter",
+      "organizer": "Organisator",
+      "certified": "Zertifizierter Organisator",
+      "bookCta": "Diese Aktivität anfragen",
+      "bookHint": "Sende eine Anfrage und der Organisator schlägt Details vor.",
+      "reviewsTitle": "Bewertungen",
+      "reviewsEmpty": "Noch keine Bewertungen – erlebe diese Aktivität als Erster."
+    },
+    "organizer": {
+      "anonymous": "Organisator",
+      "certified": "Zertifizierter Organisator",
+      "memberSince": "Mitglied seit {date}",
+      "activities": "Aktivitäten",
+      "noActivities": "Noch keine veröffentlichten Aktivitäten.",
+      "reviews": "Bewertungen"
+    },
+    "categories": {
+      "sports": "Sport",
+      "arts": "Kunst",
+      "music": "Musik",
+      "education": "Bildung",
+      "outdoor": "Outdoor",
+      "wellness": "Wellness",
+      "workshop": "Workshop",
+      "party": "Party",
+      "food": "Essen",
+      "other": "Sonstiges",
+      "birthday": "Geburtstage",
+      "kids_party": "Kinderpartys",
+      "wedding": "Hochzeiten",
+      "anniversary": "Jubiläen",
+      "baby_shower": "Babypartys",
+      "reunion": "Wiedersehen",
+      "graduation": "Abschlussfeiern",
+      "hiking_club": "Wanderclubs",
+      "language_meetup": "Sprach-Meetups",
+      "cultural_community": "Kulturelle Treffen",
+      "faith_community": "Glaubensgemeinschaften",
+      "hobby_group": "Hobbygruppen",
+      "alumni": "Alumni-Gruppen",
+      "fan_community": "Fan-Communities",
+      "luxury_picnic": "Luxus-Picknicks",
+      "sunset_yacht": "Sonnenuntergangs-Yacht",
+      "private_chef": "Privatkoch",
+      "glamping": "Luxus-Glamping",
+      "volcano_dinner": "Vulkan-Dinner",
+      "survival_camp": "Survival-Camps",
+      "underwater_photography": "Unterwasserfotografie"
+    },
+    "indoorOutdoor": {
+      "indoor": "Innen",
+      "outdoor": "Außen",
+      "both": "Beides"
+    },
+    "emptyHint": "Passe deine Filter an oder setze sie zurück, um mehr Aktivitäten zu sehen.",
+    "verifiedOrganizer": "Verifizierter Organisator",
+    "trustNote": "Jeder Organisator ist zertifiziert und verifiziert, bevor er etwas einstellen kann.",
+    "reassure": {
+      "secure": "Sichere Zahlung über Stripe",
+      "verified": "Verifizierter, zertifizierter Organisator",
+      "cancel": "Jederzeit kündbar"
+    },
+    "reviewsHeading": "Was Teilnehmer sagen",
+    "howBooking": {
+      "title": "So funktioniert die Buchung",
+      "noPayment": "Dir wird nichts berechnet, bis du ein Angebot annimmst.",
+      "steps": [
+        {
+          "title": "Anfrage senden",
+          "description": "Sag dem Organisator, was du möchtest – es dauert nur eine Minute."
+        },
+        {
+          "title": "Angebot erhalten",
+          "description": "Der Organisator antwortet mit Datum und Preis. Noch keine Zahlung."
+        },
+        {
+          "title": "Bestätigen & buchen",
+          "description": "Nimm das gewünschte Angebot an und bezahle dann sicher, um es zu fixieren."
+        }
+      ]
+    },
+    "groups": {
+      "personal": {
+        "name": "Privat & Familie",
+        "tagline": "Feiere die Momente, die zählen"
+      },
+      "community": {
+        "name": "Gemeinschaften & Gruppen",
+        "tagline": "Versammelt euch um das, was ihr liebt"
+      },
+      "premium": {
+        "name": "Premium & Spezial",
+        "tagline": "Einmalige Erlebnisse"
+      }
+    }
+  },
+  "requests": {
+    "new": {
+      "title": "Neue Anfrage",
+      "subtitle": "Sag Organisatoren, was du suchst, und erhalte Angebote.",
+      "requestingActivity": "Du fragst diese Aktivität an",
+      "submit": "Anfrage senden"
+    },
+    "form": {
+      "eventType": "Art der Aktivität",
+      "city": "Stadt",
+      "country": "Land",
+      "date": "Wunschdatum",
+      "participants": "Teilnehmer",
+      "ageMin": "Mindestalter",
+      "ageMax": "Höchstalter",
+      "budget": "Budget",
+      "notes": "Notizen",
+      "notesPlaceholder": "Was Organisatoren wissen sollten"
+    },
+    "list": {
+      "title": "Meine Anfragen",
+      "subtitle": "Verfolge deine Anfragen und vergleiche Angebote.",
+      "empty": "Du hast noch keine Anfragen gestellt.",
+      "newCta": "Neue Anfrage"
+    },
+    "status": {
+      "open": "Offen",
+      "matched": "Zugeordnet",
+      "booked": "Gebucht",
+      "closed": "Geschlossen",
+      "cancelled": "Storniert"
+    },
+    "proposalStatus": {
+      "sent": "Gesendet",
+      "accepted": "Angenommen",
+      "declined": "Abgelehnt",
+      "withdrawn": "Zurückgezogen"
+    },
+    "detail": {
+      "back": "Zurück zu den Anfragen",
+      "proposals": "Angebote",
+      "noProposals": "Noch keine Angebote – Organisatoren antworten bald.",
+      "accept": "Annehmen & buchen",
+      "decline": "Ablehnen",
+      "from": "Von",
+      "proposedDate": "Vorgeschlagenes Datum",
+      "organizer": "Organisator",
+      "participants": "{n} Teilnehmer",
+      "ages": "Alter",
+      "budget": "Budget",
+      "booked": "Gebucht",
+      "nextOpen": "Deine Anfrage ist aktiv. Zertifizierte Organisatoren prüfen sie und antworten mit Angeboten – keine Zahlung, bis du eines annimmst.",
+      "nextProposals": "Vergleiche die Angebote unten und nimm das an, das dir gefällt. Beim Annehmen entsteht eine Buchung, dann bezahlst du sicher zur Bestätigung.",
+      "nextBooked": "Du bist gebucht! Bezahle und verwalte dies unter „Meine Buchungen“.",
+      "acceptHint": "Beim Annehmen entsteht eine Buchung – du bezahlst sicher im nächsten Schritt."
+    },
+    "proposalForm": {
+      "activity": "Aktivität (optional)",
+      "none": "Keine",
+      "price": "Preis",
+      "date": "Vorgeschlagenes Datum",
+      "message": "Nachricht",
+      "send": "Angebot senden",
+      "update": "Angebot aktualisieren"
+    },
+    "organizer": {
+      "title": "Zugeordnete Anfragen",
+      "subtitle": "Anfragen, die wir dir zugeordnet haben. Sende ein Angebot, um die Buchung zu gewinnen.",
+      "empty": "Noch keine zugeordneten Anfragen.",
+      "proposalSent": "Angebot gesendet",
+      "proposalsTitle": "Meine Angebote",
+      "proposalsSubtitle": "Angebote, die du an Kunden gesendet hast.",
+      "proposalsEmpty": "Du hast noch keine Angebote gesendet."
+    },
+    "flow": {
+      "title": "Was als Nächstes passiert",
+      "steps": [
+        {
+          "title": "Du sendest diese Anfrage",
+          "description": "Sie geht an passende zertifizierte Organisatoren – jetzt keine Zahlung."
+        },
+        {
+          "title": "Organisatoren machen Angebote",
+          "description": "Du erhältst Angebote mit Daten und Preisen unter „Meine Anfragen“."
+        },
+        {
+          "title": "Du wählst & buchst",
+          "description": "Nimm das beste an und bezahle sicher, um deine Buchung zu bestätigen."
+        }
+      ]
+    }
+  },
+  "bookings": {
+    "title": "Meine Buchungen",
+    "subtitle": "Aktivitäten, die du gebucht hast.",
+    "empty": "Du hast noch keine Buchungen.",
+    "activity": "Aktivität",
+    "organizer": "Organisator",
+    "cancel": "Buchung stornieren",
+    "organizerTitle": "Buchungen",
+    "organizerSubtitle": "Aktivitäten, die Kunden bei dir gebucht haben.",
+    "organizerEmpty": "Noch keine Buchungen.",
+    "complete": "Als abgeschlossen markieren",
+    "refund": "Erstatten",
+    "status": {
+      "pending": "Ausstehend",
+      "confirmed": "Bestätigt",
+      "completed": "Abgeschlossen",
+      "cancelled": "Storniert",
+      "refunded": "Erstattet"
+    },
+    "reviewed": "Bewertet",
+    "payNow": "Jetzt bezahlen",
+    "requestRefund": "Erstattung anfragen",
+    "refundRequested": "Erstattung angefragt",
+    "processRefund": "Erstattung bearbeiten",
+    "rejectRefund": "Ablehnen",
+    "payment": {
+      "unpaid": "Unbezahlt",
+      "processing": "In Bearbeitung",
+      "paid": "Bezahlt",
+      "refunded": "Erstattet",
+      "failed": "Fehlgeschlagen"
+    },
+    "history": {
+      "bookings": "Buchungen",
+      "spent": "Gesamtausgaben",
+      "organizers": "Organisatoren",
+      "repeat": "Wiederkehrend"
+    }
+  },
+  "notifications": {
+    "title": "Benachrichtigungen",
+    "unreadCount": "{count} ungelesen",
+    "markAllRead": "Alle als gelesen markieren",
+    "markRead": "Als gelesen markieren",
+    "empty": "Noch keine Benachrichtigungen."
+  },
+  "reviews": {
+    "submit": "Bewertung absenden",
+    "submitting": "Wird gesendet…",
+    "placeholder": "Teile deine Erfahrung (optional)",
+    "yourRating": "Deine Bewertung"
+  },
+  "analytics": {
+    "title": "Analysen",
+    "subtitle": "Deine Leistung auf einen Blick.",
+    "unavailable": "Analysen nicht verfügbar.",
+    "revenue": "Umsatz",
+    "bookings": "Buchungen",
+    "completionRate": "Abschlussquote",
+    "repeatCustomers": "Stammkunden",
+    "proposalConversion": "Angebots-Conversion",
+    "proposalsSent": "Gesendete Angebote",
+    "avgRating": "Ø Bewertung",
+    "completed": "Abgeschlossen",
+    "revenueOverTime": "Umsatz im Zeitverlauf",
+    "activityPopularity": "Beliebtheit der Aktivitäten",
+    "noData": "Noch keine Daten"
+  },
+  "admin": {
+    "brand": "Admin",
+    "nav": {
+      "dashboard": "Dashboard",
+      "reviews": "Bewertungen",
+      "bookings": "Buchungen",
+      "organizers": "Organisatoren"
+    },
+    "title": "Plattform-Analysen",
+    "unavailable": "Analysen nicht verfügbar.",
+    "metrics": {
+      "gmv": "GMV",
+      "activeOrganizers": "Aktive Organisatoren",
+      "activeCustomers": "Aktive Kunden",
+      "conversion": "Conversion",
+      "bookings": "Buchungen",
+      "requests": "Anfragen",
+      "reviews": "Bewertungen",
+      "pendingReviews": "Ausstehende Bewertungen"
+    },
+    "bookingGrowth": "Buchungswachstum",
+    "topCategories": "Top-Kategorien",
+    "noData": "Noch keine Daten",
+    "reviewQueue": "{count} Bewertungen warten auf Moderation",
+    "reviews": {
+      "title": "Bewertungsmoderation",
+      "empty": "Keine Bewertungen.",
+      "approve": "Genehmigen",
+      "reject": "Ablehnen",
+      "status": {
+        "pending": "Ausstehend",
+        "approved": "Genehmigt",
+        "rejected": "Abgelehnt"
+      }
+    },
+    "bookings": {
+      "title": "Buchungsübersicht",
+      "subtitle": "Alle Buchungen, Zahlungen und Streitfälle.",
+      "empty": "Keine Buchungen.",
+      "date": "Datum",
+      "amount": "Betrag",
+      "status": "Status",
+      "payment": "Zahlung",
+      "dispute": "Streitfall"
+    },
+    "organizers": {
+      "title": "Organisator-Moderation",
+      "subtitle": "Organisator-Konten sperren oder wiederherstellen.",
+      "empty": "Keine Organisatoren.",
+      "suspended": "Gesperrt",
+      "suspend": "Sperren",
+      "unsuspend": "Wiederherstellen"
+    }
+  },
+  "account": {
+    "greeting": "Willkommen zurück, {name}",
+    "greetingPlain": "Willkommen zurück",
+    "subtitle": "Deine Erlebnisse, Buchungen und Anfragen – alles an einem Ort.",
+    "explore": {
+      "title": "Aktivitäten entdecken",
+      "description": "Entdecke Erlebnisse von zertifizierten Organisatoren in deiner Nähe.",
+      "cta": "Marktplatz durchsuchen"
+    },
+    "request": {
+      "title": "Privates Event anfragen",
+      "description": "Sag Organisatoren, was du suchst, und erhalte Angebote.",
+      "cta": "Event anfragen"
+    },
+    "upcoming": {
+      "title": "Anstehende Buchungen",
+      "empty": "Noch keine anstehenden Buchungen – entdecke Aktivitäten, um zu starten.",
+      "viewAll": "Alle Buchungen ansehen"
+    },
+    "organizer": {
+      "title": "Möchtest du eigene Aktivitäten anbieten?",
+      "description": "Werde Organisator, um Erlebnisse zu schaffen und zu verdienen – ein kurzer, unterstützender Weg.",
+      "cta": "Organisator werden"
+    },
+    "dashboard": {
+      "title": "Organisator-Dashboard",
+      "description": "Verwalte deine Aktivitäten, Veranstaltungsorte und Buchungen.",
+      "cta": "Zum Dashboard"
+    },
+    "requestsLink": "Deine Anfragen"
+  },
+  "becomeOrganizerPage": {
+    "meta": {
+      "title": "Organisator werden",
+      "description": "Lerne, werde zertifiziert und beginne als Organisator auf ActivLife Hub zu verdienen."
+    },
+    "hero": {
+      "title": "Mach das Zusammenbringen von Menschen zum Beruf",
+      "subtitle": "Lerne das Handwerk, werde zertifiziert, gewinne deinen ersten Kunden und verdiene – mit Tools, die dich vom ersten Tag an professionell wirken lassen.",
+      "cta": "Starte deinen Organisator-Weg",
+      "ctaSecondary": "Akademie entdecken"
+    },
+    "path": {
+      "headline": "Dein Weg",
+      "steps": [
+        "Lernen",
+        "Zertifizieren",
+        "Erster Kunde",
+        "Erstes Event",
+        "Erstes Einkommen"
+      ]
+    },
+    "why": {
+      "headline": "Für wen es ist",
+      "body": "Berufswechsler, Nebenverdienst-Suchende, Eltern beim Wiedereinstieg, Einwanderer, die sich ein neues Leben aufbauen, und geborene Gemeinschaftsstifter – alle, die bereit sind, das Zusammenbringen von Menschen in Einkommen zu verwandeln."
+    },
+    "ope": {
+      "headline": "Wirke vom ersten Tag an professionell",
+      "body": "OPE, unsere Planungs-Engine, verwandelt ein paar Angaben in wenigen Minuten in ein vollständiges Kundenangebot – Zeitplan, Plan und Budget."
+    },
+    "academy": {
+      "headline": "Lerne in der Akademie",
+      "body": "Ein geführter Weg vom Einsteigerkurs oder Schnellweg für Erfahrene bis zum anerkannten Nachweis.",
+      "cta": "Akademie entdecken"
+    },
+    "certification": {
+      "headline": "Erwirb den Nachweis, dem Kunden vertrauen",
+      "body": "Werde zertifizierter Organisator – der Beweis, dass du sicher und zuverlässig lieferst."
+    },
+    "income": {
+      "headline": "Baue echtes Einkommen auf",
+      "body": "Gewinne Kunden, liefere großartige Events, werde bezahlt und entwickle Stammkundschaft – dein erstes Einkommen ist das Ziel, nicht nur die Zertifizierung."
+    },
+    "trust": {
+      "headline": "Auf Vertrauen gebaut",
+      "body": "Zertifizierte und verifizierte Organisatoren, sichere Zahlungen und klare Standards halten jedes Event sicher und einladend."
+    },
+    "cta": {
+      "headline": "Bereit anzufangen?",
+      "body": "Starte deinen Weg zum zertifizierten Organisator.",
+      "button": "Starte deinen Organisator-Weg"
+    },
+    "pricing": {
+      "headline": "Was es kostet",
+      "body": "Die Akademie und die Zertifizierung sind kostenpflichtige Programme, und als Organisator zu arbeiten ist ein kostenpflichtiges Abo. Sieh, was jeder Teil kostet.",
+      "cta": "Preise ansehen"
+    }
+  },
+  "organizerPhilosophy": {
+    "meta": {
+      "title": "Organisator-Philosophie",
+      "description": "Was es bedeutet, ein ActivLife-Hub-Organisator zu sein."
+    },
+    "intro": {
+      "eyebrow": "Unsere Philosophie",
+      "headline": "Was es bedeutet, ein ActivLife-Hub-Organisator zu sein",
+      "lead": "Großartige Organisatoren verhindern Probleme, bevor sie entstehen. Ein ActivLife-Hub-Organisator zu sein bedeutet weniger, in der Krise brillant zu reagieren, als vielmehr leise dafür zu sorgen, dass keine entsteht – und dass sich alle in deiner Obhut umsorgt fühlen."
+    },
+    "closing": "Menschen schaffen die besten Momente des echten Lebens. Wir helfen.",
+    "principles": [
+      {
+        "title": "Warum Organisatoren wichtig sind",
+        "body": "Gemeinschaften, Freundschaften und Feiern existieren, weil jemand sie möglich macht."
+      },
+      {
+        "title": "Der Organisator zuerst",
+        "body": "Gäste sehen die Aktivität; der Organisator sieht die Verantwortung."
+      },
+      {
+        "title": "Menschen vor Aktivitäten",
+        "body": "Aktivitäten sind für Menschen da, nicht Menschen für Aktivitäten."
+      },
+      {
+        "title": "Vorbeugen statt Retten",
+        "body": "Der beste Organisator verhindert Probleme, statt den Tag zu retten."
+      },
+      {
+        "title": "Versprich nur, was du halten kannst",
+        "body": "Vertrauen entsteht durch Verlässlichkeit, nicht durch Ehrgeiz."
+      },
+      {
+        "title": "Respektiere die Zeit der Menschen",
+        "body": "Pünktlich beginnen, klar kommunizieren, verlässlich planen."
+      },
+      {
+        "title": "Sicherheit ist nicht optional",
+        "body": "Wenn es um Kinder, Sport, Wasser, das Freie oder Transport geht, kommt die Fürsorgepflicht zuerst."
+      },
+      {
+        "title": "Organisatoren schaffen Vertrauen",
+        "body": "Jedes Event beeinflusst das Vertrauen in jeden Organisator der Plattform."
+      },
+      {
+        "title": "Gemeinschaften vor Events",
+        "body": "Events enden; Gemeinschaften bleiben."
+      },
+      {
+        "title": "Ständige Verbesserung",
+        "body": "Jedes Event lehrt etwas."
+      },
+      {
+        "title": "Der ActivLife-Hub-Organisator",
+        "body": "Kein makelloser Performer – ein vertrauenswürdiger."
+      }
+    ],
+    "ctaSection": {
+      "headline": "Bereit, danach zu leben?",
+      "become": "Organisator werden",
+      "academy": "Akademie entdecken"
+    }
+  },
+  "academyLanding": {
+    "hero": {
+      "title": "Die Organisator-Akademie",
+      "subtitle": "Lerne das Handwerk, erwirb den Nachweis und werde zertifizierter Organisator – zwei Wege hinein, ein anerkannter Standard.",
+      "cta": "Zertifizieren lassen",
+      "ctaSecondary": "Organisator werden"
+    },
+    "paths": {
+      "headline": "Zwei Wege hinein",
+      "beginnerTitle": "Einsteigerkurs",
+      "beginnerBody": "Neu im Organisieren? Lerne es Schritt für Schritt.",
+      "fastTitle": "Schnellweg für Erfahrene",
+      "fastBody": "Schon erfahren? Beweise es mit dem Kompetenztest."
+    },
+    "curriculum": {
+      "headline": "Was du lernst",
+      "subheadline": "Acht Module von den Grundlagen bis zu deinem ersten bezahlten Event.",
+      "modules": [
+        {
+          "title": "Einführung in ActivLife Hub",
+          "desc": "Mission, Philosophie und die Plattform."
+        },
+        {
+          "title": "Arbeiten in ActivLife Hub",
+          "desc": "Marktplatz, Anfragen, Profile und Bewertungen."
+        },
+        {
+          "title": "OPE nutzen",
+          "desc": "Pläne, Budgets und Kundenangebote."
+        },
+        {
+          "title": "Grundlagen des Organisierens",
+          "desc": "Lebenszyklus, Ressourcen, Abhängigkeiten, Durchführung."
+        },
+        {
+          "title": "Arbeiten mit Teilnehmern",
+          "desc": "Kommunikation, Erwartungen und Bewertungen."
+        },
+        {
+          "title": "Arbeiten mit Dienstleistern",
+          "desc": "Veranstaltungsorte, Auftragnehmer und Verhandlung."
+        },
+        {
+          "title": "Sicherheit & Verantwortung",
+          "desc": "Risiko, Fürsorgepflicht und Prävention. Pflicht."
+        },
+        {
+          "title": "Eine Organisator-Karriere aufbauen",
+          "desc": "Erster Kunde, erstes Event, erstes Einkommen."
+        }
+      ]
+    },
+    "certification": {
+      "headline": "Zertifizierung",
+      "body": "Bestehe eine Wissensprüfung und eine praktische Demonstration, um den Nachweis als zertifizierter Organisator zu erwerben – ein für Kunden überprüfbarer Beweis."
+    },
+    "badges": {
+      "headline": "Verifiziert vs. Zertifiziert",
+      "certifiedTitle": "Zertifiziert",
+      "certifiedBody": "Beweis der Fähigkeit – du kannst sicher und zuverlässig planen und liefern.",
+      "verifiedTitle": "Verifiziert",
+      "verifiedBody": "Beweis der Identität – ein echter, verantwortlicher Organisator. Mit „Zertifiziert“ kombinierbar."
+    },
+    "mastery": {
+      "headline": "Meisterschaft, kein Bestehen-oder-Durchfallen",
+      "body": "Die Prüfung hilft dir, den Standard zu erreichen, nicht dich auszusortieren. Wiederholungen sind erwünscht, Fehler lehren, und Sicherheitskompetenz ist Pflicht. Die Zertifizierung bestätigt, dass du den Standard erreicht hast."
+    },
+    "philosophy": {
+      "headline": "Auf der Organisator-Philosophie aufgebaut",
+      "body": "Vorbeugen statt Retten. Sicherheit zuerst. Menschen vor Aktivitäten. Die Akademie formt den Charakter eines vertrauenswürdigen Organisators, nicht nur die Mechanik.",
+      "cta": "Organisator-Philosophie lesen"
+    },
+    "cta": {
+      "headline": "Starte deine Zertifizierung",
+      "body": "Beginne den Weg zum zertifizierten Organisator.",
+      "button": "Zertifizieren lassen"
+    }
+  },
+  "plannerLanding": {
+    "meta": {
+      "title": "Aktivitätsplaner – Frühzugang",
+      "description": "Plane dein Event in Minuten. Frühzugang – $9.99 einmalig."
+    },
+    "hero": {
+      "badge": "Frühzugang",
+      "title": "Der Aktivitätsplaner öffnet den Frühzugang",
+      "subtitle": "Komm von „Ich will etwas organisieren“ in wenigen Minuten zu einem vollständigen, einsatzbereiten Plan."
+    },
+    "whatItDoes": {
+      "headline": "Was der Planer macht",
+      "items": [
+        "Stellt dir ein paar kurze Fragen zu deinem Event",
+        "Erstellt einen vollständigen, auf dich zugeschnittenen Plan",
+        "Hilft dir, es umzusetzen – pünktlich und im Budget"
+      ]
+    },
+    "receive": {
+      "headline": "Was du erhältst",
+      "items": [
+        "Eine klare Checkliste & einen Zeitplan (vorher, am Tag, danach)",
+        "Alles, was du brauchst, passend zu deiner Gästezahl",
+        "Eine realistische Budgetschätzung",
+        "Wichtige Hinweise zu Sicherheit & Logistik",
+        "Versandfertige Einladungen & Nachrichten"
+      ]
+    },
+    "price": {
+      "amount": "$9.99",
+      "note": "Einmalige Zahlung · pro Plan"
+    },
+    "examples": {
+      "headline": "Pläne für echte Events",
+      "items": [
+        {
+          "title": "Kindergeburtstag",
+          "line": "Motto, Spiele, allergikergerechtes Essen und ein stressfreier Zeitplan."
+        },
+        {
+          "title": "Grillfest / Familienpicknick",
+          "line": "Genehmigungen, Grilllogistik, vegetarische Optionen und ein Regen-Plan B."
+        },
+        {
+          "title": "Community-Treffen",
+          "line": "Einladende Gestaltung, mehrsprachige Details, Kinderecke, Barrierefreiheit."
+        }
+      ]
+    },
+    "benefits": {
+      "headline": "Warum man es liebt",
+      "items": [
+        "Stunden der Planung, in Minuten erledigt",
+        "Nichts Wichtiges vergessen",
+        "Wisse, was es kostet, bevor du startest",
+        "Ein Sicherheitsnetz: Gib es jederzeit an einen Profi ab"
+      ]
+    },
+    "cta": {
+      "headline": "Sei unter den Ersten",
+      "body": "Trag dich in die Warteliste ein und wir benachrichtigen dich, sobald der Aktivitätsplaner live ist.",
+      "button": "Auf die Warteliste",
+      "note": "$9.99 einmalig im Frühzugang."
+    }
+  }
+}

@@ -20,6 +20,8 @@ const LOCALES: { code: Locale; label: string }[] = [
   { code: 'es', label: 'Español' },
   { code: 'fr', label: 'Français' },
   { code: 'ru', label: 'Русский' },
+  { code: 'de', label: 'Deutsch' },
+  { code: 'pt', label: 'Português' },
 ]
 
 export function PublicHeader({ locale, isAuthenticated }: PublicHeaderProps) {

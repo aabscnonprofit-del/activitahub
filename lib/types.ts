@@ -1,4 +1,4 @@
-export type Locale = 'en' | 'es' | 'fr' | 'ru'
+export type Locale = 'en' | 'es' | 'fr' | 'ru' | 'de' | 'pt'
 
 export type UserRole = 'guest' | 'student' | 'organizer' | 'certified_organizer' | 'admin'
 

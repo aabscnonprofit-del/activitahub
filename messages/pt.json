@@ -1,0 +1,1467 @@
+{
+  "academy": {
+    "brand": "Academia ActivLife",
+    "exit": "Sair para o site",
+    "title": "Academia",
+    "progress": "{completed} de {total} lições concluídas",
+    "startLearning": "Começar a aprender",
+    "continueLearning": "Continuar a aprender",
+    "courseComplete": "Concluiu todas as lições deste curso.",
+    "takeExam": "Fazer o exame final",
+    "certified": "Certificado — passou no exame final.",
+    "viewCertificate": "Ver certificado",
+    "module": "Módulo",
+    "min": "min",
+    "completed": "Concluído",
+    "markComplete": "Marcar como concluído",
+    "continue": "Continuar",
+    "saving": "A guardar…",
+    "previous": "Anterior",
+    "next": "Seguinte",
+    "quizComingSoon": "Verificação de conhecimentos — o seu exame de certificação será desbloqueado na próxima fase.",
+    "noCourse": {
+      "title": "Ainda não há curso disponível",
+      "description": "O seu curso de certificação ainda não está pronto. Volte em breve."
+    }
+  },
+  "exam": {
+    "backToAcademy": "Voltar à academia",
+    "passingScore": "Nota mínima: {score}%",
+    "question": "Pergunta {n} de {total}",
+    "submit": "Submeter exame",
+    "grading": "A avaliar…",
+    "allAnswered": "Todas as perguntas respondidas",
+    "answeredCount": "{answered}/{total} respondidas",
+    "passedTitle": "Parabéns — passou!",
+    "passedBody": "Obteve {score}%. O seu certificado está pronto.",
+    "viewCertificate": "Ver o seu certificado",
+    "failed": "Obteve {score}%. Precisa de {passing}% para passar — reveja as lições e tente novamente."
+  },
+  "certificate": {
+    "title": "Certificado de Conclusão",
+    "issuedTo": "Certifica-se que",
+    "statement": "concluiu com sucesso {course} e é reconhecido como Organizador Certificado ActivLife.",
+    "course": "Curso",
+    "score": "Pontuação",
+    "date": "Emitido",
+    "code": "ID do certificado",
+    "scanToVerify": "Digitalize para verificar",
+    "print": "Imprimir / Guardar PDF",
+    "backToAcademy": "Voltar à academia",
+    "anonymousHolder": "Organizador ActivLife",
+    "nextTitle": "Está certificado! Falta um passo.",
+    "nextBody": "Subscreva para ativar o seu painel de organizador e começar a publicar atividades.",
+    "nextCta": "Ir para a faturação"
+  },
+  "verify": {
+    "title": "Verificar certificado",
+    "validTitle": "Certificado verificado",
+    "validBody": "Este é um certificado genuíno de Organizador Certificado ActivLife.",
+    "invalidTitle": "Certificado não encontrado",
+    "invalidBody": "Não foi possível verificar um certificado com este código.",
+    "holder": "Titular",
+    "course": "Curso",
+    "score": "Pontuação",
+    "issued": "Emitido",
+    "code": "ID do certificado",
+    "backHome": "Voltar ao início"
+  },
+  "pricing": {
+    "title": "Preços",
+    "subtitle": "Cada parte do ActivLife Hub é um produto real com um preço claro — e valor real em cada camada.",
+    "products": {
+      "planner": {
+        "name": "Planeador de Atividades",
+        "audience": "Para todos",
+        "tagline": "Planeie um grande evento — sem se tornar organizador.",
+        "price": "$9.99",
+        "priceNote": "Pagamento único",
+        "features": [
+          "Planeamento de eventos guiado",
+          "Um plano claro, checklist e orçamento",
+          "Riscos e lembretes principais"
+        ],
+        "cta": "Planear o seu evento"
+      },
+      "certification": {
+        "name": "Certificação",
+        "audience": "Para organizadores experientes",
+        "tagline": "Já tem experiência? Prove-o e seja certificado.",
+        "price": "$29",
+        "priceNote": "Único · teste de competências",
+        "features": [
+          "Teste rápido de competências",
+          "Credencial de Organizador Certificado",
+          "As competências em que os clientes confiam"
+        ],
+        "cta": "Obter certificação"
+      },
+      "academy": {
+        "name": "Academia + Certificação",
+        "audience": "Para futuros organizadores",
+        "tagline": "Aprenda o ofício e obtenha a credencial.",
+        "price": "$99",
+        "priceNote": "Único · curso + certificação",
+        "features": [
+          "Curso estruturado para iniciantes",
+          "Credencial de Organizador Certificado",
+          "Tudo o que precisa para começar"
+        ],
+        "cta": "Começar a aprender"
+      },
+      "platform": {
+        "name": "Plataforma de Organizador",
+        "audience": "Para organizadores ativos",
+        "badge": "Para ganhar",
+        "tagline": "Faça o seu negócio, ganhe clientes e use o OPE.",
+        "price": "$9.99",
+        "priceNote": "/mês",
+        "features": [
+          "Planeamento OPE e propostas a clientes",
+          "Anúncios no marketplace e pedidos de clientes",
+          "Reservas, pagamentos e análises",
+          "Selos Certificado e Verificado"
+        ],
+        "cta": "Começar",
+        "requirement": "Desbloqueia após a certificação."
+      }
+    },
+    "journey": {
+      "headline": "O que acontece após o registo",
+      "steps": [
+        "Planeie ou participe numa atividade",
+        "Seja certificado através da Academia",
+        "Subscreva a Plataforma de Organizador e comece a ganhar"
+      ]
+    }
+  },
+  "privacy": {
+    "title": "Política de Privacidade",
+    "lastUpdated": "Última atualização: maio de 2026"
+  },
+  "terms": {
+    "title": "Termos de Serviço",
+    "lastUpdated": "Última atualização: maio de 2026"
+  },
+  "common": {
+    "loading": "A carregar…",
+    "error": "Algo correu mal. Tente novamente.",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "continue": "Continuar",
+    "back": "Voltar",
+    "submit": "Enviar",
+    "or": "ou",
+    "optional": "Opcional",
+    "required": "Obrigatório",
+    "learnMore": "Saber mais",
+    "getStarted": "Começar",
+    "signIn": "Entrar",
+    "signOut": "Sair",
+    "signUp": "Criar conta",
+    "email": "Endereço de e-mail",
+    "password": "Palavra-passe",
+    "fullName": "Nome completo"
+  },
+  "nav": {
+    "home": "Início",
+    "pricing": "Preços",
+    "marketplace": "Marketplace",
+    "academy": "Academia",
+    "dashboard": "Painel",
+    "billing": "Faturação",
+    "admin": "Admin",
+    "signIn": "Entrar",
+    "signUp": "Criar conta",
+    "signOut": "Sair",
+    "account": "O meu Hub",
+    "becomeOrganizer": "Torne-se organizador"
+  },
+  "home": {
+    "hero": {
+      "badge": "O mundo precisa de mais organizadores",
+      "title": "Os melhores momentos da vida",
+      "titleAccent": "são criados por pessoas",
+      "subtitle": "Descubra atividades perto de si, planeie o seu próprio evento ou torne-se o organizador que a sua comunidade espera.",
+      "ctaPrimary": "Explorar atividades",
+      "ctaSecondary": "Torne-se organizador",
+      "reassure": "Organizadores certificados · Pagamentos seguros · Disponível em 4 idiomas"
+    },
+    "pillars": {
+      "headline": "Tudo o que precisa para ter sucesso",
+      "subheadline": "Três sistemas integrados que trabalham juntos para fazer crescer o seu negócio de organizador.",
+      "organizer": {
+        "title": "Plataforma de Organizador",
+        "description": "Painel profissional para gerir atividades, locais, clientes, reservas e toda a operação do seu negócio."
+      },
+      "academy": {
+        "title": "Academia e Certificação",
+        "description": "Aprendizagem estruturada ou teste rápido de qualificação. Obtenha a credencial de Organizador Certificado ActivLife."
+      },
+      "marketplace": {
+        "title": "Marketplace de Clientes",
+        "description": "Seja associado a clientes que procuram ativamente organizadores de atividades. Leads reais, reservas reais."
+      }
+    },
+    "stats": {
+      "organizers": "Organizadores certificados",
+      "activities": "Atividades publicadas",
+      "countries": "Países"
+    },
+    "cta": {
+      "title": "Pronto para transformar o organizar numa profissão?",
+      "subtitle": "Aprenda o ofício, seja certificado e comece a ganhar como organizador — com apoio em cada passo.",
+      "button": "Torne-se organizador"
+    },
+    "trust": {
+      "secure": "Pagamentos Stripe seguros",
+      "certified": "Organizadores certificados",
+      "languages": "Disponível em 4 idiomas",
+      "cancel": "Cancele quando quiser"
+    },
+    "how": {
+      "headline": "Como funciona",
+      "subheadline": "Da certificação à primeira reserva — um caminho claro.",
+      "steps": [
+        {
+          "title": "Seja certificado",
+          "description": "Faça um curso ou teste rápido para obter a sua credencial de Organizador Certificado."
+        },
+        {
+          "title": "Construa o seu perfil",
+          "description": "Adicione atividades, locais e disponibilidade no seu painel de organizador."
+        },
+        {
+          "title": "Seja reservado",
+          "description": "Apareça no marketplace e receba reservas reais de clientes próximos."
+        }
+      ]
+    },
+    "progression": {
+      "eyebrow": "A sua jornada",
+      "headline": "Comece com uma atividade. Cresça até Organizador Certificado.",
+      "subheadline": "Onde quer que comece, sabe sempre o seu próximo passo.",
+      "stages": [
+        {
+          "title": "Descobrir",
+          "description": "Explore atividades de organizadores de confiança perto de si."
+        },
+        {
+          "title": "Participar",
+          "description": "Reserve e participe em experiências que adora."
+        },
+        {
+          "title": "Aprender",
+          "description": "Inscreva-se na Academia e desenvolva competências reais."
+        },
+        {
+          "title": "Organizar",
+          "description": "Crie as suas próprias atividades, locais e reservas."
+        },
+        {
+          "title": "Certificar",
+          "description": "Obtenha a sua credencial de Organizador Certificado e cresça."
+        }
+      ]
+    },
+    "trustband": {
+      "headline": "Construído com confiança",
+      "subheadline": "Os padrões que mantêm a nossa comunidade segura e acolhedora.",
+      "items": [
+        {
+          "title": "Organizadores certificados",
+          "description": "Cada organizador certificado concluiu a formação e obteve a credencial."
+        },
+        {
+          "title": "Pagamentos seguros",
+          "description": "Os pagamentos e reembolsos são processados de forma segura através da Stripe."
+        },
+        {
+          "title": "Padrões da comunidade",
+          "description": "Diretrizes claras mantêm cada atividade segura e acolhedora."
+        },
+        {
+          "title": "Acesso internacional",
+          "description": "Disponível em quatro idiomas para organizadores em todo o mundo."
+        }
+      ]
+    },
+    "community": {
+      "headline": "Mais do que um marketplace — uma comunidade ativa",
+      "body": "O ActivLife Hub liga organizadores e participantes que partilham a paixão por sair e fazer mais, juntos.",
+      "cta": "Juntar-se à comunidade"
+    },
+    "audience": {
+      "headline": "Duas formas de fazer parte do ActivLife Hub",
+      "subheadline": "Participe em atividades como participante ou seja certificado para organizar e ganhar. Comece no lugar certo.",
+      "join": {
+        "badge": "Para participantes",
+        "title": "Participar em atividades",
+        "description": "Descubra e reserve experiências de organizadores de confiança e certificados perto de si.",
+        "points": [
+          "Explorar atividades perto de si",
+          "Reservar e pagar em segurança",
+          "Avaliar e voltar a reservar os favoritos"
+        ],
+        "cta": "Explorar atividades"
+      },
+      "organize": {
+        "badge": "Para organizadores",
+        "title": "Organizar atividades",
+        "description": "Construa uma profissão: seja certificado, ganhe clientes e ganhe com os eventos que realiza.",
+        "points": [
+          "Ser certificado na Academia",
+          "Publicar atividades e gerir locais",
+          "Aceitar reservas e ser pago"
+        ],
+        "cta": "Torne-se organizador"
+      }
+    },
+    "discover": {
+      "eyebrow": "Descobrir",
+      "headline": "Encontre o seu próximo momento",
+      "subheadline": "De aniversários a passeios ao pôr do sol — explore experiências para cada ocasião, comunidade e sonho.",
+      "cta": "Explorar o marketplace"
+    },
+    "mission": {
+      "headline": "O mundo precisa de mais organizadores",
+      "subheadline": "As pessoas criam os melhores momentos da vida real. Nós ajudamos.",
+      "body": "A amizade, a comunidade e a celebração não acontecem sozinhas — alguém as torna possíveis. Existimos para ajudar mais pessoas a tornarem-se os organizadores de que as suas comunidades precisam, e a transformar essa capacidade numa profissão.",
+      "cta": "Torne-se organizador"
+    },
+    "becomeOrganizer": {
+      "headline": "Transforme reunir pessoas numa profissão",
+      "subheadline": "Um caminho claro da primeira lição ao primeiro rendimento — com as ferramentas para parecer profissional desde o primeiro dia.",
+      "steps": [
+        "Aprender",
+        "Certificar",
+        "Primeiro cliente",
+        "Primeiro evento",
+        "Primeiro rendimento"
+      ],
+      "cta": "Comece o seu percurso de organizador"
+    },
+    "ope": {
+      "headline": "Pareça profissional desde o primeiro dia",
+      "subheadline": "O nosso motor de planeamento transforma alguns detalhes numa proposta completa para o cliente — cronograma, plano e orçamento — em minutos em vez de horas.",
+      "cta": "Veja como funciona"
+    },
+    "academyTeaser": {
+      "headline": "Aprenda o ofício. Obtenha a credencial.",
+      "subheadline": "A Academia de Organizadores transforma o entusiasmo numa profissão certificada — duas formas de entrar, uma credencial reconhecida.",
+      "cta": "Explorar a Academia"
+    },
+    "planner": {
+      "headline": "A planear o seu próprio evento?",
+      "body": "Obtenha um plano completo e personalizado — checklist, orçamento e lembretes — em minutos.",
+      "price": "$9.99 único",
+      "cta": "Planear o seu evento"
+    }
+  },
+  "auth": {
+    "signIn": {
+      "title": "Bem-vindo de volta",
+      "subtitle": "Entre na sua conta ActivLife Hub",
+      "email": "Endereço de e-mail",
+      "password": "Palavra-passe",
+      "submit": "Entrar",
+      "submitting": "A entrar…",
+      "forgotPassword": "Esqueceu-se da palavra-passe?",
+      "noAccount": "Ainda não tem conta?",
+      "signUpLink": "Criar conta"
+    },
+    "signUp": {
+      "title": "Crie a sua conta",
+      "subtitle": "Junte-se à comunidade de organizadores do ActivLife Hub",
+      "fullName": "Nome completo",
+      "fullNamePlaceholder": "Joana Silva",
+      "email": "Endereço de e-mail",
+      "emailPlaceholder": "joana@exemplo.pt",
+      "password": "Palavra-passe",
+      "passwordHint": "Mínimo de 8 caracteres",
+      "submit": "Criar conta",
+      "submitting": "A criar conta…",
+      "hasAccount": "Já tem conta?",
+      "signInLink": "Entrar",
+      "termsNotice": "Ao criar uma conta, concorda com os nossos Termos de Serviço e a Política de Privacidade.",
+      "checkEmail": "Verifique o seu e-mail",
+      "checkEmailDesc": "Enviámos um link de confirmação para {email}. Clique nele para ativar a sua conta."
+    },
+    "resetPassword": {
+      "title": "Redefinir a palavra-passe",
+      "subtitle": "Introduza o seu e-mail e enviar-lhe-emos um link de redefinição",
+      "email": "Endereço de e-mail",
+      "emailPlaceholder": "joana@exemplo.pt",
+      "submit": "Enviar link",
+      "submitting": "A enviar…",
+      "backToSignIn": "Voltar ao início de sessão",
+      "successTitle": "Verifique o seu e-mail",
+      "successDesc": "Enviámos um link de redefinição para {email}. Expira em 1 hora."
+    },
+    "errors": {
+      "invalidCredentials": "E-mail ou palavra-passe inválidos. Tente novamente.",
+      "emailInUse": "Já existe uma conta com este e-mail.",
+      "weakPassword": "A palavra-passe deve ter pelo menos 8 caracteres.",
+      "generic": "Ocorreu um erro. Tente novamente.",
+      "emailRequired": "O endereço de e-mail é obrigatório.",
+      "passwordRequired": "A palavra-passe é obrigatória.",
+      "fullNameRequired": "O nome completo é obrigatório.",
+      "invalidEmail": "Introduza um endereço de e-mail válido.",
+      "suspended": "A sua conta foi suspensa. Contacte o suporte."
+    }
+  },
+  "onboarding": {
+    "title": "Comece a organizar — escolha o seu percurso",
+    "subtitle": "Um percurso curto e acolhedor para começar a organizar atividades com confiança.",
+    "alreadySelected": "Escolheu o percurso «{path}». Continue para o pagamento quando estiver pronto.",
+    "continueToPayment": "Continuar para o pagamento",
+    "payment": {
+      "title": "Conclua o pagamento da sua certificação",
+      "subtitle": "Escolheu o percurso «{path}». Pague em segurança para desbloquear a sua certificação.",
+      "cta": "Avançar para o pagamento",
+      "processing": "A redirecionar para o checkout…"
+    },
+    "beginner": {
+      "badge": "Iniciante",
+      "title": "Novo na organização de atividades",
+      "description": "Comece do zero com um curso acessível que o orienta em tudo o que precisa para organizar ótimas atividades. Os $99 são um pagamento único — incluem o curso, o exame de qualificação, o seu Certificado de Organizador ActivLife e 30 dias de acesso à Plataforma de Organizador que começam quando concluir com sucesso a certificação. Depois disso, é necessária uma subscrição ativa da Plataforma de Organizador para continuar a publicar.",
+      "includes": "O que está incluído:",
+      "features": [
+        "7–8 módulos de aprendizagem aprofundados",
+        "Lições em vídeo e materiais de estudo",
+        "Quizzes por módulo e um exame final",
+        "Certificado de Organizador Certificado ActivLife",
+        "30 dias de acesso à Plataforma de Organizador (começa na certificação)"
+      ],
+      "price": "$99",
+      "priceLabel": "pagamento único",
+      "cta": "Começar a aprender — $99"
+    },
+    "experienced": {
+      "badge": "Experiente",
+      "title": "Já é organizador de atividades",
+      "description": "Salte o curso e prove a sua experiência com um teste de qualificação cronometrado. Os $29 são uma taxa de certificação única — incluem o teste de qualificação, o seu Certificado de Organizador ActivLife e 30 dias de acesso à Plataforma de Organizador que começam quando concluir com sucesso a certificação. Depois disso, é necessária uma subscrição ativa da Plataforma de Organizador para continuar a publicar.",
+      "includes": "O que está incluído:",
+      "features": [
+        "15–20 perguntas de qualificação",
+        "Avaliação cronometrada (30 minutos)",
+        "Nota mínima: 75%",
+        "Certificado de Organizador Certificado ActivLife",
+        "30 dias de acesso à Plataforma de Organizador (começa na certificação)"
+      ],
+      "price": "$29",
+      "priceLabel": "pagamento único",
+      "cta": "Fazer o teste — $29"
+    },
+    "steps": [
+      "Escolher percurso",
+      "Pagamento",
+      "Aprender e certificar",
+      "Começar a organizar"
+    ],
+    "notOrganizer": "Só está aqui para reservar atividades?",
+    "selected": "Selecionado",
+    "guide": {
+      "headline": "Como funciona",
+      "items": [
+        {
+          "q": "Como funciona a certificação",
+          "a": "Escolha um percurso, conclua o curso da Academia ou o teste de qualificação e obtenha o seu Certificado de Organizador Certificado."
+        },
+        {
+          "q": "Como funciona ganhar",
+          "a": "Assim que concluir a certificação, recebe 30 dias de acesso à Plataforma de Organizador incluídos. Depois disso, é necessária uma subscrição ativa da Plataforma de Organizador para continuar a anunciar atividades e aceitar reservas."
+        },
+        {
+          "q": "O que acontece a seguir",
+          "a": "Escolha abaixo o percurso que corresponde à sua experiência e continue para o pagamento quando estiver pronto."
+        }
+      ]
+    },
+    "confidence": "Está a juntar-se a uma plataforma construída sobre organizadores certificados, pagamentos seguros e padrões claros da comunidade.",
+    "flowNote": "Escolha abaixo o seu percurso de organizador. Iniciante — aprenda o básico e seja certificado. Experiente — prove as suas competências com um teste de qualificação curto. Após o pagamento, o seu curso ou teste é desbloqueado automaticamente."
+  },
+  "billing": {
+    "title": "Subscrição",
+    "pageSubtitle": "Faça a gestão da sua subscrição da Plataforma de Organizador.",
+    "notCertified": {
+      "title": "Certificação necessária",
+      "description": "Conclua a sua certificação antes de ativar a subscrição.",
+      "goToAcademy": "Ir para a Academia",
+      "goToOnboarding": "Concluir integração"
+    },
+    "includedAccess": {
+      "title": "Acesso à Plataforma de Organizador incluído",
+      "badge": "Incluído",
+      "until": "O seu acesso incluído está ativo até {date}.",
+      "description": "Após o fim do seu acesso incluído, é necessária uma subscrição ativa da Plataforma de Organizador para continuar a publicar, gerir e aceitar reservas.",
+      "goDashboard": "Ir para o painel",
+      "subscribeCta": "Subscrever agora"
+    },
+    "noSubscription": {
+      "title": "Ative a sua conta de organizador",
+      "description": "Subscreva por $9.99/mês para desbloquear toda a Plataforma de Organizador: gerir atividades, receber pedidos de clientes e aceitar reservas.",
+      "price": "$9.99",
+      "period": "/mês",
+      "cta": "Subscrever agora",
+      "features": [
+        "Anúncios de atividades ilimitados",
+        "Caixa de entrada de pedidos de clientes",
+        "Gestão de reservas",
+        "Ferramentas de CRM e locais",
+        "Painel de análises"
+      ]
+    },
+    "active": {
+      "title": "Subscrição ativa",
+      "renewsOn": "Renova-se a {date}",
+      "manageSubscription": "Gerir subscrição",
+      "goDashboard": "Ir para o painel"
+    },
+    "pastDue": {
+      "title": "Pagamento falhou",
+      "description": "O seu último pagamento falhou. Atualize o seu método de pagamento para manter a subscrição ativa.",
+      "updatePayment": "Atualizar método de pagamento"
+    },
+    "cancelled": {
+      "title": "Subscrição cancelada",
+      "description": "A sua subscrição foi cancelada. Volte a subscrever para recuperar o acesso à Plataforma de Organizador.",
+      "resubscribe": "Voltar a subscrever"
+    }
+  },
+  "dashboard": {
+    "nav": {
+      "home": "Início",
+      "activities": "Atividades",
+      "calendar": "Calendário",
+      "bookings": "Reservas",
+      "requests": "Pedidos",
+      "proposals": "Propostas",
+      "clients": "Clientes",
+      "venues": "Locais",
+      "analytics": "Análises",
+      "profile": "Perfil e Certificado",
+      "billing": "Faturação",
+      "admin": "Admin"
+    },
+    "home": {
+      "greeting": "Bem-vindo de volta, {name}",
+      "greetingFallback": "Bem-vindo de volta",
+      "subtitle": "O seu centro de atividades — crie, faça a gestão e faça crescer a sua comunidade.",
+      "metrics": {
+        "activities": "Atividades",
+        "venues": "Locais",
+        "clients": "Clientes",
+        "upcomingEvents": "Próximos eventos"
+      },
+      "upcomingEvents": {
+        "title": "Próximos eventos",
+        "empty": "Ainda nada agendado — as suas próximas sessões aparecerão aqui.",
+        "viewAll": "Ver calendário"
+      },
+      "accountStatus": {
+        "title": "Estado da conta",
+        "certified": "Organizador certificado",
+        "certifiedSince": "Certificado desde {date}",
+        "subscriptionActive": "Subscrição ativa",
+        "subscriptionInactive": "Subscrição inativa"
+      },
+      "quickActions": {
+        "title": "Ações rápidas",
+        "createActivity": "Criar uma atividade",
+        "createActivityDesc": "Partilhe algo que adora",
+        "venue": "Adicionar um local",
+        "venueDesc": "Defina onde acontece",
+        "bookings": "Ver reservas",
+        "bookingsDesc": "Veja quem vai participar",
+        "profile": "O seu perfil público",
+        "profileDesc": "Como os participantes o veem"
+      },
+      "start": {
+        "title": "A sua comunidade começa aqui",
+        "body": "Crie a sua primeira atividade para partilhar com participantes. Comece de forma simples — pode acrescentar detalhes e editar a qualquer momento.",
+        "cta": "Crie a sua primeira atividade"
+      }
+    }
+  },
+  "activities": {
+    "title": "Atividades",
+    "subtitle": "Partilhe o que adora — crie atividades para a sua comunidade descobrir.",
+    "create": "Nova atividade",
+    "empty": "Ainda não há atividades",
+    "emptyDesc": "Crie a sua primeira atividade — comece de forma simples, pode sempre editá-la depois.",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "confirmDelete": "Eliminar esta atividade? Não pode ser desfeito.",
+    "createTitle": "Nova atividade",
+    "editTitle": "Editar atividade",
+    "publish": "Publicar",
+    "unpublish": "Despublicar",
+    "published": "Atividade publicada",
+    "unpublished": "Atividade despublicada",
+    "status": {
+      "draft": "Rascunho",
+      "published": "Publicada",
+      "archived": "Arquivada"
+    },
+    "form": {
+      "title": "Título",
+      "titlePlaceholder": "ex.: Passeio de caiaque ao pôr do sol",
+      "description": "Descrição",
+      "descriptionPlaceholder": "O que envolve esta atividade?",
+      "status": "Estado",
+      "cancel": "Cancelar",
+      "create": "Criar",
+      "save": "Guardar",
+      "creating": "A criar…",
+      "saving": "A guardar…",
+      "category": "Categoria",
+      "price": "Preço",
+      "city": "Cidade",
+      "country": "País",
+      "indoorOutdoor": "Interior / exterior",
+      "venue": "Local",
+      "minAge": "Idade mínima",
+      "maxAge": "Idade máxima",
+      "duration": "Duração (min)",
+      "languages": "Idiomas",
+      "none": "Nenhum",
+      "intro": "Comece de forma simples — só é preciso um título. Pode acrescentar detalhes e editar a qualquer momento.",
+      "sectionBasics": "O essencial",
+      "sectionDetails": "Detalhes da atividade",
+      "sectionWho": "Para quem é",
+      "sectionVisibility": "Visibilidade",
+      "optional": "Opcional",
+      "titleHint": "Dê-lhe um nome claro e convidativo que os participantes reconheçam.",
+      "descriptionHint": "Algumas frases sobre o que vão fazer juntos são suficientes.",
+      "priceHint": "Deixe vazio para oferecer gratuitamente.",
+      "statusHint": "Os rascunhos permanecem privados. Publique para a listar no marketplace, onde os participantes a podem descobrir e reservar.",
+      "examplesLabel": "Precisa de ideias? Experimente uma:",
+      "examples": [
+        "Passeio de caiaque ao pôr do sol",
+        "Workshop de cerâmica para iniciantes",
+        "Corrida matinal em trilho",
+        "Aula de culinária em família"
+      ]
+    },
+    "indoorOutdoor": {
+      "indoor": "Interior",
+      "outdoor": "Exterior",
+      "both": "Interior e exterior"
+    },
+    "categories": {
+      "sports": "Desporto",
+      "arts": "Artes",
+      "music": "Música",
+      "education": "Educação",
+      "outdoor": "Ar livre",
+      "wellness": "Bem-estar",
+      "workshop": "Workshop",
+      "party": "Festa",
+      "food": "Gastronomia",
+      "other": "Outros"
+    }
+  },
+  "venues": {
+    "title": "Locais",
+    "subtitle": "Faça a gestão dos lugares onde as suas atividades acontecem.",
+    "create": "Novo local",
+    "empty": "Ainda não há locais",
+    "emptyDesc": "Adicione os lugares onde realiza as suas atividades.",
+    "delete": "Eliminar",
+    "confirmDelete": "Eliminar este local? Não pode ser desfeito.",
+    "createTitle": "Novo local",
+    "editTitle": "Editar local",
+    "indoorOutdoor": {
+      "indoor": "Interior",
+      "outdoor": "Exterior",
+      "both": "Interior e exterior"
+    },
+    "form": {
+      "name": "Nome",
+      "namePlaceholder": "ex.: Estúdio Riverside",
+      "address": "Morada",
+      "addressPlaceholder": "Morada",
+      "city": "Cidade",
+      "cityPlaceholder": "Cidade",
+      "country": "País",
+      "countryPlaceholder": "País",
+      "capacity": "Capacidade",
+      "capacityPlaceholder": "Máx. de pessoas",
+      "indoorOutdoor": "Interior / exterior",
+      "notes": "Notas",
+      "notesPlaceholder": "Algo útil para lembrar",
+      "cancel": "Cancelar",
+      "create": "Criar",
+      "save": "Guardar",
+      "creating": "A criar…",
+      "saving": "A guardar…"
+    },
+    "photos": {
+      "title": "Fotos",
+      "uploaded": "Foto adicionada",
+      "uploading": "A carregar…",
+      "remove": "Remover foto"
+    }
+  },
+  "clients": {
+    "title": "Clientes",
+    "subtitle": "Os seus contactos de clientes num só lugar.",
+    "create": "Novo cliente",
+    "empty": "Ainda não há clientes",
+    "emptyDesc": "Adicione o seu primeiro cliente para iniciar o seu CRM.",
+    "delete": "Eliminar",
+    "confirmDelete": "Eliminar este cliente? Não pode ser desfeito.",
+    "createTitle": "Novo cliente",
+    "editTitle": "Editar cliente",
+    "form": {
+      "fullName": "Nome completo",
+      "fullNamePlaceholder": "ex.: Jordan Lee",
+      "email": "E-mail",
+      "emailPlaceholder": "nome@exemplo.pt",
+      "phone": "Telefone",
+      "phonePlaceholder": "Número de telefone",
+      "notes": "Notas",
+      "notesPlaceholder": "Preferências, histórico, etc.",
+      "cancel": "Cancelar",
+      "create": "Criar",
+      "save": "Guardar",
+      "creating": "A criar…",
+      "saving": "A guardar…"
+    }
+  },
+  "profile": {
+    "title": "Perfil de organizador",
+    "subtitle": "Como aparece aos clientes e no marketplace.",
+    "saved": "Perfil guardado",
+    "error": "Não foi possível guardar o seu perfil.",
+    "displayName": "Nome a apresentar",
+    "bio": "Biografia",
+    "city": "Cidade",
+    "country": "País",
+    "languages": "Idiomas",
+    "phone": "Telefone",
+    "website": "Site",
+    "save": "Guardar perfil",
+    "saving": "A guardar…",
+    "placeholders": {
+      "displayName": "O seu nome público",
+      "bio": "Fale aos clientes sobre si",
+      "city": "Cidade",
+      "country": "País",
+      "languages": "Inglês, Espanhol",
+      "phone": "Número de telefone",
+      "website": "https://…"
+    },
+    "status": {
+      "draft": "Rascunho",
+      "published": "Publicado",
+      "suspended": "Suspenso"
+    },
+    "slug": "URL do perfil",
+    "slugHint": "O seu link para partilhar: /o/o-seu-nome. Apenas minúsculas, números e hífenes — deixe em branco para gerar automaticamente."
+  },
+  "footer": {
+    "tagline": "Ajudamos as pessoas a partilhar experiências e a construir comunidade.",
+    "links": {
+      "about": "Sobre",
+      "privacy": "Política de Privacidade",
+      "terms": "Termos de Serviço",
+      "contact": "Contacto",
+      "becomeOrganizer": "Torne-se organizador",
+      "academy": "Academia",
+      "philosophy": "Filosofia do Organizador"
+    },
+    "copyright": "© {year} ActivLife Hub. Todos os direitos reservados."
+  },
+  "errors": {
+    "notFound": {
+      "title": "Página não encontrada",
+      "body": "A página ou o perfil que procura não existe ou pode ter sido movido.",
+      "home": "Voltar ao início",
+      "marketplace": "Explorar atividades"
+    },
+    "error": {
+      "title": "Algo correu mal",
+      "body": "Ocorreu um erro inesperado do nosso lado. Tente novamente.",
+      "retry": "Tentar novamente",
+      "home": "Voltar ao início"
+    }
+  },
+  "calendar": {
+    "title": "Calendário",
+    "subtitle": "Planeie as suas sessões, blocos e eventos pessoais.",
+    "create": "Novo evento",
+    "today": "Hoje",
+    "month": "Mês",
+    "week": "Semana",
+    "day": "Dia",
+    "more": "mais",
+    "noEvents": "Sem eventos",
+    "allDay": "Todo o dia",
+    "created": "Evento criado",
+    "updated": "Evento atualizado",
+    "deleted": "Evento eliminado",
+    "createTitle": "Novo evento",
+    "editTitle": "Editar evento",
+    "delete": "Eliminar evento",
+    "confirmDelete": "Eliminar este evento? Não pode ser desfeito.",
+    "eventTypes": {
+      "session": "Sessão",
+      "block": "Bloqueio",
+      "personal": "Pessoal"
+    },
+    "form": {
+      "title": "Título",
+      "titlePlaceholder": "ex.: Sessão de yoga matinal",
+      "type": "Tipo",
+      "date": "Data",
+      "startTime": "Início",
+      "endTime": "Fim",
+      "activity": "Atividade",
+      "venue": "Local",
+      "none": "Nenhum",
+      "notes": "Notas",
+      "notesPlaceholder": "Algo a lembrar",
+      "cancel": "Cancelar",
+      "save": "Guardar",
+      "create": "Criar",
+      "saving": "A guardar…",
+      "creating": "A criar…"
+    }
+  },
+  "marketplace": {
+    "title": "Marketplace",
+    "subtitle": "Descubra atividades de organizadores certificados perto de si.",
+    "resultCount": "{count} atividades",
+    "empty": "Nenhuma atividade corresponde aos seus filtros.",
+    "backToMarketplace": "Voltar ao marketplace",
+    "filters": {
+      "search": "Pesquisar",
+      "searchPlaceholder": "Palavras-chave…",
+      "city": "Cidade",
+      "country": "País",
+      "category": "Categoria",
+      "language": "Idioma",
+      "indoorOutdoor": "Interior / exterior",
+      "maxPrice": "Preço máximo",
+      "childAge": "Idade da criança",
+      "date": "Data",
+      "apply": "Aplicar",
+      "clear": "Limpar",
+      "any": "Qualquer"
+    },
+    "card": {
+      "free": "Grátis",
+      "new": "Novo"
+    },
+    "detail": {
+      "about": "Sobre",
+      "venue": "Local",
+      "upcoming": "Próximas sessões",
+      "minutes": "min",
+      "ages": "Idades",
+      "organizer": "Organizador",
+      "certified": "Organizador Certificado",
+      "bookCta": "Pedir esta atividade",
+      "bookHint": "Envie um pedido e o organizador proporá os detalhes.",
+      "reviewsTitle": "Avaliações",
+      "reviewsEmpty": "Ainda não há avaliações — seja o primeiro a viver esta atividade."
+    },
+    "organizer": {
+      "anonymous": "Organizador",
+      "certified": "Organizador Certificado",
+      "memberSince": "Membro desde {date}",
+      "activities": "Atividades",
+      "noActivities": "Ainda não há atividades publicadas.",
+      "reviews": "Avaliações"
+    },
+    "categories": {
+      "sports": "Desporto",
+      "arts": "Artes",
+      "music": "Música",
+      "education": "Educação",
+      "outdoor": "Ar livre",
+      "wellness": "Bem-estar",
+      "workshop": "Workshop",
+      "party": "Festa",
+      "food": "Gastronomia",
+      "other": "Outros",
+      "birthday": "Aniversários",
+      "kids_party": "Festas infantis",
+      "wedding": "Casamentos",
+      "anniversary": "Aniversários de casamento",
+      "baby_shower": "Chás de bebé",
+      "reunion": "Reencontros",
+      "graduation": "Formaturas",
+      "hiking_club": "Clubes de caminhada",
+      "language_meetup": "Encontros de idiomas",
+      "cultural_community": "Encontros culturais",
+      "faith_community": "Comunidades religiosas",
+      "hobby_group": "Grupos de hobbies",
+      "alumni": "Grupos de antigos alunos",
+      "fan_community": "Comunidades de fãs",
+      "luxury_picnic": "Piqueniques de luxo",
+      "sunset_yacht": "Iate ao pôr do sol",
+      "private_chef": "Chef privado",
+      "glamping": "Glamping de luxo",
+      "volcano_dinner": "Jantares no vulcão",
+      "survival_camp": "Campos de sobrevivência",
+      "underwater_photography": "Fotografia subaquática"
+    },
+    "indoorOutdoor": {
+      "indoor": "Interior",
+      "outdoor": "Exterior",
+      "both": "Ambos"
+    },
+    "emptyHint": "Ajuste ou limpe os seus filtros para ver mais atividades.",
+    "verifiedOrganizer": "Organizador verificado",
+    "trustNote": "Cada organizador é certificado e verificado antes de poder anunciar.",
+    "reassure": {
+      "secure": "Pagamento seguro via Stripe",
+      "verified": "Organizador verificado e certificado",
+      "cancel": "Cancele quando quiser"
+    },
+    "reviewsHeading": "O que dizem os participantes",
+    "howBooking": {
+      "title": "Como funciona a reserva",
+      "noPayment": "Não será cobrado até aceitar uma proposta.",
+      "steps": [
+        {
+          "title": "Envie um pedido",
+          "description": "Diga ao organizador o que pretende — só demora um minuto."
+        },
+        {
+          "title": "Receba uma proposta",
+          "description": "O organizador responde com data e preço. Ainda sem pagamento."
+        },
+        {
+          "title": "Confirme e reserve",
+          "description": "Aceite a proposta que preferir e pague em segurança para a garantir."
+        }
+      ]
+    },
+    "groups": {
+      "personal": {
+        "name": "Pessoal e Família",
+        "tagline": "Celebre os momentos que importam"
+      },
+      "community": {
+        "name": "Comunidades e Grupos",
+        "tagline": "Reúna-se em torno do que ama"
+      },
+      "premium": {
+        "name": "Premium e Nicho",
+        "tagline": "Experiências únicas na vida"
+      }
+    }
+  },
+  "requests": {
+    "new": {
+      "title": "Novo pedido",
+      "subtitle": "Diga aos organizadores o que procura e receba propostas.",
+      "requestingActivity": "Está a pedir esta atividade",
+      "submit": "Enviar pedido"
+    },
+    "form": {
+      "eventType": "Tipo de atividade",
+      "city": "Cidade",
+      "country": "País",
+      "date": "Data pretendida",
+      "participants": "Participantes",
+      "ageMin": "Idade mínima",
+      "ageMax": "Idade máxima",
+      "budget": "Orçamento",
+      "notes": "Notas",
+      "notesPlaceholder": "Algo que os organizadores devam saber"
+    },
+    "list": {
+      "title": "Os meus pedidos",
+      "subtitle": "Acompanhe os seus pedidos e compare propostas.",
+      "empty": "Ainda não fez nenhum pedido.",
+      "newCta": "Novo pedido"
+    },
+    "status": {
+      "open": "Aberto",
+      "matched": "Correspondido",
+      "booked": "Reservado",
+      "closed": "Fechado",
+      "cancelled": "Cancelado"
+    },
+    "proposalStatus": {
+      "sent": "Enviada",
+      "accepted": "Aceite",
+      "declined": "Recusada",
+      "withdrawn": "Retirada"
+    },
+    "detail": {
+      "back": "Voltar aos pedidos",
+      "proposals": "Propostas",
+      "noProposals": "Ainda não há propostas — os organizadores responderão em breve.",
+      "accept": "Aceitar e reservar",
+      "decline": "Recusar",
+      "from": "De",
+      "proposedDate": "Data proposta",
+      "organizer": "Organizador",
+      "participants": "{n} participantes",
+      "ages": "Idades",
+      "budget": "Orçamento",
+      "booked": "Reservado",
+      "nextOpen": "O seu pedido está ativo. Organizadores certificados estão a analisá-lo e responderão com propostas — sem pagamento até aceitar uma.",
+      "nextProposals": "Compare as propostas abaixo e aceite a que preferir. Ao aceitar cria-se uma reserva e depois paga em segurança para confirmar.",
+      "nextBooked": "Está reservado! Pague e faça a gestão em «As minhas reservas».",
+      "acceptHint": "Ao aceitar cria-se uma reserva — paga em segurança no passo seguinte."
+    },
+    "proposalForm": {
+      "activity": "Atividade (opcional)",
+      "none": "Nenhuma",
+      "price": "Preço",
+      "date": "Data proposta",
+      "message": "Mensagem",
+      "send": "Enviar proposta",
+      "update": "Atualizar proposta"
+    },
+    "organizer": {
+      "title": "Pedidos correspondidos",
+      "subtitle": "Pedidos que lhe correspondemos. Envie uma proposta para ganhar a reserva.",
+      "empty": "Ainda não há pedidos correspondidos.",
+      "proposalSent": "Proposta enviada",
+      "proposalsTitle": "As minhas propostas",
+      "proposalsSubtitle": "Propostas que enviou a clientes.",
+      "proposalsEmpty": "Ainda não enviou nenhuma proposta."
+    },
+    "flow": {
+      "title": "O que acontece a seguir",
+      "steps": [
+        {
+          "title": "Envia este pedido",
+          "description": "Vai para organizadores certificados correspondentes — sem pagamento agora."
+        },
+        {
+          "title": "Os organizadores propõem",
+          "description": "Receberá propostas com datas e preços em «Os meus pedidos»."
+        },
+        {
+          "title": "Escolhe e reserva",
+          "description": "Aceite a melhor e pague em segurança para confirmar a sua reserva."
+        }
+      ]
+    }
+  },
+  "bookings": {
+    "title": "As minhas reservas",
+    "subtitle": "Atividades que reservou.",
+    "empty": "Ainda não tem reservas.",
+    "activity": "Atividade",
+    "organizer": "Organizador",
+    "cancel": "Cancelar reserva",
+    "organizerTitle": "Reservas",
+    "organizerSubtitle": "Atividades que os clientes reservaram consigo.",
+    "organizerEmpty": "Ainda não há reservas.",
+    "complete": "Marcar como concluída",
+    "refund": "Reembolsar",
+    "status": {
+      "pending": "Pendente",
+      "confirmed": "Confirmada",
+      "completed": "Concluída",
+      "cancelled": "Cancelada",
+      "refunded": "Reembolsada"
+    },
+    "reviewed": "Avaliada",
+    "payNow": "Pagar agora",
+    "requestRefund": "Pedir reembolso",
+    "refundRequested": "Reembolso pedido",
+    "processRefund": "Processar reembolso",
+    "rejectRefund": "Rejeitar",
+    "payment": {
+      "unpaid": "Não pago",
+      "processing": "Em processamento",
+      "paid": "Pago",
+      "refunded": "Reembolsado",
+      "failed": "Falhou"
+    },
+    "history": {
+      "bookings": "Reservas",
+      "spent": "Total gasto",
+      "organizers": "Organizadores",
+      "repeat": "Recorrente"
+    }
+  },
+  "notifications": {
+    "title": "Notificações",
+    "unreadCount": "{count} por ler",
+    "markAllRead": "Marcar todas como lidas",
+    "markRead": "Marcar como lida",
+    "empty": "Ainda não há notificações."
+  },
+  "reviews": {
+    "submit": "Enviar avaliação",
+    "submitting": "A enviar…",
+    "placeholder": "Partilhe a sua experiência (opcional)",
+    "yourRating": "A sua avaliação"
+  },
+  "analytics": {
+    "title": "Análises",
+    "subtitle": "O seu desempenho num relance.",
+    "unavailable": "Análises indisponíveis.",
+    "revenue": "Receita",
+    "bookings": "Reservas",
+    "completionRate": "Taxa de conclusão",
+    "repeatCustomers": "Clientes recorrentes",
+    "proposalConversion": "Conversão de propostas",
+    "proposalsSent": "Propostas enviadas",
+    "avgRating": "Avaliação média",
+    "completed": "Concluído",
+    "revenueOverTime": "Receita ao longo do tempo",
+    "activityPopularity": "Popularidade das atividades",
+    "noData": "Ainda sem dados"
+  },
+  "admin": {
+    "brand": "Admin",
+    "nav": {
+      "dashboard": "Painel",
+      "reviews": "Avaliações",
+      "bookings": "Reservas",
+      "organizers": "Organizadores"
+    },
+    "title": "Análises da plataforma",
+    "unavailable": "Análises indisponíveis.",
+    "metrics": {
+      "gmv": "GMV",
+      "activeOrganizers": "Organizadores ativos",
+      "activeCustomers": "Clientes ativos",
+      "conversion": "Conversão",
+      "bookings": "Reservas",
+      "requests": "Pedidos",
+      "reviews": "Avaliações",
+      "pendingReviews": "Avaliações pendentes"
+    },
+    "bookingGrowth": "Crescimento das reservas",
+    "topCategories": "Principais categorias",
+    "noData": "Ainda sem dados",
+    "reviewQueue": "{count} avaliações a aguardar moderação",
+    "reviews": {
+      "title": "Moderação de avaliações",
+      "empty": "Sem avaliações.",
+      "approve": "Aprovar",
+      "reject": "Rejeitar",
+      "status": {
+        "pending": "Pendente",
+        "approved": "Aprovada",
+        "rejected": "Rejeitada"
+      }
+    },
+    "bookings": {
+      "title": "Supervisão de reservas",
+      "subtitle": "Todas as reservas, pagamentos e disputas.",
+      "empty": "Sem reservas.",
+      "date": "Data",
+      "amount": "Montante",
+      "status": "Estado",
+      "payment": "Pagamento",
+      "dispute": "Disputa"
+    },
+    "organizers": {
+      "title": "Moderação de organizadores",
+      "subtitle": "Suspender ou restaurar contas de organizadores.",
+      "empty": "Sem organizadores.",
+      "suspended": "Suspenso",
+      "suspend": "Suspender",
+      "unsuspend": "Restaurar"
+    }
+  },
+  "account": {
+    "greeting": "Bem-vindo de volta, {name}",
+    "greetingPlain": "Bem-vindo de volta",
+    "subtitle": "As suas experiências, reservas e pedidos — tudo num só lugar.",
+    "explore": {
+      "title": "Explorar atividades",
+      "description": "Descubra experiências de organizadores certificados perto de si.",
+      "cta": "Explorar o marketplace"
+    },
+    "request": {
+      "title": "Pedir um evento privado",
+      "description": "Diga aos organizadores o que procura e receba propostas.",
+      "cta": "Pedir um evento"
+    },
+    "upcoming": {
+      "title": "Próximas reservas",
+      "empty": "Ainda não há reservas futuras — explore atividades para começar.",
+      "viewAll": "Ver todas as reservas"
+    },
+    "organizer": {
+      "title": "Quer organizar as suas próprias atividades?",
+      "description": "Torne-se organizador para criar experiências e ganhar — um percurso curto e acolhedor.",
+      "cta": "Torne-se organizador"
+    },
+    "dashboard": {
+      "title": "Painel de organizador",
+      "description": "Faça a gestão das suas atividades, locais e reservas.",
+      "cta": "Ir para o painel"
+    },
+    "requestsLink": "Os seus pedidos"
+  },
+  "becomeOrganizerPage": {
+    "meta": {
+      "title": "Torne-se organizador",
+      "description": "Aprenda, seja certificado e comece a ganhar como organizador no ActivLife Hub."
+    },
+    "hero": {
+      "title": "Transforme reunir pessoas numa profissão",
+      "subtitle": "Aprenda o ofício, seja certificado, ganhe o seu primeiro cliente e ganhe dinheiro — com ferramentas que o tornam profissional desde o primeiro dia.",
+      "cta": "Comece o seu percurso de organizador",
+      "ctaSecondary": "Explorar a Academia"
+    },
+    "path": {
+      "headline": "O seu percurso",
+      "steps": [
+        "Aprender",
+        "Certificar",
+        "Primeiro cliente",
+        "Primeiro evento",
+        "Primeiro rendimento"
+      ]
+    },
+    "why": {
+      "headline": "Para quem é",
+      "body": "Quem muda de carreira, procura rendimento extra, pais que regressam ao trabalho, imigrantes a construir uma nova vida e líderes comunitários naturais — qualquer pessoa pronta para transformar reunir pessoas em rendimento."
+    },
+    "ope": {
+      "headline": "Pareça profissional desde o primeiro dia",
+      "body": "O OPE, o nosso motor de planeamento, transforma alguns detalhes numa proposta completa para o cliente — cronograma, plano e orçamento — em minutos."
+    },
+    "academy": {
+      "headline": "Aprenda na Academia",
+      "body": "Um percurso guiado, do curso para iniciantes ou da via rápida para experientes, até uma credencial reconhecida.",
+      "cta": "Explorar a Academia"
+    },
+    "certification": {
+      "headline": "Obtenha a credencial em que os clientes confiam",
+      "body": "Torne-se Organizador Certificado — a prova de que entrega com segurança e fiabilidade."
+    },
+    "income": {
+      "headline": "Construa rendimento real",
+      "body": "Ganhe clientes, realize ótimos eventos, seja pago e cresça para clientes recorrentes — o seu primeiro rendimento é o objetivo, não apenas a certificação."
+    },
+    "trust": {
+      "headline": "Construído com confiança",
+      "body": "Organizadores certificados e verificados, pagamentos seguros e padrões claros mantêm cada evento seguro e acolhedor."
+    },
+    "cta": {
+      "headline": "Pronto para começar?",
+      "body": "Comece o seu percurso para se tornar Organizador Certificado.",
+      "button": "Comece o seu percurso de organizador"
+    },
+    "pricing": {
+      "headline": "Quanto custa",
+      "body": "A Academia e a certificação são programas pagos, e operar como organizador é uma subscrição paga. Veja quanto custa cada parte.",
+      "cta": "Ver preços"
+    }
+  },
+  "organizerPhilosophy": {
+    "meta": {
+      "title": "Filosofia do Organizador",
+      "description": "O que significa ser um Organizador ActivLife Hub."
+    },
+    "intro": {
+      "eyebrow": "A nossa filosofia",
+      "headline": "O que significa ser um Organizador ActivLife Hub",
+      "lead": "Os grandes organizadores previnem problemas antes de acontecerem. Ser um Organizador ActivLife Hub é menos sobre reagir brilhantemente numa crise e mais sobre garantir discretamente que nenhuma surge — e que todos ao seu cuidado se sentem amparados."
+    },
+    "closing": "As pessoas criam os melhores momentos da vida real. Nós ajudamos.",
+    "principles": [
+      {
+        "title": "Porque os organizadores importam",
+        "body": "As comunidades, amizades e celebrações existem porque alguém as torna possíveis."
+      },
+      {
+        "title": "O organizador vem primeiro",
+        "body": "Os convidados veem a atividade; o organizador vê a responsabilidade."
+      },
+      {
+        "title": "Pessoas antes das atividades",
+        "body": "As atividades existem para as pessoas, não as pessoas para as atividades."
+      },
+      {
+        "title": "Prevenir em vez de remediar",
+        "body": "O melhor organizador previne problemas em vez de salvar o dia."
+      },
+      {
+        "title": "Prometa apenas o que pode cumprir",
+        "body": "A confiança constrói-se com fiabilidade, não com ambição."
+      },
+      {
+        "title": "Respeite o tempo das pessoas",
+        "body": "Comece a horas, comunique com clareza, planeie de forma fiável."
+      },
+      {
+        "title": "A segurança não é opcional",
+        "body": "Quando envolve crianças, desporto, água, o ar livre ou transporte, o dever de cuidado vem primeiro."
+      },
+      {
+        "title": "Os organizadores criam confiança",
+        "body": "Cada evento afeta a confiança em todos os organizadores da plataforma."
+      },
+      {
+        "title": "Comunidades acima de eventos",
+        "body": "Os eventos terminam; as comunidades permanecem."
+      },
+      {
+        "title": "Melhoria contínua",
+        "body": "Cada evento ensina algo."
+      },
+      {
+        "title": "O Organizador ActivLife Hub",
+        "body": "Não um executante impecável — um executante de confiança."
+      }
+    ],
+    "ctaSection": {
+      "headline": "Pronto para viver isto?",
+      "become": "Torne-se organizador",
+      "academy": "Explorar a Academia"
+    }
+  },
+  "academyLanding": {
+    "hero": {
+      "title": "A Academia de Organizadores",
+      "subtitle": "Aprenda o ofício, obtenha a credencial e torne-se Organizador Certificado — duas formas de entrar, um padrão reconhecido.",
+      "cta": "Obter certificação",
+      "ctaSecondary": "Torne-se organizador"
+    },
+    "paths": {
+      "headline": "Duas formas de entrar",
+      "beginnerTitle": "Curso para Iniciantes",
+      "beginnerBody": "Novo no organizar? Aprenda passo a passo.",
+      "fastTitle": "Via Rápida para Experientes",
+      "fastBody": "Já tem experiência? Prove-o com o teste de competências."
+    },
+    "curriculum": {
+      "headline": "O que vai aprender",
+      "subheadline": "Oito módulos, dos princípios básicos ao seu primeiro evento pago.",
+      "modules": [
+        {
+          "title": "Introdução ao ActivLife Hub",
+          "desc": "Missão, filosofia e a plataforma."
+        },
+        {
+          "title": "Trabalhar no ActivLife Hub",
+          "desc": "Marketplace, pedidos, perfis e avaliações."
+        },
+        {
+          "title": "Usar o OPE",
+          "desc": "Planos, orçamentos e propostas a clientes."
+        },
+        {
+          "title": "Fundamentos do organizar",
+          "desc": "Ciclo de vida, recursos, dependências, execução."
+        },
+        {
+          "title": "Trabalhar com participantes",
+          "desc": "Comunicação, expectativas e avaliações."
+        },
+        {
+          "title": "Trabalhar com fornecedores",
+          "desc": "Locais, prestadores e negociação."
+        },
+        {
+          "title": "Segurança e Responsabilidade",
+          "desc": "Risco, dever de cuidado e prevenção. Obrigatório."
+        },
+        {
+          "title": "Construir uma carreira de organizador",
+          "desc": "Primeiro cliente, primeiro evento, primeiro rendimento."
+        }
+      ]
+    },
+    "certification": {
+      "headline": "Certificação",
+      "body": "Passe um exame de conhecimentos e uma demonstração prática para obter a credencial de Organizador Certificado — uma prova que os clientes podem verificar."
+    },
+    "badges": {
+      "headline": "Verificado vs. Certificado",
+      "certifiedTitle": "Certificado",
+      "certifiedBody": "Prova de competência — sabe planear e entregar com segurança e fiabilidade.",
+      "verifiedTitle": "Verificado",
+      "verifiedBody": "Prova de identidade — um organizador real e responsável. Combinável com Certificado."
+    },
+    "mastery": {
+      "headline": "Baseado na mestria, não em passar ou chumbar",
+      "body": "O exame existe para o ajudar a atingir o padrão, não para o eliminar. As repetições são incentivadas, os erros ensinam e a competência em segurança é obrigatória. A certificação confirma que atingiu o padrão."
+    },
+    "philosophy": {
+      "headline": "Construído sobre a Filosofia do Organizador",
+      "body": "Prevenir em vez de remediar. Segurança primeiro. Pessoas antes das atividades. A Academia forma o caráter de um organizador de confiança, não apenas a mecânica.",
+      "cta": "Ler a Filosofia do Organizador"
+    },
+    "cta": {
+      "headline": "Comece a sua certificação",
+      "body": "Inicie o percurso para se tornar Organizador Certificado.",
+      "button": "Obter certificação"
+    }
+  },
+  "plannerLanding": {
+    "meta": {
+      "title": "Planeador de Atividades — Acesso Antecipado",
+      "description": "Planeie o seu evento em minutos. Acesso antecipado — $9.99 único."
+    },
+    "hero": {
+      "badge": "Acesso antecipado",
+      "title": "O Planeador de Atividades está a abrir o acesso antecipado",
+      "subtitle": "Passe de «quero organizar algo» para um plano completo e pronto a usar em minutos."
+    },
+    "whatItDoes": {
+      "headline": "O que o Planeador faz",
+      "items": [
+        "Faz-lhe algumas perguntas rápidas sobre o seu evento",
+        "Cria um plano completo à sua medida",
+        "Ajuda-o a concretizá-lo — a horas e dentro do orçamento"
+      ]
+    },
+    "receive": {
+      "headline": "O que vai receber",
+      "items": [
+        "Uma checklist e cronograma claros (antes, no dia, depois)",
+        "Tudo o que vai precisar, ajustado ao número de convidados",
+        "Uma estimativa de orçamento realista",
+        "Lembretes essenciais de segurança e logística",
+        "Convites e mensagens prontos a enviar"
+      ]
+    },
+    "price": {
+      "amount": "$9.99",
+      "note": "Pagamento único · por plano"
+    },
+    "examples": {
+      "headline": "Planos para eventos reais",
+      "items": [
+        {
+          "title": "Festa de aniversário infantil",
+          "line": "Tema, jogos, comida sem alergénios e um cronograma sem stress."
+        },
+        {
+          "title": "Churrasco / Piquenique em família",
+          "line": "Licenças, logística do grelhador, opções vegetarianas e plano B para chuva."
+        },
+        {
+          "title": "Encontro comunitário",
+          "line": "Receção acolhedora, detalhes multilingues, cantinho infantil, acessibilidade."
+        }
+      ]
+    },
+    "benefits": {
+      "headline": "Porque adoram",
+      "items": [
+        "Horas de planeamento, feitas em minutos",
+        "Nada de importante esquecido",
+        "Saiba quanto custa antes de começar",
+        "Uma rede de segurança: passe a um profissional a qualquer momento"
+      ]
+    },
+    "cta": {
+      "headline": "Seja dos primeiros a experimentar",
+      "body": "Inscreva-se na lista de espera e avisamos assim que o Planeador de Atividades estiver disponível.",
+      "button": "Entrar na lista de espera",
+      "note": "$9.99 único no acesso antecipado."
+    }
+  }
+}

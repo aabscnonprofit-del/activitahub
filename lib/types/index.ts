@@ -3,7 +3,7 @@
 // All types derive from the Supabase schema.
 // ============================================================
 
-export type Locale = 'en' | 'es' | 'fr' | 'ru'
+export type Locale = 'en' | 'es' | 'fr' | 'ru' | 'de' | 'pt'
 
 export type UserRole = 'guest' | 'student' | 'certified_organizer' | 'admin'
 
