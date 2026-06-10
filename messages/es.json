@@ -793,7 +793,7 @@
     "slugHint": "Tu enlace para compartir: /o/tu-nombre. Solo minúsculas, números y guiones; déjalo vacío para generarlo automáticamente."
   },
   "footer": {
-    "tagline": "Ayudamos a las personas a compartir experiencias y crear comunidad.",
+    "tagline": "Ayudamos a las personas a descubrir actividades y a los organizadores a gestionarlas.",
     "links": {
       "about": "Acerca de",
       "privacy": "Política de Privacidad",
@@ -803,7 +803,8 @@
       "academy": "Academia",
       "philosophy": "Filosofía del organizador"
     },
-    "copyright": "© {year} ActivLife Hub. Todos los derechos reservados."
+    "copyright": "© {year} ActivLife Hub. Todos los derechos reservados.",
+    "positioning": "Plataforma para organizadores de actividades."
   },
   "errors": {
     "notFound": {

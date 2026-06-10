@@ -21,7 +21,7 @@ export async function PublicFooter({ locale }: PublicFooterProps) {
               <BrandMark size={28} />
               <span className="font-bold text-slate-900">ActivLife Hub</span>
             </div>
-            <p className="text-sm font-semibold text-brand-600">Activate Life Together</p>
+            <p className="text-sm font-semibold text-brand-600">{t('positioning')}</p>
             <p className="mt-1 text-sm text-slate-500">{t('tagline')}</p>
           </div>
 

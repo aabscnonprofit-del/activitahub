@@ -793,7 +793,7 @@
     "slugHint": "Your shareable link: /o/your-name. Lowercase letters, numbers and hyphens only — leave blank to auto-generate."
   },
   "footer": {
-    "tagline": "Helping people share experiences and build community.",
+    "tagline": "Helping people discover activities and helping organizers run them.",
     "links": {
       "about": "About",
       "privacy": "Privacy Policy",
@@ -803,7 +803,8 @@
       "academy": "Academy",
       "philosophy": "Organizer Philosophy"
     },
-    "copyright": "© {year} ActivLife Hub. All rights reserved."
+    "copyright": "© {year} ActivLife Hub. All rights reserved.",
+    "positioning": "Platform for activity organizers."
   },
   "errors": {
     "notFound": {

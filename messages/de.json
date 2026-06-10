@@ -793,7 +793,7 @@
     "slugHint": "Dein teilbarer Link: /o/dein-name. Nur Kleinbuchstaben, Zahlen und Bindestriche – leer lassen für automatische Erstellung."
   },
   "footer": {
-    "tagline": "Wir helfen Menschen, Erlebnisse zu teilen und Gemeinschaft aufzubauen.",
+    "tagline": "Wir helfen Menschen, Aktivitäten zu entdecken, und Organisatoren, sie durchzuführen.",
     "links": {
       "about": "Über uns",
       "privacy": "Datenschutz",
@@ -803,7 +803,8 @@
       "academy": "Akademie",
       "philosophy": "Organisator-Philosophie"
     },
-    "copyright": "© {year} ActivLife Hub. Alle Rechte vorbehalten."
+    "copyright": "© {year} ActivLife Hub. Alle Rechte vorbehalten.",
+    "positioning": "Plattform für Aktivitäts-Organisatoren."
   },
   "errors": {
     "notFound": {
