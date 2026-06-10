@@ -1333,6 +1333,32 @@
       "headline": "Pronto para gerir os teus eventos num só lugar?",
       "body": "Certifica-te, configura o teu painel e deixa o ActivLife Hub tratar do trabalho manual.",
       "button": "Começar"
+    },
+    "ope": {
+      "flagship": "Ferramenta de referência para organizadores",
+      "badge": "Acesso antecipado",
+      "headline": "Planeia cada evento em minutos com o OPE",
+      "subheadline": "O OPE — o motor de planeamento para organizadores — transforma um pequeno conjunto de detalhes do evento num plano completo e profissional.",
+      "items": [
+        {
+          "title": "Planos de evento",
+          "body": "Um plano claro e estruturado para todo o evento a partir de poucos dados."
+        },
+        {
+          "title": "Cronogramas",
+          "body": "Um cronograma do evento para que cada momento esteja previsto."
+        },
+        {
+          "title": "Orçamentos",
+          "body": "Uma estimativa de orçamento realista que podes partilhar e ajustar."
+        },
+        {
+          "title": "Propostas a clientes",
+          "body": "Uma proposta cuidada, pronta a enviar para ganhar a reserva."
+        }
+      ],
+      "note": "O OPE está em acesso antecipado e está a ser disponibilizado de forma gradual — nem todas as funcionalidades estão ainda disponíveis publicamente.",
+      "cta": "Ver como funciona"
     }
   },
   "organizerPhilosophy": {

@@ -1333,6 +1333,32 @@
       "headline": "Ready to run your events in one place?",
       "body": "Get certified, set up your dashboard, and let ActivLife Hub handle the manual work.",
       "button": "Get started"
+    },
+    "ope": {
+      "flagship": "Flagship organizer tool",
+      "badge": "Early Access",
+      "headline": "Plan every event in minutes with OPE",
+      "subheadline": "OPE — the Organizer Planning Engine — turns a small set of event details into a complete, professional plan.",
+      "items": [
+        {
+          "title": "Event plans",
+          "body": "A clear, structured plan for the whole event from just a few inputs."
+        },
+        {
+          "title": "Timelines",
+          "body": "A run-of-show timeline so every moment is accounted for."
+        },
+        {
+          "title": "Budgets",
+          "body": "A realistic budget breakdown you can share and adjust."
+        },
+        {
+          "title": "Client proposals",
+          "body": "A polished proposal ready to send and win the booking."
+        }
+      ],
+      "note": "OPE is in early access and rolling out gradually — not every capability is publicly available yet.",
+      "cta": "See how it works"
     }
   },
   "organizerPhilosophy": {

@@ -6,7 +6,7 @@ import { PublicFooter } from '@/components/layout/PublicFooter'
 import {
   ArrowRight, Shuffle, Sparkles, Check, GraduationCap,
   LayoutDashboard, Store, FileText, Ticket, CreditCard, Star, CalendarDays, Bell, BarChart3,
-  Mail, Share2, Send, MessageCircle,
+  Mail, Share2, Send, MessageCircle, ClipboardList, CalendarClock, Wallet,
 } from 'lucide-react'
 import type { Locale } from '@/lib/types'
 import type { Metadata } from 'next'
@@ -27,6 +27,8 @@ const TODAY_ICONS = [
 ] as const
 // Icons for the upcoming, not-yet-built tools (one per `roadmap.items` entry).
 const ROADMAP_ICONS = [Bell, Mail, Share2, Send, MessageCircle, Sparkles] as const
+// Icons for OPE's four outputs (one per `ope.items` entry).
+const OPE_ICONS = [ClipboardList, CalendarClock, Wallet, FileText] as const
 
 export default async function BecomeAnOrganizerPage({ params }: PageProps) {
   const { locale } = (await params) as { locale: Locale }
@@ -119,6 +121,60 @@ export default async function BecomeAnOrganizerPage({ params }: PageProps) {
                   </p>
                 </div>
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ── OPE — flagship planning tool (Early Access) ───────────────── */}
+        <section className="px-4 py-14 sm:py-20">
+          <div className="mx-auto max-w-5xl">
+            <div className="rounded-3xl bg-gradient-to-br from-brand-50 to-amber-50 px-5 py-10 ring-1 ring-brand-100 sm:px-12 sm:py-14">
+              <div className="text-center">
+                <div className="flex flex-wrap items-center justify-center gap-2">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-bold uppercase tracking-wide text-brand-700 shadow-sm">
+                    <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
+                    {t('ope.flagship')}
+                  </span>
+                  <span className="inline-flex items-center rounded-full bg-amber-200 px-3 py-1 text-xs font-bold uppercase tracking-wide text-amber-800">
+                    {t('ope.badge')}
+                  </span>
+                </div>
+                <h2 className="mt-5 text-2xl font-extrabold text-slate-900 sm:text-3xl lg:text-4xl">
+                  {t('ope.headline')}
+                </h2>
+                <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
+                  {t('ope.subheadline')}
+                </p>
+              </div>
+
+              <div className="mx-auto mt-10 grid max-w-4xl grid-cols-1 gap-4 sm:grid-cols-2">
+                {OPE_ICONS.map((Icon, i) => (
+                  <div
+                    key={i}
+                    className="flex items-start gap-3 rounded-2xl bg-white/70 p-5 ring-1 ring-white/60"
+                  >
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
+                      <Icon className="h-5 w-5" aria-hidden="true" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-slate-900">
+                        {t(`ope.items.${i}.title` as 'ope.items.0.title')}
+                      </h3>
+                      <p className="mt-1 text-sm leading-relaxed text-slate-600">
+                        {t(`ope.items.${i}.body` as 'ope.items.0.body')}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-8 flex flex-col items-center gap-3">
+                <Link href={`/${locale}/plan-an-event`} className="btn-primary px-7 py-3">
+                  {t('ope.cta')}
+                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                </Link>
+                <p className="max-w-2xl text-center text-xs text-slate-500">{t('ope.note')}</p>
+              </div>
             </div>
           </div>
         </section>
