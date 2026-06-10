@@ -17,12 +17,17 @@ export default async function PricingPage({ params }: Props) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  const ctaHref = `/${locale}/sign-up?next=/${locale}/onboarding`
+  // Carry the product choice into onboarding so the user isn't asked to pick a
+  // path again. The path rides inside the (url-encoded) post-auth `next` target;
+  // safeNext preserves the query string through sign-up / email confirmation.
+  const onboardingHref = (path?: string) =>
+    `/${locale}/sign-up?next=${encodeURIComponent(`/${locale}/onboarding${path ? `?path=${path}` : ''}`)}`
+  const ctaHref = onboardingHref()
   const plannerHref = `/${locale}/plan-an-event`
   const products = [
     { key: 'planner', icon: Sparkles, features: 3, highlight: false, comingSoon: false, badge: false, requirement: false, subscription: false, ctaHref: plannerHref },
-    { key: 'certification', icon: BadgeCheck, features: 3, highlight: false, comingSoon: false, badge: false, requirement: false, subscription: false, ctaHref },
-    { key: 'academy', icon: GraduationCap, features: 3, highlight: false, comingSoon: false, badge: false, requirement: false, subscription: false, ctaHref },
+    { key: 'certification', icon: BadgeCheck, features: 3, highlight: false, comingSoon: false, badge: false, requirement: false, subscription: false, ctaHref: onboardingHref('experienced') },
+    { key: 'academy', icon: GraduationCap, features: 3, highlight: false, comingSoon: false, badge: false, requirement: false, subscription: false, ctaHref: onboardingHref('beginner') },
     { key: 'platform', icon: Briefcase, features: 12, highlight: true, comingSoon: false, badge: true, requirement: true, subscription: true, ctaHref },
   ] as const
 

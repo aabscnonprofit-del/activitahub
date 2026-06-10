@@ -72,8 +72,8 @@
     "products": {
       "planner": {
         "name": "Planificador de actividades",
-        "audience": "Para todos",
-        "tagline": "Organiza un gran evento, sin tener que ser organizador.",
+        "audience": "Pago único",
+        "tagline": "Organiza un evento para ti.",
         "price": "$9.99",
         "priceNote": "Pago único",
         "features": [
@@ -85,8 +85,8 @@
       },
       "certification": {
         "name": "Certificación",
-        "audience": "Para organizadores con experiencia",
-        "tagline": "¿Ya tienes experiencia? Demuéstralo y certifícate.",
+        "audience": "Para organizadores en activo",
+        "tagline": "Demuestra tu experiencia sin hacer el curso.",
         "price": "$29",
         "priceNote": "Pago único · prueba de competencias",
         "features": [
@@ -98,8 +98,8 @@
       },
       "academy": {
         "name": "Academia + Certificación",
-        "audience": "Para futuros organizadores",
-        "tagline": "Aprende el oficio y obtén la credencial.",
+        "audience": "Para principiantes",
+        "tagline": "Formación + certificación de organizador.",
         "price": "$99",
         "priceNote": "Pago único · curso + certificación",
         "features": [
@@ -111,9 +111,9 @@
       },
       "platform": {
         "name": "Plataforma de Organizadores",
-        "audience": "Para organizadores en activo",
+        "audience": "Suscripción mensual",
         "badge": "Para ganar",
-        "tagline": "Gestiona actividades, participantes, promoción y operaciones, todo en un solo lugar.",
+        "tagline": "Accede a las herramientas de gestión de eventos.",
         "price": "$9.99",
         "priceNote": "Facturación mensual",
         "features": {

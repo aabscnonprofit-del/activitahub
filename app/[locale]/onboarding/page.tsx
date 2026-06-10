@@ -12,6 +12,7 @@ import type { Metadata } from 'next'
 
 interface OnboardingPageProps {
   params: Promise<{ locale: string }>
+  searchParams: Promise<{ path?: string; checkout?: string }>
 }
 
 export async function generateMetadata({ params }: OnboardingPageProps): Promise<Metadata> {
@@ -20,8 +21,9 @@ export async function generateMetadata({ params }: OnboardingPageProps): Promise
   return { title: t('title') }
 }
 
-export default async function OnboardingPage({ params }: OnboardingPageProps) {
+export default async function OnboardingPage({ params, searchParams }: OnboardingPageProps) {
   const { locale } = await params as { locale: Locale }
+  const { path: requestedPath } = await searchParams
   const t = await getTranslations('onboarding')
   const tNav = await getTranslations('nav')
 
@@ -66,6 +68,23 @@ export default async function OnboardingPage({ params }: OnboardingPageProps) {
     typedProfile?.onboarding_status === 'payment_pending'
   ) {
     redirect(`/${locale}/academy`)
+  }
+
+  // Pricing-page intent: if a valid ?path was passed and the user hasn't chosen
+  // a path yet, set it automatically (mirrors selectOnboardingPath) so they skip
+  // the chooser and land on the correct payment step. Only runs for brand-new
+  // profiles (no selected_path) — existing users are untouched.
+  if (
+    typedProfile &&
+    !typedProfile.selected_path &&
+    (requestedPath === 'beginner' || requestedPath === 'experienced')
+  ) {
+    await supabase
+      .from('profiles')
+      .update({ selected_path: requestedPath, onboarding_status: 'path_selected' })
+      .eq('id', user.id)
+    typedProfile.selected_path = requestedPath
+    typedProfile.onboarding_status = 'path_selected'
   }
 
   const firstName = typedProfile?.full_name?.split(' ')[0] ?? null

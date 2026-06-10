@@ -72,8 +72,8 @@
     "products": {
       "planner": {
         "name": "Aktivitätsplaner",
-        "audience": "Für alle",
-        "tagline": "Plane ein tolles Event – ohne Organisator zu werden.",
+        "audience": "Einmalzahlung",
+        "tagline": "Organisiere ein Event für dich.",
         "price": "$9.99",
         "priceNote": "Einmalige Zahlung",
         "features": [
@@ -85,8 +85,8 @@
       },
       "certification": {
         "name": "Zertifizierung",
-        "audience": "Für erfahrene Organisatoren",
-        "tagline": "Schon erfahren? Beweise es und werde zertifiziert.",
+        "audience": "Für aktive Organisatoren",
+        "tagline": "Beweise deine Erfahrung ohne Kurs.",
         "price": "$29",
         "priceNote": "Einmalig · Kompetenztest",
         "features": [
@@ -98,8 +98,8 @@
       },
       "academy": {
         "name": "Akademie + Zertifizierung",
-        "audience": "Für angehende Organisatoren",
-        "tagline": "Lerne das Handwerk und erwirb den Nachweis.",
+        "audience": "Für Einsteiger",
+        "tagline": "Schulung + Organisator-Zertifizierung.",
         "price": "$99",
         "priceNote": "Einmalig · Kurs + Zertifizierung",
         "features": [
@@ -111,9 +111,9 @@
       },
       "platform": {
         "name": "Organisator-Plattform",
-        "audience": "Für aktive Organisatoren",
+        "audience": "Monatsabo",
         "badge": "Zum Verdienen",
-        "tagline": "Verwalte Aktivitäten, Teilnehmer, Promotion und Abläufe – alles an einem Ort.",
+        "tagline": "Zugang zu den Tools für Event-Management.",
         "price": "$9.99",
         "priceNote": "Monatliche Abrechnung",
         "features": {

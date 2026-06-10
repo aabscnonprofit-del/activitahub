@@ -72,8 +72,8 @@
     "products": {
       "planner": {
         "name": "Activity Planner",
-        "audience": "For everyone",
-        "tagline": "Plan one great event — without becoming an organizer.",
+        "audience": "One-time payment",
+        "tagline": "Organize one event for yourself.",
         "price": "$9.99",
         "priceNote": "One-time payment",
         "features": [
@@ -85,8 +85,8 @@
       },
       "certification": {
         "name": "Certification",
-        "audience": "For experienced organizers",
-        "tagline": "Already experienced? Prove it and get certified.",
+        "audience": "For working organizers",
+        "tagline": "Prove your experience — skip the course.",
         "price": "$29",
         "priceNote": "One-time · skills test",
         "features": [
@@ -98,8 +98,8 @@
       },
       "academy": {
         "name": "Academy + Certification",
-        "audience": "For aspiring organizers",
-        "tagline": "Learn the craft and earn the credential.",
+        "audience": "For newcomers",
+        "tagline": "Training + organizer certification.",
         "price": "$99",
         "priceNote": "One-time · course + certification",
         "features": [
@@ -111,9 +111,9 @@
       },
       "platform": {
         "name": "Organizer Platform",
-        "audience": "For working organizers",
+        "audience": "Monthly subscription",
         "badge": "For earning",
-        "tagline": "Manage activities, participants, promotion and operations — all in one place.",
+        "tagline": "Access the activity-management toolkit.",
         "price": "$9.99",
         "priceNote": "Billed monthly",
         "features": {
