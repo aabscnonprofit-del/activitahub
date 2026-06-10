@@ -1697,5 +1697,58 @@
       "checked_in": "Registrado",
       "no_show": "No asistió"
     }
+  },
+  "command": {
+    "subtitle": "Tu centro de operaciones: qué necesita atención y qué hacer a continuación.",
+    "attention": {
+      "title": "Requiere atención",
+      "allClear": "Todo en orden: nada necesita tu atención ahora mismo.",
+      "notResponded": "{count} participantes no han respondido",
+      "startsSoon": "«{title}» empieza en menos de 24 horas",
+      "noLocation": "«{title}» no tiene ubicación",
+      "bookingsReview": "{count} reservas necesitan revisión",
+      "requestsWaiting": "{count} solicitudes del marketplace esperando"
+    },
+    "upcoming": {
+      "title": "Próximas actividades",
+      "today": "Hoy",
+      "tomorrow": "Mañana",
+      "week": "Esta semana",
+      "empty": "No hay actividades próximas esta semana.",
+      "view": "Ver",
+      "participants": "{count} participantes"
+    },
+    "participants": {
+      "title": "Resumen de participantes"
+    },
+    "requests": {
+      "title": "Solicitudes del marketplace",
+      "viewAll": "Ver todas",
+      "empty": "No hay solicitudes esperando.",
+      "recentProposals": "Propuestas recientes",
+      "noProposals": "Aún no hay propuestas.",
+      "createProposal": "Crear propuesta"
+    },
+    "promotion": {
+      "title": "Estado de promoción",
+      "allPromoted": "Todas las actividades publicadas tienen paquete de promoción.",
+      "generate": "Generar"
+    },
+    "quick": {
+      "title": "Acciones rápidas",
+      "createActivity": "Crear actividad",
+      "addParticipants": "Añadir participantes",
+      "generatePromotion": "Generar promoción",
+      "sendUpdate": "Enviar aviso",
+      "viewRequests": "Ver solicitudes",
+      "openOpe": "Abrir OPE"
+    },
+    "weekly": {
+      "title": "Esta semana",
+      "activities": "Actividades",
+      "participants": "Participantes",
+      "bookings": "Nuevas reservas",
+      "reviews": "Reseñas recibidas"
+    }
   }
 }

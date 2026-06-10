@@ -1697,5 +1697,58 @@
       "checked_in": "Пришёл",
       "no_show": "Не пришёл"
     }
+  },
+  "command": {
+    "subtitle": "Ваш командный центр: что требует внимания и что делать дальше.",
+    "attention": {
+      "title": "Требует внимания",
+      "allClear": "Всё в порядке — сейчас ничего не требует внимания.",
+      "notResponded": "{count} участников не ответили",
+      "startsSoon": "«{title}» начинается в течение 24 часов",
+      "noLocation": "У «{title}» не указано место",
+      "bookingsReview": "{count} бронирований требуют проверки",
+      "requestsWaiting": "{count} заявок с маркетплейса ожидают"
+    },
+    "upcoming": {
+      "title": "Ближайшие активности",
+      "today": "Сегодня",
+      "tomorrow": "Завтра",
+      "week": "На этой неделе",
+      "empty": "На этой неделе нет ближайших активностей.",
+      "view": "Открыть",
+      "participants": "{count} участников"
+    },
+    "participants": {
+      "title": "Обзор участников"
+    },
+    "requests": {
+      "title": "Заявки с маркетплейса",
+      "viewAll": "Все",
+      "empty": "Нет ожидающих заявок.",
+      "recentProposals": "Недавние предложения",
+      "noProposals": "Предложений пока нет.",
+      "createProposal": "Создать предложение"
+    },
+    "promotion": {
+      "title": "Статус продвижения",
+      "allPromoted": "У всех опубликованных активностей есть промо-пакет.",
+      "generate": "Создать"
+    },
+    "quick": {
+      "title": "Быстрые действия",
+      "createActivity": "Создать активность",
+      "addParticipants": "Добавить участников",
+      "generatePromotion": "Создать промо",
+      "sendUpdate": "Отправить сообщение",
+      "viewRequests": "Заявки",
+      "openOpe": "Открыть OPE"
+    },
+    "weekly": {
+      "title": "За неделю",
+      "activities": "Активности",
+      "participants": "Участники",
+      "bookings": "Новые бронирования",
+      "reviews": "Получено отзывов"
+    }
   }
 }

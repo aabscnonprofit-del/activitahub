@@ -1697,5 +1697,58 @@
       "checked_in": "Checked-In",
       "no_show": "No-Show"
     }
+  },
+  "command": {
+    "subtitle": "Your command center — what needs attention and what to do next.",
+    "attention": {
+      "title": "Requires attention",
+      "allClear": "All clear — nothing needs your attention right now.",
+      "notResponded": "{count} participants haven't responded",
+      "startsSoon": "\"{title}\" starts within 24 hours",
+      "noLocation": "\"{title}\" has no location",
+      "bookingsReview": "{count} bookings need review",
+      "requestsWaiting": "{count} marketplace requests waiting"
+    },
+    "upcoming": {
+      "title": "Upcoming activities",
+      "today": "Today",
+      "tomorrow": "Tomorrow",
+      "week": "This week",
+      "empty": "No upcoming activities this week.",
+      "view": "View",
+      "participants": "{count} participants"
+    },
+    "participants": {
+      "title": "Participant overview"
+    },
+    "requests": {
+      "title": "Marketplace requests",
+      "viewAll": "View all",
+      "empty": "No requests waiting.",
+      "recentProposals": "Recent proposals",
+      "noProposals": "No proposals yet.",
+      "createProposal": "Create proposal"
+    },
+    "promotion": {
+      "title": "Promotion status",
+      "allPromoted": "Every published activity has a promotion package.",
+      "generate": "Generate"
+    },
+    "quick": {
+      "title": "Quick actions",
+      "createActivity": "Create activity",
+      "addParticipants": "Add participants",
+      "generatePromotion": "Generate promotion",
+      "sendUpdate": "Send update",
+      "viewRequests": "View requests",
+      "openOpe": "Open OPE"
+    },
+    "weekly": {
+      "title": "This week",
+      "activities": "Activities",
+      "participants": "Participants",
+      "bookings": "New bookings",
+      "reviews": "Reviews received"
+    }
   }
 }

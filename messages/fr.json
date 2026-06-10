@@ -1697,5 +1697,58 @@
       "checked_in": "Arrivé",
       "no_show": "Absent"
     }
+  },
+  "command": {
+    "subtitle": "Votre centre de pilotage : ce qui nécessite votre attention et la prochaine action.",
+    "attention": {
+      "title": "Nécessite votre attention",
+      "allClear": "Tout est en ordre — rien ne nécessite votre attention pour l'instant.",
+      "notResponded": "{count} participants n'ont pas répondu",
+      "startsSoon": "« {title} » commence dans moins de 24 heures",
+      "noLocation": "« {title} » n'a pas de lieu",
+      "bookingsReview": "{count} réservations à vérifier",
+      "requestsWaiting": "{count} demandes du marketplace en attente"
+    },
+    "upcoming": {
+      "title": "Activités à venir",
+      "today": "Aujourd'hui",
+      "tomorrow": "Demain",
+      "week": "Cette semaine",
+      "empty": "Aucune activité à venir cette semaine.",
+      "view": "Voir",
+      "participants": "{count} participants"
+    },
+    "participants": {
+      "title": "Aperçu des participants"
+    },
+    "requests": {
+      "title": "Demandes du marketplace",
+      "viewAll": "Tout voir",
+      "empty": "Aucune demande en attente.",
+      "recentProposals": "Propositions récentes",
+      "noProposals": "Pas encore de proposition.",
+      "createProposal": "Créer une proposition"
+    },
+    "promotion": {
+      "title": "État de la promotion",
+      "allPromoted": "Chaque activité publiée a un pack promotionnel.",
+      "generate": "Générer"
+    },
+    "quick": {
+      "title": "Actions rapides",
+      "createActivity": "Créer une activité",
+      "addParticipants": "Ajouter des participants",
+      "generatePromotion": "Générer la promo",
+      "sendUpdate": "Envoyer une info",
+      "viewRequests": "Voir les demandes",
+      "openOpe": "Ouvrir OPE"
+    },
+    "weekly": {
+      "title": "Cette semaine",
+      "activities": "Activités",
+      "participants": "Participants",
+      "bookings": "Nouvelles réservations",
+      "reviews": "Avis reçus"
+    }
   }
 }

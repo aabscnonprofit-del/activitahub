@@ -1697,5 +1697,58 @@
       "checked_in": "Eingecheckt",
       "no_show": "Nicht erschienen"
     }
+  },
+  "command": {
+    "subtitle": "Deine Kommandozentrale – was Aufmerksamkeit braucht und was als Nächstes zu tun ist.",
+    "attention": {
+      "title": "Erfordert Aufmerksamkeit",
+      "allClear": "Alles erledigt – im Moment braucht nichts deine Aufmerksamkeit.",
+      "notResponded": "{count} Teilnehmer haben nicht geantwortet",
+      "startsSoon": "„{title}“ beginnt in weniger als 24 Stunden",
+      "noLocation": "„{title}“ hat keinen Ort",
+      "bookingsReview": "{count} Buchungen müssen geprüft werden",
+      "requestsWaiting": "{count} Marktplatz-Anfragen warten"
+    },
+    "upcoming": {
+      "title": "Anstehende Aktivitäten",
+      "today": "Heute",
+      "tomorrow": "Morgen",
+      "week": "Diese Woche",
+      "empty": "Diese Woche keine anstehenden Aktivitäten.",
+      "view": "Ansehen",
+      "participants": "{count} Teilnehmer"
+    },
+    "participants": {
+      "title": "Teilnehmer-Übersicht"
+    },
+    "requests": {
+      "title": "Marktplatz-Anfragen",
+      "viewAll": "Alle ansehen",
+      "empty": "Keine wartenden Anfragen.",
+      "recentProposals": "Neueste Angebote",
+      "noProposals": "Noch keine Angebote.",
+      "createProposal": "Angebot erstellen"
+    },
+    "promotion": {
+      "title": "Promotion-Status",
+      "allPromoted": "Jede veröffentlichte Aktivität hat ein Promo-Paket.",
+      "generate": "Erstellen"
+    },
+    "quick": {
+      "title": "Schnellaktionen",
+      "createActivity": "Aktivität erstellen",
+      "addParticipants": "Teilnehmer hinzufügen",
+      "generatePromotion": "Promo erstellen",
+      "sendUpdate": "Update senden",
+      "viewRequests": "Anfragen ansehen",
+      "openOpe": "OPE öffnen"
+    },
+    "weekly": {
+      "title": "Diese Woche",
+      "activities": "Aktivitäten",
+      "participants": "Teilnehmer",
+      "bookings": "Neue Buchungen",
+      "reviews": "Erhaltene Bewertungen"
+    }
   }
 }
