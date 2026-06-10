@@ -164,9 +164,12 @@ export function buildPromoImageSVG(facts: PromotionFacts, format: PromoImageForm
   const ctaW = Math.min(W - 2 * pad, Math.round(L.cta.length * body * 0.62) + Math.round(body * 1.8))
   els.push(`<rect x="${pad}" y="${y}" width="${ctaW}" height="${ctaH}" rx="${Math.round(ctaH / 2)}" fill="${ACCENT2}"/>`)
   els.push(text(pad + ctaW / 2, y + Math.round(ctaH * 0.66), L.cta, { size: body, weight: 800, fill: INK, anchor: 'middle' }))
+  const ctaBottom = y + ctaH
 
-  // Footer: hosted by.
-  els.push(text(pad, H - pad, `${L.hostedBy} ${facts.organizerName}`, { size: Math.round(body * 0.82), weight: 600, fill: '#e9e9ff' }))
+  // Footer: hosted by — pinned to the bottom, but never overlapping the CTA on
+  // the short wide format.
+  const footerY = Math.min(Math.max(H - pad, ctaBottom + Math.round(body * 1.3)), H - 24)
+  els.push(text(pad, footerY, `${L.hostedBy} ${facts.organizerName}`, { size: Math.round(body * 0.82), weight: 600, fill: '#e9e9ff' }))
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
   <defs>
