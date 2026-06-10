@@ -5,8 +5,11 @@ import { PublicHeader } from '@/components/layout/PublicHeader'
 import { PublicFooter } from '@/components/layout/PublicFooter'
 import {
   ArrowRight, Shuffle, Sparkles, Check, GraduationCap,
-  LayoutDashboard, Store, FileText, Ticket, CreditCard, Star, CalendarDays, Bell, BarChart3,
-  Mail, Share2, Send, MessageCircle, ClipboardList, CalendarClock, Wallet,
+  ClipboardList, CalendarClock, Wallet, FileText,
+  Plus, UploadCloud, Inbox, Ticket, CreditCard,
+  Users, CheckCircle2, BellRing, Megaphone, UserCheck, ClipboardCheck,
+  Image as ImageIcon, Radio, Smartphone,
+  AlertTriangle, BarChart3, BadgeCheck, ShieldCheck, Star,
 } from 'lucide-react'
 import type { Locale } from '@/lib/types'
 import type { Metadata } from 'next'
@@ -21,30 +24,43 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return { title: t('title'), description: t('description') }
 }
 
-// Icons for the verified, already-live capabilities (one per `today.items` entry).
-const TODAY_ICONS = [
-  LayoutDashboard, Store, FileText, Ticket, CreditCard, Star, CalendarDays, Bell, BarChart3,
-] as const
-// Icons for the upcoming, not-yet-built tools (one per `roadmap.items` entry).
-const ROADMAP_ICONS = [Bell, Mail, Share2, Send, MessageCircle, Sparkles] as const
-// Icons for OPE's four outputs (one per `ope.items` entry).
 const OPE_ICONS = [ClipboardList, CalendarClock, Wallet, FileText] as const
+const RUN_ICONS = [Plus, UploadCloud, Inbox, FileText, Ticket, CreditCard] as const
+const PARTICIPANT_ICONS = [Users, CheckCircle2, BellRing, Megaphone, UserCheck, ClipboardCheck] as const
+const PROMOTE_ICONS = [Sparkles, ImageIcon, Radio, Smartphone] as const
+const COMMAND_ICONS = [AlertTriangle, CalendarClock, Users, BarChart3] as const
+const TRUST_ICONS = [BadgeCheck, ShieldCheck, Star, GraduationCap] as const
 
 export default async function BecomeAnOrganizerPage({ params }: PageProps) {
   const { locale } = (await params) as { locale: Locale }
   const t = await getTranslations('becomeOrganizerPage')
 
   const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  // Renders a capability grid for one section namespace (run / participants / …).
+  function Grid({ base, icons }: { base: string; icons: readonly React.ElementType[] }) {
+    return (
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {icons.map((Icon, i) => (
+          <div key={i} className="card p-5">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
+              <Icon className="h-5 w-5" aria-hidden="true" />
+            </div>
+            <h3 className="mt-3 font-bold text-slate-900">{t(`${base}.items.${i}.title` as 'run.items.0.title')}</h3>
+            <p className="mt-1 text-sm leading-relaxed text-slate-600">{t(`${base}.items.${i}.body` as 'run.items.0.body')}</p>
+          </div>
+        ))}
+      </div>
+    )
+  }
 
   return (
     <div className="flex min-h-screen flex-col">
       <PublicHeader locale={locale} isAuthenticated={!!user} />
 
       <main className="flex-1">
-        {/* ── Hero: a platform for activity organizers ──────────────────── */}
+        {/* ── Hero ──────────────────────────────────────────────────────── */}
         <section className="bg-gradient-to-br from-brand-50 to-amber-50 px-4 py-16 sm:py-24">
           <div className="mx-auto max-w-3xl text-center">
             <p className="mb-4 inline-flex items-center gap-1.5 rounded-full border border-brand-200 bg-white/70 px-4 py-1.5 text-sm font-semibold text-brand-700">
@@ -58,10 +74,7 @@ export default async function BecomeAnOrganizerPage({ params }: PageProps) {
               {t('hero.subtitle')}
             </p>
             <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-              <Link
-                href={`/${locale}/sign-up?next=/${locale}/onboarding`}
-                className="btn-primary w-full px-7 py-3.5 sm:w-auto"
-              >
+              <Link href={`/${locale}/sign-up?next=/${locale}/onboarding`} className="btn-primary w-full px-7 py-3.5 sm:w-auto">
                 {t('hero.cta')}
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
@@ -72,60 +85,102 @@ export default async function BecomeAnOrganizerPage({ params }: PageProps) {
           </div>
         </section>
 
-        {/* ── Stop jumping between 10 different tools ────────────────────── */}
+        {/* ── Stop jumping between 10 tools ─────────────────────────────── */}
         <section className="px-4 py-14 sm:py-20">
           <div className="mx-auto max-w-3xl text-center">
             <div className="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-50 text-brand-600">
               <Shuffle className="h-6 w-6" aria-hidden="true" />
             </div>
             <h2 className="text-2xl font-extrabold text-slate-900 sm:text-3xl">{t('tools.headline')}</h2>
-            <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-slate-600">
-              {t('tools.body')}
-            </p>
+            <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-slate-600">{t('tools.body')}</p>
             <div className="mt-6 flex flex-wrap justify-center gap-2">
               {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => (
-                <span
-                  key={i}
-                  className="rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-sm font-medium text-slate-500"
-                >
+                <span key={i} className="rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-sm font-medium text-slate-500">
                   {t(`tools.items.${i}` as 'tools.items.0')}
                 </span>
               ))}
             </div>
-            <p className="mx-auto mt-7 max-w-2xl text-base font-semibold text-slate-900 sm:text-lg">
-              {t('tools.conclusion')}
-            </p>
+            <p className="mx-auto mt-7 max-w-2xl text-base font-semibold text-slate-900 sm:text-lg">{t('tools.conclusion')}</p>
           </div>
         </section>
 
-        {/* ── What ActivLife Hub helps automate today (live features) ────── */}
-        <section className="bg-slate-50 px-4 py-14 sm:py-20">
-          <div className="mx-auto max-w-6xl">
-            <div className="mb-10 text-center">
-              <h2 className="text-2xl font-extrabold text-slate-900 sm:text-3xl">{t('today.headline')}</h2>
-              <p className="mx-auto mt-3 max-w-2xl text-base text-slate-500 sm:text-lg">
-                {t('today.subheadline')}
-              </p>
+        {/* ── A · Run your activities ───────────────────────────────────── */}
+        <section className="px-4 py-12 sm:py-16">
+          <div className="mx-auto max-w-5xl">
+            <div className="mb-8 text-center">
+              <h2 className="text-2xl font-extrabold text-slate-900 sm:text-3xl">{t('run.headline')}</h2>
+              <p className="mx-auto mt-2 max-w-2xl text-base text-slate-500">{t('run.subheadline')}</p>
             </div>
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {TODAY_ICONS.map((Icon, i) => (
-                <div key={i} className="card p-6">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
+            <Grid base="run" icons={RUN_ICONS} />
+          </div>
+        </section>
+
+        {/* ── B · Manage participants (prominent) ───────────────────────── */}
+        <section className="bg-brand-600 px-4 py-14 sm:py-20">
+          <div className="mx-auto max-w-5xl">
+            <div className="mb-8 text-center">
+              <p className="text-sm font-bold uppercase tracking-wide text-amber-300">{t('hero.badge')}</p>
+              <h2 className="mt-1 text-2xl font-extrabold text-white sm:text-3xl lg:text-4xl">{t('participants.headline')}</h2>
+              <p className="mx-auto mt-3 max-w-2xl text-base text-brand-100 sm:text-lg">{t('participants.subheadline')}</p>
+            </div>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {PARTICIPANT_ICONS.map((Icon, i) => (
+                <div key={i} className="rounded-2xl bg-white/10 p-5 ring-1 ring-white/15 backdrop-blur-sm">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/15 text-amber-300">
                     <Icon className="h-5 w-5" aria-hidden="true" />
                   </div>
-                  <h3 className="mt-4 font-bold text-slate-900">
-                    {t(`today.items.${i}.title` as 'today.items.0.title')}
-                  </h3>
-                  <p className="mt-1.5 text-sm leading-relaxed text-slate-600">
-                    {t(`today.items.${i}.body` as 'today.items.0.body')}
-                  </p>
+                  <h3 className="mt-3 font-bold text-white">{t(`participants.items.${i}.title` as 'participants.items.0.title')}</h3>
+                  <p className="mt-1 text-sm leading-relaxed text-brand-100">{t(`participants.items.${i}.body` as 'participants.items.0.body')}</p>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* ── OPE — flagship planning tool (Early Access) ───────────────── */}
+        {/* ── C · Promote your activities ───────────────────────────────── */}
+        <section className="px-4 py-14 sm:py-20">
+          <div className="mx-auto max-w-5xl">
+            <div className="mb-8 text-center">
+              <h2 className="text-2xl font-extrabold text-slate-900 sm:text-3xl">{t('promote.headline')}</h2>
+              <p className="mx-auto mt-2 inline-flex rounded-full bg-amber-100 px-4 py-1.5 text-sm font-bold text-amber-800">{t('promote.tagline')}</p>
+              <p className="mx-auto mt-3 max-w-2xl text-base text-slate-500">{t('promote.subheadline')}</p>
+            </div>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {PROMOTE_ICONS.map((Icon, i) => (
+                <div key={i} className="card p-5">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
+                    <Icon className="h-5 w-5" aria-hidden="true" />
+                  </div>
+                  <h3 className="mt-3 font-bold text-slate-900">{t(`promote.items.${i}.title` as 'promote.items.0.title')}</h3>
+                  <p className="mt-1 text-sm leading-relaxed text-slate-600">{t(`promote.items.${i}.body` as 'promote.items.0.body')}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ── D · Organizer Command Center ──────────────────────────────── */}
+        <section className="bg-slate-50 px-4 py-14 sm:py-20">
+          <div className="mx-auto max-w-5xl">
+            <div className="mb-8 text-center">
+              <h2 className="text-2xl font-extrabold text-slate-900 sm:text-3xl">{t('command.headline')}</h2>
+              <p className="mx-auto mt-2 max-w-2xl text-base text-slate-500">{t('command.subheadline')}</p>
+            </div>
+            <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+              {COMMAND_ICONS.map((Icon, i) => (
+                <div key={i} className="card p-5 text-center">
+                  <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
+                    <Icon className="h-5 w-5" aria-hidden="true" />
+                  </div>
+                  <h3 className="mt-3 text-sm font-bold text-slate-900">{t(`command.items.${i}.title` as 'command.items.0.title')}</h3>
+                  <p className="mt-1 text-xs leading-relaxed text-slate-600">{t(`command.items.${i}.body` as 'command.items.0.body')}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ── E · Plan better — OPE (Early Access) ──────────────────────── */}
         <section className="px-4 py-14 sm:py-20">
           <div className="mx-auto max-w-5xl">
             <div className="rounded-3xl bg-gradient-to-br from-brand-50 to-amber-50 px-5 py-10 ring-1 ring-brand-100 sm:px-12 sm:py-14">
@@ -135,39 +190,24 @@ export default async function BecomeAnOrganizerPage({ params }: PageProps) {
                     <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
                     {t('ope.flagship')}
                   </span>
-                  <span className="inline-flex items-center rounded-full bg-amber-200 px-3 py-1 text-xs font-bold uppercase tracking-wide text-amber-800">
-                    {t('ope.badge')}
-                  </span>
+                  <span className="inline-flex items-center rounded-full bg-amber-200 px-3 py-1 text-xs font-bold uppercase tracking-wide text-amber-800">{t('ope.badge')}</span>
                 </div>
-                <h2 className="mt-5 text-2xl font-extrabold text-slate-900 sm:text-3xl lg:text-4xl">
-                  {t('ope.headline')}
-                </h2>
-                <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
-                  {t('ope.subheadline')}
-                </p>
+                <h2 className="mt-5 text-2xl font-extrabold text-slate-900 sm:text-3xl lg:text-4xl">{t('ope.headline')}</h2>
+                <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">{t('ope.subheadline')}</p>
               </div>
-
               <div className="mx-auto mt-10 grid max-w-4xl grid-cols-1 gap-4 sm:grid-cols-2">
                 {OPE_ICONS.map((Icon, i) => (
-                  <div
-                    key={i}
-                    className="flex items-start gap-3 rounded-2xl bg-white/70 p-5 ring-1 ring-white/60"
-                  >
+                  <div key={i} className="flex items-start gap-3 rounded-2xl bg-white/70 p-5 ring-1 ring-white/60">
                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
                       <Icon className="h-5 w-5" aria-hidden="true" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-slate-900">
-                        {t(`ope.items.${i}.title` as 'ope.items.0.title')}
-                      </h3>
-                      <p className="mt-1 text-sm leading-relaxed text-slate-600">
-                        {t(`ope.items.${i}.body` as 'ope.items.0.body')}
-                      </p>
+                      <h3 className="font-bold text-slate-900">{t(`ope.items.${i}.title` as 'ope.items.0.title')}</h3>
+                      <p className="mt-1 text-sm leading-relaxed text-slate-600">{t(`ope.items.${i}.body` as 'ope.items.0.body')}</p>
                     </div>
                   </div>
                 ))}
               </div>
-
               <div className="mt-8 flex flex-col items-center gap-3">
                 <Link href={`/${locale}/plan-an-event`} className="btn-primary px-7 py-3">
                   {t('ope.cta')}
@@ -179,54 +219,40 @@ export default async function BecomeAnOrganizerPage({ params }: PageProps) {
           </div>
         </section>
 
-        {/* ── Organizer Automation Roadmap (Coming Soon) ────────────────── */}
-        <section className="px-4 py-14 sm:py-20">
-          <div className="mx-auto max-w-6xl">
-            <div className="mb-10 text-center">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-100 px-3 py-1 text-xs font-bold uppercase tracking-wide text-amber-700">
-                {t('roadmap.badge')}
-              </span>
-              <h2 className="mt-3 text-2xl font-extrabold text-slate-900 sm:text-3xl">
-                {t('roadmap.headline')}
-              </h2>
-              <p className="mx-auto mt-3 max-w-2xl text-base text-slate-500 sm:text-lg">
-                {t('roadmap.subheadline')}
-              </p>
+        {/* ── F · Trust & growth ────────────────────────────────────────── */}
+        <section className="bg-slate-50 px-4 py-14 sm:py-20">
+          <div className="mx-auto max-w-5xl">
+            <div className="mb-8 text-center">
+              <h2 className="text-2xl font-extrabold text-slate-900 sm:text-3xl">{t('trust.headline')}</h2>
+              <p className="mx-auto mt-2 max-w-2xl text-base text-slate-500">{t('trust.subheadline')}</p>
             </div>
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {ROADMAP_ICONS.map((Icon, i) => (
-                <div
-                  key={i}
-                  className="relative rounded-2xl border border-dashed border-slate-300 bg-white p-6"
-                >
-                  <span className="absolute right-4 top-4 rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-slate-500">
-                    {t('roadmap.badge')}
-                  </span>
-                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-100 text-slate-500">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {TRUST_ICONS.map((Icon, i) => (
+                <div key={i} className="card p-5">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
                     <Icon className="h-5 w-5" aria-hidden="true" />
                   </div>
-                  <h3 className="mt-4 font-bold text-slate-900">
-                    {t(`roadmap.items.${i}.title` as 'roadmap.items.0.title')}
-                  </h3>
-                  <p className="mt-1.5 text-sm leading-relaxed text-slate-600">
-                    {t(`roadmap.items.${i}.body` as 'roadmap.items.0.body')}
-                  </p>
+                  <h3 className="mt-3 font-bold text-slate-900">{t(`trust.items.${i}.title` as 'trust.items.0.title')}</h3>
+                  <p className="mt-1 text-sm leading-relaxed text-slate-600">{t(`trust.items.${i}.body` as 'trust.items.0.body')}</p>
                 </div>
               ))}
+            </div>
+            <div className="mt-8 text-center">
+              <Link href={`/${locale}/academy`} className="btn-secondary px-7 py-3">
+                {t('trust.academyCta')}
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </Link>
             </div>
           </div>
         </section>
 
-        {/* ── Why organizers join ActivLife Hub ─────────────────────────── */}
-        <section className="bg-slate-50 px-4 py-14 sm:py-20">
+        {/* ── Why organizers choose ActivLife Hub ───────────────────────── */}
+        <section className="px-4 py-14 sm:py-20">
           <div className="mx-auto max-w-4xl text-center">
             <h2 className="text-2xl font-extrabold text-slate-900 sm:text-3xl">{t('why.headline')}</h2>
             <ul className="mx-auto mt-8 grid max-w-3xl grid-cols-1 gap-3 sm:grid-cols-2">
               {[0, 1, 2, 3, 4, 5].map((i) => (
-                <li
-                  key={i}
-                  className="flex items-start gap-2.5 rounded-xl bg-white p-4 text-left text-sm font-medium text-slate-700 ring-1 ring-slate-200"
-                >
+                <li key={i} className="flex items-start gap-2.5 rounded-xl bg-white p-4 text-left text-sm font-medium text-slate-700 ring-1 ring-slate-200">
                   <Check className="mt-0.5 h-4 w-4 shrink-0 text-brand-500" aria-hidden="true" />
                   {t(`why.items.${i}` as 'why.items.0')}
                 </li>
@@ -235,36 +261,7 @@ export default async function BecomeAnOrganizerPage({ params }: PageProps) {
           </div>
         </section>
 
-        {/* ── Certification · Academy · pathway (kept, now secondary) ───── */}
-        <section className="px-4 py-14 sm:py-20">
-          <div className="mx-auto max-w-4xl text-center">
-            <div className="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-50 text-brand-600">
-              <GraduationCap className="h-6 w-6" aria-hidden="true" />
-            </div>
-            <h2 className="text-2xl font-extrabold text-slate-900 sm:text-3xl">{t('learn.headline')}</h2>
-            <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-slate-600">
-              {t('learn.body')}
-            </p>
-            <ol className="mx-auto mt-8 grid max-w-3xl grid-cols-2 gap-3 sm:grid-cols-5 sm:gap-4">
-              {[0, 1, 2, 3, 4].map((i) => (
-                <li key={i} className="card flex flex-col items-center gap-2 p-4 text-center">
-                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-100 text-sm font-bold text-brand-700">
-                    {i + 1}
-                  </span>
-                  <span className="text-sm font-semibold text-slate-800">
-                    {t(`learn.steps.${i}` as 'learn.steps.0')}
-                  </span>
-                </li>
-              ))}
-            </ol>
-            <Link href={`/${locale}/academy`} className="btn-secondary mt-8 px-7 py-3">
-              {t('learn.academyCta')}
-              <ArrowRight className="h-4 w-4" aria-hidden="true" />
-            </Link>
-          </div>
-        </section>
-
-        {/* ── Pricing reference (unchanged) ─────────────────────────────── */}
+        {/* ── Pricing reference ─────────────────────────────────────────── */}
         <section className="px-4 pb-4">
           <div className="mx-auto flex max-w-4xl flex-col items-center gap-3 rounded-2xl border border-slate-200 bg-white p-6 text-center sm:flex-row sm:justify-between sm:text-left">
             <div>

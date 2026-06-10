@@ -23,7 +23,7 @@ export default async function PricingPage({ params }: Props) {
     { key: 'planner', icon: Sparkles, features: 3, highlight: false, comingSoon: false, badge: false, requirement: false, ctaHref: plannerHref },
     { key: 'certification', icon: BadgeCheck, features: 3, highlight: false, comingSoon: false, badge: false, requirement: false, ctaHref },
     { key: 'academy', icon: GraduationCap, features: 3, highlight: false, comingSoon: false, badge: false, requirement: false, ctaHref },
-    { key: 'platform', icon: Briefcase, features: 4, highlight: true, comingSoon: false, badge: true, requirement: true, ctaHref },
+    { key: 'platform', icon: Briefcase, features: 12, highlight: true, comingSoon: false, badge: true, requirement: true, ctaHref },
   ] as const
 
   const journeySteps = [0, 1, 2] as const

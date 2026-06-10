@@ -113,15 +113,23 @@
         "name": "Organisator-Plattform",
         "audience": "Für aktive Organisatoren",
         "badge": "Zum Verdienen",
-        "tagline": "Führe dein Geschäft, gewinne Kunden und nutze OPE.",
+        "tagline": "Verwalte Aktivitäten, Teilnehmer, Promotion und Abläufe – alles an einem Ort.",
         "price": "$9.99",
         "priceNote": "/Monat",
-        "features": [
-          "OPE-Planung & Kundenangebote",
-          "Marktplatz-Einträge & Kundenanfragen",
-          "Buchungen, Zahlungen & Analysen",
-          "Zertifiziert- und Verifiziert-Abzeichen"
-        ],
+        "features": {
+          "0": "Aktivitätsverwaltung",
+          "1": "Marktplatz-Zugang",
+          "2": "Teilnehmerverwaltung",
+          "3": "RSVP & Erinnerungen",
+          "4": "Check-in & Anwesenheit",
+          "5": "Promotion-Generator",
+          "6": "Promo-Bilder",
+          "7": "Aktivitäts-Benachrichtigungen",
+          "8": "Push-Benachrichtigungen",
+          "9": "Kommandozentrale",
+          "10": "Bewertungen & Vertrauenstools",
+          "11": "OPE (Früher Zugang)"
+        },
         "cta": "Starten",
         "requirement": "Wird nach der Zertifizierung freigeschaltet."
       }
@@ -1237,12 +1245,12 @@
   "becomeOrganizerPage": {
     "meta": {
       "title": "Für Organisatoren",
-      "description": "ActivLife Hub ist die Plattform für Aktivitäts-Organisatoren: Führe deine Events durch und automatisiere die manuelle Arbeit – alles an einem Ort."
+      "description": "ActivLife Hub ist die Plattform für Aktivitäts-Organisatoren: Verwalte Aktivitäten, Teilnehmer, Promotion und Abläufe an einem Ort."
     },
     "hero": {
       "badge": "Für Aktivitäts-Organisatoren",
       "title": "Die Plattform für Aktivitäts-Organisatoren",
-      "subtitle": "ActivLife Hub hilft dir, deine Events durchzuführen, und automatisiert die manuelle Arbeit – Planung, Buchungen, Zahlungen, Bewertungen und mehr, alles an einem Ort.",
+      "subtitle": "Verwalte Aktivitäten, Teilnehmer, Promotion und Abläufe — alles an einem Ort. ActivLife Hub führt deine Events durch und automatisiert die manuelle Arbeit.",
       "cta": "Loslegen",
       "ctaSecondary": "Preise ansehen"
     },
@@ -1261,111 +1269,110 @@
       ],
       "conclusion": "ActivLife Hub hilft dir, diese Arbeit an einem Ort zu bündeln."
     },
-    "today": {
-      "headline": "Was ActivLife Hub heute schon automatisieren hilft",
-      "subheadline": "Alles Folgende funktioniert bereits auf der Plattform.",
+    "run": {
+      "headline": "Führe deine Aktivitäten durch",
+      "subheadline": "Vom ersten Eintrag bis zur Bezahlung.",
       "items": [
         {
-          "title": "Aktivitäten & Locations",
-          "body": "Erstelle und verwalte deine Aktivitäten und Locations in einem Dashboard."
+          "title": "Aktivitäten erstellen",
+          "body": "Erstelle Aktivitäten mit Details, Kategorie, Location und Preis."
         },
         {
-          "title": "Marktplatz-Einträge",
-          "body": "Lass dich von Teilnehmern finden, die Aktivitäten in ihrer Nähe suchen."
+          "title": "Aktivitäten veröffentlichen",
+          "body": "Veröffentliche auf dem Marktplatz, damit du gefunden und gebucht wirst."
         },
         {
-          "title": "Anfragen & Kundenangebote",
-          "body": "Erhalte Kundenanfragen und sende professionelle Angebote, um den Auftrag zu gewinnen."
+          "title": "Marktplatz-Anfragen",
+          "body": "Erhalte Anfragen von Kunden, die einen Organisator suchen."
         },
         {
-          "title": "Buchungen & Anmeldung",
-          "body": "Nimm Buchungen an und verwalte die Anmeldung der Teilnehmer an einem Ort."
+          "title": "Angebote",
+          "body": "Sende professionelle Angebote, um den Auftrag zu gewinnen."
         },
         {
-          "title": "Zahlungen & Erstattungen",
-          "body": "Nimm sichere Zahlungen entgegen und erstatte über Stripe – ohne separate Einrichtung."
+          "title": "Buchungen",
+          "body": "Nimm Buchungen an und verwalte sie an einem Ort."
         },
         {
-          "title": "Bewertungen",
-          "body": "Sammle Bewertungen von Teilnehmern, um Vertrauen aufzubauen und Stammkunden zu gewinnen."
-        },
-        {
-          "title": "Kalender & Kunden",
-          "body": "Halte Terminplan und Kundenliste organisiert, während du wächst."
-        },
-        {
-          "title": "Benachrichtigungen",
-          "body": "Behalte neue Anfragen, Buchungen und Neuigkeiten mit In-App-Benachrichtigungen im Blick."
-        },
-        {
-          "title": "Organisator-Dashboard",
-          "body": "Steuere deinen gesamten Arbeitsablauf – und verfolge die Ergebnisse – an einem Ort."
+          "title": "Zahlungen",
+          "body": "Nimm sichere Zahlungen entgegen und erstatte über Stripe."
         }
       ]
     },
-    "roadmap": {
-      "headline": "Automatisierungs-Roadmap für Organisatoren",
-      "subheadline": "Tools, die wir als Nächstes bauen.",
-      "badge": "Demnächst",
+    "participants": {
+      "headline": "Verwalte deine Teilnehmer",
+      "subheadline": "Schluss mit Tabellen und Gruppenchats — verwalte jeden Teilnehmer an einem Ort.",
       "items": [
         {
-          "title": "Push-Benachrichtigungen für Teilnehmer",
-          "body": "Erreiche Teilnehmer direkt mit Event-Updates und Erinnerungen."
+          "title": "Teilnehmerlisten",
+          "body": "Eine klare, durchsuchbare Liste für jede Aktivität."
         },
         {
-          "title": "E-Mail-Kampagnen",
-          "body": "Sende Ankündigungen und Follow-ups an dein Publikum."
+          "title": "RSVP-Tracking",
+          "body": "Jeder Teilnehmer erhält einen eigenen Link: zugesagt, vielleicht oder abgesagt."
         },
         {
-          "title": "Social-Media-Veröffentlichung",
-          "body": "Veröffentliche deine Aktivitäten von einem Ort aus in sozialen Netzwerken."
+          "title": "Automatische Erinnerungen",
+          "body": "Erinnerungen gehen vor dem Event raus, damit niemand es vergisst."
         },
         {
-          "title": "Telegram-Integration",
-          "body": "Verbinde dein Telegram-Publikum mit deinen Aktivitäten."
+          "title": "Event-Updates",
+          "body": "Sende eine Änderung — Ort, Zeit, was mitzubringen ist — an alle auf einmal."
         },
         {
-          "title": "WhatsApp-Integration",
-          "body": "Erreiche Teilnehmer über WhatsApp, ohne die Plattform zu verlassen."
+          "title": "Check-in",
+          "body": "Checke am Tag ein und markiere Nichterschienene."
         },
         {
-          "title": "KI-Marketing-Assistent",
-          "body": "Lass dir beim Schreiben von Posts, Beschreibungen und Kampagnen helfen."
+          "title": "Anwesenheitserfassung",
+          "body": "Sieh, wer da war, wer nicht, und das ganze Bild auf einen Blick."
         }
       ]
     },
-    "why": {
-      "headline": "Warum Organisatoren ActivLife Hub wählen",
+    "promote": {
+      "headline": "Bewirb deine Aktivitäten",
+      "tagline": "Einmal erstellen → überall bewerben.",
+      "subheadline": "Erstelle fertige Inhalte und werde gefunden – ohne manuelle Arbeit.",
       "items": [
-        "Weniger manuelle Arbeit",
-        "Ein professioneller Arbeitsablauf",
-        "Ein wiederholbarer Prozess für jedes Event",
-        "Einfacheres Event-Management",
-        "Mehr Zeit mit den Teilnehmern",
-        "Weniger Zeit in Tabellen und Chats"
+        {
+          "title": "Promotion-Generator",
+          "body": "Ein Klick macht aus einer Aktivität Posts für jeden Kanal, in 6 Sprachen."
+        },
+        {
+          "title": "Promo-Bilder",
+          "body": "Lade gebrandete quadratische, Story- und breite Grafiken herunter – ohne Designer."
+        },
+        {
+          "title": "Aktivitäts-Benachrichtigungen",
+          "body": "Neue Aktivitäten erreichen automatisch interessierte Teilnehmer."
+        },
+        {
+          "title": "Push-Benachrichtigungen",
+          "body": "Erreiche Teilnehmer im Browser, auch wenn die Seite geschlossen ist."
+        }
       ]
     },
-    "learn": {
-      "headline": "Lass dich zertifizieren und lerne das Handwerk",
-      "body": "Neue Organisatoren starten in der Academy – mit einem geführten Kurs oder dem Fast-Track für Erfahrene – und erwerben das Zertifikat als zertifizierter Organisator, dem Kunden vertrauen. Die Zertifizierung bleibt Teil deines Wegs, nicht die ganze Geschichte.",
-      "steps": [
-        "Lernen",
-        "Zertifizieren",
-        "Erster Kunde",
-        "Erstes Event",
-        "Erstes Einkommen"
-      ],
-      "academyCta": "Academy entdecken"
-    },
-    "pricing": {
-      "headline": "Was es kostet",
-      "body": "Die Academy und die Zertifizierung sind kostenpflichtige Programme, und als Organisator zu arbeiten ist ein kostenpflichtiges Abo. Sieh dir an, was jeder Teil kostet.",
-      "cta": "Preise ansehen"
-    },
-    "cta": {
-      "headline": "Bereit, deine Events an einem Ort zu führen?",
-      "body": "Lass dich zertifizieren, richte dein Dashboard ein und überlass ActivLife Hub die manuelle Arbeit.",
-      "button": "Loslegen"
+    "command": {
+      "headline": "Deine Kommandozentrale",
+      "subheadline": "Ein operatives Dashboard – wisse in 10 Sekunden, was zu tun ist.",
+      "items": [
+        {
+          "title": "Erfordert Aufmerksamkeit",
+          "body": "Sieh genau, was jetzt eine Aktion braucht."
+        },
+        {
+          "title": "Anstehende Aktivitäten",
+          "body": "Heute, morgen und diese Woche auf einen Blick."
+        },
+        {
+          "title": "Teilnehmer-Übersicht",
+          "body": "Live-Zahlen über alle Aktivitäten."
+        },
+        {
+          "title": "Wochenüberblick",
+          "body": "Eine einfache Zusammenfassung deiner Woche – keine Diagramme zu entschlüsseln."
+        }
+      ]
     },
     "ope": {
       "flagship": "Das Flaggschiff-Tool für Organisatoren",
@@ -1392,6 +1399,50 @@
       ],
       "note": "OPE ist im frühen Zugang und wird schrittweise ausgerollt – noch ist nicht jede Funktion öffentlich verfügbar.",
       "cta": "So funktioniert's"
+    },
+    "trust": {
+      "headline": "Vertrauen & Wachstum",
+      "subheadline": "Baue den Ruf auf, der Stammkunden gewinnt.",
+      "items": [
+        {
+          "title": "Zertifizierung",
+          "body": "Erwirb das Zertifikat als zertifizierter Organisator, dem Kunden vertrauen."
+        },
+        {
+          "title": "Verifizierter Organisator",
+          "body": "Beweise, dass du ein echter, verantwortlicher Organisator bist."
+        },
+        {
+          "title": "Bewertungen",
+          "body": "Sammle Teilnehmer-Bewertungen, um deinen Ruf aufzubauen."
+        },
+        {
+          "title": "Academy",
+          "body": "Lerne das Handwerk: ein geführter Kurs oder der Fast-Track für Erfahrene."
+        }
+      ],
+      "academyCta": "Academy entdecken"
+    },
+    "why": {
+      "headline": "Warum Organisatoren ActivLife Hub wählen",
+      "items": [
+        "Weniger manuelle Arbeit",
+        "Ein professioneller Arbeitsablauf",
+        "Ein wiederholbarer Prozess für jedes Event",
+        "Einfacheres Event-Management",
+        "Mehr Zeit mit den Teilnehmern",
+        "Weniger Zeit in Tabellen und Chats"
+      ]
+    },
+    "pricing": {
+      "headline": "Was es kostet",
+      "body": "Die Academy und die Zertifizierung sind kostenpflichtige Programme, und als Organisator zu arbeiten ist ein kostenpflichtiges Abo. Sieh dir an, was jeder Teil kostet.",
+      "cta": "Preise ansehen"
+    },
+    "cta": {
+      "headline": "Bereit, deine Events an einem Ort zu führen?",
+      "body": "Lass dich zertifizieren, richte dein Dashboard ein und überlass ActivLife Hub die manuelle Arbeit.",
+      "button": "Loslegen"
     }
   },
   "organizerPhilosophy": {
