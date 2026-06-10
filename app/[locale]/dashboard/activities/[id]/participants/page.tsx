@@ -15,14 +15,29 @@ export default async function ParticipantsPage({ params }: Props) {
   } = await supabase.auth.getUser()
   if (!user) redirect(`/${locale}/sign-in?next=/${locale}/dashboard/activities/${id}/participants`)
 
+  // Only reference columns guaranteed to exist, so the page works before
+  // migration 020 is applied.
   const { data: activity } = await supabase
     .from('activities')
-    .select('id, title, reminder_offsets_hours')
+    .select('id, title')
     .eq('id', id)
     .eq('organizer_id', user.id)
     .maybeSingle()
   if (!activity) redirect(`/${locale}/dashboard/activities`)
-  const a = activity as { id: string; title: string; reminder_offsets_hours?: number[] | null }
+  const a = activity as { id: string; title: string }
+
+  let reminderOffsets: number[] = [168, 24, 2]
+  try {
+    const { data: r } = await supabase
+      .from('activities')
+      .select('reminder_offsets_hours')
+      .eq('id', id)
+      .maybeSingle()
+    const ro = (r as { reminder_offsets_hours?: number[] | null } | null)?.reminder_offsets_hours
+    if (ro && ro.length) reminderOffsets = ro
+  } catch {
+    /* column not present yet — use defaults */
+  }
 
   let participants: Participant[] = []
   try {
@@ -42,7 +57,7 @@ export default async function ParticipantsPage({ params }: Props) {
       locale={locale}
       activityId={id}
       activityTitle={a.title}
-      reminderOffsets={a.reminder_offsets_hours ?? [168, 24, 2]}
+      reminderOffsets={reminderOffsets}
       initial={participants}
       appUrl={process.env.NEXT_PUBLIC_APP_URL || ''}
     />
