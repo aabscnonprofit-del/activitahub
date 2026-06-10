@@ -690,7 +690,8 @@
         "story": "Story",
         "wide": "Largo / pré-visualização"
       }
-    }
+    },
+    "alertsReached": "Público interessado alcançado: {count} participantes"
   },
   "venues": {
     "title": "Locais",
@@ -1122,7 +1123,8 @@
     "unreadCount": "{count} por ler",
     "markAllRead": "Marcar todas como lidas",
     "markRead": "Marcar como lida",
-    "empty": "Ainda não há notificações."
+    "empty": "Ainda não há notificações.",
+    "preferencesLink": "Preferências"
   },
   "reviews": {
     "submit": "Enviar avaliação",
@@ -1595,6 +1597,39 @@
       "body": "Inscreva-se na lista de espera e avisamos assim que o Planeador de Atividades estiver disponível.",
       "button": "Entrar na lista de espera",
       "note": "$9.99 único no acesso antecipado."
+    }
+  },
+  "alerts": {
+    "title": "Preferências de notificação",
+    "subtitle": "Fica a saber de novas atividades de que vais gostar — sem teres de andar a verificar.",
+    "back": "Voltar às notificações",
+    "categories": "Categorias",
+    "categoriesHint": "Escolhe sobre o que queres ser avisado.",
+    "language": "Idioma das notificações",
+    "radius": "Distância",
+    "frequency": "Frequência",
+    "freq": {
+      "immediate": "Imediata",
+      "daily_digest": "Resumo diário"
+    },
+    "city": "A tua cidade",
+    "cityHint": "Vamos dar prioridade às atividades na tua cidade.",
+    "miles": "{n} milhas",
+    "save": "Guardar preferências",
+    "saving": "A guardar…",
+    "saved": "Preferências guardadas",
+    "error": "Algo correu mal. Tenta novamente.",
+    "consent": "Só te notificamos sobre o que escolheres. Podes pausar a qualquer momento.",
+    "pause": "Pausar todos os alertas",
+    "push": {
+      "title": "Notificações do navegador",
+      "desc": "Recebe uma notificação mesmo quando o ActivLife Hub não está aberto.",
+      "enable": "Ativar notificações do navegador",
+      "enabling": "A ativar…",
+      "enabled": "Notificações do navegador ativadas",
+      "disable": "Desativar",
+      "denied": "As notificações estão bloqueadas nas definições do teu navegador.",
+      "unsupported": "O teu navegador não suporta notificações push."
     }
   }
 }

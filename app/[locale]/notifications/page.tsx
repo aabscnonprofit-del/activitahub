@@ -1,7 +1,7 @@
 import { getTranslations } from 'next-intl/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { Bell, BellOff, Check } from 'lucide-react'
+import { Bell, BellOff, Check, SlidersHorizontal } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { PublicHeader } from '@/components/layout/PublicHeader'
 import { markNotificationRead, markAllNotificationsRead } from '@/lib/actions/notifications'
@@ -14,8 +14,10 @@ interface Props {
 
 function hrefFor(locale: string, n: AppNotification): string {
   const d = n.data || {}
+  if (typeof d.activity_id === 'string') return `/${locale}/marketplace/${d.activity_id}`
   if (typeof d.booking_id === 'string') return `/${locale}/bookings`
   if (typeof d.request_id === 'string') return `/${locale}/requests/${d.request_id}`
+  if (d.digest) return `/${locale}/marketplace`
   return `/${locale}/notifications`
 }
 
@@ -48,14 +50,23 @@ export default async function NotificationsPage({ params }: Props) {
               <h1 className="text-2xl font-extrabold text-slate-900">{t('title')}</h1>
               {unread > 0 && <p className="mt-0.5 text-sm text-slate-500">{t('unreadCount', { count: unread })}</p>}
             </div>
-            {unread > 0 && (
-              <form action={markAllNotificationsRead}>
-                <button className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">
-                  <Check className="h-4 w-4" />
-                  {t('markAllRead')}
-                </button>
-              </form>
-            )}
+            <div className="flex items-center gap-2">
+              <Link
+                href={`/${locale}/notifications/preferences`}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+              >
+                <SlidersHorizontal className="h-4 w-4" />
+                {t('preferencesLink')}
+              </Link>
+              {unread > 0 && (
+                <form action={markAllNotificationsRead}>
+                  <button className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">
+                    <Check className="h-4 w-4" />
+                    {t('markAllRead')}
+                  </button>
+                </form>
+              )}
+            </div>
           </div>
 
           {notifications.length === 0 ? (

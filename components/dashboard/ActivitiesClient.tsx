@@ -231,6 +231,12 @@ export default function ActivitiesClient({ initialActivities, venues, locale }: 
                 <p className="text-xs text-slate-400 mt-1.5">
                   {new Date(activity.created_at).toLocaleDateString()}
                 </p>
+                {(activity.alerts_reached_count ?? 0) > 0 && (
+                  <p className="mt-1 inline-flex items-center gap-1 text-xs font-medium text-brand-600">
+                    <Megaphone className="h-3 w-3" />
+                    {t('alertsReached', { count: activity.alerts_reached_count ?? 0 })}
+                  </p>
+                )}
               </div>
               <div className="flex gap-0.5 shrink-0 sm:gap-1">
                 <button

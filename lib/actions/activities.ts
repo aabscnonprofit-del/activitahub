@@ -3,7 +3,31 @@
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { userHasOrganizerAccess } from '@/lib/auth/organizer-access.server'
+import { dispatchActivityAlerts } from '@/lib/alerts/dispatch'
 import type { Activity } from '@/lib/types'
+
+type ServerClient = Awaited<ReturnType<typeof createClient>>
+
+/**
+ * If the activity is published and has not been dispatched yet, fan Activity
+ * Alerts out to matching participants. Best-effort and idempotent; never blocks
+ * or fails the publish.
+ */
+async function maybeDispatchAlerts(supabase: ServerClient, activityId: string): Promise<void> {
+  try {
+    const { data } = await supabase
+      .from('activities')
+      .select('id, organizer_id, title, category, city, country, status, alerts_sent_at')
+      .eq('id', activityId)
+      .single()
+    const a = data as { status?: string; alerts_sent_at?: string | null } | null
+    if (a && a.status === 'published' && !a.alerts_sent_at) {
+      await dispatchActivityAlerts(data as Parameters<typeof dispatchActivityAlerts>[0])
+    }
+  } catch {
+    /* alerts unavailable (e.g. migration 019 not applied) — ignore */
+  }
+}
 
 export async function getActivities(): Promise<Activity[]> {
   const supabase = await createClient()
@@ -88,7 +112,15 @@ export async function createActivity(formData: FormData): Promise<void> {
 
   if (!(await userHasOrganizerAccess(supabase, user.id))) return
 
-  await supabase.from('activities').insert({ organizer_id: user.id, ...fields })
+  const { data: created } = await supabase
+    .from('activities')
+    .insert({ organizer_id: user.id, ...fields })
+    .select('id')
+    .single()
+
+  if (created && fields.status === 'published') {
+    await maybeDispatchAlerts(supabase, (created as { id: string }).id)
+  }
 
   revalidatePath('/dashboard/activities')
   revalidatePath('/dashboard')
@@ -112,6 +144,8 @@ export async function updateActivity(id: string, formData: FormData): Promise<vo
     .eq('id', id)
     .eq('organizer_id', user.id)
 
+  if (fields.status === 'published') await maybeDispatchAlerts(supabase, id)
+
   revalidatePath('/dashboard/activities')
 }
 
@@ -132,6 +166,8 @@ export async function setActivityStatus(
     .update({ status, updated_at: new Date().toISOString() })
     .eq('id', id)
     .eq('organizer_id', user.id)
+
+  if (status === 'published') await maybeDispatchAlerts(supabase, id)
 
   revalidatePath('/dashboard/activities')
   revalidatePath('/dashboard')

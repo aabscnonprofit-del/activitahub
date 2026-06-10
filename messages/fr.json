@@ -690,7 +690,8 @@
         "story": "Story",
         "wide": "Large / aperçu"
       }
-    }
+    },
+    "alertsReached": "Audience intéressée atteinte : {count} participants"
   },
   "venues": {
     "title": "Lieux",
@@ -1122,7 +1123,8 @@
     "unreadCount": "{count} non lues",
     "markAllRead": "Tout marquer comme lu",
     "markRead": "Marquer comme lu",
-    "empty": "Aucune notification pour l'instant."
+    "empty": "Aucune notification pour l'instant.",
+    "preferencesLink": "Préférences"
   },
   "reviews": {
     "submit": "Envoyer l'avis",
@@ -1595,6 +1597,39 @@
       "body": "Inscrivez-vous sur la liste d’attente et nous vous préviendrons dès que le Planificateur sera disponible.",
       "button": "Rejoindre la liste d’attente",
       "note": "$9.99 paiement unique en accès anticipé."
+    }
+  },
+  "alerts": {
+    "title": "Préférences de notification",
+    "subtitle": "Soyez informé des nouvelles activités qui vous plairont — sans vérifier sans cesse.",
+    "back": "Retour aux notifications",
+    "categories": "Catégories",
+    "categoriesHint": "Choisissez ce dont vous voulez être informé.",
+    "language": "Langue des notifications",
+    "radius": "Distance",
+    "frequency": "Fréquence",
+    "freq": {
+      "immediate": "Immédiate",
+      "daily_digest": "Résumé quotidien"
+    },
+    "city": "Votre ville",
+    "cityHint": "Nous donnerons la priorité aux activités de votre ville.",
+    "miles": "{n} miles",
+    "save": "Enregistrer les préférences",
+    "saving": "Enregistrement…",
+    "saved": "Préférences enregistrées",
+    "error": "Une erreur s'est produite. Veuillez réessayer.",
+    "consent": "Nous ne vous notifions que ce que vous choisissez. Vous pouvez mettre en pause à tout moment.",
+    "pause": "Mettre en pause toutes les alertes",
+    "push": {
+      "title": "Notifications du navigateur",
+      "desc": "Recevez une notification même quand ActivLife Hub n'est pas ouvert.",
+      "enable": "Activer les notifications du navigateur",
+      "enabling": "Activation…",
+      "enabled": "Notifications du navigateur activées",
+      "disable": "Désactiver",
+      "denied": "Les notifications sont bloquées dans les paramètres de votre navigateur.",
+      "unsupported": "Votre navigateur ne prend pas en charge les notifications push."
     }
   }
 }

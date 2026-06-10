@@ -690,7 +690,8 @@
         "story": "Story",
         "wide": "Breit / Link-Vorschau"
       }
-    }
+    },
+    "alertsReached": "Erreichte interessierte Teilnehmer: {count}"
   },
   "venues": {
     "title": "Veranstaltungsorte",
@@ -1122,7 +1123,8 @@
     "unreadCount": "{count} ungelesen",
     "markAllRead": "Alle als gelesen markieren",
     "markRead": "Als gelesen markieren",
-    "empty": "Noch keine Benachrichtigungen."
+    "empty": "Noch keine Benachrichtigungen.",
+    "preferencesLink": "Einstellungen"
   },
   "reviews": {
     "submit": "Bewertung absenden",
@@ -1595,6 +1597,39 @@
       "body": "Trag dich in die Warteliste ein und wir benachrichtigen dich, sobald der Aktivitätsplaner live ist.",
       "button": "Auf die Warteliste",
       "note": "$9.99 einmalig im Frühzugang."
+    }
+  },
+  "alerts": {
+    "title": "Benachrichtigungs-Einstellungen",
+    "subtitle": "Erfahre von neuen Aktivitäten, die dir gefallen – ohne ständig nachzusehen.",
+    "back": "Zurück zu den Benachrichtigungen",
+    "categories": "Kategorien",
+    "categoriesHint": "Wähle, worüber du informiert werden möchtest.",
+    "language": "Sprache der Benachrichtigungen",
+    "radius": "Entfernung",
+    "frequency": "Häufigkeit",
+    "freq": {
+      "immediate": "Sofort",
+      "daily_digest": "Tägliche Zusammenfassung"
+    },
+    "city": "Deine Stadt",
+    "cityHint": "Wir priorisieren Aktivitäten in deiner Stadt.",
+    "miles": "{n} Meilen",
+    "save": "Einstellungen speichern",
+    "saving": "Speichern…",
+    "saved": "Einstellungen gespeichert",
+    "error": "Etwas ist schiefgelaufen. Bitte versuche es erneut.",
+    "consent": "Wir benachrichtigen dich nur über das, was du auswählst. Du kannst jederzeit pausieren.",
+    "pause": "Alle Benachrichtigungen pausieren",
+    "push": {
+      "title": "Browser-Benachrichtigungen",
+      "desc": "Erhalte eine Push-Benachrichtigung, auch wenn ActivLife Hub nicht geöffnet ist.",
+      "enable": "Browser-Benachrichtigungen aktivieren",
+      "enabling": "Wird aktiviert…",
+      "enabled": "Browser-Benachrichtigungen an",
+      "disable": "Ausschalten",
+      "denied": "Benachrichtigungen sind in deinen Browser-Einstellungen blockiert.",
+      "unsupported": "Dein Browser unterstützt keine Push-Benachrichtigungen."
     }
   }
 }

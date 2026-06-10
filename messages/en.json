@@ -690,7 +690,8 @@
         "story": "Story",
         "wide": "Wide / link preview"
       }
-    }
+    },
+    "alertsReached": "Interested audience reached: {count} participants"
   },
   "venues": {
     "title": "Venues",
@@ -1122,7 +1123,8 @@
     "unreadCount": "{count} unread",
     "markAllRead": "Mark all read",
     "markRead": "Mark read",
-    "empty": "No notifications yet."
+    "empty": "No notifications yet.",
+    "preferencesLink": "Preferences"
   },
   "reviews": {
     "submit": "Submit review",
@@ -1595,6 +1597,39 @@
       "body": "Join the waitlist and we'll let you know the moment the Activity Planner is live.",
       "button": "Join the waitlist",
       "note": "$9.99 one-time in early access."
+    }
+  },
+  "alerts": {
+    "title": "Notification preferences",
+    "subtitle": "Get notified about new activities you'll love — no need to keep checking.",
+    "back": "Back to notifications",
+    "categories": "Categories",
+    "categoriesHint": "Choose what you want to hear about.",
+    "language": "Notification language",
+    "radius": "Distance",
+    "frequency": "Frequency",
+    "freq": {
+      "immediate": "Immediate",
+      "daily_digest": "Daily digest"
+    },
+    "city": "Your city",
+    "cityHint": "We'll prioritise activities in your city.",
+    "miles": "{n} miles",
+    "save": "Save preferences",
+    "saving": "Saving…",
+    "saved": "Preferences saved",
+    "error": "Something went wrong. Please try again.",
+    "consent": "We only notify you about things you opt into. You can pause anytime.",
+    "pause": "Pause all alerts",
+    "push": {
+      "title": "Browser notifications",
+      "desc": "Get a push notification even when ActivLife Hub isn't open.",
+      "enable": "Enable browser notifications",
+      "enabling": "Enabling…",
+      "enabled": "Browser notifications on",
+      "disable": "Turn off",
+      "denied": "Notifications are blocked in your browser settings.",
+      "unsupported": "Your browser doesn't support push notifications."
     }
   }
 }

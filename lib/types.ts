@@ -132,6 +132,9 @@ export type Activity = {
   indoor_outdoor: 'indoor' | 'outdoor' | 'both' | null
   venue_id: string | null
   duration_minutes: number | null
+  // Activity Alerts bookkeeping (migration 019)
+  alerts_sent_at?: string | null
+  alerts_reached_count?: number | null
   created_at: string
   updated_at: string
 }
@@ -349,6 +352,34 @@ export type NotificationType =
   | 'booking_confirmed'
   | 'booking_cancelled'
   | 'booking_completed'
+  | 'activity_alert'
+
+// ── Activity Alerts (participant discovery) ─────────────────────────────────
+export type AlertFrequency = 'immediate' | 'daily_digest'
+
+export type AlertPreferences = {
+  profile_id: string
+  categories: string[]
+  language: string | null
+  radius_km: number
+  frequency: AlertFrequency
+  city: string | null
+  country: string | null
+  in_app: boolean
+  push: boolean
+  paused: boolean
+  created_at: string
+  updated_at: string
+}
+
+export type PushSubscriptionRow = {
+  id: string
+  profile_id: string
+  endpoint: string
+  p256dh: string
+  auth: string
+  created_at: string
+}
 
 // Public marketplace RPC shapes (curated, from SECURITY DEFINER functions)
 export type MarketplaceCard = {
