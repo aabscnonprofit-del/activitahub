@@ -660,6 +660,29 @@
       "party": "Party",
       "food": "Food",
       "other": "Other"
+    },
+    "promotion": {
+      "button": "Generate promotion",
+      "title": "Promotion package",
+      "subtitle": "Ready-to-post content for every channel. Copy and paste anywhere.",
+      "language": "Language",
+      "generate": "Generate",
+      "regenerate": "Regenerate",
+      "generating": "Generating…",
+      "copy": "Copy",
+      "copied": "Copied",
+      "subject": "Subject",
+      "disclaimer": "Facts (date, location, price, organizer) are kept exactly as in your activity. Review before posting.",
+      "error": "Couldn't generate. Please try again.",
+      "channels": {
+        "facebook": "Facebook post",
+        "instagram": "Instagram post",
+        "telegram": "Telegram post",
+        "whatsapp": "WhatsApp message",
+        "email": "Email newsletter",
+        "ad": "Short ad copy",
+        "description": "Event description"
+      }
     }
   },
   "venues": {

@@ -660,6 +660,29 @@
       "party": "Fiesta",
       "food": "Comida",
       "other": "Otro"
+    },
+    "promotion": {
+      "button": "Generar promoción",
+      "title": "Paquete de promoción",
+      "subtitle": "Contenido listo para publicar en cada canal. Copia y pega donde quieras.",
+      "language": "Idioma",
+      "generate": "Generar",
+      "regenerate": "Regenerar",
+      "generating": "Generando…",
+      "copy": "Copiar",
+      "copied": "Copiado",
+      "subject": "Asunto",
+      "disclaimer": "Los datos (fecha, ubicación, precio, organizador) se mantienen exactamente como en tu actividad. Revísalo antes de publicar.",
+      "error": "No se pudo generar. Inténtalo de nuevo.",
+      "channels": {
+        "facebook": "Publicación de Facebook",
+        "instagram": "Publicación de Instagram",
+        "telegram": "Publicación de Telegram",
+        "whatsapp": "Mensaje de WhatsApp",
+        "email": "Boletín por correo",
+        "ad": "Texto de anuncio breve",
+        "description": "Descripción del evento"
+      }
     }
   },
   "venues": {

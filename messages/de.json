@@ -660,6 +660,29 @@
       "party": "Party",
       "food": "Essen",
       "other": "Sonstiges"
+    },
+    "promotion": {
+      "button": "Promo erstellen",
+      "title": "Promo-Paket",
+      "subtitle": "Fertige Inhalte für jeden Kanal. Kopieren und überall einfügen.",
+      "language": "Sprache",
+      "generate": "Erstellen",
+      "regenerate": "Neu generieren",
+      "generating": "Wird erstellt…",
+      "copy": "Kopieren",
+      "copied": "Kopiert",
+      "subject": "Betreff",
+      "disclaimer": "Fakten (Datum, Ort, Preis, Organisator) bleiben genau wie in deiner Aktivität. Prüfe sie vor dem Posten.",
+      "error": "Konnte nicht erstellt werden. Bitte versuche es erneut.",
+      "channels": {
+        "facebook": "Facebook-Post",
+        "instagram": "Instagram-Post",
+        "telegram": "Telegram-Post",
+        "whatsapp": "WhatsApp-Nachricht",
+        "email": "E-Mail-Newsletter",
+        "ad": "Kurzer Anzeigentext",
+        "description": "Event-Beschreibung"
+      }
     }
   },
   "venues": {

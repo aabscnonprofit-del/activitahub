@@ -660,6 +660,29 @@
       "party": "Fête",
       "food": "Cuisine",
       "other": "Autre"
+    },
+    "promotion": {
+      "button": "Générer la promo",
+      "title": "Pack promotionnel",
+      "subtitle": "Du contenu prêt à publier pour chaque canal. Copiez-collez où vous voulez.",
+      "language": "Langue",
+      "generate": "Générer",
+      "regenerate": "Régénérer",
+      "generating": "Génération…",
+      "copy": "Copier",
+      "copied": "Copié",
+      "subject": "Objet",
+      "disclaimer": "Les informations (date, lieu, prix, organisateur) restent exactement comme dans votre activité. Vérifiez avant de publier.",
+      "error": "Échec de la génération. Veuillez réessayer.",
+      "channels": {
+        "facebook": "Publication Facebook",
+        "instagram": "Publication Instagram",
+        "telegram": "Publication Telegram",
+        "whatsapp": "Message WhatsApp",
+        "email": "Newsletter e-mail",
+        "ad": "Texte d'annonce court",
+        "description": "Description de l'événement"
+      }
     }
   },
   "venues": {

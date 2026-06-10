@@ -2,7 +2,7 @@
 
 import { useState, useRef } from 'react'
 import { useTranslations } from 'next-intl'
-import { Plus, Layers, Pencil, Trash2, Eye, EyeOff, Sparkles } from 'lucide-react'
+import { Plus, Layers, Pencil, Trash2, Eye, EyeOff, Sparkles, Megaphone } from 'lucide-react'
 import {
   createActivity,
   updateActivity,
@@ -12,6 +12,7 @@ import {
 import type { Activity, ActivityCategory } from '@/lib/types'
 import { CATEGORY_GROUPS, CATEGORIES_BY_GROUP } from '@/lib/categories'
 import Modal from '@/components/ui/Modal'
+import PromotionPackageModal from '@/components/dashboard/PromotionPackageModal'
 import EmptyState from '@/components/ui/EmptyState'
 import Badge from '@/components/ui/Badge'
 import ConfirmDialog from '@/components/ui/ConfirmDialog'
@@ -65,7 +66,7 @@ function marketplaceFields(formData: FormData) {
   }
 }
 
-export default function ActivitiesClient({ initialActivities, venues }: Props) {
+export default function ActivitiesClient({ initialActivities, venues, locale }: Props) {
   const t = useTranslations('activities')
   const tMarket = useTranslations('marketplace')
   const tCommon = useTranslations('common')
@@ -74,6 +75,7 @@ export default function ActivitiesClient({ initialActivities, venues }: Props) {
   const [activities, setActivities] = useState<Activity[]>(initialActivities)
   const [formMode, setFormMode] = useState<FormMode | null>(null)
   const [deleteTarget, setDeleteTarget] = useState<Activity | null>(null)
+  const [promoTarget, setPromoTarget] = useState<Activity | null>(null)
   const [pending, setPending] = useState(false)
   const titleRef = useRef<HTMLInputElement>(null)
 
@@ -231,6 +233,13 @@ export default function ActivitiesClient({ initialActivities, venues }: Props) {
                 </p>
               </div>
               <div className="flex gap-0.5 shrink-0 sm:gap-1">
+                <button
+                  onClick={() => setPromoTarget(activity)}
+                  className="p-2 text-slate-400 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition-colors"
+                  title={t('promotion.button')}
+                >
+                  <Megaphone className="w-4 h-4" />
+                </button>
                 {activity.status !== 'archived' && (
                   <button
                     onClick={() => handleTogglePublish(activity)}
@@ -448,6 +457,14 @@ export default function ActivitiesClient({ initialActivities, venues }: Props) {
         title={t('delete')}
         message={t('confirmDelete')}
         loading={pending}
+      />
+
+      {/* Promotion package generator */}
+      <PromotionPackageModal
+        activity={promoTarget}
+        uiLocale={locale}
+        open={promoTarget !== null}
+        onClose={() => setPromoTarget(null)}
       />
     </>
   )
