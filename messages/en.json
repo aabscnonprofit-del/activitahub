@@ -682,6 +682,13 @@
         "email": "Email newsletter",
         "ad": "Short ad copy",
         "description": "Event description"
+      },
+      "images": {
+        "title": "Promo images",
+        "download": "Download",
+        "square": "Square post",
+        "story": "Story",
+        "wide": "Wide / link preview"
       }
     }
   },

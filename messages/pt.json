@@ -682,6 +682,13 @@
         "email": "Newsletter por e-mail",
         "ad": "Texto de anúncio curto",
         "description": "Descrição do evento"
+      },
+      "images": {
+        "title": "Imagens promocionais",
+        "download": "Transferir",
+        "square": "Publicação quadrada",
+        "story": "Story",
+        "wide": "Largo / pré-visualização"
       }
     }
   },

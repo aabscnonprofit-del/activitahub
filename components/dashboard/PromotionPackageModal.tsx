@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
-import { Copy, Check, RefreshCw, Megaphone, Sparkles } from 'lucide-react'
+import { Copy, Check, RefreshCw, Megaphone, Sparkles, Download, Image as ImageIcon } from 'lucide-react'
 import Modal from '@/components/ui/Modal'
 import { generatePromotionPackage } from '@/lib/actions/marketing'
 import type { PromotionAssets } from '@/lib/marketing/promotion-generator'
@@ -16,6 +16,44 @@ const LOCALES: { code: string; label: string }[] = [
   { code: 'de', label: 'Deutsch' },
   { code: 'pt', label: 'Português' },
 ]
+
+const IMAGE_FORMATS = [
+  { key: 'square', w: 1080, h: 1080 },
+  { key: 'story', w: 1080, h: 1920 },
+  { key: 'wide', w: 1200, h: 628 },
+] as const
+
+const slug = (s: string) =>
+  s.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-+|-+$/g, '').slice(0, 40) || 'promo'
+
+/** Rasterise the same-origin SVG to a PNG at full resolution and download it. */
+async function downloadImage(url: string, w: number, h: number, name: string) {
+  try {
+    const img = new window.Image()
+    img.src = url
+    await img.decode()
+    const canvas = document.createElement('canvas')
+    canvas.width = w
+    canvas.height = h
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+    ctx.drawImage(img, 0, 0, w, h)
+    await new Promise<void>((resolve) =>
+      canvas.toBlob((blob) => {
+        if (blob) {
+          const a = document.createElement('a')
+          a.href = URL.createObjectURL(blob)
+          a.download = name
+          a.click()
+          URL.revokeObjectURL(a.href)
+        }
+        resolve()
+      }, 'image/png'),
+    )
+  } catch {
+    /* ignore */
+  }
+}
 
 type Props = {
   activity: Activity | null
@@ -177,6 +215,49 @@ export default function PromotionPackageModal({ activity, uiLocale, open, onClos
             />
             <AssetBlock label={t('channels.ad')} text={assets.ad} copyLabel={t('copy')} copiedLabel={t('copied')} />
             <AssetBlock label={t('channels.description')} text={assets.description} copyLabel={t('copy')} copiedLabel={t('copied')} />
+
+            {/* Promo images */}
+            <div className="pt-1">
+              <div className="mb-2 flex items-center gap-2">
+                <ImageIcon className="h-4 w-4 text-brand-500" aria-hidden="true" />
+                <span className="text-sm font-bold text-slate-800">{t('images.title')}</span>
+              </div>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                {IMAGE_FORMATS.map((f) => {
+                  const src = `/api/promo-image?activityId=${activity?.id}&format=${f.key}&locale=${outLocale}&r=${outLocale}-${variant}`
+                  return (
+                    <div key={f.key} className="rounded-xl border border-slate-200 bg-white p-3">
+                      <div className="flex items-center justify-center overflow-hidden rounded-lg bg-slate-100">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          key={`${f.key}-${outLocale}-${variant}`}
+                          src={src}
+                          alt={t(`images.${f.key}` as 'images.square')}
+                          className="h-40 w-full object-contain"
+                        />
+                      </div>
+                      <div className="mt-2 flex items-center justify-between gap-2">
+                        <div className="min-w-0">
+                          <p className="truncate text-xs font-semibold text-slate-700">
+                            {t(`images.${f.key}` as 'images.square')}
+                          </p>
+                          <p className="text-[10px] text-slate-400">
+                            {f.w}×{f.h}
+                          </p>
+                        </div>
+                        <button
+                          onClick={() => downloadImage(src, f.w, f.h, `${slug(activity?.title || 'promo')}-${f.key}.png`)}
+                          className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-semibold text-brand-600 transition-colors hover:bg-brand-50"
+                        >
+                          <Download className="h-3.5 w-3.5" />
+                          {t('images.download')}
+                        </button>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
           </div>
         ) : null}
 

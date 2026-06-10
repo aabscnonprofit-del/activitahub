@@ -682,6 +682,13 @@
         "email": "E-Mail-Newsletter",
         "ad": "Kurzer Anzeigentext",
         "description": "Event-Beschreibung"
+      },
+      "images": {
+        "title": "Promo-Bilder",
+        "download": "Herunterladen",
+        "square": "Quadratischer Post",
+        "story": "Story",
+        "wide": "Breit / Link-Vorschau"
       }
     }
   },
