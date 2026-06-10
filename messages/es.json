@@ -1631,5 +1631,70 @@
       "denied": "Las notificaciones están bloqueadas en la configuración de tu navegador.",
       "unsupported": "Tu navegador no admite notificaciones push."
     }
+  },
+  "participants": {
+    "title": "Participantes",
+    "back": "Volver a actividades",
+    "add": "Añadir participante",
+    "importBookings": "Añadir desde reservas",
+    "reminders": "Recordatorios",
+    "sendUpdate": "Enviar aviso",
+    "send": "Enviar",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "name": "Nombre",
+    "email": "Correo",
+    "phone": "Teléfono",
+    "notes": "Notas",
+    "searchPlaceholder": "Buscar por nombre, correo, teléfono",
+    "allStatuses": "Todos los estados",
+    "empty": "Aún no hay participantes. Añade algunos o impórtalos desde reservas.",
+    "added": "Participante añadido",
+    "imported": "{count} añadidos desde reservas",
+    "updateSent": "Aviso enviado a {count} participantes",
+    "remindersSaved": "Programación de recordatorios guardada",
+    "linkCopied": "Enlace de RSVP copiado",
+    "error": "Algo salió mal. Inténtalo de nuevo.",
+    "changeStatus": "Cambiar estado",
+    "checkIn": "Registrar entrada",
+    "noShow": "Marcar ausencia",
+    "copyRsvp": "Copiar enlace de RSVP",
+    "delete": "Eliminar",
+    "sendUpdateHint": "Envía un aviso rápido (cambio de lugar, qué llevar, etc.) a todos los participantes.",
+    "updatePlaceholder": "p. ej. El lugar cambió al aparcamiento este: ¡traed agua!",
+    "remindersHint": "Recordatorios automáticos antes del evento.",
+    "status": {
+      "invited": "Invitado",
+      "confirmed": "Confirmado",
+      "maybe": "Quizás",
+      "declined": "Rechazado",
+      "checked_in": "Registrado",
+      "no_show": "No asistió"
+    },
+    "offset": {
+      "2": "2 horas antes",
+      "24": "24 horas antes",
+      "168": "7 días antes"
+    }
+  },
+  "rsvp": {
+    "invited": "Estás invitado",
+    "greeting": "Hola {name}, dinos si puedes asistir.",
+    "prompt": "¿Asistirás?",
+    "invalid": "Este enlace de RSVP no es válido o ha caducado.",
+    "current": "Tu respuesta: {status}",
+    "respond": {
+      "confirmed": "Allí estaré",
+      "maybe": "Quizás",
+      "declined": "No puedo"
+    },
+    "status": {
+      "confirmed": "Confirmado",
+      "maybe": "Quizás",
+      "declined": "Rechazado",
+      "invited": "Invitado",
+      "checked_in": "Registrado",
+      "no_show": "No asistió"
+    }
   }
 }

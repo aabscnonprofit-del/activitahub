@@ -1631,5 +1631,70 @@
       "denied": "As notificações estão bloqueadas nas definições do teu navegador.",
       "unsupported": "O teu navegador não suporta notificações push."
     }
+  },
+  "participants": {
+    "title": "Participantes",
+    "back": "Voltar às atividades",
+    "add": "Adicionar participante",
+    "importBookings": "Adicionar a partir de reservas",
+    "reminders": "Lembretes",
+    "sendUpdate": "Enviar atualização",
+    "send": "Enviar",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "name": "Nome",
+    "email": "E-mail",
+    "phone": "Telefone",
+    "notes": "Notas",
+    "searchPlaceholder": "Procurar por nome, e-mail, telefone",
+    "allStatuses": "Todos os estados",
+    "empty": "Ainda não há participantes. Adiciona alguns ou importa das reservas.",
+    "added": "Participante adicionado",
+    "imported": "{count} adicionados das reservas",
+    "updateSent": "Atualização enviada a {count} participantes",
+    "remindersSaved": "Agenda de lembretes guardada",
+    "linkCopied": "Link de RSVP copiado",
+    "error": "Algo correu mal. Tenta novamente.",
+    "changeStatus": "Mudar estado",
+    "checkIn": "Fazer check-in",
+    "noShow": "Marcar como ausente",
+    "copyRsvp": "Copiar link de RSVP",
+    "delete": "Eliminar",
+    "sendUpdateHint": "Envia uma atualização rápida (mudança de local, o que levar, etc.) a todos os participantes.",
+    "updatePlaceholder": "ex. Local mudou para o estacionamento este — tragam água!",
+    "remindersHint": "Lembretes automáticos antes do evento.",
+    "status": {
+      "invited": "Convidado",
+      "confirmed": "Confirmado",
+      "maybe": "Talvez",
+      "declined": "Recusou",
+      "checked_in": "Check-in feito",
+      "no_show": "Não compareceu"
+    },
+    "offset": {
+      "2": "2 horas antes",
+      "24": "24 horas antes",
+      "168": "7 dias antes"
+    }
+  },
+  "rsvp": {
+    "invited": "Estás convidado",
+    "greeting": "Olá {name}, diz-nos se podes vir.",
+    "prompt": "Vais comparecer?",
+    "invalid": "Este link de RSVP é inválido ou expirou.",
+    "current": "A tua resposta: {status}",
+    "respond": {
+      "confirmed": "Vou estar lá",
+      "maybe": "Talvez",
+      "declined": "Não posso"
+    },
+    "status": {
+      "confirmed": "Confirmado",
+      "maybe": "Talvez",
+      "declined": "Recusou",
+      "invited": "Convidado",
+      "checked_in": "Check-in feito",
+      "no_show": "Não compareceu"
+    }
   }
 }

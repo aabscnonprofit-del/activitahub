@@ -122,6 +122,25 @@ export default async function DashboardHomePage({ params }: DashboardHomeProps) 
     start_time: string | null
   }>
 
+  // Participant statistics (migration 020) — guarded so the dashboard never
+  // breaks before the table exists.
+  const participantCounts: Record<string, number> = {
+    invited: 0, confirmed: 0, maybe: 0, declined: 0, checked_in: 0, no_show: 0,
+  }
+  try {
+    const { data: prows } = await supabase
+      .from('participants')
+      .select('status')
+      .eq('organizer_id', user.id)
+    for (const r of (prows ?? []) as { status: string }[]) {
+      participantCounts[r.status] = (participantCounts[r.status] ?? 0) + 1
+    }
+  } catch {
+    /* table absent — strip stays hidden */
+  }
+  const participantTotal = Object.values(participantCounts).reduce((a, b) => a + b, 0)
+  const tp = await getTranslations('participants')
+
   const noActivities = (activityCount ?? 0) === 0
 
   const quickActions = [
@@ -213,6 +232,23 @@ export default async function DashboardHomePage({ params }: DashboardHomeProps) 
           iconColor="bg-brand-50 text-brand-600"
         />
       </div>
+
+      {/* ── Participant statistics ────────────────────────────────────────── */}
+      {participantTotal > 0 && (
+        <div>
+          <h2 className="mb-3 font-semibold text-slate-900">{tp('title')}</h2>
+          <div className="grid grid-cols-3 gap-3 sm:grid-cols-6">
+            {(['invited', 'confirmed', 'maybe', 'declined', 'checked_in', 'no_show'] as const).map((s) => (
+              <div key={s} className="card p-3 text-center">
+                <p className="text-2xl font-extrabold text-slate-900">{participantCounts[s] ?? 0}</p>
+                <p className="mt-0.5 text-xs font-medium text-slate-500">
+                  {tp(`status.${s}` as 'status.invited')}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* ── Upcoming events ───────────────────────────────────────────────── */}
       <Card>

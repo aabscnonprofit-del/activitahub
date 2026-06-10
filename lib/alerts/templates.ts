@@ -51,3 +51,17 @@ export function buildDigestNotification(locale: string, count: number) {
   const T = DICT[(locale as Loc)] ?? DICT.en
   return { title: T.digestTitle(count), body: T.digestBody }
 }
+
+const REMINDER: Record<Loc, { title: (t: string) => string; body: string }> = {
+  en: { title: (t) => `Reminder: ${t}`, body: 'Your activity is coming up soon.' },
+  es: { title: (t) => `Recordatorio: ${t}`, body: 'Tu actividad es muy pronto.' },
+  fr: { title: (t) => `Rappel : ${t}`, body: 'Votre activité approche.' },
+  ru: { title: (t) => `Напоминание: ${t}`, body: 'Ваша активность скоро начнётся.' },
+  de: { title: (t) => `Erinnerung: ${t}`, body: 'Deine Aktivität steht bald an.' },
+  pt: { title: (t) => `Lembrete: ${t}`, body: 'A tua atividade está a chegar.' },
+}
+
+export function buildReminderNotification(locale: string, activityTitle: string) {
+  const T = REMINDER[(locale as Loc)] ?? REMINDER.en
+  return { title: T.title(activityTitle), body: T.body }
+}

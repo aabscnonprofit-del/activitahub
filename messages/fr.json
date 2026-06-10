@@ -1631,5 +1631,70 @@
       "denied": "Les notifications sont bloquées dans les paramètres de votre navigateur.",
       "unsupported": "Votre navigateur ne prend pas en charge les notifications push."
     }
+  },
+  "participants": {
+    "title": "Participants",
+    "back": "Retour aux activités",
+    "add": "Ajouter un participant",
+    "importBookings": "Ajouter depuis les réservations",
+    "reminders": "Rappels",
+    "sendUpdate": "Envoyer une info",
+    "send": "Envoyer",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "name": "Nom",
+    "email": "E-mail",
+    "phone": "Téléphone",
+    "notes": "Notes",
+    "searchPlaceholder": "Rechercher par nom, e-mail, téléphone",
+    "allStatuses": "Tous les statuts",
+    "empty": "Pas encore de participants. Ajoutez-en ou importez depuis les réservations.",
+    "added": "Participant ajouté",
+    "imported": "{count} ajoutés depuis les réservations",
+    "updateSent": "Info envoyée à {count} participants",
+    "remindersSaved": "Programmation des rappels enregistrée",
+    "linkCopied": "Lien RSVP copié",
+    "error": "Une erreur s'est produite. Veuillez réessayer.",
+    "changeStatus": "Changer le statut",
+    "checkIn": "Pointer l'arrivée",
+    "noShow": "Marquer absent",
+    "copyRsvp": "Copier le lien RSVP",
+    "delete": "Supprimer",
+    "sendUpdateHint": "Envoyez une info rapide (changement de lieu, quoi apporter, etc.) à tous les participants.",
+    "updatePlaceholder": "ex. Lieu déplacé vers le parking est — apportez de l'eau !",
+    "remindersHint": "Rappels automatiques avant l'événement.",
+    "status": {
+      "invited": "Invité",
+      "confirmed": "Confirmé",
+      "maybe": "Peut-être",
+      "declined": "Décliné",
+      "checked_in": "Arrivé",
+      "no_show": "Absent"
+    },
+    "offset": {
+      "2": "2 heures avant",
+      "24": "24 heures avant",
+      "168": "7 jours avant"
+    }
+  },
+  "rsvp": {
+    "invited": "Vous êtes invité",
+    "greeting": "Bonjour {name}, dites-nous si vous pouvez venir.",
+    "prompt": "Serez-vous présent ?",
+    "invalid": "Ce lien RSVP est invalide ou a expiré.",
+    "current": "Votre réponse : {status}",
+    "respond": {
+      "confirmed": "Je serai là",
+      "maybe": "Peut-être",
+      "declined": "Je ne peux pas"
+    },
+    "status": {
+      "confirmed": "Confirmé",
+      "maybe": "Peut-être",
+      "declined": "Décliné",
+      "invited": "Invité",
+      "checked_in": "Arrivé",
+      "no_show": "Absent"
+    }
   }
 }

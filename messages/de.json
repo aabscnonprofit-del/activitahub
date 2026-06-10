@@ -1631,5 +1631,70 @@
       "denied": "Benachrichtigungen sind in deinen Browser-Einstellungen blockiert.",
       "unsupported": "Dein Browser unterstützt keine Push-Benachrichtigungen."
     }
+  },
+  "participants": {
+    "title": "Teilnehmer",
+    "back": "Zurück zu Aktivitäten",
+    "add": "Teilnehmer hinzufügen",
+    "importBookings": "Aus Buchungen hinzufügen",
+    "reminders": "Erinnerungen",
+    "sendUpdate": "Update senden",
+    "send": "Senden",
+    "cancel": "Abbrechen",
+    "save": "Speichern",
+    "name": "Name",
+    "email": "E-Mail",
+    "phone": "Telefon",
+    "notes": "Notizen",
+    "searchPlaceholder": "Nach Name, E-Mail, Telefon suchen",
+    "allStatuses": "Alle Status",
+    "empty": "Noch keine Teilnehmer. Füge welche hinzu oder importiere aus Buchungen.",
+    "added": "Teilnehmer hinzugefügt",
+    "imported": "{count} aus Buchungen hinzugefügt",
+    "updateSent": "Update an {count} Teilnehmer gesendet",
+    "remindersSaved": "Erinnerungsplan gespeichert",
+    "linkCopied": "RSVP-Link kopiert",
+    "error": "Etwas ist schiefgelaufen. Bitte versuche es erneut.",
+    "changeStatus": "Status ändern",
+    "checkIn": "Einchecken",
+    "noShow": "Als nicht erschienen markieren",
+    "copyRsvp": "RSVP-Link kopieren",
+    "delete": "Löschen",
+    "sendUpdateHint": "Sende ein kurzes Update (Ortswechsel, was mitzubringen ist usw.) an alle Teilnehmer.",
+    "updatePlaceholder": "z. B. Ort zum Ostparkplatz verlegt – bring Wasser mit!",
+    "remindersHint": "Automatische Erinnerungen vor dem Event.",
+    "status": {
+      "invited": "Eingeladen",
+      "confirmed": "Zugesagt",
+      "maybe": "Vielleicht",
+      "declined": "Abgesagt",
+      "checked_in": "Eingecheckt",
+      "no_show": "Nicht erschienen"
+    },
+    "offset": {
+      "2": "2 Stunden vorher",
+      "24": "24 Stunden vorher",
+      "168": "7 Tage vorher"
+    }
+  },
+  "rsvp": {
+    "invited": "Du bist eingeladen",
+    "greeting": "Hallo {name}, sag uns bitte, ob du kommen kannst.",
+    "prompt": "Bist du dabei?",
+    "invalid": "Dieser RSVP-Link ist ungültig oder abgelaufen.",
+    "current": "Deine Antwort: {status}",
+    "respond": {
+      "confirmed": "Ich bin dabei",
+      "maybe": "Vielleicht",
+      "declined": "Kann nicht"
+    },
+    "status": {
+      "confirmed": "Zugesagt",
+      "maybe": "Vielleicht",
+      "declined": "Abgesagt",
+      "invited": "Eingeladen",
+      "checked_in": "Eingecheckt",
+      "no_show": "Nicht erschienen"
+    }
   }
 }

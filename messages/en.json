@@ -1631,5 +1631,70 @@
       "denied": "Notifications are blocked in your browser settings.",
       "unsupported": "Your browser doesn't support push notifications."
     }
+  },
+  "participants": {
+    "title": "Participants",
+    "back": "Back to activities",
+    "add": "Add participant",
+    "importBookings": "Add from bookings",
+    "reminders": "Reminders",
+    "sendUpdate": "Send update",
+    "send": "Send",
+    "cancel": "Cancel",
+    "save": "Save",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "notes": "Notes",
+    "searchPlaceholder": "Search by name, email, phone",
+    "allStatuses": "All statuses",
+    "empty": "No participants yet. Add some or import from bookings.",
+    "added": "Participant added",
+    "imported": "{count} added from bookings",
+    "updateSent": "Update sent to {count} participants",
+    "remindersSaved": "Reminder schedule saved",
+    "linkCopied": "RSVP link copied",
+    "error": "Something went wrong. Please try again.",
+    "changeStatus": "Change status",
+    "checkIn": "Check in",
+    "noShow": "Mark no-show",
+    "copyRsvp": "Copy RSVP link",
+    "delete": "Delete",
+    "sendUpdateHint": "Send a quick update (location change, what to bring, etc.) to all participants.",
+    "updatePlaceholder": "e.g. Location moved to the east parking lot — bring water!",
+    "remindersHint": "Automatic reminders before the event.",
+    "status": {
+      "invited": "Invited",
+      "confirmed": "Confirmed",
+      "maybe": "Maybe",
+      "declined": "Declined",
+      "checked_in": "Checked-In",
+      "no_show": "No-Show"
+    },
+    "offset": {
+      "2": "2 hours before",
+      "24": "24 hours before",
+      "168": "7 days before"
+    }
+  },
+  "rsvp": {
+    "invited": "You're invited",
+    "greeting": "Hi {name}, please let us know if you can make it.",
+    "prompt": "Will you attend?",
+    "invalid": "This RSVP link is invalid or has expired.",
+    "current": "Your response: {status}",
+    "respond": {
+      "confirmed": "I'll be there",
+      "maybe": "Maybe",
+      "declined": "Can't make it"
+    },
+    "status": {
+      "confirmed": "Confirmed",
+      "maybe": "Maybe",
+      "declined": "Declined",
+      "invited": "Invited",
+      "checked_in": "Checked-In",
+      "no_show": "No-Show"
+    }
   }
 }

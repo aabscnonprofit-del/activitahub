@@ -1,8 +1,9 @@
 'use client'
 
 import { useState, useRef } from 'react'
+import Link from 'next/link'
 import { useTranslations } from 'next-intl'
-import { Plus, Layers, Pencil, Trash2, Eye, EyeOff, Sparkles, Megaphone } from 'lucide-react'
+import { Plus, Layers, Pencil, Trash2, Eye, EyeOff, Sparkles, Megaphone, Users } from 'lucide-react'
 import {
   createActivity,
   updateActivity,
@@ -70,6 +71,7 @@ export default function ActivitiesClient({ initialActivities, venues, locale }: 
   const t = useTranslations('activities')
   const tMarket = useTranslations('marketplace')
   const tCommon = useTranslations('common')
+  const tParticipants = useTranslations('participants')
   const { toasts, addToast, dismiss } = useToast()
 
   const [activities, setActivities] = useState<Activity[]>(initialActivities)
@@ -239,6 +241,13 @@ export default function ActivitiesClient({ initialActivities, venues, locale }: 
                 )}
               </div>
               <div className="flex gap-0.5 shrink-0 sm:gap-1">
+                <Link
+                  href={`/${locale}/dashboard/activities/${activity.id}/participants`}
+                  className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                  title={tParticipants('title')}
+                >
+                  <Users className="w-4 h-4" />
+                </Link>
                 <button
                   onClick={() => setPromoTarget(activity)}
                   className="p-2 text-slate-400 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition-colors"

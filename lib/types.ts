@@ -135,6 +135,8 @@ export type Activity = {
   // Activity Alerts bookkeeping (migration 019)
   alerts_sent_at?: string | null
   alerts_reached_count?: number | null
+  // Participant reminders config (migration 020)
+  reminder_offsets_hours?: number[] | null
   created_at: string
   updated_at: string
 }
@@ -353,6 +355,38 @@ export type NotificationType =
   | 'booking_cancelled'
   | 'booking_completed'
   | 'activity_alert'
+  | 'event_update'
+  | 'event_reminder'
+
+// ── Participant Management ──────────────────────────────────────────────────
+export type ParticipantStatus =
+  | 'invited'
+  | 'confirmed'
+  | 'maybe'
+  | 'declined'
+  | 'checked_in'
+  | 'no_show'
+
+export type ParticipantSource = 'manual' | 'booking' | 'registration'
+
+export type Participant = {
+  id: string
+  activity_id: string
+  organizer_id: string
+  profile_id: string | null
+  full_name: string
+  email: string | null
+  phone: string | null
+  status: ParticipantStatus
+  notes: string | null
+  source: ParticipantSource
+  rsvp_token: string
+  checked_in_at: string | null
+  created_at: string
+  updated_at: string
+}
+
+export type ParticipantCounts = Record<ParticipantStatus, number>
 
 // ── Activity Alerts (participant discovery) ─────────────────────────────────
 export type AlertFrequency = 'immediate' | 'daily_digest'
