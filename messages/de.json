@@ -185,7 +185,7 @@
       "subtitle": "Entdecke Aktivitäten in deiner Nähe, plane dein eigenes Event oder werde der Organisator, auf den deine Gemeinschaft wartet.",
       "ctaPrimary": "Aktivitäten entdecken",
       "ctaSecondary": "Organisator werden",
-      "reassure": "Zertifizierte Organisatoren · Sichere Zahlungen · In 4 Sprachen verfügbar"
+      "reassure": "Zertifizierte Organisatoren · Sichere Zahlungen · In 6 Sprachen verfügbar"
     },
     "pillars": {
       "headline": "Alles, was du für deinen Erfolg brauchst",
@@ -216,7 +216,7 @@
     "trust": {
       "secure": "Sichere Stripe-Zahlungen",
       "certified": "Zertifizierte Organisatoren",
-      "languages": "In 4 Sprachen verfügbar",
+      "languages": "In 6 Sprachen verfügbar",
       "cancel": "Jederzeit kündbar"
     },
     "how": {
@@ -282,7 +282,7 @@
         },
         {
           "title": "Internationaler Zugang",
-          "description": "In vier Sprachen für Organisatoren weltweit verfügbar."
+          "description": "In sechs Sprachen für Organisatoren weltweit verfügbar."
         }
       ]
     },

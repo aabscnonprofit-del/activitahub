@@ -185,7 +185,7 @@
       "subtitle": "Discover activities near you, plan your own event, or become the organizer your community is waiting for.",
       "ctaPrimary": "Explore activities",
       "ctaSecondary": "Become an organizer",
-      "reassure": "Certified organizers · Secure payments · Available in 4 languages"
+      "reassure": "Certified organizers · Secure payments · Available in 6 languages"
     },
     "pillars": {
       "headline": "Everything you need to succeed",
@@ -216,7 +216,7 @@
     "trust": {
       "secure": "Secure Stripe payments",
       "certified": "Certified organizers",
-      "languages": "Available in 4 languages",
+      "languages": "Available in 6 languages",
       "cancel": "Cancel anytime"
     },
     "how": {
@@ -282,7 +282,7 @@
         },
         {
           "title": "International access",
-          "description": "Available in four languages for organizers worldwide."
+          "description": "Available in six languages for organizers worldwide."
         }
       ]
     },
