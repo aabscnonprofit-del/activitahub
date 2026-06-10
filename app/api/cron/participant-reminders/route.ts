@@ -38,9 +38,7 @@ export async function GET(req: NextRequest): Promise<Response> {
       .not('activity_id', 'is', null)
 
     let sent = 0
-    for (const ev of (events ?? []) as { activity_id: string; date: string; start_time: string | null }[]) {
-      const start = new Date(`${ev.date}T${ev.start_time || '09:00'}:00Z`).getTime()
-
+    for (const ev of (events ?? []) as { activity_id: string; date: string }[]) {
       const { data: act } = await admin
         .from('activities')
         .select('title, reminder_offsets_hours')
@@ -49,10 +47,15 @@ export async function GET(req: NextRequest): Promise<Response> {
       const a = act as { title?: string; reminder_offsets_hours?: number[] } | null
       const offsets = a?.reminder_offsets_hours ?? [168, 24, 2]
 
-      // Which offsets are "due" in this hourly window?
+      // Day-granularity (Vercel Hobby allows daily crons only): send on the day
+      // that is round(offset/24) days before the event — e.g. 168h→7 days,
+      // 24h→1 day, 2h→day-of.
       const due = offsets.filter((h) => {
-        const at = start - h * 3600_000
-        return now >= at && now < at + 3600_000
+        const daysBefore = Math.round(h / 24)
+        const target = new Date(new Date(`${ev.date}T00:00:00Z`).getTime() - daysBefore * 86400_000)
+          .toISOString()
+          .slice(0, 10)
+        return target === today
       })
       if (!due.length) continue
 
