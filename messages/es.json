@@ -1203,59 +1203,136 @@
   },
   "becomeOrganizerPage": {
     "meta": {
-      "title": "Conviértete en organizador",
-      "description": "Aprende, certifícate y empieza a ganar como organizador en ActivLife Hub."
+      "title": "Para organizadores",
+      "description": "ActivLife Hub es la plataforma para organizadores de actividades: gestiona tus eventos y automatiza el trabajo manual, todo en un solo lugar."
     },
     "hero": {
-      "title": "Convierte tu don de reunir a la gente en una profesión",
-      "subtitle": "Aprende el oficio, certifícate, consigue tu primer cliente y empieza a ganar — con herramientas que te hacen ver profesional desde el primer día.",
-      "cta": "Comienza tu camino como organizador",
-      "ctaSecondary": "Explorar la Academia"
+      "badge": "Para organizadores de actividades",
+      "title": "La plataforma creada para organizadores de actividades",
+      "subtitle": "ActivLife Hub te ayuda a gestionar tus eventos y automatiza el trabajo manual: planificación, reservas, pagos, reseñas y mucho más, todo en un solo lugar.",
+      "cta": "Empezar",
+      "ctaSecondary": "Ver precios"
     },
-    "path": {
-      "headline": "Tu camino",
+    "tools": {
+      "headline": "Deja de saltar entre 10 herramientas distintas",
+      "body": "Hoy muchos organizadores usan una app distinta para cada tarea y mueven la información entre ellas a mano:",
+      "items": [
+        "Facebook",
+        "Instagram",
+        "WhatsApp",
+        "Telegram",
+        "Correo electrónico",
+        "Excel",
+        "Google Forms",
+        "Stripe"
+      ],
+      "conclusion": "ActivLife Hub te ayuda a organizar este trabajo en un solo lugar."
+    },
+    "today": {
+      "headline": "Qué te ayuda a automatizar ActivLife Hub hoy",
+      "subheadline": "Todo lo siguiente ya funciona en la plataforma.",
+      "items": [
+        {
+          "title": "Actividades y espacios",
+          "body": "Crea y gestiona tus actividades y espacios desde un solo panel."
+        },
+        {
+          "title": "Anuncios en el marketplace",
+          "body": "Haz que te descubran los participantes que buscan actividades cerca."
+        },
+        {
+          "title": "Solicitudes y propuestas a clientes",
+          "body": "Recibe solicitudes de clientes y envía propuestas profesionales para ganar el trabajo."
+        },
+        {
+          "title": "Reservas y registro",
+          "body": "Acepta reservas y gestiona el registro de participantes en un solo lugar."
+        },
+        {
+          "title": "Pagos y reembolsos",
+          "body": "Cobra de forma segura y haz reembolsos con Stripe, sin configuraciones aparte."
+        },
+        {
+          "title": "Reseñas",
+          "body": "Reúne reseñas de los participantes para generar confianza y repetir clientes."
+        },
+        {
+          "title": "Calendario y clientes",
+          "body": "Mantén tu agenda y tu lista de clientes organizadas a medida que creces."
+        },
+        {
+          "title": "Notificaciones",
+          "body": "Mantente al día de nuevas solicitudes, reservas y novedades con notificaciones en la app."
+        },
+        {
+          "title": "Panel del organizador",
+          "body": "Gestiona todo tu flujo de trabajo —y mide su rendimiento— en un solo lugar."
+        }
+      ]
+    },
+    "roadmap": {
+      "headline": "Hoja de ruta de automatización para organizadores",
+      "subheadline": "Herramientas que estamos construyendo a continuación.",
+      "badge": "Próximamente",
+      "items": [
+        {
+          "title": "Notificaciones push para participantes",
+          "body": "Llega a los participantes con novedades y recordatorios del evento."
+        },
+        {
+          "title": "Campañas de correo",
+          "body": "Envía anuncios y seguimientos a tu audiencia."
+        },
+        {
+          "title": "Publicación en redes sociales",
+          "body": "Publica tus actividades en redes desde un solo lugar."
+        },
+        {
+          "title": "Integración con Telegram",
+          "body": "Conecta tu audiencia de Telegram con tus actividades."
+        },
+        {
+          "title": "Integración con WhatsApp",
+          "body": "Llega a los participantes por WhatsApp sin salir de la plataforma."
+        },
+        {
+          "title": "Asistente de marketing con IA",
+          "body": "Recibe ayuda para escribir publicaciones, descripciones y campañas."
+        }
+      ]
+    },
+    "why": {
+      "headline": "Por qué los organizadores eligen ActivLife Hub",
+      "items": [
+        "Menos trabajo manual",
+        "Un flujo de trabajo profesional",
+        "Un proceso repetible para cada evento",
+        "Gestión de eventos más sencilla",
+        "Más tiempo con los participantes",
+        "Menos tiempo en hojas de cálculo y chats"
+      ]
+    },
+    "learn": {
+      "headline": "Certifícate y aprende el oficio",
+      "body": "Los nuevos organizadores empiezan en la Academia —un curso guiado o la vía rápida para experimentados— y obtienen la credencial de Organizador Certificado en la que confían los clientes. La certificación es parte de tu camino, no toda la historia.",
       "steps": [
         "Aprende",
         "Certifícate",
         "Primer cliente",
         "Primer evento",
         "Primer ingreso"
-      ]
-    },
-    "why": {
-      "headline": "Para quién es",
-      "body": "Personas que cambian de carrera, buscan ingresos extra, regresan al trabajo, construyen una nueva vida o ya reúnen a la gente de forma natural — cualquiera listo para convertir esa capacidad en ingresos."
-    },
-    "ope": {
-      "headline": "Profesional desde el primer día",
-      "body": "OPE, nuestro motor de planificación, convierte unos pocos datos en una propuesta completa para el cliente —cronograma, plan y presupuesto— en minutos."
-    },
-    "academy": {
-      "headline": "Aprende en la Academia",
-      "body": "Un camino guiado, desde el curso para principiantes o la vía rápida para experimentados, hasta una credencial reconocida.",
-      "cta": "Explorar la Academia"
-    },
-    "certification": {
-      "headline": "Obtén la credencial en la que confían los clientes",
-      "body": "Conviértete en Organizador Certificado: la prueba de que puedes entregar de forma segura y fiable."
-    },
-    "income": {
-      "headline": "Genera ingresos reales",
-      "body": "Consigue clientes, entrega grandes eventos, cobra y crece con clientes recurrentes — tu primer ingreso es la meta, no solo la certificación."
-    },
-    "trust": {
-      "headline": "Construido sobre la confianza",
-      "body": "Organizadores certificados y verificados, pagos seguros y normas claras mantienen cada evento seguro y acogedor."
-    },
-    "cta": {
-      "headline": "¿Listo para empezar?",
-      "body": "Comienza tu camino para convertirte en Organizador Certificado.",
-      "button": "Comienza tu camino como organizador"
+      ],
+      "academyCta": "Descubrir la Academia"
     },
     "pricing": {
       "headline": "Cuánto cuesta",
-      "body": "La Academia y la certificación son programas de pago, y operar como organizador requiere una suscripción de pago. Mira cuánto cuesta cada parte.",
+      "body": "La Academia y la certificación son programas de pago, y operar como organizador es una suscripción de pago. Mira cuánto cuesta cada parte.",
       "cta": "Ver precios"
+    },
+    "cta": {
+      "headline": "¿Listo para gestionar tus eventos en un solo lugar?",
+      "body": "Certifícate, configura tu panel y deja que ActivLife Hub se encargue del trabajo manual.",
+      "button": "Empezar"
     }
   },
   "organizerPhilosophy": {
