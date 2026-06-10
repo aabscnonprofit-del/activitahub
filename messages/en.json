@@ -115,7 +115,7 @@
         "badge": "For earning",
         "tagline": "Manage activities, participants, promotion and operations — all in one place.",
         "price": "$9.99",
-        "priceNote": "/month",
+        "priceNote": "Billed monthly",
         "features": {
           "0": "Activity management",
           "1": "Marketplace access",
@@ -141,7 +141,12 @@
         "Get certified through the Academy",
         "Subscribe to the Organizer Platform and start earning"
       ]
-    }
+    },
+    "billing": {
+      "oneTime": "One-Time Payment",
+      "subscription": "Monthly Subscription"
+    },
+    "perMonth": "/month"
   },
   "privacy": {
     "title": "Privacy Policy",

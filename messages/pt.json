@@ -115,7 +115,7 @@
         "badge": "Para ganhar",
         "tagline": "Gere atividades, participantes, promoção e operações — tudo num só lugar.",
         "price": "$9.99",
-        "priceNote": "/mês",
+        "priceNote": "Faturação mensal",
         "features": {
           "0": "Gestão de atividades",
           "1": "Acesso ao marketplace",
@@ -141,7 +141,12 @@
         "Seja certificado através da Academia",
         "Subscreva a Plataforma de Organizador e comece a ganhar"
       ]
-    }
+    },
+    "billing": {
+      "oneTime": "Pagamento único",
+      "subscription": "Subscrição mensal"
+    },
+    "perMonth": "/mês"
   },
   "privacy": {
     "title": "Política de Privacidade",

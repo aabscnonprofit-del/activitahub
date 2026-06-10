@@ -115,7 +115,7 @@
         "badge": "Pour gagner",
         "tagline": "Gérez activités, participants, promotion et opérations, le tout au même endroit.",
         "price": "$9.99",
-        "priceNote": "/mois",
+        "priceNote": "Facturation mensuelle",
         "features": {
           "0": "Gestion des activités",
           "1": "Accès à la marketplace",
@@ -141,7 +141,12 @@
         "Certifiez-vous à l’Académie",
         "Abonnez-vous à la Plateforme des organisateurs et commencez à gagner"
       ]
-    }
+    },
+    "billing": {
+      "oneTime": "Paiement unique",
+      "subscription": "Abonnement mensuel"
+    },
+    "perMonth": "/mois"
   },
   "privacy": {
     "title": "Politique de Confidentialité",

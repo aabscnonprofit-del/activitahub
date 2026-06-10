@@ -115,7 +115,7 @@
         "badge": "Zum Verdienen",
         "tagline": "Verwalte Aktivitäten, Teilnehmer, Promotion und Abläufe – alles an einem Ort.",
         "price": "$9.99",
-        "priceNote": "/Monat",
+        "priceNote": "Monatliche Abrechnung",
         "features": {
           "0": "Aktivitätsverwaltung",
           "1": "Marktplatz-Zugang",
@@ -141,7 +141,12 @@
         "Werde über die Akademie zertifiziert",
         "Abonniere die Organisator-Plattform und verdiene"
       ]
-    }
+    },
+    "billing": {
+      "oneTime": "Einmalzahlung",
+      "subscription": "Monatsabo"
+    },
+    "perMonth": "/Monat"
   },
   "privacy": {
     "title": "Datenschutzerklärung",

@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import PublicHeader from '@/components/layout/PublicHeader'
 import PublicFooter from '@/components/layout/PublicFooter'
-import { Check, ArrowRight, Lock, Sparkles, GraduationCap, Briefcase, BadgeCheck } from 'lucide-react'
+import { Check, ArrowRight, Lock, Sparkles, GraduationCap, Briefcase, BadgeCheck, RefreshCw } from 'lucide-react'
 import type { Locale } from '@/lib/types'
 
 type Props = { params: Promise<{ locale: string }> }
@@ -20,10 +20,10 @@ export default async function PricingPage({ params }: Props) {
   const ctaHref = `/${locale}/sign-up?next=/${locale}/onboarding`
   const plannerHref = `/${locale}/plan-an-event`
   const products = [
-    { key: 'planner', icon: Sparkles, features: 3, highlight: false, comingSoon: false, badge: false, requirement: false, ctaHref: plannerHref },
-    { key: 'certification', icon: BadgeCheck, features: 3, highlight: false, comingSoon: false, badge: false, requirement: false, ctaHref },
-    { key: 'academy', icon: GraduationCap, features: 3, highlight: false, comingSoon: false, badge: false, requirement: false, ctaHref },
-    { key: 'platform', icon: Briefcase, features: 12, highlight: true, comingSoon: false, badge: true, requirement: true, ctaHref },
+    { key: 'planner', icon: Sparkles, features: 3, highlight: false, comingSoon: false, badge: false, requirement: false, subscription: false, ctaHref: plannerHref },
+    { key: 'certification', icon: BadgeCheck, features: 3, highlight: false, comingSoon: false, badge: false, requirement: false, subscription: false, ctaHref },
+    { key: 'academy', icon: GraduationCap, features: 3, highlight: false, comingSoon: false, badge: false, requirement: false, subscription: false, ctaHref },
+    { key: 'platform', icon: Briefcase, features: 12, highlight: true, comingSoon: false, badge: true, requirement: true, subscription: true, ctaHref },
   ] as const
 
   const journeySteps = [0, 1, 2] as const
@@ -73,9 +73,23 @@ export default async function PricingPage({ params }: Props) {
                   </p>
 
                   <div className="mt-5">
-                    <span className="text-2xl font-extrabold text-slate-900">
-                      {t(`${base}.price` as 'products.planner.price')}
+                    {/* Billing-type badge — makes one-time vs recurring obvious */}
+                    <span
+                      className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide ${
+                        p.subscription ? 'bg-brand-100 text-brand-700' : 'bg-slate-100 text-slate-500'
+                      }`}
+                    >
+                      {p.subscription && <RefreshCw className="h-3 w-3" aria-hidden="true" />}
+                      {p.subscription ? t('billing.subscription') : t('billing.oneTime')}
                     </span>
+                    <div className="mt-2 flex items-baseline gap-1">
+                      <span className="text-3xl font-extrabold text-slate-900">
+                        {t(`${base}.price` as 'products.planner.price')}
+                      </span>
+                      {p.subscription && (
+                        <span className="text-base font-semibold text-slate-500">{t('perMonth')}</span>
+                      )}
+                    </div>
                     <p className="mt-1 text-xs text-slate-500">
                       {t(`${base}.priceNote` as 'products.planner.priceNote')}
                     </p>
