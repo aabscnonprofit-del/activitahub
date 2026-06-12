@@ -12,8 +12,9 @@
 **scenario** (e.g. "kids birthday, 15 guests, Barcelona, ~€600, garden, superhero
 theme") and get back a **structured, editable plan** — phased timeline, task
 checklist, resource/vendor needs, venue suggestions — together with a **cost
-estimate** (low / likely / high). The organizer refines it and converts it into a
-marketplace **activity**, a **client** engagement, or a shareable proposal.
+estimate** (low / likely / high). The organizer refines it into a professional
+**client proposal** — the primary outcome (§13 Q4 / Master §10.3) — and can attach it
+to a client request, export it as a PDF, or convert it into a marketplace activity.
 
 ### Goals (v1)
 - Turn a short scenario into a credible first-draft plan in < 30s.
@@ -432,11 +433,13 @@ Add a **"Planner"** entry to the dashboard nav (alongside Activities, Requests�
    - **Cost summary panel**: subtotal, contingency, total range, confidence.
    - **Edit**: add/remove/reorder items (saves via `save_plan_items`); "Regenerate"
      (new LLM pass, new plan revision) is explicit and quota-aware.
-4. **Actions**:
-   - **Convert to activity** → prefill `/dashboard/activities` create form (title,
-     category, suggested price from `cost_summary.total.mid`, description from summary).
-   - **Attach to client** → link plan to a `clients` row.
-   - **Export** → printable/PDF view (server-rendered route; v1 = print stylesheet).
+4. **Actions** (priority order — §13 Q4 / Master §10.3):
+   1. **Generate client proposal** (primary) → render the plan as a proposal document
+      (Executive Summary, event timeline, staffing/resource plan, budget estimate, risks).
+   2. **Attach proposal to client request** → link to the customer request / `clients` row.
+   3. **Export PDF** → printable/PDF view (server-rendered route; v1 = print stylesheet).
+   4. **Convert to activity** → prefill `/dashboard/activities` create form (title,
+      category, suggested price from `cost_summary.total.mid`, description from summary).
    - **Share** → read-only tokenized link (reuse the public-slug/QR patterns; optional v1).
 
 ### 8.2 Conventions
@@ -593,8 +596,19 @@ plan; the client sees the resulting proposal, not the raw draft, unless shared.
 2. **Quota & model policy:** how many generations/month per subscription tier; is the
    Opus "deep plan" a paid add-on or just rate-limited?
 3. **Currency:** confirm v1 single-currency-per-scenario (no FX) is acceptable.
-4. **Output destination priority:** is "convert to activity" the primary v1 outcome, or
-   is client-quoting (attach to `clients` + export) equally important for launch?
+4. **Output destination priority — ✅ RESOLVED (2026-06-04, Master Decisions §10.3).**
+   **Primary Outcome = Client Proposal Generator.** OPE's primary job is to produce a
+   professional **client proposal** (Executive Summary, Event Timeline, Staffing Plan,
+   Resource Plan, Budget Estimate, Risk Assessment, proposal-ready document) in minutes.
+   **Priority order:**
+   1. Client Proposal Generator
+   2. Attach Proposal to Client Request
+   3. Proposal PDF Export
+   4. Convert Proposal to Marketplace Activity
+
+   *Sync note:* this fixes intent/priority only — **no change to OPE architecture, DB, or
+   API.* "Convert to activity" (formerly framed as a candidate primary outcome, see §1 and
+   §8.1 Actions) drops to priority 4; the §8.1 action set is unchanged, only re-prioritized.
 5. **KB seed breadth:** which categories must ship with real KB + pricing at v1 launch
    (all 21, or a focused subset like birthday/wedding/corporate/glamping)?
 
@@ -602,3 +616,25 @@ plan; the client sees the resulting proposal, not the raw draft, unless shared.
 
 _End of design. No code has been written or scheduled; implementation awaits sign-off
 and the answers in §13._
+
+---
+
+## Addendum — Organizer access model (2026-06-07, implemented)
+
+Organizer Platform access (the surface that consumes OPE / publishes activities / accepts bookings) is
+gated by a **certification-triggered 30-day window plus the paid subscription**, not by payment:
+
+- Passing certification issues the ActivLife Organizer Certificate and **starts a 30-day included access
+  window** (`profiles.organizer_access_until`, set once via the `certificates` insert trigger in
+  `017_organizer_access.sql`). It does **not** start at payment, and there are **no publishing privileges
+  before certification**.
+- **Effective access** = `role ∈ {certified_organizer, admin}` AND
+  (`subscription.status ∈ {active, trialing}` OR `organizer_access_until > now()`). Single source of
+  truth: `lib/auth/organizer-access.ts`; enforced in `middleware.ts` and the organizer write actions
+  (`activities.ts`, `requests.ts:sendProposal`).
+- After the window lapses, an **active subscription** is required. Retakes never re-grant the window.
+- No Stripe change: the one-time certification payment and the separate subscription checkout are
+  unchanged; the window is a pure internal entitlement.
+
+See `MASTER_PRODUCT_DECISIONS.md` → "Certification-triggered 30-day Organizer Platform access" for the
+business decision of record.
