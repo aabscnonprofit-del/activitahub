@@ -5,10 +5,15 @@ import birthdayCore from '@/data/ope/modules/birthday/core.v1.json'
 import birthdayYoungKids from '@/data/ope/modules/birthday/st1-young-kids.v1.json'
 import bbqCore from '@/data/ope/modules/bbq/core.v1.json'
 import networkingCore from '@/data/ope/modules/networking/core.v1.json'
+import classCore from '@/data/ope/modules/class/core.v1.json'
+import classPhysical from '@/data/ope/modules/class/st-physical.v1.json'
+import classMaterials from '@/data/ope/modules/class/st-materials.v1.json'
 
 import honoluluBirthday from '@/data/ope/pricing/honolulu/birthday.v1.json'
 import honoluluBbq from '@/data/ope/pricing/honolulu/bbq.v1.json'
+import honoluluClass from '@/data/ope/pricing/honolulu/class.v1.json'
 
+import { ACTIVITIES } from './activities'
 import type { OpeModule, PlannerCategory, PricingSeedFile } from './types'
 
 const MODULES = {
@@ -16,20 +21,32 @@ const MODULES = {
   birthdayYoungKids: birthdayYoungKids as unknown as OpeModule,
   bbqCore: bbqCore as unknown as OpeModule,
   networkingCore: networkingCore as unknown as OpeModule,
+  classCore: classCore as unknown as OpeModule,
+  classPhysical: classPhysical as unknown as OpeModule,
+  classMaterials: classMaterials as unknown as OpeModule,
 }
 
 /**
- * The composed module set for a category. Birthday adds the young-kids subtype
- * when children are present (matches the engine's young_kids sample path).
+ * The composed content bundle for a category, resolved via the activity registry
+ * (activities.ts). Celebration neighbours reuse the birthday/bbq bundles. Only the
+ * kids-birthday bundle adds the young-kids subtype when children are present.
  */
 export function getModulesFor(category: PlannerCategory, kidsPresent: boolean): OpeModule[] {
-  switch (category) {
+  const def = ACTIVITIES[category]
+  const useKids = !!def.supportsKidsSubtype && kidsPresent
+  switch (def.baseModules) {
     case 'birthday':
-      return kidsPresent ? [MODULES.birthdayCore, MODULES.birthdayYoungKids] : [MODULES.birthdayCore]
+      return useKids ? [MODULES.birthdayCore, MODULES.birthdayYoungKids] : [MODULES.birthdayCore]
     case 'bbq':
       return [MODULES.bbqCore]
     case 'networking':
       return [MODULES.networkingCore]
+    case 'class':
+      // Class subtype: physical (fitness/yoga/dance) adds injury risk; art adds
+      // materials-safety risk; language/workshop use the core only.
+      if (category === 'fitness_class') return [MODULES.classCore, MODULES.classPhysical]
+      if (category === 'art_class') return [MODULES.classCore, MODULES.classMaterials]
+      return [MODULES.classCore]
     default:
       return []
   }
@@ -40,6 +57,7 @@ export function getModulesFor(category: PlannerCategory, kidsPresent: boolean): 
 export const SEED_PRICING: Record<string, PricingSeedFile> = {
   'honolulu/birthday': honoluluBirthday as unknown as PricingSeedFile,
   'honolulu/bbq': honoluluBbq as unknown as PricingSeedFile,
+  'honolulu/class': honoluluClass as unknown as PricingSeedFile,
 }
 
 export const FALLBACK_SEED_CITY = 'honolulu'

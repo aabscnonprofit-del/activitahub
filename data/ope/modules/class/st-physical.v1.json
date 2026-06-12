@@ -1,0 +1,9 @@
+{
+  "_meta": { "module": "MOD-CLASS-ST-PHYSICAL", "pattern": "class", "version": "v1" },
+  "tasks": [
+    { "id": "class-phys-t1", "title": "Ask participants about injuries or health conditions before the session", "phase": "class-enrol" }
+  ],
+  "risks": [
+    { "id": "class-phys-r1", "name": "Physical injury risk", "severity": "high", "applies_if": "always", "never_drop": true, "mitigation": "Warm up, scale movements to ability, keep water and a first-aid kit on hand, and ask about injuries or conditions beforehand." }
+  ]
+}

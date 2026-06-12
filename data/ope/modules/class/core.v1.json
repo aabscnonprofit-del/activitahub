@@ -1,0 +1,37 @@
+{
+  "_meta": { "module": "MOD-CLASS-CORE", "pattern": "class", "version": "v1" },
+  "config_defaults": { "contingency_pct": 10 },
+  "derived_quantities": {},
+  "phases": [
+    { "id": "class-plan", "name": "Plan the class", "window_days_before": [21, 28], "goal": "Lock the format, instructor, venue and capacity" },
+    { "id": "class-enrol", "name": "Promote & enrol", "window_days_before": [7, 21], "goal": "Open registration and confirm participants" },
+    { "id": "class-prep", "name": "Prepare", "window_days_before": [1, 3], "goal": "Ready the space and any materials" },
+    { "id": "class-run", "name": "Run the session", "window_days_before": [0, 0], "goal": "Welcome, teach, and wrap up" },
+    { "id": "class-follow", "name": "Follow up", "window_days_before": [-3, -1], "goal": "Thank participants and plan the next session" }
+  ],
+  "tasks": [
+    { "id": "class-t1", "title": "Confirm your instructor (or arrange one if you need help)", "phase": "class-plan" },
+    { "id": "class-t2", "title": "Decide capacity and book or confirm the venue", "phase": "class-plan" },
+    { "id": "class-t3", "title": "Open registration and confirm participant numbers", "phase": "class-enrol" },
+    { "id": "class-t4", "title": "Send participants what to expect and what to bring", "phase": "class-enrol" },
+    { "id": "class-t5", "title": "Prepare materials and equipment for the session", "phase": "class-prep" },
+    { "id": "class-t6", "title": "Set up the space before participants arrive", "phase": "class-run" },
+    { "id": "class-t7", "title": "Run the session: welcome, teach, and close", "phase": "class-run" },
+    { "id": "class-t8", "title": "Thank participants and share the next session details", "phase": "class-follow" }
+  ],
+  "cost_drivers": [
+    { "id": "class-cd1", "item_key": "instructor_fee", "basis": "flat", "driver": null, "cost_category": "staffing", "applies_if": "instructor_needed" },
+    { "id": "class-cd2", "item_key": "venue_hire", "basis": "flat", "driver": null, "cost_category": "venue" },
+    { "id": "class-cd3", "item_key": "materials_per_head", "basis": "per_head", "driver": "guest_count", "cost_category": "materials", "applies_if": "materials_provided" },
+    { "id": "class-cd4", "item_key": "equipment_rental", "basis": "flat", "driver": null, "cost_category": "equipment" }
+  ],
+  "risks": [
+    { "id": "class-r1", "name": "Instructor suitability", "severity": "medium", "applies_if": "always", "mitigation": "Confirm the instructor has the right experience for this level and group size." }
+  ],
+  "communication_templates": [
+    { "id": "class-tmpl1", "name": "invitation", "required": true, "variables": ["date", "time", "location", "rsvp_deadline"] },
+    { "id": "class-tmpl2", "name": "rsvp_reminder", "variables": ["guest_name", "date", "time", "location"] },
+    { "id": "class-tmpl3", "name": "thank_you", "variables": ["guest_name"] },
+    { "id": "class-tmpl4", "name": "feedback_request", "variables": ["guest_name"] }
+  ]
+}

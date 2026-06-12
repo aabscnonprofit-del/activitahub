@@ -1,0 +1,13 @@
+{
+  "_meta": {
+    "currency": "USD",
+    "region": "Honolulu",
+    "disclaimer": "Sample reference pricing for Honolulu; adjust to local rates."
+  },
+  "seeds": [
+    { "item_key": "instructor_fee", "low": 80, "likely": 150, "high": 300 },
+    { "item_key": "venue_hire", "low": 40, "likely": 90, "high": 200 },
+    { "item_key": "materials_per_head", "low": 5, "likely": 12, "high": 25 },
+    { "item_key": "equipment_rental", "low": 0, "likely": 30, "high": 80, "optional": true }
+  ]
+}

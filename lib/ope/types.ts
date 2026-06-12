@@ -1,12 +1,51 @@
 // Planner / OPE engine — shared types (ported from scripts/*.mjs, made type-safe).
 
-export type PlannerCategory = 'birthday' | 'bbq' | 'networking'
+// Input content labels. Each maps to a Pattern + pricing reference via
+// lib/ope/activities.ts (see docs/OPE_IMPLEMENTATION_READY.md §2 crosswalk).
+export type PlannerCategory =
+  | 'birthday' // Kids birthday  (Celebration)
+  | 'adult_birthday' // Celebration
+  | 'anniversary' // Celebration
+  | 'graduation' // Celebration
+  | 'family_reunion' // Celebration
+  | 'bbq' // Celebration
+  | 'networking' // Meetup
+  | 'fitness_class' // Class (yoga/dance/fitness)
+  | 'art_class' // Class
+  | 'language_class' // Class
+  | 'workshop' // Class
+
+/** Organizing pattern (M1 Celebration + Meetup, M3 adds Class). */
+export type OpePattern = 'celebration' | 'meetup' | 'class'
+
+/** The seed category a content label is priced against (the reference bundle). */
+export type PricingCategory = 'birthday' | 'bbq' | 'networking' | 'class'
+
+/** A single high-value clarification question (UNKNOWN → ASK). */
+export interface ClarificationQuestion {
+  id: string
+  field: 'venueType' | 'budget' | 'kids' | 'instructor' | 'materials'
+  kind: 'choice' | 'number'
+  question: string
+  options?: { value: string; label: string }[]
+  placeholder?: string
+  /** Which dimension the answer improves (pattern/budget/risk/resources). */
+  reason: string
+}
 
 export interface PlannerLocation {
   city: string
   state?: string | null
   country: string
   postalCode?: string | null
+}
+
+/** Recurring modifier (M2). Only recurring-capable activities (Meetup) accept it. */
+export type RecurrenceFrequency = 'weekly' | 'biweekly' | 'monthly'
+export interface Recurrence {
+  frequency: RecurrenceFrequency
+  /** null = ongoing (no end); a number = a bounded series. */
+  sessions?: number | null
 }
 
 /** What the user submits from the form. */
@@ -19,11 +58,17 @@ export interface PlannerInput {
   budget?: number | null
   specialRequirements?: string[]
   location: PlannerLocation
+  recurrence?: Recurrence | null
+  // Class pattern (M3) — only meaningful for Class categories.
+  instructor?: 'have' | 'need' | null
+  materials?: 'provided' | 'byo' | null
 }
 
 /** Internal scenario shape the engine consumes (was hardcoded in the script). */
 export interface Scenario {
   category: string
+  pattern: OpePattern // internal pattern tag (not serialized in OUTPUTS_V1)
+  pricing_category: PricingCategory // which seed bundle to price against
   activity_type: string
   guest_count: number
   guest_breakdown: { kids: number; adults: number } | null
@@ -35,6 +80,9 @@ export interface Scenario {
   budget: number | null
   currency: string
   special_requirements: string[]
+  recurrence: Recurrence | null
+  instructor: 'have' | 'need' | null
+  materials: 'provided' | 'byo' | null
 }
 
 // ── Module JSON pieces (only the fields the engine reads) ───────────────────
@@ -44,6 +92,8 @@ export interface CostDriver {
   basis: string
   driver: string | null
   cost_category: string
+  /** M3: include this line only when the named flag is true (e.g. instructor_needed). */
+  applies_if?: string
   _module?: string
 }
 export interface RiskDef {
@@ -150,6 +200,9 @@ export interface BudgetResult {
   pricing_source: PricingSource
   is_fallback: boolean
   fallback_note: string | null
+  // Recurring modifier (M2) — set only when the activity recurs AND is priced.
+  per_session?: boolean
+  series_total?: BudgetBand | null
 }
 
 export interface ChecklistItem {
@@ -184,6 +237,13 @@ export interface PlannerOutput {
     preparation_checklist: ChecklistItem[]
     day_of_checklist: ChecklistItem[]
     after_event_checklist: ChecklistItem[]
+    // Recurring modifier (M2) — set only when the activity recurs.
+    recurrence?: {
+      frequency: RecurrenceFrequency
+      sessions: number | null
+      cadence_label: string
+      per_session_reminder: string
+    }
   }
   section_c_budget: BudgetResult
   section_d_key_risks: {

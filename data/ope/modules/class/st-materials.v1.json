@@ -1,0 +1,6 @@
+{
+  "_meta": { "module": "MOD-CLASS-ST-MATERIALS", "pattern": "class", "version": "v1" },
+  "risks": [
+    { "id": "class-mat-r1", "name": "Materials & tools safety", "severity": "medium", "applies_if": "always", "mitigation": "Brief participants on safe use of tools and paints, ventilate the space, and keep hazardous materials away from children." }
+  ]
+}

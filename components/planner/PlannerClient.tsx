@@ -4,11 +4,23 @@ import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { Sparkles, Loader2, ArrowLeft } from 'lucide-react'
 import { generatePlanAction } from '@/lib/actions/planner'
-import type { PlannerOutput } from '@/lib/ope/types'
+import type { PlanGenerationResult, PlannerInput, RecurrenceFrequency } from '@/lib/ope'
 import PlanResult from './PlanResult'
+import PlanHandoff from './PlanHandoff'
+import PlanClarify from './PlanClarify'
 
-type Category = 'birthday' | 'bbq' | 'networking'
+type Category =
+  | 'birthday' | 'adult_birthday' | 'anniversary' | 'graduation' | 'family_reunion' | 'bbq' | 'networking'
+  | 'fitness_class' | 'art_class' | 'language_class' | 'workshop'
 type Venue = 'backyard_home' | 'public_park' | ''
+type Repeats = 'one_time' | RecurrenceFrequency
+
+// Class categories (M3) — show instructor/materials inputs and the Repeats control.
+const CLASS_CATEGORIES = new Set<Category>(['fitness_class', 'art_class', 'language_class', 'workshop'])
+
+// Activities that can be planned as a recurring series. Mirrors
+// ACTIVITIES[*].recurringCapable: Meetup (networking) + all Class categories.
+const RECURRING_CAPABLE = new Set<Category>(['networking', ...CLASS_CATEGORIES])
 
 export default function PlannerClient() {
   const t = useTranslations('planner')
@@ -25,31 +37,24 @@ export default function PlannerClient() {
   const [stateRegion, setStateRegion] = useState('')
   const [country, setCountry] = useState('')
   const [postal, setPostal] = useState('')
+  const [repeats, setRepeats] = useState<Repeats>('one_time')
+  const [sessions, setSessions] = useState('')
+  const [instructor, setInstructor] = useState<'have' | 'need' | ''>('')
+  const [materials, setMaterials] = useState<'provided' | 'byo' | ''>('')
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(false)
-  const [plan, setPlan] = useState<PlannerOutput | null>(null)
+  const [result, setResult] = useState<PlanGenerationResult | null>(null)
+  const [lastInput, setLastInput] = useState<PlannerInput | null>(null)
 
-  async function onGenerate(e: React.FormEvent) {
-    e.preventDefault()
+  async function runPlan(input: PlannerInput) {
     setLoading(true)
     setError(false)
+    setLastInput(input)
     try {
-      const input = {
-        category,
-        guestCount: Number(total),
-        adults: adults ? Number(adults) : undefined,
-        kids: kids ? Number(kids) : undefined,
-        venueType: venue || undefined,
-        budget: budget ? Number(budget) : undefined,
-        specialRequirements: requirements
-          ? requirements.split(',').map((s) => s.trim()).filter(Boolean)
-          : undefined,
-        location: { city: city.trim(), state: stateRegion.trim() || undefined, country: country.trim(), postalCode: postal.trim() || undefined },
-      }
       const res = await generatePlanAction(input)
       if (res.ok) {
-        setPlan(res.plan)
+        setResult(res.result)
         window.scrollTo({ top: 0, behavior: 'smooth' })
       } else setError(true)
     } catch {
@@ -59,14 +64,56 @@ export default function PlannerClient() {
     }
   }
 
-  if (plan) {
+  function buildInput(): PlannerInput {
+    return {
+      category,
+      guestCount: Number(total),
+      adults: adults ? Number(adults) : undefined,
+      kids: kids ? Number(kids) : undefined,
+      venueType: venue || undefined,
+      budget: budget ? Number(budget) : undefined,
+      specialRequirements: requirements
+        ? requirements.split(',').map((s) => s.trim()).filter(Boolean)
+        : undefined,
+      location: { city: city.trim(), state: stateRegion.trim() || undefined, country: country.trim(), postalCode: postal.trim() || undefined },
+      recurrence:
+        RECURRING_CAPABLE.has(category) && repeats !== 'one_time'
+          ? { frequency: repeats, sessions: sessions ? Number(sessions) : null }
+          : undefined,
+      instructor: CLASS_CATEGORIES.has(category) && instructor ? instructor : undefined,
+      materials: CLASS_CATEGORIES.has(category) && materials ? materials : undefined,
+    }
+  }
+
+  async function onGenerate(e: React.FormEvent) {
+    e.preventDefault()
+    await runPlan(buildInput())
+  }
+
+  // Merge clarification answers into the original input and re-run (UNKNOWN → ASK).
+  function onClarify(answers: Record<string, string>) {
+    if (!lastInput) return
+    const merged: PlannerInput = { ...lastInput }
+    if (answers.venueType) merged.venueType = answers.venueType as PlannerInput['venueType']
+    if (answers.budget) merged.budget = Number(answers.budget)
+    if (answers.kids) merged.kids = Number(answers.kids)
+    void runPlan(merged)
+  }
+
+  if (result) {
     return (
       <div>
-        <button onClick={() => setPlan(null)} className="mb-4 inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-slate-800">
+        <button onClick={() => { setResult(null); setLastInput(null) }} className="mb-4 inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-slate-800">
           <ArrowLeft className="h-4 w-4" />
           {t('result.newPlan')}
         </button>
-        <PlanResult plan={plan} />
+        {result.status === 'plan_ready' && result.plan ? (
+          <PlanResult plan={result.plan} />
+        ) : result.status === 'needs_clarification' ? (
+          <PlanClarify questions={result.questions ?? []} loading={loading} onSubmit={onClarify} />
+        ) : (
+          <PlanHandoff coverage={result.coverage} />
+        )}
       </div>
     )
   }
@@ -80,8 +127,16 @@ export default function PlannerClient() {
 
   const cats: { key: Category; label: string }[] = [
     { key: 'birthday', label: tf('birthday') },
+    { key: 'adult_birthday', label: tf('adultBirthday') },
+    { key: 'anniversary', label: tf('anniversary') },
+    { key: 'graduation', label: tf('graduation') },
+    { key: 'family_reunion', label: tf('familyReunion') },
     { key: 'bbq', label: tf('bbq') },
     { key: 'networking', label: tf('networking') },
+    { key: 'fitness_class', label: tf('fitnessClass') },
+    { key: 'art_class', label: tf('artClass') },
+    { key: 'language_class', label: tf('languageClass') },
+    { key: 'workshop', label: tf('workshop') },
   ]
   const venues: { key: Venue; label: string }[] = [
     { key: 'backyard_home', label: tf('backyard') },
@@ -129,6 +184,59 @@ export default function PlannerClient() {
           ))}
         </div>
       </Section>
+
+      {CLASS_CATEGORIES.has(category) && (
+        <Section title={tf('classDetails')}>
+          <label className="label-base">{tf('instructorQ')}</label>
+          <div className="mb-3 flex flex-wrap gap-2">
+            {([
+              { key: 'have', label: tf('instructorHave') },
+              { key: 'need', label: tf('instructorNeed') },
+            ] as { key: 'have' | 'need'; label: string }[]).map((o) => (
+              <button key={o.key} type="button" onClick={() => setInstructor(o.key)}
+                className={`rounded-full border px-4 py-2 text-sm font-medium transition-colors ${instructor === o.key ? 'border-brand-300 bg-brand-50 text-brand-700' : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'}`}>
+                {o.label}
+              </button>
+            ))}
+          </div>
+          <label className="label-base">{tf('materialsQ')}</label>
+          <div className="flex flex-wrap gap-2">
+            {([
+              { key: 'provided', label: tf('materialsProvided') },
+              { key: 'byo', label: tf('materialsByo') },
+            ] as { key: 'provided' | 'byo'; label: string }[]).map((o) => (
+              <button key={o.key} type="button" onClick={() => setMaterials(o.key)}
+                className={`rounded-full border px-4 py-2 text-sm font-medium transition-colors ${materials === o.key ? 'border-brand-300 bg-brand-50 text-brand-700' : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'}`}>
+                {o.label}
+              </button>
+            ))}
+          </div>
+        </Section>
+      )}
+
+      {RECURRING_CAPABLE.has(category) && (
+        <Section title={tf('repeats')}>
+          <div className="flex flex-wrap gap-2">
+            {([
+              { key: 'one_time', label: tf('oneTime') },
+              { key: 'weekly', label: tf('weekly') },
+              { key: 'biweekly', label: tf('biweekly') },
+              { key: 'monthly', label: tf('monthly') },
+            ] as { key: Repeats; label: string }[]).map((r) => (
+              <button key={r.key} type="button" onClick={() => setRepeats(r.key)}
+                className={`rounded-full border px-4 py-2 text-sm font-medium transition-colors ${repeats === r.key ? 'border-brand-300 bg-brand-50 text-brand-700' : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'}`}>
+                {r.label}
+              </button>
+            ))}
+          </div>
+          {repeats !== 'one_time' && (
+            <div className="mt-3">
+              <label className="label-base">{tf('sessions')}</label>
+              <input type="number" min="1" value={sessions} onChange={(e) => setSessions(e.target.value)} className="input-base" placeholder="10" />
+            </div>
+          )}
+        </Section>
+      )}
 
       <Section title={tf('sectionLocation')}>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">

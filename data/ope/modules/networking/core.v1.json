@@ -1,0 +1,143 @@
+{
+  "_meta": {
+    "module": "MOD-NETWORKING-CORE",
+    "version": "1",
+    "category": "networking",
+    "kind": "core",
+    "applies": "every professional / community networking event (≈10–50 people), invariant. Venue/audience/optional content lives in separate modules.",
+    "builds_on": ["OPE_UNIVERSAL_ACTIVITY_ARCHITECTURE_V1", "UOP_UNIVERSAL_ORGANIZER_PRINCIPLES_V1_1"],
+    "status": "production-data",
+    "note": "Invariant networking core. The defining realities — solo arrivals, awkward first minutes, inclusion of newcomers, avoiding cliques, and follow-up — are treated as never-drop. Hired facilitator / AV / specific venue are optional modules."
+  },
+
+  "config_defaults": {
+    "contingency_pct": 10,
+    "nametag_buffer_pct": 15,
+    "attendees_per_host": 15,
+    "recommended_duration_hours": [1.5, 2],
+    "icebreaker_default": true
+  },
+
+  "scenario_inputs_used": ["guest_count", "date", "budget", "venue_type", "region", "format", "special_requirements"],
+
+  "derived_quantities": {
+    "attendee_count": "scenario.guest_count (confirmed registrations)",
+    "name_tags": "ceil(attendee_count * (1 + nametag_buffer_pct/100))",
+    "refreshment_servings": "attendee_count",
+    "drinks_servings": "attendee_count",
+    "hosts_needed": "ceil(attendee_count / attendees_per_host)"
+  },
+
+  "phases": [
+    { "id": "P1", "name": "Foundations",        "window_days_before": [14, 21], "goal": "Purpose, audience, size, budget, format, date, venue, needs" },
+    { "id": "P2", "name": "Promotion & Invites","window_days_before": [10, 14], "goal": "Registration open; invites sent; run-of-show, icebreaker & refreshments planned" },
+    { "id": "P3", "name": "Preparation",        "window_days_before": [3, 7],   "goal": "Registrations confirmed; name tags & hosts ready; quantities finalized" },
+    { "id": "P4", "name": "Final days",         "window_days_before": [1, 2],   "goal": "Final numbers; materials printed; hosts briefed" },
+    { "id": "P5", "name": "Day-of",             "window_days_before": [0, 0],   "goal": "Set up, welcome, run networking, close" },
+    { "id": "P6", "name": "Follow-up",          "window_days_before": [-7, 0],  "goal": "Thank-you, recap & contacts, feedback" }
+  ],
+
+  "tasks": [
+    { "id": "NW-T01", "phase": "P1", "priority": "high", "deps": [],                               "title": "Define purpose & target audience (who should connect, and why)" },
+    { "id": "NW-T02", "phase": "P1", "priority": "high", "deps": ["NW-T01"],                       "title": "Decide expected size / guest list (10–50)" },
+    { "id": "NW-T03", "phase": "P1", "priority": "high", "deps": [],                               "title": "Set budget target" },
+    { "id": "NW-T04", "phase": "P1", "priority": "high", "deps": ["NW-T01"],                       "title": "Choose format (structured, free, or a blend) and event length" },
+    { "id": "NW-T05", "phase": "P1", "priority": "high", "deps": ["NW-T01"],                       "title": "Set date & time (e.g. an after-work window)" },
+    { "id": "NW-T06", "phase": "P1", "priority": "high", "deps": ["NW-T02", "NW-T05"],             "title": "Confirm a venue with good flow for mingling" },
+    { "id": "NW-T07", "phase": "P1", "priority": "high", "deps": ["NW-T02"],                       "title": "Capture accessibility / dietary / language needs" },
+    { "id": "NW-T08", "phase": "P2", "priority": "high", "deps": ["NW-T05", "NW-T06"],             "title": "Open registration capturing name, organization & interests" },
+    { "id": "NW-T09", "phase": "P2", "priority": "high", "deps": ["NW-T01", "NW-T05", "NW-T06"],   "title": "Promote & invite the target audience" },
+    { "id": "NW-T10", "phase": "P2", "priority": "high", "deps": ["NW-T04"],                       "title": "Plan the run-of-show (welcome → icebreaker → networking → close)" },
+    { "id": "NW-T11", "phase": "P2", "priority": "high", "deps": ["NW-T04"],                       "title": "Plan an icebreaker / structured introductions to ease the first minutes" },
+    { "id": "NW-T12", "phase": "P2", "priority": "medium", "deps": ["NW-T02", "NW-T03"],           "title": "Plan light refreshments & drinks" },
+    { "id": "NW-T13", "phase": "P3", "priority": "high", "deps": ["NW-T08"],                       "title": "Track & confirm registrations" },
+    { "id": "NW-T14", "phase": "P3", "priority": "high", "deps": ["NW-T08"],                       "title": "Prepare name tags (name + organization / interest)" },
+    { "id": "NW-T15", "phase": "P3", "priority": "high", "deps": ["NW-T02", "NW-T10"],             "title": "Recruit & line up hosts/greeters/facilitators (welcome solo arrivals, fold in newcomers, prevent cliques)" },
+    { "id": "NW-T16", "phase": "P3", "priority": "medium", "deps": ["NW-T13"],                     "title": "Finalize headcount-based quantities (name tags, refreshments, space)" },
+    { "id": "NW-T17", "phase": "P4", "priority": "high", "deps": ["NW-T13", "NW-T14"],             "title": "Confirm final numbers; print name tags & signage" },
+    { "id": "NW-T18", "phase": "P4", "priority": "high", "deps": ["NW-T15", "NW-T10"],             "title": "Brief hosts on roles, the run-of-show, and the inclusion plan before doors" },
+    { "id": "NW-T19", "phase": "P5", "priority": "high", "deps": ["NW-T17"],                       "title": "Set up the space for mingling + check-in / name-tag table + greeter" },
+    { "id": "NW-T20", "phase": "P5", "priority": "high", "deps": ["NW-T19"],                       "title": "Welcome & open: set tone, purpose, format and simple ground rules" },
+    { "id": "NW-T21", "phase": "P5", "priority": "high", "deps": ["NW-T20", "NW-T11"],             "title": "Run the icebreaker / facilitated introductions" },
+    { "id": "NW-T22", "phase": "P5", "priority": "high", "deps": ["NW-T18", "NW-T21"],             "title": "Actively host: introduce people, fold in solo arrivals/newcomers, prevent cliques, manage structured↔free transitions" },
+    { "id": "NW-T23", "phase": "P5", "priority": "high", "deps": ["NW-T22"],                       "title": "Close properly: clear wrap-up, thank-you, and a follow-up call-to-action / next step" },
+    { "id": "NW-T24", "phase": "P6", "priority": "high", "deps": ["NW-T23", "NW-T08"],            "title": "Send follow-up: thank-you + recap/resources (and shared contacts if opted in)" },
+    { "id": "NW-T25", "phase": "P6", "priority": "low", "deps": ["NW-T24"],                        "title": "Collect feedback for next time" }
+  ],
+
+  "dependencies": {
+    "critical_chains": [
+      { "id": "CHAIN-INCLUSION", "never_drop": true, "chain": ["NW-T15", "NW-T18", "NW-T22"], "note": "No one left alone: line up hosts → brief them → actively fold in solo arrivals & prevent cliques" },
+      { "id": "CHAIN-FOLLOWUP",  "never_drop": true, "chain": ["NW-T08", "NW-T23", "NW-T24"], "note": "Networking's value is realized after: capture contacts → close with a next step → send follow-up" },
+      { "id": "CHAIN-ICEBREAKER", "chain": ["NW-T11", "NW-T20", "NW-T21"], "note": "Beat the awkward first minutes: plan → open → run the icebreaker" },
+      { "id": "CHAIN-HEADCOUNT", "chain": ["NW-T08", "NW-T13", "NW-T16"], "note": "Registration → confirm → size quantities" },
+      { "id": "CHAIN-VENUE", "chain": ["NW-T01", "NW-T02", "NW-T06"], "note": "Venue sizing needs purpose + expected size" }
+    ]
+  },
+
+  "milestones": [
+    { "id": "NW-M1", "universal": "UM1", "label": "Scope set (purpose, audience, size, budget)", "satisfied_by": ["NW-T01", "NW-T02", "NW-T03"] },
+    { "id": "NW-M2", "universal": "UM2", "label": "Venue & format confirmed",                    "satisfied_by": ["NW-T06", "NW-T04"] },
+    { "id": "NW-M3", "universal": "UM3", "label": "Registration open / invites sent",            "satisfied_by": ["NW-T08", "NW-T09"] },
+    { "id": "NW-M4", "universal": "UM4", "label": "Attendance confirmed",                        "satisfied_by": ["NW-T13", "NW-T16"] },
+    { "id": "NW-M5", "universal": "UM5", "label": "Materials & hosts secured",                   "satisfied_by": ["NW-T14", "NW-T15"] },
+    { "id": "NW-M6", "universal": "UM6", "label": "Readiness confirmed (hosts briefed, space ready)", "satisfied_by": ["NW-T18", "NW-T17"] },
+    { "id": "NW-M7", "universal": "UM7", "label": "Event executed",                              "satisfied_by": ["NW-T22", "NW-T23"] },
+    { "id": "NW-M8", "universal": "UM8", "label": "Followed up / closed out",                    "satisfied_by": ["NW-T24"] }
+  ],
+
+  "cost_drivers": [
+    { "id": "NW-CD01", "item_key": "venue_hire",             "basis": "flat",      "driver": null,            "cost_category": "UCD1", "note": "0 if a free / community space" },
+    { "id": "NW-CD02", "item_key": "refreshments_per_head",  "basis": "per_guest", "driver": "attendee_count","cost_category": "UCD3" },
+    { "id": "NW-CD03", "item_key": "drinks_per_head",        "basis": "per_guest", "driver": "attendee_count","cost_category": "UCD3" },
+    { "id": "NW-CD04", "item_key": "name_tags_and_materials","basis": "per_unit",  "driver": "name_tags",     "cost_category": "UCD6", "note": "name tags, signage, printing" },
+    { "id": "NW-CD05", "item_key": "facilitator",            "basis": "flat",      "driver": null,            "cost_category": "UCD2", "optional": true, "note": "0 if volunteer/host-run" },
+    { "id": "NW-CD06", "item_key": "av_microphone",          "basis": "flat",      "driver": null,            "cost_category": "UCD4", "optional": true, "note": "if the room needs it" }
+  ],
+
+  "risks": [
+    { "id": "NW-RK01", "category": "URK7", "name": "Attendees arrive alone and are left stranded", "severity": "high", "probability": "high", "applies_if": "always", "never_drop": true, "mitigation": "Greeter at check-in (NW-T19); hosts actively welcome and fold in solo arrivals (NW-T15/NW-T18/NW-T22); opening icebreaker (NW-T21)." },
+    { "id": "NW-RK02", "category": "URK7", "name": "Awkward, slow start / no early momentum", "severity": "medium", "probability": "high", "applies_if": "always", "mitigation": "Warm welcome + simple ground rules (NW-T20); planned icebreaker / structured intros (NW-T11/NW-T21); greeter from the door (NW-T19)." },
+    { "id": "NW-RK03", "category": "URK7", "name": "Cliques form; newcomers excluded", "severity": "high", "probability": "medium", "applies_if": "always", "never_drop": true, "mitigation": "Brief hosts to mix groups and include newcomers (NW-T15/NW-T18/NW-T22); structured introductions (NW-T11)." },
+    { "id": "NW-RK04", "category": "URK1", "name": "Low or uncertain turnout / no-shows", "severity": "medium", "probability": "high", "applies_if": "always", "mitigation": "Target the right audience and over-invite (NW-T09); reminders and confirmation (NW-T13)." },
+    { "id": "NW-RK05", "category": "URK2", "name": "Budget overrun", "severity": "medium", "probability": "medium", "applies_if": "always", "mitigation": "Track spend vs target (NW-T03); venue and refreshments are the main levers." },
+    { "id": "NW-RK06", "category": "URK8", "name": "No follow-up — connections fizzle and value is lost", "severity": "medium", "probability": "high", "applies_if": "always", "never_drop": true, "mitigation": "Capture contacts & interests at registration (NW-T08); close with a clear next step (NW-T23); send the follow-up recap (NW-T24)." },
+    { "id": "NW-RK07", "category": "URK3", "name": "Poor venue flow / layout kills mingling", "severity": "medium", "probability": "medium", "applies_if": "always", "mitigation": "Choose a venue with good flow (NW-T06); set up the space for mingling, not seating (NW-T19)." }
+  ],
+
+  "communication_templates": [
+    { "id": "NW-TPL01", "universal": "UCN1", "name": "invitation",                "required": true,  "variables": ["event_name", "purpose", "date", "time", "location", "register_by", "what_to_expect"] },
+    { "id": "NW-TPL02", "universal": "UCN2", "name": "registration_confirmation", "required": true,  "variables": ["attendee_name", "event_name", "date", "time", "location"] },
+    { "id": "NW-TPL03", "universal": "UCN3", "name": "reminder",                  "required": true,  "variables": ["attendee_name", "event_name", "date", "time", "location"] },
+    { "id": "NW-TPL04", "universal": "UCN4", "name": "arrival_info",              "required": false, "variables": ["attendee_name", "location", "checkin_note"] },
+    { "id": "NW-TPL05", "universal": "UCN6", "name": "thank_you_follow_up",       "required": true,  "variables": ["attendee_name", "event_name", "recap_link", "next_step"] },
+    { "id": "NW-TPL06", "universal": "UCN7", "name": "feedback_request",          "required": false, "variables": ["attendee_name"] }
+  ],
+
+  "decision_rules": [
+    { "rule": "Default format: a short structured icebreaker, then free networking. Use pure free-form only for small (<15), familiar groups; add more structure when many first-timers or solo attendees are expected." },
+    { "rule": "hosts_needed = ceil(attendee_count / attendees_per_host) (config 15); always staff at least one dedicated greeter at check-in." },
+    { "rule": "Name tags are required when attendee_count > 12." },
+    { "rule": "Recommend a 1.5–2h runtime; warn if the requested runtime exceeds 2.5h (energy fades)." },
+    { "rule": "Always capture name, organization and interests at registration to enable follow-up (activates CHAIN-FOLLOWUP)." },
+    { "rule": "Inclusion is never dropped: solo arrivals are greeted and introduced, and hosts actively prevent cliques (CHAIN-INCLUSION)." },
+    { "rule": "Honor accessibility / dietary / language needs captured at registration (NW-T07)." }
+  ],
+
+  "success_conditions": [
+    { "id": "NW-SC01", "universal": "USC2", "condition": "Enough of the right people attended." },
+    { "id": "NW-SC02", "universal": "USC6", "condition": "Attendees made at least one valuable connection." },
+    { "id": "NW-SC03", "universal": "USC3", "condition": "No one was left alone; newcomers and solo arrivals were included." },
+    { "id": "NW-SC04", "universal": "USC4", "condition": "Smooth start, clear transitions, on-time close." },
+    { "id": "NW-SC05", "universal": "USC8", "condition": "Follow-up sent; connections have a clear way to continue." }
+  ],
+
+  "failure_modes": [
+    { "id": "NW-FM01", "binds_risk": "NW-RK01", "mode": "Attendees stand alone, disengage, and leave early" },
+    { "id": "NW-FM02", "binds_risk": "NW-RK02", "mode": "A slow, awkward start that never recovers" },
+    { "id": "NW-FM03", "binds_risk": "NW-RK03", "mode": "Cliques dominate and newcomers are shut out" },
+    { "id": "NW-FM04", "binds_risk": "NW-RK04", "mode": "Too few attendees to network meaningfully" },
+    { "id": "NW-FM05", "binds_risk": "NW-RK06", "mode": "No follow-up; connections fizzle and the value is lost" },
+    { "id": "NW-FM06", "binds_risk": "NW-RK07", "mode": "Poor layout; people get stuck and mingling dies" }
+  ]
+}

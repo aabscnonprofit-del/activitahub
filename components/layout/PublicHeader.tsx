@@ -8,6 +8,7 @@ import { Menu, X, Globe, Bell, LogOut } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { BrandMark } from '@/components/brand/BrandMark'
 import { signOut } from '@/lib/actions/auth'
+import { replaceLocaleInPath } from '@/i18n/locale-path'
 import type { Locale } from '@/lib/types'
 
 interface PublicHeaderProps {
@@ -30,10 +31,14 @@ export function PublicHeader({ locale, isAuthenticated }: PublicHeaderProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [langOpen, setLangOpen] = useState(false)
 
-  // Build same-page URL for locale switching
+  // Build the same-page URL for locale switching: replace the leading locale
+  // segment (or prepend if absent), preserving the query string and hash. The
+  // previous regex missed `de`/`pt` and matched non-segment prefixes, producing
+  // /pt/de-style 404s; replaceLocaleInPath fixes both.
   function localizedPath(targetLocale: Locale): string {
-    const withoutLocale = pathname.replace(/^\/(en|es|fr|ru)/, '') || '/'
-    return `/${targetLocale}${withoutLocale}`
+    const base = replaceLocaleInPath(pathname, targetLocale)
+    if (typeof window === 'undefined') return base
+    return base + window.location.search + window.location.hash
   }
 
   return (

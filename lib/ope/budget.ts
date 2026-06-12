@@ -6,7 +6,6 @@ import type {
   BudgetLine,
   BudgetResult,
   CostDriver,
-  PlannerCategory,
   PriceSeed,
   Scenario,
 } from './types'
@@ -20,7 +19,7 @@ export function buildBudget(
   config: Record<string, number>,
   derivedValues: Record<string, number | null>,
 ): BudgetResult {
-  const pricing = resolvePricing(scenario.location, scenario.category as PlannerCategory)
+  const pricing = resolvePricing(scenario.location, scenario.pricing_category)
   if (!pricing) {
     return {
       is_priced: false,
@@ -39,8 +38,18 @@ export function buildBudget(
   }
   const resolveQty = (name: string | null) => (name == null ? 1 : quantities[name])
 
+  // M3: conditional cost drivers. A driver with `applies_if` is included only when
+  // its flag is true. Existing modules carry no `applies_if`, so this is a no-op for
+  // M1/M2 (byte-identical). No costs are invented — instructor/materials are added
+  // only when the user said they are needed/provided.
+  const driverFlags: Record<string, boolean> = {
+    instructor_needed: scenario.instructor === 'need',
+    materials_provided: scenario.materials === 'provided',
+  }
+
   const breakdown: BudgetLine[] = []
   for (const d of costDrivers) {
+    if (d.applies_if && !driverFlags[d.applies_if]) continue
     const s = seedByKey[d.item_key]
     if (!s) {
       return {
