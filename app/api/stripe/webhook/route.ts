@@ -2,7 +2,9 @@ import { NextResponse, type NextRequest } from 'next/server'
 import type Stripe from 'stripe'
 import { getStripe } from '@/lib/stripe/client'
 import { pathToPaymentKind } from '@/lib/stripe/config'
-import { syncSubscription, customerIdOf } from '@/lib/stripe/sync'
+import { syncSubscription, syncSubscriptionById } from '@/lib/stripe/sync'
+import { customerIdOf } from '@/lib/stripe/subscription-mapping'
+import { handleChargeRefunded, handleChargeRefundUpdated } from '@/lib/stripe/refund-core'
 import { createAdminClient } from '@/lib/supabase/server'
 import type { OnboardingPath } from '@/lib/types'
 
@@ -59,7 +61,10 @@ export async function POST(request: NextRequest) {
       case 'customer.subscription.created':
       case 'customer.subscription.updated':
       case 'customer.subscription.deleted': {
-        await syncSubscription(admin, event.data.object)
+        // Re-retrieve from Stripe rather than trusting the (possibly stale /
+        // out-of-order) event payload, so an old 'incomplete' event can't regress
+        // an 'active' row and revoke a paid organizer's access.
+        await syncSubscriptionById(admin, stripe, event.data.object.id)
         break
       }
 
@@ -67,6 +72,18 @@ export async function POST(request: NextRequest) {
       case 'invoice.paid':
       case 'invoice.payment_succeeded': {
         await handleInvoice(admin, stripe, event.data.object)
+        break
+      }
+
+      case 'charge.refunded': {
+        // A charge was refunded (in-app, Dashboard, or API) — reconcile the booking.
+        await handleChargeRefunded(admin, event.data.object as Stripe.Charge)
+        break
+      }
+
+      case 'charge.refund.updated': {
+        // An individual refund's status settled (e.g. async pending → succeeded).
+        await handleChargeRefundUpdated(admin, stripe, event.data.object as Stripe.Refund)
         break
       }
 
