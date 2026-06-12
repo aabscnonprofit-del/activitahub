@@ -32,7 +32,20 @@ function Checklist({ title, items }: { title: string; items: { id: string; task:
   )
 }
 
-export default function PlanResult({ plan }: { plan: PlannerOutput }) {
+// Optional slots let the workspace swap read-only blocks for interactive lenses
+// without forking the 6-section render: `budgetSlot` → editable BudgetView (WP6);
+// `tasksSlot`/`risksSlot` → tick-able checklist/risk lenses and `resourcesSlot` →
+// a resource-securing card (WP7). All omitted on the public planner, so its render
+// is unchanged.
+export default function PlanResult({
+  plan, budgetSlot, tasksSlot, risksSlot, resourcesSlot,
+}: {
+  plan: PlannerOutput
+  budgetSlot?: React.ReactNode
+  tasksSlot?: React.ReactNode
+  risksSlot?: React.ReactNode
+  resourcesSlot?: React.ReactNode
+}) {
   const t = useTranslations('planner.result')
   const a = plan.section_a_what_you_told_us
   const b = plan.section_b_your_plan
@@ -46,6 +59,13 @@ export default function PlanResult({ plan }: { plan: PlannerOutput }) {
         <p className="text-sm font-semibold text-amber-300">{a.activity_type}</p>
         <h2 className="mt-1 text-2xl font-extrabold sm:text-3xl">{b.headline}</h2>
         {b.summary && <p className="mt-3 max-w-3xl text-sm leading-relaxed text-brand-100">{b.summary}</p>}
+        {b.recurrence && (
+          <span className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold text-white">
+            <CalendarClock className="h-3.5 w-3.5" />
+            {b.recurrence.cadence_label}
+            {b.recurrence.sessions != null ? ` · ${b.recurrence.sessions} sessions` : ''}
+          </span>
+        )}
       </div>
 
       {/* What you told us */}
@@ -76,14 +96,17 @@ export default function PlanResult({ plan }: { plan: PlannerOutput }) {
             </li>
           ))}
         </ol>
+        {tasksSlot ?? (
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           <Checklist title={t('prepChecklist')} items={b.preparation_checklist} />
           <Checklist title={t('dayOfChecklist')} items={b.day_of_checklist} />
           <Checklist title={t('afterChecklist')} items={b.after_event_checklist} />
         </div>
+        )}
       </div>
 
-      {/* Budget */}
+      {/* Budget — editable BudgetView in the workspace, read-only card otherwise */}
+      {budgetSlot ?? (
       <div className="card p-5">
         <div className="mb-3 flex items-center justify-between gap-2">
           <div className="flex items-center gap-2">
@@ -105,6 +128,12 @@ export default function PlanResult({ plan }: { plan: PlannerOutput }) {
                 </div>
               ))}
             </div>
+            {c.per_session && (
+              <p className="mt-2 text-xs font-medium text-slate-500">
+                {t('perSession')}
+                {c.series_total ? ` · ${t('seriesTotal')}: ${money(c.series_total.likely, c.currency)}` : ''}
+              </p>
+            )}
             {c.levers_note && <p className="mt-3 text-sm text-slate-600">{c.levers_note}</p>}
             {!!c.breakdown?.length && (
               <div className="mt-4">
@@ -130,8 +159,13 @@ export default function PlanResult({ plan }: { plan: PlannerOutput }) {
         )}
         {c.meta?.disclaimer && <p className="mt-2 text-[11px] leading-relaxed text-slate-400">{c.meta.disclaimer}</p>}
       </div>
+      )}
 
-      {/* Risks */}
+      {/* Resources to secure — workspace-only lens (no card on the public planner) */}
+      {resourcesSlot}
+
+      {/* Risks — interactive RiskView in the workspace, read-only card otherwise */}
+      {risksSlot ?? (
       <div className="card p-5">
         <div className="mb-3 flex items-center gap-2">
           <AlertTriangle className="h-4 w-4 text-rose-500" />
@@ -149,6 +183,7 @@ export default function PlanResult({ plan }: { plan: PlannerOutput }) {
           ))}
         </ul>
       </div>
+      )}
 
       {/* Ready messages */}
       <div className="card p-5">

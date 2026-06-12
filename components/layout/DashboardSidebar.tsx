@@ -3,6 +3,7 @@ import { getTranslations } from 'next-intl/server'
 import {
   LayoutDashboard,
   Layers,
+  ClipboardList,
   CalendarDays,
   BookOpen,
   Inbox,
@@ -47,6 +48,7 @@ export async function DashboardSidebar({
   const organizerItems: SidebarNavItem[] = [
     { key: 'home', href: base, icon: LayoutDashboard },
     { key: 'activities', href: `${base}/activities`, icon: Layers },
+    { key: 'plans', href: `${base}/plans`, icon: ClipboardList },
     { key: 'calendar', href: `${base}/calendar`, icon: CalendarDays },
     { key: 'bookings', href: `${base}/bookings`, icon: BookOpen },
     { key: 'requests', href: `${base}/requests`, icon: Inbox },

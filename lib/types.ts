@@ -1,3 +1,5 @@
+import type { PlannerInput, PlanGenerationResult } from '@/lib/ope'
+
 export type Locale = 'en' | 'es' | 'fr' | 'ru' | 'de' | 'pt'
 
 export type UserRole = 'guest' | 'student' | 'organizer' | 'certified_organizer' | 'admin'
@@ -628,3 +630,55 @@ export type CustomerStats = {
 export type ActionResult<T = undefined> =
   | { success: true; data?: T; error?: never }
   | { success?: never; error: string; data?: never }
+
+// ── OPE Organizer Workspace — saved plans (M5 PlanStore, WP1) ───────────────
+// An organizer-owned, persisted OPE plan. Mirrors the `ope_plans` table
+// (migration 021). The engine (`generatePlan`) stays the source of truth for
+// `result`; `input` is re-run on edit; `corrections`/`prep_state` are workspace
+// state preserved across reload/recompute. Opaque-JSON fields are stored and
+// returned as-is — the store does not model their internals.
+
+/** Organizer-facing lifecycle phase of a saved plan (WP8 approved model). Linear:
+ *  Draft → Planning → Ready → In Progress → Completed → Closed. Billing-active =
+ *  Planning…Completed (Draft and Closed excluded). See lib/workspace/lifecycle.ts. */
+export type OpePlanPhase = 'draft' | 'planning' | 'ready' | 'in_progress' | 'completed' | 'closed'
+
+/** One append-only lifecycle transition record (WP8 audit trail). */
+export type OpePlanLogEntry = {
+  from: OpePlanPhase
+  to: OpePlanPhase
+  at: string // ISO timestamp
+  by: string // organizer id
+  forced: boolean // true for backward / reopen / abandon overrides
+  auto?: boolean // true for the system Draft → Planning advance on plan_ready
+  reason?: string
+}
+
+/** Budget line-item overrides (current-plan-only), keyed by `item_key`. Opaque to the store. */
+export type OpePlanCorrections = {
+  budget_lines?: Record<string, { low?: number; likely?: number; high?: number }>
+  [k: string]: unknown
+}
+
+/** Preparation/readiness state the organizer accrues on a plan. */
+export type OpePlanPrepState = {
+  tasks_done?: string[] // checklist item ids ticked
+  risks_handled?: string[] // risk ids marked handled
+  resources_sourced?: string[] // need ids marked sourced
+}
+
+/** A persisted organizer plan row (the PlanStore record). */
+export type SavedPlan = {
+  id: string
+  organizer_id: string
+  title: string | null
+  input: PlannerInput // source of truth for recompute
+  result: PlanGenerationResult // the generated { status, coverage, plan, questions }
+  corrections: OpePlanCorrections
+  prep_state: OpePlanPrepState
+  phase: OpePlanPhase
+  lifecycle_log: OpePlanLogEntry[] // append-only transition history (WP8)
+  version: number
+  created_at: string
+  updated_at: string
+}
