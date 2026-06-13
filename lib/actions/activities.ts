@@ -8,6 +8,42 @@ import type { Activity } from '@/lib/types'
 
 type ServerClient = Awaited<ReturnType<typeof createClient>>
 
+// Activity covers reuse the public venue-photos bucket (006); the owner-folder
+// write policy covers any "<uid>/..." path, so no new bucket/policy is needed.
+const COVER_BUCKET = 'venue-photos'
+const MAX_COVER_BYTES = 8 * 1024 * 1024 // 8 MB
+
+/**
+ * If the submitted form carries a `cover` image file, upload it to storage and
+ * set activities.cover_path. Best-effort: a cover failure never blocks the
+ * create/update of the activity itself.
+ */
+async function maybeUploadCover(
+  supabase: ServerClient,
+  userId: string,
+  activityId: string,
+  formData: FormData
+): Promise<void> {
+  const file = formData.get('cover')
+  if (!(file instanceof File) || file.size === 0) return
+  if (file.size > MAX_COVER_BYTES) return
+  if (!file.type.startsWith('image/')) return
+
+  const ext = (file.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '')
+  const path = `${userId}/activity-covers/${activityId}/${crypto.randomUUID()}.${ext}`
+
+  const { error: uploadError } = await supabase.storage
+    .from(COVER_BUCKET)
+    .upload(path, file, { contentType: file.type || undefined, upsert: false })
+  if (uploadError) return
+
+  await supabase
+    .from('activities')
+    .update({ cover_path: path })
+    .eq('id', activityId)
+    .eq('organizer_id', userId)
+}
+
 /**
  * If the activity is published and has not been dispatched yet, fan Activity
  * Alerts out to matching participants. Best-effort and idempotent; never blocks
@@ -118,8 +154,11 @@ export async function createActivity(formData: FormData): Promise<void> {
     .select('id')
     .single()
 
-  if (created && fields.status === 'published') {
-    await maybeDispatchAlerts(supabase, (created as { id: string }).id)
+  if (created) {
+    await maybeUploadCover(supabase, user.id, (created as { id: string }).id, formData)
+    if (fields.status === 'published') {
+      await maybeDispatchAlerts(supabase, (created as { id: string }).id)
+    }
   }
 
   revalidatePath('/dashboard/activities')
@@ -143,6 +182,8 @@ export async function updateActivity(id: string, formData: FormData): Promise<vo
     .update({ ...fields, updated_at: new Date().toISOString() })
     .eq('id', id)
     .eq('organizer_id', user.id)
+
+  await maybeUploadCover(supabase, user.id, id, formData)
 
   if (fields.status === 'published') await maybeDispatchAlerts(supabase, id)
 

@@ -23,10 +23,27 @@ export async function searchMarketplace(
 ): Promise<MarketplaceCardVM[]> {
   const { data } = await sb.rpc('search_marketplace', { p_filters: filters })
   const cards = (data ?? []) as MarketplaceCard[]
-  return cards.map((c) => ({
-    ...c,
-    cover_url: c.cover_path ? publicUrl(sb, c.cover_path) : null,
-  }))
+
+  // Prefer each activity's OWN cover image over the venue photo the RPC returns.
+  // Published activities are directly readable (RLS), so one batched read covers
+  // the whole page — no SECURITY DEFINER RPC change needed.
+  const ids = cards.map((c) => c.id)
+  const coverById: Record<string, string> = {}
+  if (ids.length) {
+    const { data: covers } = await sb
+      .from('activities')
+      .select('id, cover_path')
+      .in('id', ids)
+      .not('cover_path', 'is', null)
+    for (const r of (covers ?? []) as { id: string; cover_path: string }[]) {
+      coverById[r.id] = r.cover_path
+    }
+  }
+
+  return cards.map((c) => {
+    const path = coverById[c.id] ?? c.cover_path
+    return { ...c, cover_url: path ? publicUrl(sb, path) : null }
+  })
 }
 
 export type MarketplaceActivityVM = MarketplaceActivityDetail & {
@@ -41,7 +58,19 @@ export async function getMarketplaceActivity(
   const { data } = await sb.rpc('get_marketplace_activity', { p_id: id })
   if (!data) return null
   const d = data as MarketplaceActivityDetail
-  return { ...d, photo_urls: (d.photo_paths ?? []).map((p) => publicUrl(sb, p)) }
+
+  // Prefer the activity's own cover as the primary image (prepended), falling
+  // back to venue photos. Published activities are directly readable (RLS).
+  let paths = d.photo_paths ?? []
+  const { data: act } = await sb
+    .from('activities')
+    .select('cover_path')
+    .eq('id', id)
+    .maybeSingle()
+  const cover = (act as { cover_path?: string | null } | null)?.cover_path
+  if (cover) paths = [cover, ...paths.filter((p) => p !== cover)]
+
+  return { ...d, photo_urls: paths.map((p) => publicUrl(sb, p)) }
 }
 
 /** Public organizer profile + their published activities. */

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { useTranslations } from 'next-intl'
 import { Plus, Layers, Pencil, Trash2, Eye, EyeOff, Sparkles, Megaphone, Users } from 'lucide-react'
@@ -346,6 +347,24 @@ export default function ActivitiesClient({ initialActivities, venues, locale }: 
               className="input-base resize-none"
             />
             <p className="mt-1 text-xs text-slate-400">{t('form.descriptionHint')}</p>
+          </div>
+
+          {/* ── Cover image (Marketplace Trust MVP) ─────────────────────── */}
+          <div>
+            <label className="label-base">{t('form.coverImage')}</label>
+            {editActivity?.cover_path && (
+              <Image
+                src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/venue-photos/${editActivity.cover_path}`}
+                alt=""
+                width={320}
+                height={128}
+                className="mb-2 h-32 w-full max-w-xs rounded-lg object-cover ring-1 ring-slate-200"
+              />
+            )}
+            <input type="file" name="cover" accept="image/*" className="input-base" />
+            <p className="mt-1 text-xs text-slate-400">
+              {editActivity?.cover_path ? t('form.coverReplace') : t('form.coverHint')}
+            </p>
           </div>
 
           {/* ── Activity details (optional) ────────────────────────────── */}

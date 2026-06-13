@@ -134,6 +134,8 @@ export type Activity = {
   indoor_outdoor: 'indoor' | 'outdoor' | 'both' | null
   venue_id: string | null
   duration_minutes: number | null
+  // Activity cover image (migration 025) — storage path in the venue-photos bucket
+  cover_path?: string | null
   // Activity Alerts bookkeeping (migration 019)
   alerts_sent_at?: string | null
   alerts_reached_count?: number | null
