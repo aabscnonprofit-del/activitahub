@@ -21,6 +21,18 @@ type Repeats = 'one_time' | RecurrenceFrequency
 const CLASS_CATEGORIES = new Set<Category>(['fitness_class', 'art_class', 'language_class', 'workshop'])
 const RECURRING_CAPABLE = new Set<Category>(['networking', ...CLASS_CATEGORIES])
 
+// Module-scoped so its component identity is STABLE across renders. Defining it
+// inside the component re-created it on every keystroke, which remounted the
+// wrapped inputs and dropped focus (P1 production bug).
+function Section({ titleText, children }: { titleText: string; children: React.ReactNode }) {
+  return (
+    <div className="card p-5">
+      <h2 className="mb-3 font-bold text-slate-900">{titleText}</h2>
+      {children}
+    </div>
+  )
+}
+
 export default function NewPlanForm({ locale }: { locale: string }) {
   const router = useRouter()
   const tf = useTranslations('planner.form')
@@ -83,13 +95,6 @@ export default function NewPlanForm({ locale }: { locale: string }) {
       setLoading(false)
     }
   }
-
-  const Section = ({ titleText, children }: { titleText: string; children: React.ReactNode }) => (
-    <div className="card p-5">
-      <h2 className="mb-3 font-bold text-slate-900">{titleText}</h2>
-      {children}
-    </div>
-  )
 
   const cats: { key: Category; label: string }[] = [
     { key: 'birthday', label: tf('birthday') },

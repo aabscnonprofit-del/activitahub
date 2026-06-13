@@ -17,6 +17,18 @@ import type { SavedPlan } from '@/lib/types'
 
 type Venue = 'backyard_home' | 'public_park' | ''
 
+// Module-scoped so its component identity is STABLE across renders. Defining it
+// inside the component re-created it on every keystroke, which remounted the
+// wrapped inputs and dropped focus (same P1 bug as NewPlanForm).
+function Section({ titleText, children }: { titleText: string; children: React.ReactNode }) {
+  return (
+    <div className="card p-5">
+      <h2 className="mb-3 font-bold text-slate-900">{titleText}</h2>
+      {children}
+    </div>
+  )
+}
+
 export default function EditPlanForm({
   plan,
   onSaved,
@@ -82,13 +94,6 @@ export default function EditPlanForm({
       setLoading(false)
     }
   }
-
-  const Section = ({ titleText, children }: { titleText: string; children: React.ReactNode }) => (
-    <div className="card p-5">
-      <h2 className="mb-3 font-bold text-slate-900">{titleText}</h2>
-      {children}
-    </div>
-  )
 
   const venues: { key: Venue; label: string }[] = [
     { key: 'backyard_home', label: tf('backyard') },
