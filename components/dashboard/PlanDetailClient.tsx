@@ -1,8 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { useTranslations } from 'next-intl'
-import { Pencil, Lock } from 'lucide-react'
+import Link from 'next/link'
+import { useTranslations, useLocale } from 'next-intl'
+import { Pencil, Lock, FileText } from 'lucide-react'
 import SavedPlanView from '@/components/dashboard/SavedPlanView'
 import EditPlanForm from '@/components/dashboard/EditPlanForm'
 import ReadinessStrip from '@/components/dashboard/ReadinessStrip'
@@ -23,6 +24,7 @@ const PHASE_KEY: Record<string, string> = {
 
 export default function PlanDetailClient({ initialPlan }: { initialPlan: SavedPlan }) {
   const t = useTranslations('workspace')
+  const locale = useLocale()
   const [plan, setPlan] = useState<SavedPlan>(initialPlan)
   const [editing, setEditing] = useState(false)
   // Transient note: which version we recomputed from → to, cleared on next edit.
@@ -42,18 +44,29 @@ export default function PlanDetailClient({ initialPlan }: { initialPlan: SavedPl
           {t(PHASE_KEY[plan.phase] ?? 'phasePlanning')}
         </span>
         <span className="text-xs text-slate-400">v{plan.version}</span>
-        {!editing && canEditInputs(plan.phase) && (
-          <button
-            onClick={() => { setBump(null); setEditing(true) }}
-            className="ml-auto inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-600 transition-colors hover:border-brand-200 hover:text-brand-700"
-          >
-            <Pencil className="h-4 w-4" /> {t('editInputs')}
-          </button>
-        )}
-        {!editing && !canEditInputs(plan.phase) && (
-          <span className="ml-auto inline-flex items-center gap-1.5 text-xs font-medium text-slate-400">
-            <Lock className="h-3.5 w-3.5" /> {t('frozenPlanNote')}
-          </span>
+        {!editing && (
+          <div className="ml-auto flex flex-wrap items-center gap-2">
+            {plan.result.status === 'plan_ready' && (
+              <Link
+                href={`/${locale}/dashboard/plans/${plan.id}/proposal`}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-brand-200 px-3 py-1.5 text-sm font-medium text-brand-700 transition-colors hover:bg-brand-50"
+              >
+                <FileText className="h-4 w-4" /> {t('viewProposal')}
+              </Link>
+            )}
+            {canEditInputs(plan.phase) ? (
+              <button
+                onClick={() => { setBump(null); setEditing(true) }}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-600 transition-colors hover:border-brand-200 hover:text-brand-700"
+              >
+                <Pencil className="h-4 w-4" /> {t('editInputs')}
+              </button>
+            ) : (
+              <span className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-400">
+                <Lock className="h-3.5 w-3.5" /> {t('frozenPlanNote')}
+              </span>
+            )}
+          </div>
         )}
       </div>
 
