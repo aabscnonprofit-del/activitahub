@@ -20,6 +20,14 @@ const nextConfig: NextConfig = {
   // Pin the file-tracing root to this project (a stray lockfile in the home dir
   // otherwise makes Next infer the wrong workspace root).
   outputFileTracingRoot: process.cwd(),
+  // Activity/venue cover uploads ride through server actions as FormData; the
+  // default 1 MB cap rejects normal photos before they reach Storage. Match the
+  // app cover cap (MAX_COVER_BYTES = 8 MB in lib/actions/activities.ts).
+  // Note: on Vercel the serverless request-body ceiling (~4.5 MB) can still apply
+  // above that — a future client-direct-to-Storage upload would remove it.
+  experimental: {
+    serverActions: { bodySizeLimit: '8mb' },
+  },
   images: {
     remotePatterns: [
       {

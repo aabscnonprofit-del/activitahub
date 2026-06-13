@@ -35,13 +35,22 @@ async function maybeUploadCover(
   const { error: uploadError } = await supabase.storage
     .from(COVER_BUCKET)
     .upload(path, file, { contentType: file.type || undefined, upsert: false })
-  if (uploadError) return
+  if (uploadError) {
+    // Surface in server logs instead of failing silently. Not thrown: the
+    // activity insert/update already succeeded, so we don't error the whole
+    // create (which would risk a duplicate on retry); the cover is simply absent.
+    console.error(`Activity cover upload failed (activity ${activityId}):`, uploadError.message)
+    return
+  }
 
-  await supabase
+  const { error: updateError } = await supabase
     .from('activities')
     .update({ cover_path: path })
     .eq('id', activityId)
     .eq('organizer_id', userId)
+  if (updateError) {
+    console.error(`Activity cover_path update failed (activity ${activityId}):`, updateError.message)
+  }
 }
 
 /**
