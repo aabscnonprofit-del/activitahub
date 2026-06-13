@@ -4,7 +4,7 @@ import { useState, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useTranslations } from 'next-intl'
-import { Plus, Layers, Pencil, Trash2, Eye, EyeOff, Sparkles, Megaphone, Users } from 'lucide-react'
+import { Plus, Layers, Pencil, Trash2, Eye, EyeOff, Sparkles, Megaphone, Users, ImagePlus } from 'lucide-react'
 import {
   createActivity,
   updateActivity,
@@ -43,6 +43,34 @@ function SectionLabel({
         <span className="text-xs font-medium normal-case text-slate-300">· {optionalText}</span>
       )}
     </div>
+  )
+}
+
+/**
+ * Cover image picker. A bare native `<input type="file">` only opens the OS
+ * picker from its small built-in button (worst in Safari, where the styled
+ * full-width box is mostly dead space). Hiding the input inside a styled
+ * `<label>` makes the whole area a reliable trigger — same pattern as
+ * VenuesClient. Lives at module scope and remounts with the Modal, so the
+ * selected-filename state resets each time the form opens.
+ */
+function CoverField({ hint, label }: { hint: string; label: string }) {
+  const [fileName, setFileName] = useState<string | null>(null)
+  return (
+    <>
+      <label className="flex cursor-pointer items-center justify-center gap-2 rounded-lg border-2 border-dashed border-slate-200 px-3 py-3 text-sm text-slate-500 transition-colors hover:border-brand-300 hover:text-brand-600">
+        <ImagePlus className="h-4 w-4 shrink-0" aria-hidden="true" />
+        <span className="truncate">{fileName ?? label}</span>
+        <input
+          type="file"
+          name="cover"
+          accept="image/*"
+          className="hidden"
+          onChange={(e) => setFileName(e.target.files?.[0]?.name ?? null)}
+        />
+      </label>
+      <p className="mt-1 text-xs text-slate-400">{hint}</p>
+    </>
   )
 }
 
@@ -361,10 +389,10 @@ export default function ActivitiesClient({ initialActivities, venues, locale }: 
                 className="mb-2 h-32 w-full max-w-xs rounded-lg object-cover ring-1 ring-slate-200"
               />
             )}
-            <input type="file" name="cover" accept="image/*" className="input-base" />
-            <p className="mt-1 text-xs text-slate-400">
-              {editActivity?.cover_path ? t('form.coverReplace') : t('form.coverHint')}
-            </p>
+            <CoverField
+              label={t('form.coverImage')}
+              hint={editActivity?.cover_path ? t('form.coverReplace') : t('form.coverHint')}
+            />
           </div>
 
           {/* ── Activity details (optional) ────────────────────────────── */}
