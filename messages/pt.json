@@ -100,7 +100,7 @@
         "name": "Academia + Certificação",
         "audience": "Para iniciantes",
         "tagline": "Formação + certificação de organizador.",
-        "price": "$99.99",
+        "price": "$99.00",
         "priceNote": "Único · curso + certificação",
         "features": [
           "Curso estruturado para iniciantes",
@@ -437,7 +437,7 @@
     "beginner": {
       "badge": "Iniciante",
       "title": "Novo na organização de atividades",
-      "description": "Comece do zero com um curso acessível que o orienta em tudo o que precisa para organizar ótimas atividades. Os $99.99 são um pagamento único — incluem o curso, o exame de qualificação, o seu Certificado de Organizador ActivLife e 30 dias de acesso à Plataforma de Organizador que começam quando concluir com sucesso a certificação. Depois disso, é necessária uma subscrição ativa da Plataforma de Organizador para continuar a publicar.",
+      "description": "Comece do zero com um curso acessível que o orienta em tudo o que precisa para organizar ótimas atividades. Os $99.00 são um pagamento único — incluem o curso, o exame de qualificação, o seu Certificado de Organizador ActivLife e 30 dias de acesso à Plataforma de Organizador que começam quando concluir com sucesso a certificação. Depois disso, é necessária uma subscrição ativa da Plataforma de Organizador para continuar a publicar.",
       "includes": "O que está incluído:",
       "features": [
         "7–8 módulos de aprendizagem aprofundados",
@@ -446,9 +446,9 @@
         "Certificado de Organizador Certificado ActivLife",
         "30 dias de acesso à Plataforma de Organizador (começa na certificação)"
       ],
-      "price": "$99.99",
+      "price": "$99.00",
       "priceLabel": "pagamento único",
-      "cta": "Começar a aprender — $99.99"
+      "cta": "Começar a aprender — $99.00"
     },
     "experienced": {
       "badge": "Experiente",

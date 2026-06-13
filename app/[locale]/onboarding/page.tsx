@@ -61,12 +61,13 @@ export default async function OnboardingPage({ params, searchParams }: Onboardin
     redirect(`/${locale}/billing`)
   }
 
-  // payment_complete → they paid but haven't certified yet
-  // Academy handles the next step (Phase 3A will add this redirect)
-  if (
-    typedProfile?.onboarding_status === 'payment_complete' ||
-    typedProfile?.onboarding_status === 'payment_pending'
-  ) {
+  // payment_complete → they paid (webhook-confirmed) but haven't certified yet;
+  // the Academy handles the next step.
+  // NOTE: do NOT redirect payment_pending here. payment_pending means checkout was
+  // only STARTED (e.g. the user cancelled on Stripe). The /academy gate excludes
+  // payment_pending, so redirecting there loops back to /onboarding → /academy.
+  // Instead, fall through and re-show CertificationCheckout so they can retry.
+  if (typedProfile?.onboarding_status === 'payment_complete') {
     redirect(`/${locale}/academy`)
   }
 
@@ -164,8 +165,10 @@ export default async function OnboardingPage({ params, searchParams }: Onboardin
           <p className="text-sm leading-relaxed text-slate-700">{t('flowNote')}</p>
         </div>
 
-        {/* Payment step: a path is chosen but not yet paid for */}
-        {typedProfile?.onboarding_status === 'path_selected' &&
+        {/* Payment step: a path is chosen but not yet paid for, OR a prior checkout
+            was started and not completed (payment_pending → allow retry). */}
+        {(typedProfile?.onboarding_status === 'path_selected' ||
+          typedProfile?.onboarding_status === 'payment_pending') &&
           typedProfile.selected_path && (
             <CertificationCheckout
               locale={locale}

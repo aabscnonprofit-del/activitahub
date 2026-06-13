@@ -100,7 +100,7 @@
         "name": "Akademie + Zertifizierung",
         "audience": "Für Einsteiger",
         "tagline": "Schulung + Organisator-Zertifizierung.",
-        "price": "$99.99",
+        "price": "$99.00",
         "priceNote": "Einmalig · Kurs + Zertifizierung",
         "features": [
           "Strukturierter Einsteigerkurs",
@@ -437,7 +437,7 @@
     "beginner": {
       "badge": "Einsteiger",
       "title": "Neu im Organisieren von Aktivitäten",
-      "description": "Beginne von Grund auf mit einem freundlichen Kurs, der dich durch alles führt, was du für großartige Aktivitäten brauchst. Die $99.99 sind eine einmalige Gebühr – sie umfassen den Kurs, die Qualifikationsprüfung, dein ActivLife-Organisator-Zertifikat und 30 Tage Zugang zur Organisator-Plattform, der mit dem erfolgreichen Abschluss der Zertifizierung beginnt. Danach ist ein aktives Organisator-Plattform-Abonnement erforderlich, um weiter zu veröffentlichen.",
+      "description": "Beginne von Grund auf mit einem freundlichen Kurs, der dich durch alles führt, was du für großartige Aktivitäten brauchst. Die $99.00 sind eine einmalige Gebühr – sie umfassen den Kurs, die Qualifikationsprüfung, dein ActivLife-Organisator-Zertifikat und 30 Tage Zugang zur Organisator-Plattform, der mit dem erfolgreichen Abschluss der Zertifizierung beginnt. Danach ist ein aktives Organisator-Plattform-Abonnement erforderlich, um weiter zu veröffentlichen.",
       "includes": "Inbegriffen:",
       "features": [
         "7–8 ausführliche Lernmodule",
@@ -446,9 +446,9 @@
         "ActivLife-Zertifikat als zertifizierter Organisator",
         "30 Tage Zugang zur Organisator-Plattform (ab Zertifizierung)"
       ],
-      "price": "$99.99",
+      "price": "$99.00",
       "priceLabel": "einmalige Zahlung",
-      "cta": "Lernen starten – $99.99"
+      "cta": "Lernen starten – $99.00"
     },
     "experienced": {
       "badge": "Erfahren",
