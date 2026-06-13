@@ -87,7 +87,7 @@
         "name": "Certificação",
         "audience": "Para organizadores ativos",
         "tagline": "Comprova a tua experiência sem fazer o curso.",
-        "price": "$29",
+        "price": "$39.99",
         "priceNote": "Único · teste de competências",
         "features": [
           "Teste rápido de competências",
@@ -100,7 +100,7 @@
         "name": "Academia + Certificação",
         "audience": "Para iniciantes",
         "tagline": "Formação + certificação de organizador.",
-        "price": "$99",
+        "price": "$99.99",
         "priceNote": "Único · curso + certificação",
         "features": [
           "Curso estruturado para iniciantes",
@@ -114,7 +114,7 @@
         "audience": "Subscrição mensal",
         "badge": "Para ganhar",
         "tagline": "Acede às ferramentas de gestão de eventos.",
-        "price": "$9.99",
+        "price": "$19.99",
         "priceNote": "Faturação mensal",
         "features": {
           "0": "Gestão de atividades",
@@ -437,7 +437,7 @@
     "beginner": {
       "badge": "Iniciante",
       "title": "Novo na organização de atividades",
-      "description": "Comece do zero com um curso acessível que o orienta em tudo o que precisa para organizar ótimas atividades. Os $99 são um pagamento único — incluem o curso, o exame de qualificação, o seu Certificado de Organizador ActivLife e 30 dias de acesso à Plataforma de Organizador que começam quando concluir com sucesso a certificação. Depois disso, é necessária uma subscrição ativa da Plataforma de Organizador para continuar a publicar.",
+      "description": "Comece do zero com um curso acessível que o orienta em tudo o que precisa para organizar ótimas atividades. Os $99.99 são um pagamento único — incluem o curso, o exame de qualificação, o seu Certificado de Organizador ActivLife e 30 dias de acesso à Plataforma de Organizador que começam quando concluir com sucesso a certificação. Depois disso, é necessária uma subscrição ativa da Plataforma de Organizador para continuar a publicar.",
       "includes": "O que está incluído:",
       "features": [
         "7–8 módulos de aprendizagem aprofundados",
@@ -446,14 +446,14 @@
         "Certificado de Organizador Certificado ActivLife",
         "30 dias de acesso à Plataforma de Organizador (começa na certificação)"
       ],
-      "price": "$99",
+      "price": "$99.99",
       "priceLabel": "pagamento único",
-      "cta": "Começar a aprender — $99"
+      "cta": "Começar a aprender — $99.99"
     },
     "experienced": {
       "badge": "Experiente",
       "title": "Já é organizador de atividades",
-      "description": "Salte o curso e prove a sua experiência com um teste de qualificação cronometrado. Os $29 são uma taxa de certificação única — incluem o teste de qualificação, o seu Certificado de Organizador ActivLife e 30 dias de acesso à Plataforma de Organizador que começam quando concluir com sucesso a certificação. Depois disso, é necessária uma subscrição ativa da Plataforma de Organizador para continuar a publicar.",
+      "description": "Salte o curso e prove a sua experiência com um teste de qualificação cronometrado. Os $39.99 são uma taxa de certificação única — incluem o teste de qualificação, o seu Certificado de Organizador ActivLife e 30 dias de acesso à Plataforma de Organizador que começam quando concluir com sucesso a certificação. Depois disso, é necessária uma subscrição ativa da Plataforma de Organizador para continuar a publicar.",
       "includes": "O que está incluído:",
       "features": [
         "15–20 perguntas de qualificação",
@@ -462,9 +462,9 @@
         "Certificado de Organizador Certificado ActivLife",
         "30 dias de acesso à Plataforma de Organizador (começa na certificação)"
       ],
-      "price": "$29",
+      "price": "$39.99",
       "priceLabel": "pagamento único",
-      "cta": "Fazer o teste — $29"
+      "cta": "Fazer o teste — $39.99"
     },
     "steps": [
       "Escolher percurso",
@@ -513,8 +513,8 @@
     },
     "noSubscription": {
       "title": "Ative a sua conta de organizador",
-      "description": "Subscreva por $9.99/mês para desbloquear toda a Plataforma de Organizador: gerir atividades, receber pedidos de clientes e aceitar reservas.",
-      "price": "$9.99",
+      "description": "Subscreva por $19.99/mês para desbloquear toda a Plataforma de Organizador: gerir atividades, receber pedidos de clientes e aceitar reservas.",
+      "price": "$19.99",
       "period": "/mês",
       "cta": "Subscrever agora",
       "features": [

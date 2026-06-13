@@ -158,6 +158,6 @@ CREATE POLICY "profiles_insert_service"
 COMMENT ON TABLE profiles IS 'User profiles extending auth.users. One row per authenticated user.';
 COMMENT ON COLUMN profiles.role IS 'Platform role. Upgraded to certified_organizer after certification + active subscription.';
 COMMENT ON COLUMN profiles.onboarding_status IS 'Tracks user progress through the onboarding funnel.';
-COMMENT ON COLUMN profiles.selected_path IS 'Chosen certification path: beginner ($99 course) or experienced ($29 test).';
+COMMENT ON COLUMN profiles.selected_path IS 'Chosen certification path: beginner ($99.99 course) or experienced ($39.99 test).';
 COMMENT ON COLUMN profiles.suspended IS 'When TRUE, admin has blocked all platform access.';
 COMMENT ON COLUMN profiles.timezone IS 'IANA timezone string, e.g. Europe/Madrid. All dates displayed in this timezone.';

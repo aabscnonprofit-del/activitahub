@@ -87,7 +87,7 @@
         "name": "Zertifizierung",
         "audience": "Für aktive Organisatoren",
         "tagline": "Beweise deine Erfahrung ohne Kurs.",
-        "price": "$29",
+        "price": "$39.99",
         "priceNote": "Einmalig · Kompetenztest",
         "features": [
           "Schnelltest der Fähigkeiten",
@@ -100,7 +100,7 @@
         "name": "Akademie + Zertifizierung",
         "audience": "Für Einsteiger",
         "tagline": "Schulung + Organisator-Zertifizierung.",
-        "price": "$99",
+        "price": "$99.99",
         "priceNote": "Einmalig · Kurs + Zertifizierung",
         "features": [
           "Strukturierter Einsteigerkurs",
@@ -114,7 +114,7 @@
         "audience": "Monatsabo",
         "badge": "Zum Verdienen",
         "tagline": "Zugang zu den Tools für Event-Management.",
-        "price": "$9.99",
+        "price": "$19.99",
         "priceNote": "Monatliche Abrechnung",
         "features": {
           "0": "Aktivitätsverwaltung",
@@ -437,7 +437,7 @@
     "beginner": {
       "badge": "Einsteiger",
       "title": "Neu im Organisieren von Aktivitäten",
-      "description": "Beginne von Grund auf mit einem freundlichen Kurs, der dich durch alles führt, was du für großartige Aktivitäten brauchst. Die $99 sind eine einmalige Gebühr – sie umfassen den Kurs, die Qualifikationsprüfung, dein ActivLife-Organisator-Zertifikat und 30 Tage Zugang zur Organisator-Plattform, der mit dem erfolgreichen Abschluss der Zertifizierung beginnt. Danach ist ein aktives Organisator-Plattform-Abonnement erforderlich, um weiter zu veröffentlichen.",
+      "description": "Beginne von Grund auf mit einem freundlichen Kurs, der dich durch alles führt, was du für großartige Aktivitäten brauchst. Die $99.99 sind eine einmalige Gebühr – sie umfassen den Kurs, die Qualifikationsprüfung, dein ActivLife-Organisator-Zertifikat und 30 Tage Zugang zur Organisator-Plattform, der mit dem erfolgreichen Abschluss der Zertifizierung beginnt. Danach ist ein aktives Organisator-Plattform-Abonnement erforderlich, um weiter zu veröffentlichen.",
       "includes": "Inbegriffen:",
       "features": [
         "7–8 ausführliche Lernmodule",
@@ -446,14 +446,14 @@
         "ActivLife-Zertifikat als zertifizierter Organisator",
         "30 Tage Zugang zur Organisator-Plattform (ab Zertifizierung)"
       ],
-      "price": "$99",
+      "price": "$99.99",
       "priceLabel": "einmalige Zahlung",
-      "cta": "Lernen starten – $99"
+      "cta": "Lernen starten – $99.99"
     },
     "experienced": {
       "badge": "Erfahren",
       "title": "Bereits Aktivitäts-Organisator",
-      "description": "Überspringe den Kurs und beweise dein Können mit einem zeitlich begrenzten Qualifikationstest. Die $29 sind eine einmalige Zertifizierungsgebühr – sie umfassen den Qualifikationstest, dein ActivLife-Organisator-Zertifikat und 30 Tage Zugang zur Organisator-Plattform, der mit dem erfolgreichen Abschluss der Zertifizierung beginnt. Danach ist ein aktives Organisator-Plattform-Abonnement erforderlich, um weiter zu veröffentlichen.",
+      "description": "Überspringe den Kurs und beweise dein Können mit einem zeitlich begrenzten Qualifikationstest. Die $39.99 sind eine einmalige Zertifizierungsgebühr – sie umfassen den Qualifikationstest, dein ActivLife-Organisator-Zertifikat und 30 Tage Zugang zur Organisator-Plattform, der mit dem erfolgreichen Abschluss der Zertifizierung beginnt. Danach ist ein aktives Organisator-Plattform-Abonnement erforderlich, um weiter zu veröffentlichen.",
       "includes": "Inbegriffen:",
       "features": [
         "15–20 Qualifikationsfragen",
@@ -462,9 +462,9 @@
         "ActivLife-Zertifikat als zertifizierter Organisator",
         "30 Tage Zugang zur Organisator-Plattform (ab Zertifizierung)"
       ],
-      "price": "$29",
+      "price": "$39.99",
       "priceLabel": "einmalige Zahlung",
-      "cta": "Test ablegen – $29"
+      "cta": "Test ablegen – $39.99"
     },
     "steps": [
       "Weg wählen",
@@ -513,8 +513,8 @@
     },
     "noSubscription": {
       "title": "Aktiviere dein Organisator-Konto",
-      "description": "Abonniere für $9.99/Monat, um die volle Organisator-Plattform freizuschalten: Aktivitäten verwalten, Kundenanfragen erhalten und Buchungen annehmen.",
-      "price": "$9.99",
+      "description": "Abonniere für $19.99/Monat, um die volle Organisator-Plattform freizuschalten: Aktivitäten verwalten, Kundenanfragen erhalten und Buchungen annehmen.",
+      "price": "$19.99",
       "period": "/Monat",
       "cta": "Jetzt abonnieren",
       "features": [

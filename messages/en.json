@@ -87,7 +87,7 @@
         "name": "Certification",
         "audience": "For working organizers",
         "tagline": "Prove your experience — skip the course.",
-        "price": "$29",
+        "price": "$39.99",
         "priceNote": "One-time · skills test",
         "features": [
           "Fast-track skills test",
@@ -100,7 +100,7 @@
         "name": "Academy + Certification",
         "audience": "For newcomers",
         "tagline": "Training + organizer certification.",
-        "price": "$99",
+        "price": "$99.99",
         "priceNote": "One-time · course + certification",
         "features": [
           "Structured beginner course",
@@ -114,7 +114,7 @@
         "audience": "Monthly subscription",
         "badge": "For earning",
         "tagline": "Access the activity-management toolkit.",
-        "price": "$9.99",
+        "price": "$19.99",
         "priceNote": "Billed monthly",
         "features": {
           "0": "Activity management",
@@ -437,7 +437,7 @@
     "beginner": {
       "badge": "Beginner",
       "title": "New to Activity Organization",
-      "description": "Start from scratch with a friendly course that walks you through everything you need to host great activities. The $99 is a one-time fee — it includes the course, the qualification exam, your ActivLife Organizer Certificate, and 30 days of Organizer Platform Access that begins when you successfully complete certification. After that, an active Organizer Platform subscription is required to keep publishing.",
+      "description": "Start from scratch with a friendly course that walks you through everything you need to host great activities. The $99.99 is a one-time fee — it includes the course, the qualification exam, your ActivLife Organizer Certificate, and 30 days of Organizer Platform Access that begins when you successfully complete certification. After that, an active Organizer Platform subscription is required to keep publishing.",
       "includes": "What's included:",
       "features": [
         "7–8 in-depth learning modules",
@@ -446,14 +446,14 @@
         "ActivLife Certified Organizer certificate",
         "30 days of Organizer Platform access (starts at certification)"
       ],
-      "price": "$99",
+      "price": "$99.99",
       "priceLabel": "one-time payment",
-      "cta": "Start Learning — $99"
+      "cta": "Start Learning — $99.99"
     },
     "experienced": {
       "badge": "Experienced",
       "title": "Already an Activity Organizer",
-      "description": "Skip the course and prove your expertise with a timed qualification test. The $29 is a one-time certification fee — it includes the qualification test, your ActivLife Organizer Certificate, and 30 days of Organizer Platform Access that begins when you successfully complete certification. After that, an active Organizer Platform subscription is required to keep publishing.",
+      "description": "Skip the course and prove your expertise with a timed qualification test. The $39.99 is a one-time certification fee — it includes the qualification test, your ActivLife Organizer Certificate, and 30 days of Organizer Platform Access that begins when you successfully complete certification. After that, an active Organizer Platform subscription is required to keep publishing.",
       "includes": "What's included:",
       "features": [
         "15–20 qualification questions",
@@ -462,9 +462,9 @@
         "ActivLife Certified Organizer certificate",
         "30 days of Organizer Platform access (starts at certification)"
       ],
-      "price": "$29",
+      "price": "$39.99",
       "priceLabel": "one-time payment",
-      "cta": "Take the Test — $29"
+      "cta": "Take the Test — $39.99"
     },
     "steps": [
       "Choose path",
@@ -513,8 +513,8 @@
     },
     "noSubscription": {
       "title": "Activate Your Organizer Account",
-      "description": "Subscribe for $9.99/month to unlock the full Organizer Platform: manage activities, receive client requests, and accept bookings.",
-      "price": "$9.99",
+      "description": "Subscribe for $19.99/month to unlock the full Organizer Platform: manage activities, receive client requests, and accept bookings.",
+      "price": "$19.99",
       "period": "/month",
       "cta": "Subscribe Now",
       "features": [

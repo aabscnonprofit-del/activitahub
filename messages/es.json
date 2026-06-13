@@ -87,7 +87,7 @@
         "name": "Certificación",
         "audience": "Para organizadores en activo",
         "tagline": "Demuestra tu experiencia sin hacer el curso.",
-        "price": "$29",
+        "price": "$39.99",
         "priceNote": "Pago único · prueba de competencias",
         "features": [
           "Prueba rápida de competencias",
@@ -100,7 +100,7 @@
         "name": "Academia + Certificación",
         "audience": "Para principiantes",
         "tagline": "Formación + certificación de organizador.",
-        "price": "$99",
+        "price": "$99.99",
         "priceNote": "Pago único · curso + certificación",
         "features": [
           "Curso estructurado para principiantes",
@@ -114,7 +114,7 @@
         "audience": "Suscripción mensual",
         "badge": "Para ganar",
         "tagline": "Accede a las herramientas de gestión de eventos.",
-        "price": "$9.99",
+        "price": "$19.99",
         "priceNote": "Facturación mensual",
         "features": {
           "0": "Gestión de actividades",
@@ -437,7 +437,7 @@
     "beginner": {
       "badge": "Principiante",
       "title": "Nuevo en organización de actividades",
-      "description": "Empieza desde cero con un curso cercano que te guía por todo lo necesario para organizar grandes actividades. Los $99 son un pago único: incluyen el curso, el examen de calificación, tu Certificado de Organizador ActivLife y 30 días de acceso a la Plataforma de Organizadores que comienzan cuando completas con éxito la certificación. Después, se necesita una suscripción activa a la Plataforma de Organizadores para seguir publicando.",
+      "description": "Empieza desde cero con un curso cercano que te guía por todo lo necesario para organizar grandes actividades. Los $99.99 son un pago único: incluyen el curso, el examen de calificación, tu Certificado de Organizador ActivLife y 30 días de acceso a la Plataforma de Organizadores que comienzan cuando completas con éxito la certificación. Después, se necesita una suscripción activa a la Plataforma de Organizadores para seguir publicando.",
       "includes": "¿Qué incluye?",
       "features": [
         "7–8 módulos de aprendizaje en profundidad",
@@ -446,14 +446,14 @@
         "Certificado de Organizador Certificado ActivLife",
         "30 días de acceso a la Plataforma de Organizadores (comienza al certificarte)"
       ],
-      "price": "$99",
+      "price": "$99.99",
       "priceLabel": "pago único",
-      "cta": "Empezar a aprender — $99"
+      "cta": "Empezar a aprender — $99.99"
     },
     "experienced": {
       "badge": "Experimentado",
       "title": "Ya soy organizador de actividades",
-      "description": "Omite el curso y demuestra tu experiencia con una prueba de calificación cronometrada. Los $29 son un pago único de certificación: incluyen la prueba de calificación, tu Certificado de Organizador ActivLife y 30 días de acceso a la Plataforma de Organizadores que comienzan cuando completas con éxito la certificación. Después, se necesita una suscripción activa a la Plataforma de Organizadores para seguir publicando.",
+      "description": "Omite el curso y demuestra tu experiencia con una prueba de calificación cronometrada. Los $39.99 son un pago único de certificación: incluyen la prueba de calificación, tu Certificado de Organizador ActivLife y 30 días de acceso a la Plataforma de Organizadores que comienzan cuando completas con éxito la certificación. Después, se necesita una suscripción activa a la Plataforma de Organizadores para seguir publicando.",
       "includes": "¿Qué incluye?",
       "features": [
         "15–20 preguntas de calificación",
@@ -462,9 +462,9 @@
         "Certificado de Organizador Certificado ActivLife",
         "30 días de acceso a la Plataforma de Organizadores (comienza al certificarte)"
       ],
-      "price": "$29",
+      "price": "$39.99",
       "priceLabel": "pago único",
-      "cta": "Hacer el test — $29"
+      "cta": "Hacer el test — $39.99"
     },
     "steps": [
       "Elige tu ruta",
@@ -513,8 +513,8 @@
     },
     "noSubscription": {
       "title": "Activa tu cuenta de organizador",
-      "description": "Suscríbete por $9.99/mes para desbloquear la Plataforma de Organizadores completa.",
-      "price": "$9.99",
+      "description": "Suscríbete por $19.99/mes para desbloquear la Plataforma de Organizadores completa.",
+      "price": "$19.99",
       "period": "/mes",
       "cta": "Suscribirse ahora",
       "features": [

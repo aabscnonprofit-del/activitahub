@@ -129,9 +129,9 @@ Revenue streams, current and planned:
 - **Verification fee** 🟡 — paid step to earn the **Verified Organizer** badge (§3).
   Amount/cadence TBD.
 - **Certification fee** ✅ — one-time payment to pursue certification
-  (**$99** beginner course · **$29** experienced skills test).
+  (**$99.99** beginner course · **$39.99** experienced skills test).
 - **Organizer subscription** ✅ — recurring fee to operate (access the dashboard);
-  **$9.99/month** per the billing flow.
+  **$19.99/month** per the billing flow.
 - **Lead / proposal fees** 🔜 *(future)* — charging organizers for access to / responding
   to Event Request leads.
 - **Commission** 🔜 *(future)* — a platform percentage on bookings. **Not implemented
@@ -139,7 +139,7 @@ Revenue streams, current and planned:
 
 > Note: the $49/$29/$19 values used during the Stripe test pass were throwaway QA
 > prices, not product prices.
-> Open: reconcile the public Pricing page ($29/mo tier) with the $9.99/mo billing flow.
+> Open: reconcile the public Pricing page ($29/mo tier) with the $19.99/mo billing flow.
 
 ---
 
@@ -322,8 +322,8 @@ prices are set here**; the paid model and the principle are decided.
 
 Certification includes a time-boxed Organizer Platform access window:
 
-- **Beginner Path ($99)** includes: Organizer Course · Qualification Exam · ActivLife Organizer Certificate · **30 days of Organizer Platform Access**.
-- **Experienced Path ($29)** includes: Qualification Test · ActivLife Organizer Certificate · **30 days of Organizer Platform Access**.
+- **Beginner Path ($99.99)** includes: Organizer Course · Qualification Exam · ActivLife Organizer Certificate · **30 days of Organizer Platform Access**.
+- **Experienced Path ($39.99)** includes: Qualification Test · ActivLife Organizer Certificate · **30 days of Organizer Platform Access**.
 
 Rules (non-negotiable):
 1. The 30-day access **begins only when certification is successfully completed** (the ActivLife Organizer Certificate is issued) — **not at payment time**.

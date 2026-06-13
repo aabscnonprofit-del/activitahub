@@ -87,7 +87,7 @@
         "name": "Certification",
         "audience": "Pour les organisateurs en activité",
         "tagline": "Prouvez votre expérience sans suivre le cours.",
-        "price": "$29",
+        "price": "$39.99",
         "priceNote": "Paiement unique · test de compétences",
         "features": [
           "Test rapide de compétences",
@@ -100,7 +100,7 @@
         "name": "Académie + Certification",
         "audience": "Pour les débutants",
         "tagline": "Formation + certification d'organisateur.",
-        "price": "$99",
+        "price": "$99.99",
         "priceNote": "Paiement unique · cours + certification",
         "features": [
           "Cours structuré pour débutants",
@@ -114,7 +114,7 @@
         "audience": "Abonnement mensuel",
         "badge": "Pour gagner",
         "tagline": "Accédez aux outils de gestion d'événements.",
-        "price": "$9.99",
+        "price": "$19.99",
         "priceNote": "Facturation mensuelle",
         "features": {
           "0": "Gestion des activités",
@@ -437,7 +437,7 @@
     "beginner": {
       "badge": "Débutant",
       "title": "Nouveau dans l'organisation d'activités",
-      "description": "Partez de zéro avec un cours accessible qui vous guide dans tout ce qu’il faut pour organiser de belles activités. Les 99 $ correspondent à un paiement unique : ils incluent le cours, l’examen de qualification, votre Certificat d’Organisateur ActivLife et 30 jours d’accès à la Plateforme Organisateur qui commencent lorsque vous réussissez votre certification. Ensuite, un abonnement actif à la Plateforme Organisateur est requis pour continuer à publier.",
+      "description": "Partez de zéro avec un cours accessible qui vous guide dans tout ce qu’il faut pour organiser de belles activités. Les 99,99 $ correspondent à un paiement unique : ils incluent le cours, l’examen de qualification, votre Certificat d’Organisateur ActivLife et 30 jours d’accès à la Plateforme Organisateur qui commencent lorsque vous réussissez votre certification. Ensuite, un abonnement actif à la Plateforme Organisateur est requis pour continuer à publier.",
       "includes": "Ce qui est inclus :",
       "features": [
         "7 à 8 modules d'apprentissage approfondis",
@@ -446,14 +446,14 @@
         "Certificat d'Organisateur Certifié ActivLife",
         "30 jours d'accès à la Plateforme Organisateur (à partir de la certification)"
       ],
-      "price": "99 $",
+      "price": "99,99 $",
       "priceLabel": "paiement unique",
-      "cta": "Commencer à apprendre — 99 $"
+      "cta": "Commencer à apprendre — 99,99 $"
     },
     "experienced": {
       "badge": "Expérimenté",
       "title": "Déjà organisateur d'activités",
-      "description": "Passez le cours et prouvez votre expertise avec un test de qualification chronométré. Les 29 $ correspondent à des frais de certification uniques : ils incluent le test de qualification, votre Certificat d’Organisateur ActivLife et 30 jours d’accès à la Plateforme Organisateur qui commencent lorsque vous réussissez votre certification. Ensuite, un abonnement actif à la Plateforme Organisateur est requis pour continuer à publier.",
+      "description": "Passez le cours et prouvez votre expertise avec un test de qualification chronométré. Les 39,99 $ correspondent à des frais de certification uniques : ils incluent le test de qualification, votre Certificat d’Organisateur ActivLife et 30 jours d’accès à la Plateforme Organisateur qui commencent lorsque vous réussissez votre certification. Ensuite, un abonnement actif à la Plateforme Organisateur est requis pour continuer à publier.",
       "includes": "Ce qui est inclus :",
       "features": [
         "15 à 20 questions de qualification",
@@ -462,9 +462,9 @@
         "Certificat d'Organisateur Certifié ActivLife",
         "30 jours d'accès à la Plateforme Organisateur (à partir de la certification)"
       ],
-      "price": "29 $",
+      "price": "39,99 $",
       "priceLabel": "paiement unique",
-      "cta": "Passer le test — 29 $"
+      "cta": "Passer le test — 39,99 $"
     },
     "steps": [
       "Choisissez votre parcours",
@@ -513,8 +513,8 @@
     },
     "noSubscription": {
       "title": "Activez votre compte organisateur",
-      "description": "Abonnez-vous pour 9,99 $/mois afin d'accéder à la Plateforme Organisateur complète.",
-      "price": "9,99 $",
+      "description": "Abonnez-vous pour 19,99 $/mois afin d'accéder à la Plateforme Organisateur complète.",
+      "price": "19,99 $",
       "period": "/mois",
       "cta": "S'abonner maintenant",
       "features": [
