@@ -1,9 +1,9 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Send } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
-import { getPlan } from '@/lib/actions/opePlans'
+import { getPlan, sendProposalFromPlan } from '@/lib/actions/opePlans'
 import { buildProposal } from '@/lib/workspace/proposal'
 import ProposalDocument from '@/components/dashboard/ProposalDocument'
 
@@ -13,10 +13,14 @@ import ProposalDocument from '@/components/dashboard/ProposalDocument'
 // ProposalDocument. No persistence, no export — generated live from the saved plan.
 // Distinct route from the /dashboard/proposals marketplace surface.
 
-type Props = { params: Promise<{ locale: string; id: string }> }
+type Props = {
+  params: Promise<{ locale: string; id: string }>
+  searchParams: Promise<{ sendError?: string }>
+}
 
-export default async function PlanProposalPage({ params }: Props) {
+export default async function PlanProposalPage({ params, searchParams }: Props) {
   const { locale, id } = await params
+  const { sendError } = await searchParams
   const t = await getTranslations({ locale, namespace: 'proposal' })
 
   const supabase = await createClient()
@@ -40,10 +44,28 @@ export default async function PlanProposalPage({ params }: Props) {
   }
 
   const vm = buildProposal(res.data)
+  // Only request-derived plans can send back to a customer request (Task #5).
+  const canSend = !!res.data.source_request_id && vm.ready
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-8 sm:py-10">
       {backLink}
+
+      {sendError && (
+        <div className="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+          {t('sendError')}: {sendError}
+        </div>
+      )}
+
+      {canSend && (
+        <form action={sendProposalFromPlan.bind(null, res.data.id, locale)} className="mb-4 flex justify-end">
+          <button className="btn-primary inline-flex items-center gap-1.5">
+            <Send className="h-4 w-4" />
+            {t('sendToCustomer')}
+          </button>
+        </form>
+      )}
+
       <ProposalDocument vm={vm} />
     </div>
   )

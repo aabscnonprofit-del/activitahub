@@ -7,6 +7,7 @@ import { generatePlan } from '@/lib/ope'
 import type { PlannerInput } from '@/lib/ope/types'
 import { plannerInputSchema } from '@/lib/ope/validation'
 import { mapRequestToPlannerInput, buildAssessment, fillClarificationDefaults, type RequestLike } from '@/lib/ope/request-plan'
+import { buildProposal } from '@/lib/workspace/proposal'
 import { userHasOrganizerAccess } from '@/lib/auth/organizer-access.server'
 import {
   canEditBudget, canEditInputs, canEditPrep, findTransition,
@@ -200,6 +201,53 @@ export async function generatePlanFromRequestAction(formData: FormData): Promise
   if (res.ok) redirect(`/${locale}/dashboard/plans/${res.planId}`)
   const reason = res.kind === 'unsupported' ? res.reason : res.error
   redirect(`/${locale}/dashboard/requests?planError=${encodeURIComponent(reason)}`)
+}
+
+/**
+ * Plan → Proposal → Request (Task #5). Sends a request-derived plan's generated
+ * proposal back to the originating customer request, reusing the existing
+ * send_proposal RPC (migration 008) and the deterministic buildProposal output.
+ * No new schema, no RPC change. Guards: owner-only plan, organizer entitlement,
+ * a linked source_request_id, and a ready proposal. The RPC itself enforces the
+ * request_matches membership, the open/matched request status, and upserts on
+ * (request_id, organizer_id) so re-sending updates the same proposal.
+ */
+export async function sendProposalFromPlan(planId: string, locale: string): Promise<void> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) redirect(`/${locale}/auth/sign-in`)
+
+  // Entitlement: same gate as the manual proposal flow.
+  if (!(await userHasOrganizerAccess(supabase, user.id))) redirect(`/${locale}/billing`)
+
+  const { data: planRow } = await supabase
+    .from(TABLE).select(SELECT).eq('id', planId).eq('organizer_id', user.id).single()
+  if (!planRow) redirect(`/${locale}/dashboard/plans`)
+  const plan = planRow as SavedPlan
+
+  const base = `/${locale}/dashboard/plans/${planId}/proposal`
+  if (!plan.source_request_id) redirect(`${base}?sendError=no_request`)
+
+  // Use the same deterministic, correction-aware proposal the organizer sees.
+  const vm = buildProposal(plan)
+  if (!vm.ready || !vm.budget) redirect(`${base}?sendError=not_ready`)
+
+  // Proposal budget is whole currency units; the RPC stores cents. Unpriced → no price.
+  const priceCents = vm.budget.priced ? Math.round(vm.budget.likely * 100) : null
+  const message = (vm.summary ?? vm.eventTitle ?? '').slice(0, 2000) || null
+
+  const { error } = await supabase.rpc('send_proposal', {
+    p_request_id: plan.source_request_id,
+    p_activity_id: null,
+    p_message: message,
+    p_price_cents: priceCents,
+    p_proposed_date: null,
+  })
+  if (error) redirect(`${base}?sendError=${encodeURIComponent(error.message)}`)
+
+  revalidatePath(`/${locale}/dashboard/proposals`)
+  revalidatePath(`/${locale}/dashboard/requests`)
+  redirect(`/${locale}/dashboard/proposals`)
 }
 
 /** Load one plan (owner only). */

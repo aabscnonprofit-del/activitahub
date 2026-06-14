@@ -2049,6 +2049,8 @@
     "nextStep2": "Confirm the timeline and budget that works for you.",
     "nextStep3": "We finalize the arrangements and vendors.",
     "nextStep4": "Your event is delivered — stress-free.",
-    "disclaimer": "Estimates are indicative and may be refined as details are confirmed."
+    "disclaimer": "Estimates are indicative and may be refined as details are confirmed.",
+    "sendToCustomer": "Send proposal to customer",
+    "sendError": "Could not send proposal"
   }
 }

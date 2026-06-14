@@ -2049,6 +2049,8 @@
     "nextStep2": "Bestätige Ablauf und Budget, die zu dir passen.",
     "nextStep3": "Wir finalisieren die Vorbereitungen und Dienstleister.",
     "nextStep4": "Deine Veranstaltung findet statt – ganz entspannt.",
-    "disclaimer": "Schätzungen sind Richtwerte und können bei Bestätigung der Details angepasst werden."
+    "disclaimer": "Schätzungen sind Richtwerte und können bei Bestätigung der Details angepasst werden.",
+    "sendToCustomer": "Angebot an den Kunden senden",
+    "sendError": "Angebot konnte nicht gesendet werden"
   }
 }

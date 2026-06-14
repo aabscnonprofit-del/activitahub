@@ -2049,6 +2049,8 @@
     "nextStep2": "Confirmez le déroulé et le budget qui vous conviennent.",
     "nextStep3": "Nous finalisons les arrangements et les prestataires.",
     "nextStep4": "Votre événement est réalisé, sans stress.",
-    "disclaimer": "Les estimations sont indicatives et peuvent être affinées une fois les détails confirmés."
+    "disclaimer": "Les estimations sont indicatives et peuvent être affinées une fois les détails confirmés.",
+    "sendToCustomer": "Envoyer la proposition au client",
+    "sendError": "Impossible d’envoyer la proposition"
   }
 }

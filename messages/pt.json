@@ -2049,6 +2049,8 @@
     "nextStep2": "Confirme o cronograma e o orçamento que lhe convêm.",
     "nextStep3": "Finalizamos os preparativos e os fornecedores.",
     "nextStep4": "O seu evento acontece — sem stress.",
-    "disclaimer": "As estimativas são indicativas e podem ser ajustadas à medida que os detalhes são confirmados."
+    "disclaimer": "As estimativas são indicativas e podem ser ajustadas à medida que os detalhes são confirmados.",
+    "sendToCustomer": "Enviar proposta ao cliente",
+    "sendError": "Não foi possível enviar a proposta"
   }
 }
