@@ -45,9 +45,9 @@ export default function ProposalDocument({ vm }: { vm: ProposalViewModel }) {
   const b = vm.budget
 
   return (
-    <article className="space-y-6">
+    <article className="space-y-6 print:space-y-4 [&_section]:break-inside-avoid">
       {/* Header */}
-      <header className="rounded-2xl bg-gradient-to-br from-brand-600 to-brand-800 p-6 text-white sm:p-8">
+      <header className="break-inside-avoid rounded-2xl bg-gradient-to-br from-brand-600 to-brand-800 p-6 text-white sm:p-8">
         <p className="text-sm font-semibold uppercase tracking-wide text-amber-300">{t('documentTitle')}</p>
         <h1 className="mt-1 text-2xl font-extrabold sm:text-3xl">{vm.eventTitle}</h1>
         <p className="mt-1 text-sm text-brand-100">{vm.activityType}</p>

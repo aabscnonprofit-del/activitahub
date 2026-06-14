@@ -2051,6 +2051,7 @@
     "nextStep4": "Your event is delivered — stress-free.",
     "disclaimer": "Estimates are indicative and may be refined as details are confirmed.",
     "sendToCustomer": "Send proposal to customer",
-    "sendError": "Could not send proposal"
+    "sendError": "Could not send proposal",
+    "print": "Print / Save PDF"
   }
 }

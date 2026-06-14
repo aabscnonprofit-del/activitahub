@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getPlan, sendProposalFromPlan } from '@/lib/actions/opePlans'
 import { buildProposal } from '@/lib/workspace/proposal'
 import ProposalDocument from '@/components/dashboard/ProposalDocument'
+import ProposalPrintButton from '@/components/dashboard/ProposalPrintButton'
 
 // Proposal Generator V1 (C2) — client-facing proposal for a saved OPE plan.
 // Loads the plan owner-only via getPlan (the /dashboard gate already requires a
@@ -28,7 +29,7 @@ export default async function PlanProposalPage({ params, searchParams }: Props) 
   if (!user) redirect(`/${locale}/auth/sign-in`)
 
   const backLink = (
-    <Link href={`/${locale}/dashboard/plans/${id}`} className="mb-4 inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-slate-800">
+    <Link href={`/${locale}/dashboard/plans/${id}`} className="mb-4 inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-slate-800 print:hidden">
       <ArrowLeft className="h-4 w-4" /> {t('back')}
     </Link>
   )
@@ -52,18 +53,23 @@ export default async function PlanProposalPage({ params, searchParams }: Props) 
       {backLink}
 
       {sendError && (
-        <div className="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+        <div className="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 print:hidden">
           {t('sendError')}: {sendError}
         </div>
       )}
 
-      {canSend && (
-        <form action={sendProposalFromPlan.bind(null, res.data.id, locale)} className="mb-4 flex justify-end">
-          <button className="btn-primary inline-flex items-center gap-1.5">
-            <Send className="h-4 w-4" />
-            {t('sendToCustomer')}
-          </button>
-        </form>
+      {vm.ready && (
+        <div className="mb-4 flex flex-wrap items-center justify-end gap-2 print:hidden">
+          {canSend && (
+            <form action={sendProposalFromPlan.bind(null, res.data.id, locale)}>
+              <button className="btn-primary inline-flex items-center gap-1.5">
+                <Send className="h-4 w-4" />
+                {t('sendToCustomer')}
+              </button>
+            </form>
+          )}
+          <ProposalPrintButton />
+        </div>
       )}
 
       <ProposalDocument vm={vm} />

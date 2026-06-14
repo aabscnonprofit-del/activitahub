@@ -2051,6 +2051,7 @@
     "nextStep4": "Tu evento se realiza, sin estrés.",
     "disclaimer": "Las estimaciones son orientativas y pueden ajustarse al confirmar los detalles.",
     "sendToCustomer": "Enviar propuesta al cliente",
-    "sendError": "No se pudo enviar la propuesta"
+    "sendError": "No se pudo enviar la propuesta",
+    "print": "Imprimir / Guardar PDF"
   }
 }

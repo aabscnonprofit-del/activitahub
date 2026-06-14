@@ -43,16 +43,18 @@ export default async function DashboardLayout({
 
   return (
     <div className="flex min-h-screen flex-col bg-slate-50">
-      {/* Topbar — fixed at top */}
-      <DashboardTopbar
-        locale={locale}
-        fullName={profile?.full_name ?? null}
-        avatarUrl={profile?.avatar_url ?? null}
-      />
+      {/* Topbar — fixed at top (hidden when printing, e.g. proposal PDF export) */}
+      <div className="print:hidden">
+        <DashboardTopbar
+          locale={locale}
+          fullName={profile?.full_name ?? null}
+          avatarUrl={profile?.avatar_url ?? null}
+        />
+      </div>
 
       <div className="flex flex-1">
-        {/* Sidebar — sticky, rendered based on role */}
-        <div className="hidden lg:block">
+        {/* Sidebar — sticky, rendered based on role; hidden when printing */}
+        <div className="hidden lg:block print:hidden">
           <div className="sticky top-14 h-[calc(100vh-3.5rem)] overflow-y-auto border-r border-slate-200 bg-white px-3 py-4 w-60">
             <DashboardSidebar
               locale={locale}

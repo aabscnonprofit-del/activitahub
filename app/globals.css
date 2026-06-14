@@ -91,3 +91,18 @@
     @apply transition-colors duration-150 ease-in-out;
   }
 }
+
+/* Print: keep brand colors (gradient header, badges) and use a clean white page.
+   Dashboard chrome is hidden via print:hidden in the layout; this only governs
+   color fidelity + page margins for the proposal export. */
+@media print {
+  html,
+  body {
+    background: #fff !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  @page {
+    margin: 14mm;
+  }
+}
