@@ -2,6 +2,7 @@ import { classifyActivity } from './classify'
 import { assessClarification } from './clarification'
 import { evaluateCoverage, type CoverageDecision } from './coverage'
 import { runEngine } from './engine'
+import { buildRequirementModule } from './features'
 import type { ClarificationQuestion, PlannerInput, PlannerOutput, Scenario } from './types'
 
 export type { PlannerInput, PlannerOutput, PlannerLocation, OpePattern, PricingCategory, ClarificationQuestion, Recurrence, RecurrenceFrequency, OpeAssessment } from './types'
@@ -66,6 +67,13 @@ export function generatePlan(input: PlannerInput): PlanGenerationResult {
     materials: input.materials ?? null,
   }
 
-  const plan = runEngine(classification.modules, scenario)
+  // Phase 2 — request-content understanding: detected add-ons (foam, alcohol,
+  // entertainer, transport, photography) are bundled into an extra module so the
+  // pipeline turns them into tasks, priced cost lines, and risks. No match → no
+  // module appended → output byte-identical to before.
+  const featureModule = buildRequirementModule(input.specialRequirements ?? [])
+  const modules = featureModule ? [...classification.modules, featureModule] : classification.modules
+
+  const plan = runEngine(modules, scenario)
   return { status: 'plan_ready', coverage, plan }
 }

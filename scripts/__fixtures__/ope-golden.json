@@ -2215,7 +2215,8 @@
           "kind": "activity-planner-output",
           "format": "ACTIVITY_PLANNER_OUTPUTS_V1",
           "modules_used": [
-            "MOD-BIRTHDAY-CORE"
+            "MOD-BIRTHDAY-CORE",
+            "request-features"
           ],
           "ai_layer": "filled"
         },
@@ -2241,7 +2242,7 @@
           ]
         },
         "section_b_your_plan": {
-          "summary": "A adult birthday party for about 30 guests (0 kids and 30 adults) at a backyard / home in Honolulu. The plan walks you through 17 preparation steps, 4 day-of steps, and 2 wrap-up steps, with a budget estimate, key safety reminders, and ready-to-send messages.",
+          "summary": "A adult birthday party for about 30 guests (0 kids and 30 adults) at a backyard / home in Honolulu. The plan walks you through 18 preparation steps, 4 day-of steps, and 2 wrap-up steps, with a budget estimate, key safety reminders, and ready-to-send messages.",
           "headline": "Adult Birthday Party",
           "timeline": [
             {
@@ -2366,6 +2367,11 @@
               "id": "BC-T17",
               "task": "Pre-decorate / stage setup",
               "done": false
+            },
+            {
+              "id": "FEAT-ALCOHOL-T1",
+              "task": "Arrange bar service and confirm alcohol licensing / ID policy",
+              "done": false
             }
           ],
           "day_of_checklist": [
@@ -2409,9 +2415,9 @@
           "region": "Honolulu",
           "category": "adult_birthday",
           "estimate": {
-            "low": 360,
-            "likely": 610,
-            "high": 1050
+            "low": 600,
+            "likely": 1105,
+            "high": 2085
           },
           "contingency": {
             "rate_pct": {
@@ -2421,15 +2427,15 @@
             },
             "amount": {
               "low": 0,
-              "likely": 56,
-              "high": 137
+              "likely": 101,
+              "high": 272
             },
             "ucd": "UCD8"
           },
           "subtotal": {
-            "low": 360,
-            "likely": 555,
-            "high": 915
+            "low": 600,
+            "likely": 1005,
+            "high": 1815
           },
           "rollup_by_category": {
             "UCD3": {
@@ -2441,6 +2447,11 @@
               "low": 60,
               "likely": 105,
               "high": 195
+            },
+            "beverage": {
+              "low": 240,
+              "likely": 450,
+              "high": 900
             }
           },
           "breakdown": [
@@ -2538,9 +2549,33 @@
               ],
               "optional": false,
               "lever": "down"
+            },
+            {
+              "item_key": "bar_per_head",
+              "module": "request-features",
+              "basis": "per_guest",
+              "ucd": "beverage",
+              "quantity": 30,
+              "line": {
+                "low": 240,
+                "likely": 450,
+                "high": 900
+              },
+              "included_in": [
+                "low",
+                "likely",
+                "high"
+              ],
+              "optional": false,
+              "lever": "down"
             }
           ],
           "key_cost_drivers": [
+            {
+              "item_key": "bar_per_head",
+              "likely": 450,
+              "lever": "down"
+            },
             {
               "item_key": "party_food_per_head",
               "likely": 270,
@@ -2560,11 +2595,6 @@
               "item_key": "decorations",
               "likely": 60,
               "lever": "down"
-            },
-            {
-              "item_key": "tableware_per_head",
-              "likely": 45,
-              "lever": "down"
             }
           ],
           "meta": {
@@ -2575,7 +2605,7 @@
           "pricing_source": "local",
           "is_fallback": false,
           "fallback_note": null,
-          "levers_note": "Your biggest costs are party food and the cake. Keeping things simple stays near the low end ($360 USD); adding extras pushes toward the high end ($1050 USD). A typical plan lands around $610 USD."
+          "levers_note": "Your biggest costs are bar and party food. Keeping things simple stays near the low end ($600 USD); adding extras pushes toward the high end ($2085 USD). A typical plan lands around $1105 USD."
         },
         "section_d_key_risks": {
           "risks": [
@@ -2586,6 +2616,14 @@
               "never_drop": true,
               "mitigation": "Capture at RSVP (BC-T05/BC-T06); confirm allergy-safe provisioning (BC-T13); separate & label at service (BC-T19); keep an action plan.",
               "source_module": "MOD-BIRTHDAY-CORE"
+            },
+            {
+              "id": "FEAT-ALCOHOL-R1",
+              "name": "Alcohol service (over-serving, ID checks, liability)",
+              "severity": "high",
+              "never_drop": true,
+              "mitigation": "Use licensed, insured bar staff; check IDs and never serve minors; offer non-alcoholic options and a safe-transport plan.",
+              "source_module": "request-features"
             },
             {
               "id": "BC-RK02",

@@ -16,6 +16,7 @@
 // reference currency WITH a clear note — never a faked local price/currency.
 
 import { SEED_PRICING, FALLBACK_SEED_CITY, citySlug } from './data'
+import { FEATURE_SEEDS } from './features'
 import type {
   PlannerLocation,
   PriceSeed,
@@ -100,7 +101,10 @@ export function resolvePricing(
       // Local data for the user's own city → not a fallback.
       const localFile = SEED_PRICING[`${citySlug(location.city)}/${category}`]
       return {
-        seeds,
+        // Feature add-on seeds (Phase 2) are category-agnostic and appended to
+        // every resolved set; they only ever price a line when a 'request-features'
+        // cost driver references them, so base plans are unaffected.
+        seeds: [...seeds, ...FEATURE_SEEDS],
         currency: localFile?._meta.currency ?? 'USD',
         seedRegion: localFile?._meta.region ?? location.city,
         disclaimer: localFile?._meta.disclaimer,
@@ -117,7 +121,7 @@ export function resolvePricing(
     const seedRegion = file?._meta.region ?? FALLBACK_SEED_CITY
     const currency = file?._meta.currency ?? 'USD'
     return {
-      seeds,
+      seeds: [...seeds, ...FEATURE_SEEDS],
       currency,
       seedRegion,
       disclaimer: file?._meta.disclaimer,
