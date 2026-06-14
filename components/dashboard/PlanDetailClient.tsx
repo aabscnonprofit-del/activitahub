@@ -7,6 +7,7 @@ import { Pencil, Lock, FileText } from 'lucide-react'
 import SavedPlanView from '@/components/dashboard/SavedPlanView'
 import EditPlanForm from '@/components/dashboard/EditPlanForm'
 import ReadinessStrip from '@/components/dashboard/ReadinessStrip'
+import AssessmentStrip from '@/components/dashboard/AssessmentStrip'
 import LifecycleControls from '@/components/dashboard/LifecycleControls'
 import { canEditInputs } from '@/lib/workspace/lifecycle'
 import type { SavedPlan } from '@/lib/types'
@@ -84,6 +85,7 @@ export default function PlanDetailClient({ initialPlan }: { initialPlan: SavedPl
       ) : (
         <>
           <LifecycleControls plan={plan} onUpdated={setPlan} />
+          {plan.assessment && <AssessmentStrip assessment={plan.assessment} />}
           <ReadinessStrip plan={plan} />
           <SavedPlanView plan={plan} onUpdated={setPlan} />
         </>

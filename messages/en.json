@@ -1999,7 +1999,25 @@
     "warnReopenClosed": "Reopening makes this an active project again for billing.",
     "warnAbandon": "This closes the project and freezes everything. It will no longer count as an active project.",
     "errTransition": "Could not change the phase. Please try again.",
-    "viewProposal": "View proposal"
+    "viewProposal": "View proposal",
+    "assessment": {
+      "title": "OPE assessment",
+      "complexity": "Complexity",
+      "budget": "Estimated budget",
+      "automation": "Automation coverage",
+      "risk": "Risk level",
+      "notPriced": "Not priced",
+      "levels": {
+        "low": "Low",
+        "medium": "Medium",
+        "high": "High"
+      },
+      "coverage": {
+        "full": "Full",
+        "partial": "Partial",
+        "none": "None"
+      }
+    }
   },
   "proposal": {
     "documentTitle": "Event Proposal",

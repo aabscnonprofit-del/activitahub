@@ -1999,7 +1999,25 @@
     "warnReopenClosed": "La réouverture en refait un projet actif pour la facturation.",
     "warnAbandon": "Cela clôture le projet et fige tout. Il ne comptera plus comme projet actif.",
     "errTransition": "Impossible de changer de phase. Veuillez réessayer.",
-    "viewProposal": "Voir la proposition"
+    "viewProposal": "Voir la proposition",
+    "assessment": {
+      "title": "Évaluation OPE",
+      "complexity": "Complexité",
+      "budget": "Budget estimé",
+      "automation": "Couverture d’automatisation",
+      "risk": "Niveau de risque",
+      "notPriced": "Non chiffré",
+      "levels": {
+        "low": "Faible",
+        "medium": "Moyen",
+        "high": "Élevé"
+      },
+      "coverage": {
+        "full": "Complète",
+        "partial": "Partielle",
+        "none": "Aucune"
+      }
+    }
   },
   "proposal": {
     "documentTitle": "Proposition d'événement",

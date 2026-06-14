@@ -1999,7 +1999,25 @@
     "warnReopenClosed": "Das Wiederöffnen macht es für die Abrechnung wieder zu einem aktiven Projekt.",
     "warnAbandon": "Dadurch wird das Projekt geschlossen und alles eingefroren. Es zählt nicht mehr als aktives Projekt.",
     "errTransition": "Die Phase konnte nicht geändert werden. Bitte versuche es erneut.",
-    "viewProposal": "Angebot ansehen"
+    "viewProposal": "Angebot ansehen",
+    "assessment": {
+      "title": "OPE-Bewertung",
+      "complexity": "Komplexität",
+      "budget": "Geschätztes Budget",
+      "automation": "Automatisierungsgrad",
+      "risk": "Risikostufe",
+      "notPriced": "Kein Preis",
+      "levels": {
+        "low": "Niedrig",
+        "medium": "Mittel",
+        "high": "Hoch"
+      },
+      "coverage": {
+        "full": "Vollständig",
+        "partial": "Teilweise",
+        "none": "Keine"
+      }
+    }
   },
   "proposal": {
     "documentTitle": "Event-Angebot",

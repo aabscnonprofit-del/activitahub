@@ -41,6 +41,10 @@ export async function createPlan(title: string | null, rawInput: unknown): Promi
     return { error: 'generation_failed' }
   }
 
+  // Every plan carries a deterministic assessment (Task #3) — for non-ready results
+  // it reflects 'none' coverage / no budget, refreshed on the next recompute.
+  const assessment = buildAssessment(parsed.data as PlannerInput, result)
+
   // Lifecycle (WP8): a new plan is a Draft and auto-advances to Planning the moment
   // the engine returns plan_ready. Non-ready results (clarify / handoff) stay Draft.
   const ready = result.status === 'plan_ready'
@@ -61,6 +65,7 @@ export async function createPlan(title: string | null, rawInput: unknown): Promi
       phase,
       lifecycle_log,
       version: 1,
+      assessment,
     })
     .select(SELECT)
     .single()
@@ -260,12 +265,15 @@ export async function updatePlanInputs(planId: string, rawInput: unknown, title?
     return { error: 'generation_failed' }
   }
 
-  // Atomic update: input + recomputed result + version bump. Title lives on the
-  // record (not in `input`), so persist it here only when the caller supplies it;
-  // omitting it leaves the existing title untouched. corrections/prep_state stay as-is.
+  // Atomic update: input + recomputed result + refreshed assessment + version bump.
+  // Title lives on the record (not in `input`), so persist it here only when the
+  // caller supplies it; omitting it leaves the existing title untouched. The
+  // assessment is recomputed so it never goes stale after a rebuild (Task #3).
+  // corrections/prep_state stay as-is.
   const patch: Record<string, unknown> = {
     input: parsed.data,
     result,
+    assessment: buildAssessment(parsed.data as PlannerInput, result),
     version: (existing.version as number) + 1,
   }
   if (title !== undefined) patch.title = title?.trim() || null
