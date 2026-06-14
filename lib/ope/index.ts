@@ -4,7 +4,7 @@ import { evaluateCoverage, type CoverageDecision } from './coverage'
 import { runEngine } from './engine'
 import type { ClarificationQuestion, PlannerInput, PlannerOutput, Scenario } from './types'
 
-export type { PlannerInput, PlannerOutput, PlannerLocation, OpePattern, PricingCategory, ClarificationQuestion, Recurrence, RecurrenceFrequency } from './types'
+export type { PlannerInput, PlannerOutput, PlannerLocation, OpePattern, PricingCategory, ClarificationQuestion, Recurrence, RecurrenceFrequency, OpeAssessment } from './types'
 export type { CoverageDecision, CoverageStatus } from './coverage'
 
 export type PlanStatus = CoverageDecision['status'] | 'needs_clarification'

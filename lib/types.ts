@@ -1,4 +1,4 @@
-import type { PlannerInput, PlanGenerationResult } from '@/lib/ope'
+import type { PlannerInput, PlanGenerationResult, OpeAssessment, CoverageStatus } from '@/lib/ope'
 
 export type Locale = 'en' | 'es' | 'fr' | 'ru' | 'de' | 'pt'
 
@@ -681,6 +681,18 @@ export type SavedPlan = {
   phase: OpePlanPhase
   lifecycle_log: OpePlanLogEntry[] // append-only transition history (WP8)
   version: number
+  source_request_id: string | null // customer request this plan was generated from (026), else null
+  assessment: OpeAssessment | null // deterministic preliminary assessment (026), set on request-derived plans
   created_at: string
   updated_at: string
 }
+
+/**
+ * Result of createPlanFromRequest (OPE Task #1). A ready plan returns its id +
+ * assessment; an unsupported request returns a structured coverage response (no
+ * plan persisted); anything else is a plain error code.
+ */
+export type CreatePlanFromRequestResult =
+  | { ok: true; planId: string; assessment: OpeAssessment | null }
+  | { ok: false; kind: 'error'; error: string }
+  | { ok: false; kind: 'unsupported'; status: CoverageStatus; reason: string; recommended_next_step: string }

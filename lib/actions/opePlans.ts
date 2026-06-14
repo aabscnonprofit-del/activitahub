@@ -1,15 +1,18 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
+import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { generatePlan } from '@/lib/ope'
 import type { PlannerInput } from '@/lib/ope/types'
 import { plannerInputSchema } from '@/lib/ope/validation'
+import { mapRequestToPlannerInput, buildAssessment, fillClarificationDefaults, type RequestLike } from '@/lib/ope/request-plan'
+import { userHasOrganizerAccess } from '@/lib/auth/organizer-access.server'
 import {
   canEditBudget, canEditInputs, canEditPrep, findTransition,
 } from '@/lib/workspace/lifecycle'
 import type {
-  ActionResult, OpePlanCorrections, OpePlanLogEntry, OpePlanPhase, OpePlanPrepState, SavedPlan,
+  ActionResult, CreatePlanFromRequestResult, OpePlanCorrections, OpePlanLogEntry, OpePlanPhase, OpePlanPrepState, SavedPlan,
 } from '@/lib/types'
 
 // ── OPE Organizer Workspace — PlanStore server actions (M5 WP1 T3) ───────────
@@ -65,6 +68,133 @@ export async function createPlan(title: string | null, rawInput: unknown): Promi
   if (error || !data) return { error: 'save_failed' }
   revalidatePath('/dashboard')
   return { success: true, data: data as SavedPlan }
+}
+
+/**
+ * Customer Request → OPE Plan (Task #1). Generates a deterministic OPE plan for a
+ * request the organizer is matched to, links it via source_request_id, and stores
+ * a preliminary assessment. Idempotent: re-running returns the existing plan rather
+ * than generating a duplicate. Unsupported categories / non-ready coverage do NOT
+ * persist a plan — they return a structured coverage response. No engine change;
+ * the persisted row is an ordinary ope_plans plan, so editing/budget/proposal/
+ * lifecycle all work on it unchanged.
+ */
+export async function createPlanFromRequest(requestId: string): Promise<CreatePlanFromRequestResult> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { ok: false, kind: 'error', error: 'not_authenticated' }
+
+  // Entitlement: same gate as sending a proposal (certified + live access window/subscription).
+  if (!(await userHasOrganizerAccess(supabase, user.id))) {
+    return { ok: false, kind: 'error', error: 'no_access' }
+  }
+
+  // Permission: the organizer must have been matched to this request.
+  const { data: match } = await supabase
+    .from('request_matches')
+    .select('id')
+    .eq('request_id', requestId)
+    .eq('organizer_id', user.id)
+    .maybeSingle()
+  if (!match) return { ok: false, kind: 'error', error: 'not_authorized' }
+
+  // Idempotent: reuse the plan already generated for this request.
+  const { data: existing } = await supabase
+    .from(TABLE)
+    .select('id, assessment')
+    .eq('organizer_id', user.id)
+    .eq('source_request_id', requestId)
+    .maybeSingle()
+  if (existing) {
+    return { ok: true, planId: existing.id as string, assessment: (existing.assessment ?? null) as SavedPlan['assessment'] }
+  }
+
+  const { data: request } = await supabase
+    .from('customer_requests')
+    .select('event_type, city, country, participant_count, budget_cents, notes')
+    .eq('id', requestId)
+    .single()
+  if (!request) return { ok: false, kind: 'error', error: 'not_found' }
+
+  const input = mapRequestToPlannerInput(request as RequestLike)
+  if (!input) {
+    return {
+      ok: false, kind: 'unsupported', status: 'unsupported',
+      reason: 'Category outside OPE V1 scope',
+      recommended_next_step: 'This event type is not yet planned by OPE. Respond with a manual proposal.',
+    }
+  }
+
+  const parsed = plannerInputSchema.safeParse(input)
+  if (!parsed.success) return { ok: false, kind: 'error', error: 'invalid_input' }
+
+  let finalInput = parsed.data as PlannerInput
+  let result
+  try {
+    result = generatePlan(finalInput)
+    // Auto-assessment: no customer to answer clarifications — fill the flagged gaps
+    // with plan-completing defaults and regenerate once. The organizer refines later.
+    if (result.status === 'needs_clarification' && result.questions?.length) {
+      const reparsed = plannerInputSchema.safeParse(fillClarificationDefaults(finalInput, result.questions))
+      if (reparsed.success) {
+        finalInput = reparsed.data as PlannerInput
+        result = generatePlan(finalInput)
+      }
+    }
+  } catch {
+    return { ok: false, kind: 'error', error: 'generation_failed' }
+  }
+
+  // Only a ready plan is persisted; everything else is an honest coverage response.
+  if (result.status !== 'plan_ready') {
+    return {
+      ok: false, kind: 'unsupported',
+      status: result.coverage.status,
+      reason: result.coverage.reason,
+      recommended_next_step: result.coverage.recommended_next_step,
+    }
+  }
+
+  const assessment = buildAssessment(finalInput, result)
+  const lifecycle_log: OpePlanLogEntry[] = [
+    { from: 'draft', to: 'planning', at: new Date().toISOString(), by: user.id, forced: false, auto: true },
+  ]
+
+  const { data, error } = await supabase
+    .from(TABLE)
+    .insert({
+      organizer_id: user.id,
+      title: null,
+      input: finalInput,
+      result,
+      corrections: {},
+      prep_state: {},
+      phase: 'planning',
+      lifecycle_log,
+      version: 1,
+      source_request_id: requestId,
+      assessment,
+    })
+    .select('id')
+    .single()
+
+  if (error || !data) return { ok: false, kind: 'error', error: 'save_failed' }
+  revalidatePath('/dashboard')
+  return { ok: true, planId: data.id as string, assessment }
+}
+
+/**
+ * Form wrapper for the "Generate OPE Plan" button on the organizer request screen.
+ * Generates (or reuses) the plan and redirects to it; on unsupported/error it
+ * redirects back to the requests list with a readable message.
+ */
+export async function generatePlanFromRequestAction(formData: FormData): Promise<void> {
+  const requestId = formData.get('request_id') as string
+  const locale = (formData.get('locale') as string) || 'en'
+  const res = await createPlanFromRequest(requestId)
+  if (res.ok) redirect(`/${locale}/dashboard/plans/${res.planId}`)
+  const reason = res.kind === 'unsupported' ? res.reason : res.error
+  redirect(`/${locale}/dashboard/requests?planError=${encodeURIComponent(reason)}`)
 }
 
 /** Load one plan (owner only). */

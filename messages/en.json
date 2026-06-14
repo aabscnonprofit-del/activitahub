@@ -1077,7 +1077,10 @@
       "proposalSent": "Proposal sent",
       "proposalsTitle": "My proposals",
       "proposalsSubtitle": "Proposals you've sent to customers.",
-      "proposalsEmpty": "You haven't sent any proposals yet."
+      "proposalsEmpty": "You haven't sent any proposals yet.",
+      "generatePlan": "Generate OPE Plan",
+      "openPlan": "Open OPE Plan",
+      "planError": "Could not generate plan"
     },
     "flow": {
       "title": "What happens next",

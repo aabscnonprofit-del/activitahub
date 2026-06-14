@@ -1077,7 +1077,10 @@
       "proposalSent": "Propuesta enviada",
       "proposalsTitle": "Mis propuestas",
       "proposalsSubtitle": "Propuestas que has enviado a clientes.",
-      "proposalsEmpty": "Aún no has enviado propuestas."
+      "proposalsEmpty": "Aún no has enviado propuestas.",
+      "generatePlan": "Generar plan OPE",
+      "openPlan": "Abrir plan OPE",
+      "planError": "No se pudo generar el plan"
     },
     "flow": {
       "title": "Qué ocurre después",

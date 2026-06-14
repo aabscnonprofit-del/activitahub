@@ -1,18 +1,22 @@
 import { getTranslations } from 'next-intl/server'
 import { redirect } from 'next/navigation'
-import { Inbox, CalendarDays, Users } from 'lucide-react'
+import Link from 'next/link'
+import { Inbox, CalendarDays, Users, Sparkles, FileText } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { sendProposal } from '@/lib/actions/requests'
+import { generatePlanFromRequestAction } from '@/lib/actions/opePlans'
 import { Badge } from '@/components/ui/Badge'
 import { formatDate, formatPrice } from '@/lib/utils'
 import type { Locale, CustomerRequest, Proposal } from '@/lib/types'
 
 interface Props {
   params: Promise<{ locale: string }>
+  searchParams: Promise<{ planError?: string }>
 }
 
-export default async function OrganizerRequestsPage({ params }: Props) {
+export default async function OrganizerRequestsPage({ params, searchParams }: Props) {
   const { locale } = (await params) as { locale: Locale }
+  const { planError } = await searchParams
   const t = await getTranslations('requests')
   const tm = await getTranslations('marketplace')
 
@@ -22,7 +26,7 @@ export default async function OrganizerRequestsPage({ params }: Props) {
   } = await supabase.auth.getUser()
   if (!user) redirect(`/${locale}/sign-in`)
 
-  const [{ data: matchRows }, { data: propRows }, { data: actRows }] = await Promise.all([
+  const [{ data: matchRows }, { data: propRows }, { data: actRows }, { data: planRows }] = await Promise.all([
     supabase
       .from('request_matches')
       .select('id, created_at, request:customer_requests(*)')
@@ -30,6 +34,7 @@ export default async function OrganizerRequestsPage({ params }: Props) {
       .order('created_at', { ascending: false }),
     supabase.from('proposals').select('request_id, price_cents, status').eq('organizer_id', user.id),
     supabase.from('activities').select('id, title').eq('organizer_id', user.id).eq('status', 'published'),
+    supabase.from('ope_plans').select('id, source_request_id').eq('organizer_id', user.id).not('source_request_id', 'is', null),
   ])
 
   const matches = (matchRows ?? []) as unknown as { id: string; request: CustomerRequest | null }[]
@@ -39,6 +44,10 @@ export default async function OrganizerRequestsPage({ params }: Props) {
     proposalByRequest.set(p.request_id, { price_cents: p.price_cents, status: p.status })
   }
   const activities = (actRows ?? []) as { id: string; title: string }[]
+  const planByRequest = new Map<string, string>()
+  for (const p of (planRows ?? []) as { id: string; source_request_id: string }[]) {
+    planByRequest.set(p.source_request_id, p.id)
+  }
 
   return (
     <div className="space-y-6">
@@ -46,6 +55,12 @@ export default async function OrganizerRequestsPage({ params }: Props) {
         <h1 className="text-2xl font-extrabold text-slate-900">{t('organizer.title')}</h1>
         <p className="mt-0.5 text-sm text-slate-500">{t('organizer.subtitle')}</p>
       </div>
+
+      {planError && (
+        <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+          {t('organizer.planError')}: {planError}
+        </div>
+      )}
 
       {requests.length === 0 ? (
         <div className="rounded-2xl border border-slate-200 bg-white p-12 text-center">
@@ -73,6 +88,25 @@ export default async function OrganizerRequestsPage({ params }: Props) {
                   {r.budget_cents != null && <span>{t('detail.budget')}: {formatPrice(r.budget_cents, r.currency, locale)}</span>}
                 </div>
                 {r.notes && <p className="mt-2 text-sm text-slate-600">{r.notes}</p>}
+
+                {/* OPE Task #1: generate (or open) a deterministic OPE plan for this request. */}
+                <div className="mt-3">
+                  {planByRequest.has(r.id) ? (
+                    <Link href={`/${locale}/dashboard/plans/${planByRequest.get(r.id)}`} className="btn-secondary inline-flex w-fit items-center gap-1.5">
+                      <FileText className="h-4 w-4" />
+                      {t('organizer.openPlan')}
+                    </Link>
+                  ) : (
+                    <form action={generatePlanFromRequestAction}>
+                      <input type="hidden" name="locale" value={locale} />
+                      <input type="hidden" name="request_id" value={r.id} />
+                      <button className="btn-secondary inline-flex w-fit items-center gap-1.5">
+                        <Sparkles className="h-4 w-4" />
+                        {t('organizer.generatePlan')}
+                      </button>
+                    </form>
+                  )}
+                </div>
 
                 {!closed && (
                   <form action={sendProposal} className="mt-4 grid grid-cols-1 gap-3 border-t border-slate-100 pt-4 sm:grid-cols-2">

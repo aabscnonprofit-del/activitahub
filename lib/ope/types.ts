@@ -255,6 +255,20 @@ export interface PlannerOutput {
 }
 
 /**
+ * Deterministic preliminary assessment of a customer request (OPE Task #1, §9.2).
+ * Produced alongside the plan (no LLM) so both sides start from a grounded picture:
+ * how big the job is, the cost range, how much OPE could auto-plan, and risk level.
+ */
+export interface OpeAssessment {
+  complexity: 'low' | 'medium' | 'high'
+  /** Engine cost estimate, mirrored verbatim from the budget (whole currency units, not cents); null when unpriced or unsupported. */
+  estimated_budget: { low: number; likely: number; high: number; currency: string } | null
+  /** How much of the plan the engine could produce automatically. */
+  automation_coverage: 'full' | 'partial' | 'none'
+  risk_level: 'low' | 'medium' | 'high'
+}
+
+/**
  * DB-ready shape for future ActivLife Hub historical pricing / learning.
  * Not persisted yet — defined now so corrected budgets can be stored later
  * (city/state/country + activity_type + guest_count + per-line estimate vs
