@@ -6,14 +6,14 @@ import { createClient } from '@/lib/supabase/server'
 import { generatePlan } from '@/lib/ope'
 import type { PlannerInput } from '@/lib/ope/types'
 import { plannerInputSchema } from '@/lib/ope/validation'
-import { mapRequestToPlannerInput, buildAssessment, fillClarificationDefaults, type RequestLike } from '@/lib/ope/request-plan'
+import { mapRequestToPlannerInput, mapRequestToApproaches, buildAssessment, fillClarificationDefaults, type RequestLike } from '@/lib/ope/request-plan'
 import { buildProposal } from '@/lib/workspace/proposal'
 import { userHasOrganizerAccess } from '@/lib/auth/organizer-access.server'
 import {
   canEditBudget, canEditInputs, canEditPrep, findTransition,
 } from '@/lib/workspace/lifecycle'
 import type {
-  ActionResult, CreatePlanFromRequestResult, OpePlanCorrections, OpePlanLogEntry, OpePlanPhase, OpePlanPrepState, SavedPlan,
+  ActionResult, CreatePlanFromRequestResult, GenerateApproachesResult, OpePlanCorrections, OpePlanLogEntry, OpePlanPhase, OpePlanPrepState, SavedPlan,
 } from '@/lib/types'
 
 // ── OPE Organizer Workspace — PlanStore server actions (M5 WP1 T3) ───────────
@@ -201,6 +201,182 @@ export async function generatePlanFromRequestAction(formData: FormData): Promise
   if (res.ok) redirect(`/${locale}/dashboard/plans/${res.planId}`)
   const reason = res.kind === 'unsupported' ? res.reason : res.error
   redirect(`/${locale}/dashboard/requests?planError=${encodeURIComponent(reason)}`)
+}
+
+/**
+ * Customer Request → Alternative Approaches (Alternative Event Approaches, 2026-06-15).
+ * Generates one deterministic OPE plan per candidate category (mapRequestToApproaches)
+ * and persists each ready one as a `draft` plan linked to the request — these are the
+ * alternatives the organizer chooses between before approving a plan. NOT auto-advanced:
+ * every approach stays Draft until selectApproach promotes one to Planning. Idempotent at
+ * the request level: if approaches already exist for this request they are returned as-is,
+ * never regenerated. No new entities — ordinary ope_plans rows sharing source_request_id.
+ */
+export async function generateApproachesFromRequest(requestId: string): Promise<GenerateApproachesResult> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { ok: false, kind: 'error', error: 'not_authenticated' }
+
+  // Entitlement: same gate as generating a single plan / sending a proposal.
+  if (!(await userHasOrganizerAccess(supabase, user.id))) {
+    return { ok: false, kind: 'error', error: 'no_access' }
+  }
+
+  // Permission: the organizer must have been matched to this request.
+  const { data: match } = await supabase
+    .from('request_matches')
+    .select('id')
+    .eq('request_id', requestId)
+    .eq('organizer_id', user.id)
+    .maybeSingle()
+  if (!match) return { ok: false, kind: 'error', error: 'not_authorized' }
+
+  // Idempotent: reuse the approaches already generated for this request (N rows).
+  const { data: existing } = await supabase
+    .from(TABLE)
+    .select('id')
+    .eq('organizer_id', user.id)
+    .eq('source_request_id', requestId)
+  if (existing && existing.length > 0) {
+    return { ok: true, planIds: existing.map((r) => r.id as string) }
+  }
+
+  const { data: request } = await supabase
+    .from('customer_requests')
+    .select('event_type, city, country, participant_count, budget_cents, notes')
+    .eq('id', requestId)
+    .single()
+  if (!request) return { ok: false, kind: 'error', error: 'not_found' }
+
+  const approaches = mapRequestToApproaches(request as RequestLike)
+  if (approaches.length === 0) {
+    return { ok: false, kind: 'unsupported', reason: 'Category outside OPE V1 scope' }
+  }
+
+  // Each approach: validate, generate (auto-filling clarifications once), keep only
+  // ready plans. Unsupported / unpriced approaches are silently skipped — the organizer
+  // sees only the alternatives that actually produced a complete plan.
+  const rows = approaches.flatMap((input) => {
+    const parsed = plannerInputSchema.safeParse(input)
+    if (!parsed.success) return []
+
+    let finalInput = parsed.data as PlannerInput
+    let result
+    try {
+      result = generatePlan(finalInput)
+      if (result.status === 'needs_clarification' && result.questions?.length) {
+        const reparsed = plannerInputSchema.safeParse(fillClarificationDefaults(finalInput, result.questions))
+        if (reparsed.success) {
+          finalInput = reparsed.data as PlannerInput
+          result = generatePlan(finalInput)
+        }
+      }
+    } catch {
+      return []
+    }
+    if (result.status !== 'plan_ready') return []
+
+    // Alternatives are persisted as Draft (no lifecycle advance) — selection promotes one.
+    return [{
+      organizer_id: user.id,
+      title: null,
+      input: finalInput,
+      result,
+      corrections: {},
+      prep_state: {},
+      phase: 'draft' as OpePlanPhase,
+      lifecycle_log: [] as OpePlanLogEntry[],
+      version: 1,
+      source_request_id: requestId,
+      assessment: buildAssessment(finalInput, result),
+    }]
+  })
+
+  if (rows.length === 0) {
+    return { ok: false, kind: 'unsupported', reason: 'No approach could be generated for this request' }
+  }
+
+  const { data, error } = await supabase.from(TABLE).insert(rows).select('id')
+  if (error || !data) return { ok: false, kind: 'error', error: 'save_failed' }
+  revalidatePath('/dashboard')
+  return { ok: true, planIds: data.map((r) => r.id as string) }
+}
+
+/**
+ * Form wrapper for the "Generate approaches" button on the organizer request screen.
+ * Generates (or reuses) the request's alternative approaches and refreshes the list;
+ * on unsupported/error it redirects back with a readable message.
+ */
+export async function generateApproachesFromRequestAction(formData: FormData): Promise<void> {
+  const requestId = formData.get('request_id') as string
+  const locale = (formData.get('locale') as string) || 'en'
+  const res = await generateApproachesFromRequest(requestId)
+  if (res.ok) {
+    revalidatePath(`/${locale}/dashboard/requests`)
+    redirect(`/${locale}/dashboard/requests`)
+  }
+  const reason = res.kind === 'unsupported' ? res.reason : res.error
+  redirect(`/${locale}/dashboard/requests?planError=${encodeURIComponent(reason)}`)
+}
+
+/**
+ * Select one alternative approach (Alternative Event Approaches). Promotes the chosen
+ * Draft approach to Planning — it becomes the working plan — while the other approaches
+ * remain Draft. Owner-only; only a Draft (alternative) plan can be selected.
+ *
+ * Draft → Planning is intentionally NOT a generic manual transition in the lifecycle
+ * table (it is the server's auto-advance on plan_ready), so this writes the transition
+ * directly rather than via advancePhase, recording it as a deliberate selection
+ * (auto:false, forced:false). No other field changes.
+ */
+export async function selectApproach(planId: string): Promise<ActionResult<SavedPlan>> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'not_authenticated' }
+
+  const { data: existing } = await supabase
+    .from(TABLE)
+    .select('phase, lifecycle_log')
+    .eq('id', planId)
+    .eq('organizer_id', user.id)
+    .single()
+  if (!existing) return { error: 'not_found' }
+  // Only an unselected alternative (still Draft) can be selected.
+  if ((existing.phase as OpePlanPhase) !== 'draft') return { error: 'not_selectable' }
+
+  const log = Array.isArray(existing.lifecycle_log) ? existing.lifecycle_log : []
+  const entry: OpePlanLogEntry = {
+    from: 'draft', to: 'planning', at: new Date().toISOString(), by: user.id,
+    forced: false, auto: false, reason: 'approach_selected',
+  }
+
+  const { data, error } = await supabase
+    .from(TABLE)
+    .update({ phase: 'planning', lifecycle_log: [...log, entry] })
+    .eq('id', planId)
+    .eq('organizer_id', user.id)
+    .eq('phase', 'draft') // concurrency guard: only promote if still a draft
+    .select(SELECT)
+    .single()
+
+  if (error || !data) return { error: 'save_failed' }
+  revalidatePath('/dashboard')
+  return { success: true, data: data as SavedPlan }
+}
+
+/**
+ * Form wrapper for the "Use this approach" button. Selects the approach and opens the
+ * resulting plan; on error it redirects back to the requests list with a message.
+ */
+export async function selectApproachAction(formData: FormData): Promise<void> {
+  const planId = formData.get('plan_id') as string
+  const locale = (formData.get('locale') as string) || 'en'
+  const res = await selectApproach(planId)
+  if (res.success) {
+    revalidatePath(`/${locale}/dashboard/requests`)
+    redirect(`/${locale}/dashboard/plans/${planId}`)
+  }
+  redirect(`/${locale}/dashboard/requests?planError=${encodeURIComponent(res.error)}`)
 }
 
 /**

@@ -1098,6 +1098,35 @@
           "description": "Aceite a melhor e pague em segurança para confirmar a sua reserva."
         }
       ]
+    },
+    "approach": {
+      "title": "Abordagens alternativas",
+      "subtitle": "Escolha a abordagem que melhor se encaixa. A selecionada torna-se o seu plano de trabalho.",
+      "generate": "Gerar abordagens",
+      "select": "Usar esta abordagem",
+      "selected": "Selecionada",
+      "openPlan": "Abrir plano",
+      "complexity": "Complexidade",
+      "budget": "Orçamento est.",
+      "risk": "Risco",
+      "levels": {
+        "low": "Baixo",
+        "medium": "Médio",
+        "high": "Alto"
+      },
+      "categories": {
+        "birthday": "Festa de aniversário infantil",
+        "adult_birthday": "Aniversário de adulto",
+        "anniversary": "Comemoração de aniversário",
+        "graduation": "Festa de formatura",
+        "family_reunion": "Reunião de família",
+        "bbq": "Churrasco no quintal",
+        "networking": "Encontro de networking",
+        "fitness_class": "Aula de fitness",
+        "art_class": "Aula de arte",
+        "language_class": "Aula de idiomas",
+        "workshop": "Workshop"
+      }
     }
   },
   "bookings": {

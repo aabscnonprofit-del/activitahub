@@ -1098,6 +1098,35 @@
           "description": "Accept the best one and pay securely to confirm your booking."
         }
       ]
+    },
+    "approach": {
+      "title": "Alternative approaches",
+      "subtitle": "Pick the approach that best fits. The selected one becomes your working plan.",
+      "generate": "Generate approaches",
+      "select": "Use this approach",
+      "selected": "Selected",
+      "openPlan": "Open plan",
+      "complexity": "Complexity",
+      "budget": "Est. budget",
+      "risk": "Risk",
+      "levels": {
+        "low": "Low",
+        "medium": "Medium",
+        "high": "High"
+      },
+      "categories": {
+        "birthday": "Kids' birthday party",
+        "adult_birthday": "Adult birthday",
+        "anniversary": "Anniversary celebration",
+        "graduation": "Graduation party",
+        "family_reunion": "Family reunion",
+        "bbq": "Backyard BBQ / cookout",
+        "networking": "Networking meetup",
+        "fitness_class": "Fitness class",
+        "art_class": "Art class",
+        "language_class": "Language class",
+        "workshop": "Workshop"
+      }
     }
   },
   "bookings": {

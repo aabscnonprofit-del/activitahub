@@ -1,13 +1,22 @@
 import { getTranslations } from 'next-intl/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { Inbox, CalendarDays, Users, Sparkles, FileText } from 'lucide-react'
+import { Inbox, CalendarDays, Users, Sparkles, FileText, CheckCircle2 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { sendProposal } from '@/lib/actions/requests'
-import { generatePlanFromRequestAction } from '@/lib/actions/opePlans'
+import { generateApproachesFromRequestAction, selectApproachAction } from '@/lib/actions/opePlans'
 import { Badge } from '@/components/ui/Badge'
 import { formatDate, formatPrice } from '@/lib/utils'
-import type { Locale, CustomerRequest, Proposal } from '@/lib/types'
+import type { Locale, CustomerRequest, Proposal, OpePlanPhase } from '@/lib/types'
+import type { PlannerInput, OpeAssessment } from '@/lib/ope'
+
+/** A request-linked approach plan row, as fetched for the requests screen. */
+type ApproachRow = {
+  id: string
+  phase: OpePlanPhase
+  category: PlannerInput['category']
+  assessment: OpeAssessment | null
+}
 
 interface Props {
   params: Promise<{ locale: string }>
@@ -34,7 +43,7 @@ export default async function OrganizerRequestsPage({ params, searchParams }: Pr
       .order('created_at', { ascending: false }),
     supabase.from('proposals').select('request_id, price_cents, status').eq('organizer_id', user.id),
     supabase.from('activities').select('id, title').eq('organizer_id', user.id).eq('status', 'published'),
-    supabase.from('ope_plans').select('id, source_request_id').eq('organizer_id', user.id).not('source_request_id', 'is', null),
+    supabase.from('ope_plans').select('id, source_request_id, phase, input, assessment').eq('organizer_id', user.id).not('source_request_id', 'is', null),
   ])
 
   const matches = (matchRows ?? []) as unknown as { id: string; request: CustomerRequest | null }[]
@@ -44,9 +53,13 @@ export default async function OrganizerRequestsPage({ params, searchParams }: Pr
     proposalByRequest.set(p.request_id, { price_cents: p.price_cents, status: p.status })
   }
   const activities = (actRows ?? []) as { id: string; title: string }[]
-  const planByRequest = new Map<string, string>()
-  for (const p of (planRows ?? []) as { id: string; source_request_id: string }[]) {
-    planByRequest.set(p.source_request_id, p.id)
+  // One request → many approach plans (alternatives + any selected one), grouped by request.
+  const approachesByRequest = new Map<string, ApproachRow[]>()
+  for (const p of (planRows ?? []) as { id: string; source_request_id: string; phase: OpePlanPhase; input: PlannerInput | null; assessment: OpeAssessment | null }[]) {
+    const row: ApproachRow = { id: p.id, phase: p.phase, category: p.input?.category ?? 'birthday', assessment: p.assessment }
+    const list = approachesByRequest.get(p.source_request_id)
+    if (list) list.push(row)
+    else approachesByRequest.set(p.source_request_id, [row])
   }
 
   return (
@@ -89,24 +102,67 @@ export default async function OrganizerRequestsPage({ params, searchParams }: Pr
                 </div>
                 {r.notes && <p className="mt-2 text-sm text-slate-600">{r.notes}</p>}
 
-                {/* OPE Task #1: generate (or open) a deterministic OPE plan for this request. */}
-                <div className="mt-3">
-                  {planByRequest.has(r.id) ? (
-                    <Link href={`/${locale}/dashboard/plans/${planByRequest.get(r.id)}`} className="btn-secondary inline-flex w-fit items-center gap-1.5">
-                      <FileText className="h-4 w-4" />
-                      {t('organizer.openPlan')}
-                    </Link>
-                  ) : (
-                    <form action={generatePlanFromRequestAction}>
-                      <input type="hidden" name="locale" value={locale} />
-                      <input type="hidden" name="request_id" value={r.id} />
-                      <button className="btn-secondary inline-flex w-fit items-center gap-1.5">
-                        <Sparkles className="h-4 w-4" />
-                        {t('organizer.generatePlan')}
-                      </button>
-                    </form>
-                  )}
-                </div>
+                {/* Alternative Event Approaches: generate, then choose one before approving a plan. */}
+                {(() => {
+                  const approaches = approachesByRequest.get(r.id) ?? []
+                  if (approaches.length === 0) {
+                    return (
+                      <div className="mt-3">
+                        <form action={generateApproachesFromRequestAction}>
+                          <input type="hidden" name="locale" value={locale} />
+                          <input type="hidden" name="request_id" value={r.id} />
+                          <button className="btn-secondary inline-flex w-fit items-center gap-1.5">
+                            <Sparkles className="h-4 w-4" />
+                            {t('approach.generate')}
+                          </button>
+                        </form>
+                      </div>
+                    )
+                  }
+                  return (
+                    <div className="mt-4 border-t border-slate-100 pt-4">
+                      <p className="text-sm font-semibold text-slate-700">{t('approach.title')}</p>
+                      <p className="mt-0.5 text-xs text-slate-500">{t('approach.subtitle')}</p>
+                      <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                        {approaches.map((a) => {
+                          const selected = a.phase !== 'draft'
+                          const est = a.assessment?.estimated_budget
+                          return (
+                            <div key={a.id} className={`rounded-xl border p-4 ${selected ? 'border-emerald-300 bg-emerald-50/60' : 'border-slate-200 bg-white'}`}>
+                              <div className="flex items-center justify-between gap-2">
+                                <h4 className="font-semibold text-slate-900">{t(`approach.categories.${a.category}` as 'approach.categories.birthday')}</h4>
+                                {selected && <Badge label={t('approach.selected')} variant="success" />}
+                              </div>
+                              {a.assessment && (
+                                <div className="mt-2 space-y-1 text-xs text-slate-500">
+                                  <p>{t('approach.complexity')}: {t(`approach.levels.${a.assessment.complexity}` as 'approach.levels.low')} · {t('approach.risk')}: {t(`approach.levels.${a.assessment.risk_level}` as 'approach.levels.low')}</p>
+                                  {est && <p>{t('approach.budget')}: {formatPrice(Math.round(est.likely * 100), est.currency, locale)}</p>}
+                                </div>
+                              )}
+                              <div className="mt-3">
+                                {selected ? (
+                                  <Link href={`/${locale}/dashboard/plans/${a.id}`} className="btn-secondary inline-flex w-fit items-center gap-1.5">
+                                    <FileText className="h-4 w-4" />
+                                    {t('approach.openPlan')}
+                                  </Link>
+                                ) : (
+                                  <form action={selectApproachAction}>
+                                    <input type="hidden" name="locale" value={locale} />
+                                    <input type="hidden" name="plan_id" value={a.id} />
+                                    <button className="btn-primary inline-flex w-fit items-center gap-1.5">
+                                      <CheckCircle2 className="h-4 w-4" />
+                                      {t('approach.select')}
+                                    </button>
+                                  </form>
+                                )}
+                              </div>
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  )
+                })()}
 
                 {!closed && (
                   <form action={sendProposal} className="mt-4 grid grid-cols-1 gap-3 border-t border-slate-100 pt-4 sm:grid-cols-2">

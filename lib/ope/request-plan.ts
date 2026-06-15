@@ -35,6 +35,45 @@ export const REQUEST_TO_PLANNER_CATEGORY: Record<string, PlannerInput['category'
 }
 
 /**
+ * Alternative approaches for a request (Alternative Event Approaches, 2026-06-15).
+ * The engine is deterministic, so distinct approaches come from planning the same
+ * request against different content categories — each yields its own timeline,
+ * priced budget and risks. The FIRST entry is the primary mapping (it matches
+ * REQUEST_TO_PLANNER_CATEGORY, preserving single-plan behaviour); the rest are
+ * alternatives. Event types absent here have no alternatives → no approaches.
+ */
+export const REQUEST_TO_PLANNER_APPROACHES: Record<string, PlannerInput['category'][]> = {
+  birthday: ['birthday', 'bbq'],
+  kids_party: ['birthday', 'bbq'],
+  anniversary: ['anniversary', 'bbq'],
+  graduation: ['graduation', 'bbq'],
+  reunion: ['family_reunion', 'bbq'],
+  workshop: ['workshop', 'networking'],
+  food: ['bbq', 'networking'],
+  language_meetup: ['networking', 'language_class'],
+}
+
+/**
+ * Map a customer request to a set of alternative PlannerInputs — one per candidate
+ * category — that the organizer chooses between before approving a plan. Returns []
+ * when the event type is outside OPE V1 scope. Every variant shares the request's
+ * mapped fields (guests/budget/location/notes) and differs only by `category`;
+ * categories are de-duplicated with their order preserved.
+ */
+export function mapRequestToApproaches(req: RequestLike): PlannerInput[] {
+  const categories = REQUEST_TO_PLANNER_APPROACHES[req.event_type]
+  if (!categories?.length) return []
+
+  const base = mapRequestToPlannerInput(req)
+  if (!base) return []
+
+  const seen = new Set<PlannerInput['category']>()
+  return categories
+    .filter((c) => (seen.has(c) ? false : (seen.add(c), true)))
+    .map((category) => ({ ...base, category }))
+}
+
+/**
  * Build a PlannerInput from a customer request, or return null when the request
  * category is outside OPE V1 scope. Budget converts cents → whole units (the
  * PlannerInput.budget contract). Lossy fields with no planner equivalent

@@ -696,3 +696,14 @@ export type CreatePlanFromRequestResult =
   | { ok: true; planId: string; assessment: OpeAssessment | null }
   | { ok: false; kind: 'error'; error: string }
   | { ok: false; kind: 'unsupported'; status: CoverageStatus; reason: string; recommended_next_step: string }
+
+/**
+ * Result of generateApproachesFromRequest (Alternative Event Approaches). Success
+ * returns the ids of the persisted `draft` approach plans (one per category that
+ * produced a ready plan). `unsupported` means the request yielded no plannable
+ * approach; everything else is a plain error code.
+ */
+export type GenerateApproachesResult =
+  | { ok: true; planIds: string[] }
+  | { ok: false; kind: 'error'; error: string }
+  | { ok: false; kind: 'unsupported'; reason: string }

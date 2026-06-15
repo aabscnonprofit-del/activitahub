@@ -1098,6 +1098,35 @@
           "description": "Nimm das beste an und bezahle sicher, um deine Buchung zu bestätigen."
         }
       ]
+    },
+    "approach": {
+      "title": "Alternative Ansätze",
+      "subtitle": "Wählen Sie den passendsten Ansatz. Der gewählte wird zu Ihrem Arbeitsplan.",
+      "generate": "Ansätze generieren",
+      "select": "Diesen Ansatz verwenden",
+      "selected": "Ausgewählt",
+      "openPlan": "Plan öffnen",
+      "complexity": "Komplexität",
+      "budget": "Gesch. Budget",
+      "risk": "Risiko",
+      "levels": {
+        "low": "Niedrig",
+        "medium": "Mittel",
+        "high": "Hoch"
+      },
+      "categories": {
+        "birthday": "Kindergeburtstag",
+        "adult_birthday": "Erwachsenen-Geburtstag",
+        "anniversary": "Jubiläumsfeier",
+        "graduation": "Abschlussfeier",
+        "family_reunion": "Familientreffen",
+        "bbq": "Garten-Grillfest",
+        "networking": "Networking-Treffen",
+        "fitness_class": "Fitnesskurs",
+        "art_class": "Kunstkurs",
+        "language_class": "Sprachkurs",
+        "workshop": "Workshop"
+      }
     }
   },
   "bookings": {
