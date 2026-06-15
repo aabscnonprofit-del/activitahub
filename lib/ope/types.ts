@@ -24,8 +24,10 @@ export type PricingCategory = 'birthday' | 'bbq' | 'networking' | 'class'
 /** A single high-value clarification question (UNKNOWN → ASK). */
 export interface ClarificationQuestion {
   id: string
-  field: 'venueType' | 'budget' | 'kids' | 'instructor' | 'materials'
-  kind: 'choice' | 'number'
+  // Planner-input fields (assessClarification) + Minimum Planning Inputs gate fields
+  // (assessRequestReadiness): when / where / participants / outcome.
+  field: 'venueType' | 'budget' | 'kids' | 'instructor' | 'materials' | 'when' | 'where' | 'participants' | 'outcome'
+  kind: 'choice' | 'number' | 'date' | 'text'
   question: string
   options?: { value: string; label: string }[]
   placeholder?: string

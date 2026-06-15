@@ -1,4 +1,4 @@
-import type { PlannerInput, PlanGenerationResult, OpeAssessment, CoverageStatus } from '@/lib/ope'
+import type { PlannerInput, PlanGenerationResult, OpeAssessment, CoverageStatus, ClarificationQuestion } from '@/lib/ope'
 
 export type Locale = 'en' | 'es' | 'fr' | 'ru' | 'de' | 'pt'
 
@@ -707,3 +707,6 @@ export type GenerateApproachesResult =
   | { ok: true; planIds: string[] }
   | { ok: false; kind: 'error'; error: string }
   | { ok: false; kind: 'unsupported'; reason: string }
+  // Minimum Planning Inputs gate: required signals (when/where/who/budget/outcome) are
+  // still unknown, so no approaches are generated — the caller surfaces these questions.
+  | { ok: false; kind: 'needs_input'; questions: ClarificationQuestion[] }

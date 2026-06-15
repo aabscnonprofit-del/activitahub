@@ -14,6 +14,75 @@ export type RequestLike = {
   participant_count: number | null
   budget_cents: number | null
   notes: string | null
+  /** When (date/timing). Optional so existing callers that don't select it still type. */
+  desired_date?: string | null
+}
+
+/**
+ * Minimum Planning Inputs gate (MASTER 2026-06-15). Before OPE begins detailed Event
+ * Planning it must establish five signals: When / Where / Who / Budget / Expected
+ * Outcome. Any that is still UNKNOWN becomes a clarification question (UNKNOWN → ASK,
+ * never INVENT) — the caller blocks approach generation until uncertainty is resolved.
+ * These are request-level signals; the planner's own assessClarification still runs
+ * later on the mapped PlannerInput for category-specific gaps. Reuses the existing
+ * ClarificationQuestion shape — no new types. Expected Outcome is currently read from
+ * the request's free-text notes as an INTERIM PROXY (see the outcome check below) — a
+ * presence test only, not a true outcome check — so no new column / migration is
+ * required yet. This is scaffolding, not the final product model.
+ */
+export function assessRequestReadiness(req: RequestLike): ClarificationQuestion[] {
+  const questions: ClarificationQuestion[] = []
+
+  // When — date / timing.
+  if (!(req.desired_date ?? '').trim()) {
+    questions.push({
+      id: 'when', field: 'when', kind: 'date', reason: 'timeline',
+      question: 'When should the event take place? A target date sets the planning timeline.',
+    })
+  }
+
+  // Where — location / venue.
+  if (!(req.city ?? '').trim()) {
+    questions.push({
+      id: 'where', field: 'where', kind: 'text', reason: 'location',
+      question: 'Where will the event be held? The location drives venue, logistics and several costs.',
+      placeholder: 'City',
+    })
+  }
+
+  // Who — guests / participants.
+  if (req.participant_count == null || req.participant_count <= 0) {
+    questions.push({
+      id: 'who', field: 'participants', kind: 'number', reason: 'pattern+resources',
+      question: 'About how many people will attend? Headcount shapes the plan, resources and budget.',
+      placeholder: '20',
+    })
+  }
+
+  // Budget.
+  if (req.budget_cents == null) {
+    questions.push({
+      id: 'budget', field: 'budget', kind: 'number', reason: 'budget',
+      question: 'What is the budget for this event? We plan and price approaches against it.',
+      placeholder: '1500',
+    })
+  }
+
+  // Expected Outcome — what success looks like.
+  // INTERIM PROXY: `notes` is used temporarily to stand in for Expected Outcome. This is
+  // only a presence test — non-empty notes satisfy the gate. But `notes` may instead hold
+  // constraints (e.g. "no alcohol, must end by 9pm") or logistics (e.g. "backyard, I'll
+  // bring the cake") that contain NO actual outcome, so this can pass while the outcome is
+  // still genuinely unknown. A dedicated `expected_outcome` field (or structured capture)
+  // should replace this later; until then, treat `notes` here as an approximation.
+  if (!(req.notes ?? '').trim()) {
+    questions.push({
+      id: 'outcome', field: 'outcome', kind: 'text', reason: 'outcome',
+      question: 'What does a successful event look like? A short description of the desired outcome guides the approaches.',
+    })
+  }
+
+  return questions
 }
 
 /**

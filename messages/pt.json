@@ -1127,6 +1127,17 @@
         "language_class": "Aula de idiomas",
         "workshop": "Workshop"
       }
+    },
+    "minimumInputs": {
+      "title": "Mais informações necessárias antes de planejar",
+      "subtitle": "O OPE resolve a incerteza antes de gerar abordagens. Por favor, reúna:",
+      "fields": {
+        "when": "Quando — uma data ou período previsto",
+        "where": "Onde — o local ou cidade",
+        "who": "Quem — quantas pessoas vão participar",
+        "budget": "Orçamento — quanto o cliente pode gastar",
+        "outcome": "Resultado esperado — como é um evento bem-sucedido"
+      }
     }
   },
   "bookings": {

@@ -1127,6 +1127,17 @@
         "language_class": "Clase de idiomas",
         "workshop": "Taller"
       }
+    },
+    "minimumInputs": {
+      "title": "Se necesita más información antes de planificar",
+      "subtitle": "OPE resuelve la incertidumbre antes de generar enfoques. Por favor, reúne:",
+      "fields": {
+        "when": "Cuándo — una fecha o momento previsto",
+        "where": "Dónde — la ubicación o ciudad",
+        "who": "Quién — cuántas personas asistirán",
+        "budget": "Presupuesto — cuánto puede gastar el cliente",
+        "outcome": "Resultado esperado — cómo es un evento exitoso"
+      }
     }
   },
   "bookings": {

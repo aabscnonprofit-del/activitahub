@@ -1127,6 +1127,17 @@
         "language_class": "Sprachkurs",
         "workshop": "Workshop"
       }
+    },
+    "minimumInputs": {
+      "title": "Vor der Planung sind weitere Informationen nötig",
+      "subtitle": "OPE klärt Unsicherheiten, bevor Ansätze generiert werden. Bitte ermitteln Sie:",
+      "fields": {
+        "when": "Wann — ein Zieldatum oder Zeitrahmen",
+        "where": "Wo — der Ort oder die Stadt",
+        "who": "Wer — wie viele Personen teilnehmen",
+        "budget": "Budget — wie viel der Kunde ausgeben kann",
+        "outcome": "Erwartetes Ergebnis — wie eine erfolgreiche Veranstaltung aussieht"
+      }
     }
   },
   "bookings": {

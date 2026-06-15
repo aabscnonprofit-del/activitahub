@@ -6,7 +6,7 @@ import { createClient } from '@/lib/supabase/server'
 import { generatePlan } from '@/lib/ope'
 import type { PlannerInput } from '@/lib/ope/types'
 import { plannerInputSchema } from '@/lib/ope/validation'
-import { mapRequestToPlannerInput, mapRequestToApproaches, buildAssessment, fillClarificationDefaults, type RequestLike } from '@/lib/ope/request-plan'
+import { mapRequestToPlannerInput, mapRequestToApproaches, assessRequestReadiness, buildAssessment, fillClarificationDefaults, type RequestLike } from '@/lib/ope/request-plan'
 import { buildProposal } from '@/lib/workspace/proposal'
 import { userHasOrganizerAccess } from '@/lib/auth/organizer-access.server'
 import {
@@ -243,10 +243,16 @@ export async function generateApproachesFromRequest(requestId: string): Promise<
 
   const { data: request } = await supabase
     .from('customer_requests')
-    .select('event_type, city, country, participant_count, budget_cents, notes')
+    .select('event_type, city, country, participant_count, budget_cents, notes, desired_date')
     .eq('id', requestId)
     .single()
   if (!request) return { ok: false, kind: 'error', error: 'not_found' }
+
+  // Minimum Planning Inputs gate (MASTER 2026-06-15): resolve uncertainty before any
+  // Event Planning. If When/Where/Who/Budget/Outcome are not all known, do NOT generate
+  // approaches — return the clarification questions for the flow to surface.
+  const missing = assessRequestReadiness(request as RequestLike)
+  if (missing.length > 0) return { ok: false, kind: 'needs_input', questions: missing }
 
   const approaches = mapRequestToApproaches(request as RequestLike)
   if (approaches.length === 0) {
@@ -312,6 +318,12 @@ export async function generateApproachesFromRequestAction(formData: FormData): P
   const locale = (formData.get('locale') as string) || 'en'
   const res = await generateApproachesFromRequest(requestId)
   if (res.ok) {
+    revalidatePath(`/${locale}/dashboard/requests`)
+    redirect(`/${locale}/dashboard/requests`)
+  }
+  // Minimum Planning Inputs gate: just refresh — the requests page renders the missing
+  // inputs inline (it recomputes readiness per request), so no error banner is needed.
+  if (res.kind === 'needs_input') {
     revalidatePath(`/${locale}/dashboard/requests`)
     redirect(`/${locale}/dashboard/requests`)
   }

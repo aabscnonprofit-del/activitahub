@@ -1127,6 +1127,17 @@
         "language_class": "Language class",
         "workshop": "Workshop"
       }
+    },
+    "minimumInputs": {
+      "title": "More information needed before planning",
+      "subtitle": "OPE resolves uncertainty before generating approaches. Please gather:",
+      "fields": {
+        "when": "When — a target date or timing",
+        "where": "Where — the location or city",
+        "who": "Who — how many people will attend",
+        "budget": "Budget — what the customer can spend",
+        "outcome": "Expected outcome — what a successful event looks like"
+      }
     }
   },
   "bookings": {

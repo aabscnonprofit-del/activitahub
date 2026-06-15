@@ -1,10 +1,11 @@
 import { getTranslations } from 'next-intl/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { Inbox, CalendarDays, Users, Sparkles, FileText, CheckCircle2 } from 'lucide-react'
+import { Inbox, CalendarDays, Users, Sparkles, FileText, CheckCircle2, HelpCircle } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { sendProposal } from '@/lib/actions/requests'
 import { generateApproachesFromRequestAction, selectApproachAction } from '@/lib/actions/opePlans'
+import { assessRequestReadiness } from '@/lib/ope/request-plan'
 import { Badge } from '@/components/ui/Badge'
 import { formatDate, formatPrice } from '@/lib/utils'
 import type { Locale, CustomerRequest, Proposal, OpePlanPhase } from '@/lib/types'
@@ -106,6 +107,33 @@ export default async function OrganizerRequestsPage({ params, searchParams }: Pr
                 {(() => {
                   const approaches = approachesByRequest.get(r.id) ?? []
                   if (approaches.length === 0) {
+                    // Minimum Planning Inputs gate: When/Where/Who/Budget/Outcome must be known
+                    // before approaches can be generated. Missing → show the questions, hide Generate.
+                    const missing = assessRequestReadiness({
+                      event_type: r.event_type,
+                      city: r.city,
+                      country: r.country,
+                      participant_count: r.participant_count,
+                      budget_cents: r.budget_cents,
+                      notes: r.notes,
+                      desired_date: r.desired_date,
+                    })
+                    if (missing.length > 0) {
+                      return (
+                        <div className="mt-3 rounded-xl border border-amber-200 bg-amber-50 p-4">
+                          <p className="flex items-center gap-1.5 text-sm font-semibold text-amber-800">
+                            <HelpCircle className="h-4 w-4" />
+                            {t('minimumInputs.title')}
+                          </p>
+                          <p className="mt-0.5 text-xs text-amber-700">{t('minimumInputs.subtitle')}</p>
+                          <ul className="mt-2 list-disc space-y-0.5 pl-5 text-sm text-amber-800">
+                            {missing.map((q) => (
+                              <li key={q.id}>{t(`minimumInputs.fields.${q.id}` as 'minimumInputs.fields.when')}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )
+                    }
                     return (
                       <div className="mt-3">
                         <form action={generateApproachesFromRequestAction}>
