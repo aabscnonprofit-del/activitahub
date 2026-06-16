@@ -116,7 +116,7 @@ export default async function RequestDetailPage({ params, searchParams }: Reques
                       {p.proposed_date && (
                         <p className="mt-0.5 text-xs text-slate-500">{t('detail.proposedDate')}: {formatDate(p.proposed_date, 'UTC', locale)}</p>
                       )}
-                      {p.message && <p className="mt-2 text-sm text-slate-600">{p.message}</p>}
+                      {p.message && <p className="mt-2 whitespace-pre-line text-sm text-slate-600">{p.message}</p>}
                     </div>
                     <div className="shrink-0 text-right">
                       <p className="text-lg font-extrabold text-slate-900">{formatPrice(p.price_cents, p.currency, locale) ?? '—'}</p>

@@ -7,7 +7,7 @@ import { generatePlan } from '@/lib/ope'
 import type { PlannerInput } from '@/lib/ope/types'
 import { plannerInputSchema } from '@/lib/ope/validation'
 import { mapRequestToPlannerInput, mapRequestToApproaches, assessRequestReadiness, buildAssessment, fillClarificationDefaults, type RequestLike } from '@/lib/ope/request-plan'
-import { buildProposal } from '@/lib/workspace/proposal'
+import { buildProposal, type ProposalViewModel } from '@/lib/workspace/proposal'
 import { userHasOrganizerAccess } from '@/lib/auth/organizer-access.server'
 import {
   canEditBudget, canEditInputs, canEditPrep, findTransition,
@@ -422,7 +422,9 @@ export async function sendProposalFromPlan(planId: string, locale: string): Prom
 
   // Proposal budget is whole currency units; the RPC stores cents. Unpriced → no price.
   const priceCents = vm.budget.priced ? Math.round(vm.budget.likely * 100) : null
-  const message = (vm.summary ?? vm.eventTitle ?? '').slice(0, 2000) || null
+  // Option A (Plan→Proposal value): send the full plan value as structured text in the
+  // existing message field — no schema/RPC change. Reuses the buildProposal view model.
+  const message = formatPlanProposalMessage(vm) || null
 
   const { error } = await supabase.rpc('send_proposal', {
     p_request_id: plan.source_request_id,
@@ -436,6 +438,67 @@ export async function sendProposalFromPlan(planId: string, locale: string): Prom
   revalidatePath(`/${locale}/dashboard/proposals`)
   revalidatePath(`/${locale}/dashboard/requests`)
   redirect(`/${locale}/dashboard/proposals`)
+}
+
+/**
+ * Compose a concise, deterministic plain-text proposal from the already-built proposal
+ * view model (Option A — Plan→Proposal value). Reuses buildProposal's output verbatim,
+ * adds no new data, and is stored in the existing proposals.message field (rendered to
+ * the customer with whitespace preserved). Sections are omitted when empty so the text
+ * stays tight; the whole string is capped so it always fits the TEXT column comfortably.
+ * Not exported — a local helper, so this 'use server' module still only exports actions.
+ */
+function formatPlanProposalMessage(vm: ProposalViewModel): string {
+  const lines: string[] = []
+  const money = (n: number) => n.toLocaleString('en-US')
+  const cur = (vm.budget?.currency ?? 'usd').toUpperCase()
+
+  // Event summary / headline.
+  const head = vm.summary ?? vm.eventTitle ?? vm.activityType
+  if (head) lines.push(head)
+
+  // Facts (guests · location · cadence).
+  const facts: string[] = []
+  if (vm.facts.guests != null) facts.push(`${vm.facts.guests} guests`)
+  if (vm.facts.location) facts.push(vm.facts.location)
+  if (vm.facts.cadence) facts.push(vm.facts.cadence)
+  if (facts.length) lines.push('', facts.join(' · '))
+
+  // Timeline highlights (top 5).
+  if (vm.timeline.length) {
+    lines.push('', 'Timeline')
+    for (const t of vm.timeline.slice(0, 5)) {
+      const label = t.name || t.phase
+      lines.push(`- ${label}${t.when ? ` — ${t.when}` : ''}`)
+    }
+  }
+
+  // Budget low / likely / high + key drivers (priced plans only).
+  if (vm.budget?.priced) {
+    lines.push('', `Estimated budget (${cur})`)
+    lines.push(`- ${money(vm.budget.low)} – ${money(vm.budget.likely)} – ${money(vm.budget.high)} (low / likely / high)`)
+    if (vm.budget.contingencyPct != null) lines.push(`- Includes ~${vm.budget.contingencyPct}% contingency`)
+    if (vm.budget.drivers.length) {
+      const drivers = vm.budget.drivers.slice(0, 3).map((d) => `${d.label} ${money(d.amount)}`).join(', ')
+      lines.push(`- Key drivers: ${drivers}`)
+    }
+  }
+
+  // Included services / plan components (top 6).
+  if (vm.included.length) {
+    lines.push('', 'Included')
+    lines.push(`- ${vm.included.slice(0, 6).map((i) => i.label).join(', ')}`)
+  }
+
+  // Top risks / assumptions (top 3).
+  if (vm.risks.length) {
+    lines.push('', 'Key risks & assumptions')
+    for (const r of vm.risks.slice(0, 3)) {
+      lines.push(`- ${r.name}${r.mitigation ? ` — ${r.mitigation}` : ''}`)
+    }
+  }
+
+  return lines.join('\n').slice(0, 4000)
 }
 
 /** Load one plan (owner only). */
