@@ -233,6 +233,8 @@ export type WorkerProfile = {
   phone: string | null
   display_name: string
   roles: string[]
+  gender: string | null
+  date_of_birth: string | null // ISO date; minor/adult status is derived in the app
   city: string | null
   country: string | null
   languages: string[] | null

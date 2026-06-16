@@ -2222,7 +2222,12 @@
       "published": "Mich für Organisatoren auffindbar machen",
       "publishedHint": "Wenn aktiv, können Organisatoren Sie finden und einladen.",
       "save": "Speichern",
-      "create": "Profil erstellen"
+      "create": "Profil erstellen",
+      "gender": "Geschlecht",
+      "genderUnset": "Keine Angabe",
+      "dob": "Geburtsdatum",
+      "dobHint": "Optional. Dient der Kennzeichnung Minderjähriger; nie öffentlich gezeigt.",
+      "rolesHint": "Mindestens eine auswählen."
     },
     "roles": {
       "server": "Servicekraft",
@@ -2241,7 +2246,20 @@
       "coordinator": "Koordinator"
     },
     "verifiedYes": "Von ActivLife Hub verifiziert",
-    "verifiedNo": "Verifizierung ausstehend — von ActivLife Hub geprüft, nicht selbst setzbar."
+    "verifiedNo": "Verifizierung ausstehend — von ActivLife Hub geprüft, nicht selbst setzbar.",
+    "gender": {
+      "female": "Weiblich",
+      "male": "Männlich",
+      "other": "Andere",
+      "prefer_not_to_say": "Keine Angabe"
+    },
+    "minorFlag": "Minderjähriger Mitarbeiter — prüfen Sie die lokalen Arbeitsregeln, bevor Sie Schichten zuweisen.",
+    "error": {
+      "name_required": "Bitte geben Sie Ihren Namen ein.",
+      "roles_required": "Mindestens eine Rolle auswählen.",
+      "dob_future": "Das Geburtsdatum darf nicht in der Zukunft liegen.",
+      "no_account_email": "Ihr Konto hat keine E-Mail-Adresse, daher kann kein Mitarbeiterprofil erstellt werden."
+    }
   },
   "workPage": {
     "meta": {
@@ -2314,7 +2332,12 @@
       "role": "Rolle",
       "rolePlaceholder": "Rolle wählen",
       "add": "Hinzufügen",
-      "adding": "Wird hinzugefügt…"
+      "adding": "Wird hinzugefügt…",
+      "roles": "Rollen",
+      "gender": "Geschlecht",
+      "genderUnset": "Keine Angabe",
+      "dob": "Geburtsdatum",
+      "dobHint": "Optional — kennzeichnet Minderjährige."
     },
     "outcome": {
       "created": "Mitarbeiter hinzugefügt.",
@@ -2332,12 +2355,20 @@
       "bio": "Notizen",
       "save": "Speichern",
       "saving": "Wird gespeichert…",
-      "cancel": "Abbrechen"
+      "cancel": "Abbrechen",
+      "gender": "Geschlecht",
+      "dob": "Geburtsdatum"
     },
     "toast": {
       "updated": "Aktualisiert.",
       "deleted": "Entfernt.",
       "error": "Etwas ist schiefgelaufen."
+    },
+    "minorBadge": "Minderjährig",
+    "minorFlag": "Minderjähriger Mitarbeiter — prüfen Sie die lokalen Arbeitsregeln, bevor Sie Schichten zuweisen.",
+    "validation": {
+      "rolesRequired": "Mindestens eine Rolle auswählen.",
+      "dobFuture": "Das Geburtsdatum darf nicht in der Zukunft liegen."
     }
   }
 }

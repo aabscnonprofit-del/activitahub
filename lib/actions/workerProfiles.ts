@@ -2,7 +2,9 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
+import { redirect } from 'next/navigation'
 import { userHasOrganizerAccess } from '@/lib/auth/organizer-access.server'
+import { isFutureDate } from '@/lib/workers/age'
 import type { WorkerProfile, AddWorkerOutcome } from '@/lib/types'
 
 // ── Worker Profiles actions (migration 031) ─────────────────────────────────
@@ -21,6 +23,11 @@ const cents = (raw: FormDataEntryValue | null): number | null => {
   if (!v) return null
   const n = Math.round(parseFloat(v) * 100)
   return Number.isFinite(n) && n >= 0 ? n : null
+}
+/** Normalize a <input type="date"> value to an ISO date string or null. */
+const dateStr = (raw: FormDataEntryValue | null): string | null => {
+  const s = (raw as string)?.trim()
+  return s && /^\d{4}-\d{2}-\d{2}$/.test(s) ? s : null
 }
 
 /** Load the current user's worker profile (RLS owner-scoped), or null. */
@@ -49,12 +56,24 @@ export async function upsertMyWorkerProfile(formData: FormData): Promise<void> {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return
 
+  const locale = (formData.get('locale') as string) || 'en'
+  const back = (err?: string) =>
+    redirect(`/${locale}/dashboard/worker-profile${err ? `?error=${err}` : ''}`)
+
   const displayName = str(formData.get('display_name'))
-  if (!displayName) return
+  if (!displayName) return back('name_required')
+
+  const roles = formData.getAll('roles').map(String).filter(Boolean)
+  if (roles.length === 0) return back('roles_required') // roles required on the self profile
+
+  const dob = dateStr(formData.get('date_of_birth'))
+  if (isFutureDate(dob)) return back('dob_future') // DOB cannot be in the future
 
   const patch = {
     display_name: displayName,
-    roles: formData.getAll('roles').map(String).filter(Boolean),
+    roles,
+    gender: str(formData.get('gender')),
+    date_of_birth: dob,
     city: str(formData.get('city')),
     country: str(formData.get('country')),
     languages: list(formData.get('languages')),
@@ -73,7 +92,7 @@ export async function upsertMyWorkerProfile(formData: FormData): Promise<void> {
       .eq('id', existing.id).eq('user_id', user.id)
   } else {
     const emailNorm = (user.email ?? '').trim().toLowerCase()
-    if (!emailNorm) return // no account email → cannot anchor identity/dedupe
+    if (!emailNorm) return back('no_account_email') // account has no email → cannot anchor identity/dedupe
     await supabase.from('worker_profiles').insert({
       user_id: user.id,
       status: 'claimed',
@@ -84,6 +103,7 @@ export async function upsertMyWorkerProfile(formData: FormData): Promise<void> {
   }
 
   revalidatePath('/dashboard/worker-profile')
+  back() // clean URL (clears any prior ?error) and reflects the save
 }
 
 /** Toggle whether the caller's profile is listed for organizers (publish). */
@@ -141,11 +161,18 @@ export async function addWorkerFromOrganizer(formData: FormData): Promise<AddWor
   if (!user) return null
   if (!(await userHasOrganizerAccess(supabase, user.id))) return null
 
+  const roles = formData.getAll('roles').map(String).filter(Boolean)
+  if (roles.length === 0) return null // roles required when adding a worker
+  const dob = dateStr(formData.get('date_of_birth'))
+  if (isFutureDate(dob)) return null // DOB cannot be in the future (RPC also guards)
+
   const { data, error } = await supabase.rpc('add_worker', {
     p_name: str(formData.get('name')) ?? '',
     p_email: str(formData.get('email')) ?? '',
     p_phone: str(formData.get('phone')) ?? '',
-    p_role: str(formData.get('role')) ?? '',
+    p_roles: roles,
+    p_gender: str(formData.get('gender')),
+    p_date_of_birth: dob,
   })
   if (error || !data) return null
   return data as AddWorkerOutcome
@@ -163,16 +190,23 @@ export async function updateUnclaimedWorkerFromOrganizer(id: string, formData: F
   if (!user) return false
   if (!(await userHasOrganizerAccess(supabase, user.id))) return false
 
+  const roles = formData.getAll('roles').map(String).filter(Boolean)
+  if (roles.length === 0) return false // roles required
+  const dob = dateStr(formData.get('date_of_birth'))
+  if (isFutureDate(dob)) return false // DOB cannot be in the future (RPC also guards)
+
   const { data, error } = await supabase.rpc('update_unclaimed_worker', {
     p_id: id,
     p_display_name: str(formData.get('display_name')) ?? '',
     p_phone: str(formData.get('phone')),
-    p_roles: formData.getAll('roles').map(String).filter(Boolean),
+    p_roles: roles,
     p_city: str(formData.get('city')),
     p_country: str(formData.get('country')),
     p_languages: list(formData.get('languages')),
     p_pay_rate_cents: cents(formData.get('pay_rate')),
     p_bio: str(formData.get('bio')),
+    p_gender: str(formData.get('gender')),
+    p_date_of_birth: dob,
   })
   if (error || !data) return false
   return (data as { ok?: boolean }).ok === true

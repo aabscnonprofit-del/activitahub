@@ -2222,7 +2222,12 @@
       "published": "List me for organizers to find",
       "publishedHint": "When on, organizers can discover and invite you.",
       "save": "Save",
-      "create": "Create profile"
+      "create": "Create profile",
+      "gender": "Gender",
+      "genderUnset": "Not specified",
+      "dob": "Date of birth",
+      "dobHint": "Optional. Used to flag minors; never shown publicly.",
+      "rolesHint": "Pick at least one."
     },
     "roles": {
       "server": "Server",
@@ -2241,7 +2246,20 @@
       "coordinator": "Coordinator"
     },
     "verifiedYes": "Verified by ActivLife Hub",
-    "verifiedNo": "Verification pending — reviewed by ActivLife Hub, not self-set."
+    "verifiedNo": "Verification pending — reviewed by ActivLife Hub, not self-set.",
+    "gender": {
+      "female": "Female",
+      "male": "Male",
+      "other": "Other",
+      "prefer_not_to_say": "Prefer not to say"
+    },
+    "minorFlag": "Minor worker — verify local labor rules before assigning shifts.",
+    "error": {
+      "name_required": "Please enter your name.",
+      "roles_required": "Select at least one role.",
+      "dob_future": "Date of birth cannot be in the future.",
+      "no_account_email": "Your account has no email address, so a worker profile cannot be created."
+    }
   },
   "workPage": {
     "meta": {
@@ -2314,7 +2332,12 @@
       "role": "Role",
       "rolePlaceholder": "Select a role",
       "add": "Add worker",
-      "adding": "Adding…"
+      "adding": "Adding…",
+      "roles": "Roles",
+      "gender": "Gender",
+      "genderUnset": "Not specified",
+      "dob": "Date of birth",
+      "dobHint": "Optional — flags minors."
     },
     "outcome": {
       "created": "Worker added.",
@@ -2332,12 +2355,20 @@
       "bio": "Notes",
       "save": "Save",
       "saving": "Saving…",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "gender": "Gender",
+      "dob": "Date of birth"
     },
     "toast": {
       "updated": "Worker updated.",
       "deleted": "Worker removed.",
       "error": "Something went wrong."
+    },
+    "minorBadge": "Minor",
+    "minorFlag": "Minor worker — verify local labor rules before assigning shifts.",
+    "validation": {
+      "rolesRequired": "Select at least one role.",
+      "dobFuture": "Date of birth cannot be in the future."
     }
   }
 }

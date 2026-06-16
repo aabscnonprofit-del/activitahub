@@ -2222,7 +2222,12 @@
       "published": "Listar-me para organizadores encontrarem",
       "publishedHint": "Quando ativo, organizadores podem descobrir e convidar você.",
       "save": "Salvar",
-      "create": "Criar perfil"
+      "create": "Criar perfil",
+      "gender": "Gênero",
+      "genderUnset": "Não especificado",
+      "dob": "Data de nascimento",
+      "dobHint": "Opcional. Usado para sinalizar menores; nunca exibido publicamente.",
+      "rolesHint": "Escolha pelo menos um."
     },
     "roles": {
       "server": "Garçom",
@@ -2241,7 +2246,20 @@
       "coordinator": "Coordenador"
     },
     "verifiedYes": "Verificado pelo ActivLife Hub",
-    "verifiedNo": "Verificação pendente — revisada pelo ActivLife Hub, não definida por você."
+    "verifiedNo": "Verificação pendente — revisada pelo ActivLife Hub, não definida por você.",
+    "gender": {
+      "female": "Feminino",
+      "male": "Masculino",
+      "other": "Outro",
+      "prefer_not_to_say": "Prefiro não dizer"
+    },
+    "minorFlag": "Trabalhador menor de idade — verifique as regras trabalhistas locais antes de atribuir turnos.",
+    "error": {
+      "name_required": "Informe seu nome.",
+      "roles_required": "Selecione pelo menos uma função.",
+      "dob_future": "A data de nascimento não pode ser no futuro.",
+      "no_account_email": "Sua conta não tem e-mail, portanto não é possível criar um perfil de trabalhador."
+    }
   },
   "workPage": {
     "meta": {
@@ -2314,7 +2332,12 @@
       "role": "Função",
       "rolePlaceholder": "Selecione uma função",
       "add": "Adicionar",
-      "adding": "Adicionando…"
+      "adding": "Adicionando…",
+      "roles": "Funções",
+      "gender": "Gênero",
+      "genderUnset": "Não especificado",
+      "dob": "Data de nascimento",
+      "dobHint": "Opcional — sinaliza menores."
     },
     "outcome": {
       "created": "Trabalhador adicionado.",
@@ -2332,12 +2355,20 @@
       "bio": "Notas",
       "save": "Salvar",
       "saving": "Salvando…",
-      "cancel": "Cancelar"
+      "cancel": "Cancelar",
+      "gender": "Gênero",
+      "dob": "Data de nascimento"
     },
     "toast": {
       "updated": "Trabalhador atualizado.",
       "deleted": "Trabalhador removido.",
       "error": "Algo deu errado."
+    },
+    "minorBadge": "Menor",
+    "minorFlag": "Trabalhador menor de idade — verifique as regras trabalhistas locais antes de atribuir turnos.",
+    "validation": {
+      "rolesRequired": "Selecione pelo menos uma função.",
+      "dobFuture": "A data de nascimento não pode ser no futuro."
     }
   }
 }
