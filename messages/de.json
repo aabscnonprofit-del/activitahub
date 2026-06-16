@@ -2093,5 +2093,14 @@
     "sendToCustomer": "Angebot an den Kunden senden",
     "sendError": "Angebot konnte nicht gesendet werden",
     "print": "Drucken / Als PDF speichern"
+  },
+  "messages": {
+    "title": "Nachrichten",
+    "titleWith": "Nachrichten mit {name}",
+    "send": "Senden",
+    "placeholder": "Nachricht schreiben…",
+    "empty": "Noch keine Nachrichten. Starten Sie das Gespräch.",
+    "you": "Sie",
+    "them": "Andere"
   }
 }

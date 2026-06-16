@@ -2093,5 +2093,14 @@
     "sendToCustomer": "Send proposal to customer",
     "sendError": "Could not send proposal",
     "print": "Print / Save PDF"
+  },
+  "messages": {
+    "title": "Messages",
+    "titleWith": "Messages with {name}",
+    "send": "Send",
+    "placeholder": "Write a message…",
+    "empty": "No messages yet. Start the conversation.",
+    "you": "You",
+    "them": "Them"
   }
 }

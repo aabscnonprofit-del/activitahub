@@ -7,6 +7,7 @@ import { PublicHeader } from '@/components/layout/PublicHeader'
 import { Badge } from '@/components/ui/Badge'
 import { Alert } from '@/components/ui/Alert'
 import { acceptProposal, declineProposal } from '@/lib/actions/requests'
+import MessageThread from '@/components/messaging/MessageThread'
 import { formatDate, formatPrice } from '@/lib/utils'
 import type { Locale, CustomerRequest, Proposal } from '@/lib/types'
 
@@ -144,6 +145,16 @@ export default async function RequestDetailPage({ params, searchParams }: Reques
                       </form>
                     </div>
                   )}
+
+                  {/* Messaging (MVP): request owner ↔ this organizer, attached to the request. */}
+                  <MessageThread
+                    contextType="request"
+                    contextId={request.id}
+                    otherProfileId={p.organizer_id}
+                    currentUserId={user.id}
+                    locale={locale}
+                    otherName={nameById.get(p.organizer_id) ?? null}
+                  />
                 </div>
               ))}
             </div>

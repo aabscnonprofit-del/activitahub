@@ -2093,5 +2093,14 @@
     "sendToCustomer": "Envoyer la proposition au client",
     "sendError": "Impossible d’envoyer la proposition",
     "print": "Imprimer / Enregistrer en PDF"
+  },
+  "messages": {
+    "title": "Messages",
+    "titleWith": "Messages avec {name}",
+    "send": "Envoyer",
+    "placeholder": "Écrivez un message…",
+    "empty": "Pas encore de messages. Démarrez la conversation.",
+    "you": "Vous",
+    "them": "Eux"
   }
 }

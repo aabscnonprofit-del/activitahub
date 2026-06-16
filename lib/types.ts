@@ -361,6 +361,34 @@ export type NotificationType =
   | 'activity_alert'
   | 'event_update'
   | 'event_reminder'
+  | 'message_received'
+
+// ── Messaging (membership model, migration 028) ─────────────────────────────
+// A conversation is a 1:1 thread (MVP) identified by its members, with an optional
+// context (e.g. a customer request). `Request` is a context, not the key.
+
+export type Conversation = {
+  id: string
+  context_type: string | null // 'request' (MVP); NULL = contextless
+  context_id: string | null
+  created_at: string
+  updated_at: string
+}
+
+export type ConversationMember = {
+  conversation_id: string
+  profile_id: string
+  last_read_at: string | null
+  created_at: string
+}
+
+export type Message = {
+  id: string
+  conversation_id: string
+  sender_id: string
+  body: string
+  created_at: string
+}
 
 // ── Participant Management ──────────────────────────────────────────────────
 export type ParticipantStatus =

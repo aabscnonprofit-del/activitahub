@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/server'
 import { sendProposal } from '@/lib/actions/requests'
 import { generateApproachesFromRequestAction, selectApproachAction } from '@/lib/actions/opePlans'
 import { assessRequestReadiness } from '@/lib/ope/request-plan'
+import MessageThread from '@/components/messaging/MessageThread'
 import { Badge } from '@/components/ui/Badge'
 import { formatDate, formatPrice } from '@/lib/utils'
 import type { Locale, CustomerRequest, Proposal, OpePlanPhase } from '@/lib/types'
@@ -224,6 +225,15 @@ export default async function OrganizerRequestsPage({ params, searchParams }: Pr
                     </div>
                   </form>
                 )}
+
+                {/* Messaging (MVP): organizer ↔ request owner, attached to this request. */}
+                <MessageThread
+                  contextType="request"
+                  contextId={r.id}
+                  otherProfileId={r.customer_id}
+                  currentUserId={user.id}
+                  locale={locale}
+                />
               </div>
             )
           })}
