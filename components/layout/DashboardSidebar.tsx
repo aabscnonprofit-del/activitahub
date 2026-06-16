@@ -11,6 +11,7 @@ import {
   Users,
   MapPin,
   Store,
+  HardHat,
   BarChart2,
   UserCircle,
   CreditCard,
@@ -57,6 +58,7 @@ export async function DashboardSidebar({
     { key: 'clients', href: `${base}/clients`, icon: Users },
     { key: 'venues', href: `${base}/venues`, icon: MapPin },
     { key: 'vendors', href: `${base}/vendors`, icon: Store },
+    { key: 'workerProfile', href: `${base}/worker-profile`, icon: HardHat },
     { key: 'analytics', href: `${base}/analytics`, icon: BarChart2 },
     { key: 'profile', href: `${base}/profile`, icon: UserCircle },
   ]

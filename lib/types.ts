@@ -221,6 +221,30 @@ export type VendorRequest = {
   vendor_quotes?: VendorQuote[]
 }
 
+// ── Worker Network — Worker Profiles (migration 031) ────────────────────────
+// A platform participant profile owned by the worker (not the organizer). Self-
+// registered (claimed) or organizer-added (unclaimed, referenced). Deduped by email.
+export type WorkerProfile = {
+  id: string
+  user_id: string | null
+  status: 'unclaimed' | 'claimed'
+  email_normalized: string
+  email: string | null
+  phone: string | null
+  display_name: string
+  roles: string[]
+  city: string | null
+  country: string | null
+  languages: string[] | null
+  pay_rate_cents: number | null
+  bio: string | null
+  available: boolean
+  published: boolean
+  created_by_organizer_id: string | null
+  created_at: string
+  updated_at: string
+}
+
 export type CalendarEventType = 'session' | 'block' | 'personal'
 
 export type CalendarEvent = {

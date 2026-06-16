@@ -557,7 +557,8 @@
       "billing": "Facturation",
       "admin": "Administration",
       "plans": "Plans",
-      "vendors": "Prestataires"
+      "vendors": "Prestataires",
+      "workerProfile": "Profil de personnel"
     },
     "home": {
       "greeting": "Bon retour, {name}",
@@ -2194,5 +2195,49 @@
     },
     "previous": "Demandes précédentes",
     "previousHint": "Plus dans le budget actuel du plan — conservées pour que les demandes et devis restent visibles."
+  },
+  "workerProfile": {
+    "title": "Profil de personnel",
+    "subtitle": "Votre propre profil sur la plateforme — les organisateurs peuvent vous inviter à travailler.",
+    "liveListed": "Votre profil est publié et visible par les organisateurs.",
+    "savedNotListed": "Profil enregistré. Publiez-le pour être trouvé par les organisateurs.",
+    "form": {
+      "displayName": "Nom",
+      "displayNamePlaceholder": "ex. Alex Kim",
+      "email": "E-mail du compte",
+      "emailHint": "Votre identité sur la plateforme ; sert à relier les invitations. Non modifiable ici.",
+      "roles": "Rôles",
+      "city": "Ville",
+      "cityPlaceholder": "ex. Honolulu",
+      "country": "Pays",
+      "countryPlaceholder": "ex. USA",
+      "languages": "Langues",
+      "languagesPlaceholder": "Français, Anglais",
+      "payRate": "Tarif",
+      "payRatePlaceholder": "par heure",
+      "bio": "À propos",
+      "bioPlaceholder": "Expérience, certifications, notes…",
+      "available": "Disponible pour travailler",
+      "published": "Me lister pour que les organisateurs me trouvent",
+      "publishedHint": "Activé, les organisateurs peuvent vous découvrir et vous inviter.",
+      "save": "Enregistrer",
+      "create": "Créer le profil"
+    },
+    "roles": {
+      "server": "Serveur",
+      "bartender": "Barman",
+      "driver": "Chauffeur",
+      "mover": "Manutentionnaire",
+      "stage_crew": "Régisseur",
+      "cleaner": "Agent de nettoyage",
+      "instructor": "Instructeur",
+      "host": "Animateur",
+      "dj": "DJ",
+      "guide": "Guide",
+      "photographer": "Photographe",
+      "videographer": "Vidéaste",
+      "assistant": "Assistant",
+      "coordinator": "Coordinateur"
+    }
   }
 }

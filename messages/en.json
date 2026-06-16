@@ -557,7 +557,8 @@
       "billing": "Billing",
       "admin": "Admin",
       "plans": "Plans",
-      "vendors": "Vendors"
+      "vendors": "Vendors",
+      "workerProfile": "Worker profile"
     },
     "home": {
       "greeting": "Welcome back, {name}",
@@ -2194,5 +2195,49 @@
     },
     "previous": "Previous requests",
     "previousHint": "No longer in the current plan budget — kept so sent requests and quotes stay visible."
+  },
+  "workerProfile": {
+    "title": "Worker profile",
+    "subtitle": "Your own profile on the platform — organizers can invite you to work.",
+    "liveListed": "Your profile is published and visible to organizers.",
+    "savedNotListed": "Profile saved. Publish it to be found by organizers.",
+    "form": {
+      "displayName": "Name",
+      "displayNamePlaceholder": "e.g. Alex Kim",
+      "email": "Account email",
+      "emailHint": "Your identity on the platform; used to link organizer invites. Not editable here.",
+      "roles": "Roles",
+      "city": "City",
+      "cityPlaceholder": "e.g. Honolulu",
+      "country": "Country",
+      "countryPlaceholder": "e.g. USA",
+      "languages": "Languages",
+      "languagesPlaceholder": "English, Spanish",
+      "payRate": "Pay rate",
+      "payRatePlaceholder": "per hour",
+      "bio": "About",
+      "bioPlaceholder": "Experience, certifications, notes…",
+      "available": "Available for work",
+      "published": "List me for organizers to find",
+      "publishedHint": "When on, organizers can discover and invite you.",
+      "save": "Save",
+      "create": "Create profile"
+    },
+    "roles": {
+      "server": "Server",
+      "bartender": "Bartender",
+      "driver": "Driver",
+      "mover": "Mover",
+      "stage_crew": "Stage crew",
+      "cleaner": "Cleaner",
+      "instructor": "Instructor",
+      "host": "Host/MC",
+      "dj": "DJ",
+      "guide": "Guide",
+      "photographer": "Photographer",
+      "videographer": "Videographer",
+      "assistant": "Assistant",
+      "coordinator": "Coordinator"
+    }
   }
 }

@@ -557,7 +557,8 @@
       "billing": "Abrechnung",
       "admin": "Admin",
       "plans": "Pläne",
-      "vendors": "Anbieter"
+      "vendors": "Anbieter",
+      "workerProfile": "Mitarbeiterprofil"
     },
     "home": {
       "greeting": "Willkommen zurück, {name}",
@@ -2194,5 +2195,49 @@
     },
     "previous": "Frühere Anfragen",
     "previousHint": "Nicht mehr im aktuellen Planbudget — beibehalten, damit gesendete Anfragen und Angebote sichtbar bleiben."
+  },
+  "workerProfile": {
+    "title": "Mitarbeiterprofil",
+    "subtitle": "Ihr eigenes Profil auf der Plattform — Organisatoren können Sie zur Arbeit einladen.",
+    "liveListed": "Ihr Profil ist veröffentlicht und für Organisatoren sichtbar.",
+    "savedNotListed": "Profil gespeichert. Veröffentlichen Sie es, damit Organisatoren Sie finden.",
+    "form": {
+      "displayName": "Name",
+      "displayNamePlaceholder": "z. B. Alex Kim",
+      "email": "Konto-E-Mail",
+      "emailHint": "Ihre Identität auf der Plattform; verknüpft Einladungen. Hier nicht bearbeitbar.",
+      "roles": "Rollen",
+      "city": "Stadt",
+      "cityPlaceholder": "z. B. Honolulu",
+      "country": "Land",
+      "countryPlaceholder": "z. B. USA",
+      "languages": "Sprachen",
+      "languagesPlaceholder": "Deutsch, Englisch",
+      "payRate": "Vergütung",
+      "payRatePlaceholder": "pro Stunde",
+      "bio": "Über mich",
+      "bioPlaceholder": "Erfahrung, Zertifikate, Notizen…",
+      "available": "Verfügbar für Arbeit",
+      "published": "Mich für Organisatoren auffindbar machen",
+      "publishedHint": "Wenn aktiv, können Organisatoren Sie finden und einladen.",
+      "save": "Speichern",
+      "create": "Profil erstellen"
+    },
+    "roles": {
+      "server": "Servicekraft",
+      "bartender": "Barkeeper",
+      "driver": "Fahrer",
+      "mover": "Träger",
+      "stage_crew": "Bühnencrew",
+      "cleaner": "Reinigungskraft",
+      "instructor": "Trainer",
+      "host": "Moderator",
+      "dj": "DJ",
+      "guide": "Guide",
+      "photographer": "Fotograf",
+      "videographer": "Videograf",
+      "assistant": "Assistent",
+      "coordinator": "Koordinator"
+    }
   }
 }
