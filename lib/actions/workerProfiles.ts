@@ -109,10 +109,31 @@ export async function setMyWorkerAvailability(formData: FormData): Promise<void>
 }
 
 /**
+ * List the UNCLAIMED workers this organizer added (the only worker rows RLS lets an
+ * organizer read: created_by_organizer_id = self AND status='unclaimed'). Once a worker
+ * claims their profile it leaves this list by design (trust patch 032) — claimed workers
+ * are NOT exposed to the organizer. No search/directory; this is the organizer's own list.
+ */
+export async function getWorkersAddedByMe(): Promise<WorkerProfile[]> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return []
+
+  const { data } = await supabase
+    .from('worker_profiles')
+    .select('*')
+    .eq('created_by_organizer_id', user.id)
+    .eq('status', 'unclaimed')
+    .order('created_at', { ascending: false })
+
+  return (data ?? []) as WorkerProfile[]
+}
+
+/**
  * Organizer adds a worker (dedupe by normalized email → reuse or create UNCLAIMED).
  * The organizer references the profile; they do not own it. Returns { id, outcome }
  * (outcome ∈ created | reused_unclaimed | reused_claimed) — never the (possibly
- * claimed) worker's contact data — or null on failure. Entitlement-gated. (No UI yet.)
+ * claimed) worker's contact data — or null on failure. Entitlement-gated.
  */
 export async function addWorkerFromOrganizer(formData: FormData): Promise<AddWorkerOutcome | null> {
   const supabase = await createClient()

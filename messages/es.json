@@ -558,7 +558,8 @@
       "admin": "Administrador",
       "plans": "Planes",
       "vendors": "Proveedores",
-      "workerProfile": "Perfil de trabajador"
+      "workerProfile": "Perfil de trabajador",
+      "workers": "Trabajadores"
     },
     "home": {
       "greeting": "Bienvenido de nuevo, {name}",
@@ -2287,6 +2288,56 @@
     "bottomCta": {
       "title": "¿Listo para trabajar?",
       "subtitle": "Tu perfil sirve para todos los organizadores de la plataforma."
+    }
+  },
+  "organizerWorkers": {
+    "title": "Trabajadores",
+    "subtitle": "Añade trabajadores a ActivLife Hub. Cuando una persona reclama su perfil, pasa a ser suyo y sale de tu lista.",
+    "requiresAccess": "Añadir trabajadores requiere una suscripción de organizador activa.",
+    "addTitle": "Añadir un trabajador",
+    "dedupeHint": "Se compara por email — si ya está en ActivLife Hub, no se crea un duplicado.",
+    "listTitle": "Trabajadores que añadiste (pendientes)",
+    "claimedNote": "Aquí solo aparecen los trabajadores que añadiste y que aún no han reclamado su perfil.",
+    "empty": "Sin trabajadores pendientes",
+    "emptyDesc": "Añade tu primer trabajador arriba.",
+    "pendingBadge": "Pendiente",
+    "delete": "Eliminar",
+    "confirmDelete": "¿Eliminar este trabajador pendiente? No se puede deshacer.",
+    "editTitle": "Editar trabajador",
+    "form": {
+      "name": "Nombre",
+      "namePlaceholder": "p. ej. Alex Kim",
+      "email": "Correo",
+      "emailPlaceholder": "nombre@ejemplo.com",
+      "phone": "Teléfono",
+      "phonePlaceholder": "Número de teléfono",
+      "role": "Rol",
+      "rolePlaceholder": "Selecciona un rol",
+      "add": "Añadir trabajador",
+      "adding": "Añadiendo…"
+    },
+    "outcome": {
+      "created": "Trabajador añadido.",
+      "reusedUnclaimed": "Ya está en ActivLife Hub (pendiente) — vinculado, sin duplicado.",
+      "reusedClaimed": "Esta persona ya tiene un perfil reclamado en ActivLife Hub."
+    },
+    "editForm": {
+      "displayName": "Nombre",
+      "phone": "Teléfono",
+      "roles": "Roles",
+      "city": "Ciudad",
+      "country": "País",
+      "languages": "Idiomas",
+      "payRate": "Tarifa",
+      "bio": "Notas",
+      "save": "Guardar",
+      "saving": "Guardando…",
+      "cancel": "Cancelar"
+    },
+    "toast": {
+      "updated": "Trabajador actualizado.",
+      "deleted": "Trabajador eliminado.",
+      "error": "Algo salió mal."
     }
   }
 }

@@ -558,7 +558,8 @@
       "admin": "Admin",
       "plans": "Plans",
       "vendors": "Vendors",
-      "workerProfile": "Worker profile"
+      "workerProfile": "Worker profile",
+      "workers": "Workers"
     },
     "home": {
       "greeting": "Welcome back, {name}",
@@ -2287,6 +2288,56 @@
     "bottomCta": {
       "title": "Ready to get hired?",
       "subtitle": "Your profile is reusable across every organizer on the platform."
+    }
+  },
+  "organizerWorkers": {
+    "title": "Workers",
+    "subtitle": "Add workers to ActivLife Hub. Once a person claims their profile, it becomes theirs and leaves your list.",
+    "requiresAccess": "Adding workers requires an active organizer subscription.",
+    "addTitle": "Add a worker",
+    "dedupeHint": "Matched by email — if they’re already on ActivLife Hub, no duplicate is created.",
+    "listTitle": "Workers you added (pending claim)",
+    "claimedNote": "Only workers you added who have not yet claimed their profile appear here.",
+    "empty": "No pending workers",
+    "emptyDesc": "Add your first worker above.",
+    "pendingBadge": "Pending claim",
+    "delete": "Remove",
+    "confirmDelete": "Remove this pending worker? This cannot be undone.",
+    "editTitle": "Edit worker",
+    "form": {
+      "name": "Name",
+      "namePlaceholder": "e.g. Alex Kim",
+      "email": "Email",
+      "emailPlaceholder": "name@example.com",
+      "phone": "Phone",
+      "phonePlaceholder": "Phone number",
+      "role": "Role",
+      "rolePlaceholder": "Select a role",
+      "add": "Add worker",
+      "adding": "Adding…"
+    },
+    "outcome": {
+      "created": "Worker added.",
+      "reusedUnclaimed": "Already on ActivLife Hub (pending) — linked, no duplicate created.",
+      "reusedClaimed": "This person already has a claimed profile on ActivLife Hub."
+    },
+    "editForm": {
+      "displayName": "Name",
+      "phone": "Phone",
+      "roles": "Roles",
+      "city": "City",
+      "country": "Country",
+      "languages": "Languages",
+      "payRate": "Pay rate",
+      "bio": "Notes",
+      "save": "Save",
+      "saving": "Saving…",
+      "cancel": "Cancel"
+    },
+    "toast": {
+      "updated": "Worker updated.",
+      "deleted": "Worker removed.",
+      "error": "Something went wrong."
     }
   }
 }

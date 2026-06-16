@@ -558,7 +558,8 @@
       "admin": "Administration",
       "plans": "Plans",
       "vendors": "Prestataires",
-      "workerProfile": "Profil de personnel"
+      "workerProfile": "Profil de personnel",
+      "workers": "Personnel"
     },
     "home": {
       "greeting": "Bon retour, {name}",
@@ -2287,6 +2288,56 @@
     "bottomCta": {
       "title": "Prêt à être recruté ?",
       "subtitle": "Votre profil est réutilisable par tous les organisateurs de la plateforme."
+    }
+  },
+  "organizerWorkers": {
+    "title": "Personnel",
+    "subtitle": "Ajoutez du personnel à ActivLife Hub. Dès qu’une personne revendique son profil, il lui appartient et quitte votre liste.",
+    "requiresAccess": "Ajouter du personnel nécessite un abonnement organisateur actif.",
+    "addTitle": "Ajouter une personne",
+    "dedupeHint": "Comparé par e-mail — si elle est déjà sur ActivLife Hub, aucun doublon n’est créé.",
+    "listTitle": "Personnel ajouté (en attente)",
+    "claimedNote": "Seules les personnes que vous avez ajoutées et qui n’ont pas encore revendiqué leur profil apparaissent ici.",
+    "empty": "Aucun en attente",
+    "emptyDesc": "Ajoutez votre premier membre ci-dessus.",
+    "pendingBadge": "En attente",
+    "delete": "Retirer",
+    "confirmDelete": "Retirer cette personne en attente ? Action irréversible.",
+    "editTitle": "Modifier",
+    "form": {
+      "name": "Nom",
+      "namePlaceholder": "ex. Alex Kim",
+      "email": "E-mail",
+      "emailPlaceholder": "nom@exemple.com",
+      "phone": "Téléphone",
+      "phonePlaceholder": "Numéro de téléphone",
+      "role": "Rôle",
+      "rolePlaceholder": "Choisir un rôle",
+      "add": "Ajouter",
+      "adding": "Ajout…"
+    },
+    "outcome": {
+      "created": "Personne ajoutée.",
+      "reusedUnclaimed": "Déjà sur ActivLife Hub (en attente) — liée, sans doublon.",
+      "reusedClaimed": "Cette personne a déjà un profil revendiqué sur ActivLife Hub."
+    },
+    "editForm": {
+      "displayName": "Nom",
+      "phone": "Téléphone",
+      "roles": "Rôles",
+      "city": "Ville",
+      "country": "Pays",
+      "languages": "Langues",
+      "payRate": "Tarif",
+      "bio": "Notes",
+      "save": "Enregistrer",
+      "saving": "Enregistrement…",
+      "cancel": "Annuler"
+    },
+    "toast": {
+      "updated": "Mis à jour.",
+      "deleted": "Retiré.",
+      "error": "Une erreur est survenue."
     }
   }
 }

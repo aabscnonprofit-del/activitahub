@@ -558,7 +558,8 @@
       "admin": "Admin",
       "plans": "Pläne",
       "vendors": "Anbieter",
-      "workerProfile": "Mitarbeiterprofil"
+      "workerProfile": "Mitarbeiterprofil",
+      "workers": "Mitarbeiter"
     },
     "home": {
       "greeting": "Willkommen zurück, {name}",
@@ -2287,6 +2288,56 @@
     "bottomCta": {
       "title": "Bereit, gebucht zu werden?",
       "subtitle": "Ihr Profil gilt für alle Organisatoren der Plattform."
+    }
+  },
+  "organizerWorkers": {
+    "title": "Mitarbeiter",
+    "subtitle": "Fügen Sie Mitarbeiter zu ActivLife Hub hinzu. Sobald eine Person ihr Profil beansprucht, gehört es ihr und verlässt Ihre Liste.",
+    "requiresAccess": "Mitarbeiter hinzufügen erfordert ein aktives Organisator-Abo.",
+    "addTitle": "Mitarbeiter hinzufügen",
+    "dedupeHint": "Abgleich per E-Mail — ist die Person schon bei ActivLife Hub, entsteht kein Duplikat.",
+    "listTitle": "Von Ihnen hinzugefügt (ausstehend)",
+    "claimedNote": "Hier erscheinen nur von Ihnen hinzugefügte Personen, die ihr Profil noch nicht beansprucht haben.",
+    "empty": "Keine ausstehenden",
+    "emptyDesc": "Fügen Sie oben Ihren ersten Mitarbeiter hinzu.",
+    "pendingBadge": "Ausstehend",
+    "delete": "Entfernen",
+    "confirmDelete": "Diese ausstehende Person entfernen? Kann nicht rückgängig gemacht werden.",
+    "editTitle": "Bearbeiten",
+    "form": {
+      "name": "Name",
+      "namePlaceholder": "z. B. Alex Kim",
+      "email": "E-Mail",
+      "emailPlaceholder": "name@beispiel.com",
+      "phone": "Telefon",
+      "phonePlaceholder": "Telefonnummer",
+      "role": "Rolle",
+      "rolePlaceholder": "Rolle wählen",
+      "add": "Hinzufügen",
+      "adding": "Wird hinzugefügt…"
+    },
+    "outcome": {
+      "created": "Mitarbeiter hinzugefügt.",
+      "reusedUnclaimed": "Bereits bei ActivLife Hub (ausstehend) — verknüpft, kein Duplikat.",
+      "reusedClaimed": "Diese Person hat bereits ein beanspruchtes Profil bei ActivLife Hub."
+    },
+    "editForm": {
+      "displayName": "Name",
+      "phone": "Telefon",
+      "roles": "Rollen",
+      "city": "Stadt",
+      "country": "Land",
+      "languages": "Sprachen",
+      "payRate": "Vergütung",
+      "bio": "Notizen",
+      "save": "Speichern",
+      "saving": "Wird gespeichert…",
+      "cancel": "Abbrechen"
+    },
+    "toast": {
+      "updated": "Aktualisiert.",
+      "deleted": "Entfernt.",
+      "error": "Etwas ist schiefgelaufen."
     }
   }
 }
