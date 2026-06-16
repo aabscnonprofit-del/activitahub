@@ -7,6 +7,7 @@ import { generatePlan } from '@/lib/ope'
 import type { PlannerInput } from '@/lib/ope/types'
 import { plannerInputSchema } from '@/lib/ope/validation'
 import { mapRequestToPlannerInput, mapRequestToApproaches, assessRequestReadiness, buildAssessment, fillClarificationDefaults, type RequestLike } from '@/lib/ope/request-plan'
+import { understandRequest } from '@/lib/ai/request-understanding'
 import { buildProposal, type ProposalViewModel } from '@/lib/workspace/proposal'
 import { userHasOrganizerAccess } from '@/lib/auth/organizer-access.server'
 import {
@@ -254,7 +255,12 @@ export async function generateApproachesFromRequest(requestId: string): Promise<
   const missing = assessRequestReadiness(request as RequestLike)
   if (missing.length > 0) return { ok: false, kind: 'needs_input', questions: missing }
 
-  const approaches = mapRequestToApproaches(request as RequestLike)
+  // AI Request Understanding (optional, post-gate): enrich the base PlannerInput from the
+  // request's free text. Returns null when disabled / no key / any failure, in which case
+  // mapRequestToApproaches falls back to the deterministic mapping — identical to before.
+  // The candidate CATEGORY set stays deterministic, so pricing/budget are unaffected.
+  const aiBase = await understandRequest(request as RequestLike)
+  const approaches = mapRequestToApproaches(request as RequestLike, aiBase ?? undefined)
   if (approaches.length === 0) {
     return { ok: false, kind: 'unsupported', reason: 'Category outside OPE V1 scope' }
   }

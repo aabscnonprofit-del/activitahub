@@ -128,12 +128,18 @@ export const REQUEST_TO_PLANNER_APPROACHES: Record<string, PlannerInput['categor
  * when the event type is outside OPE V1 scope. Every variant shares the request's
  * mapped fields (guests/budget/location/notes) and differs only by `category`;
  * categories are de-duplicated with their order preserved.
+ *
+ * `baseOverride` (optional) lets the AI Request-Understanding layer supply an
+ * enriched base PlannerInput (better guests/budget/venue/requirements). When given,
+ * it replaces the deterministic mapping for every variant's shared fields; the
+ * candidate CATEGORY set stays deterministic (priceable 11) so pricing is unaffected.
+ * Omit it (or pass undefined) for byte-identical deterministic behaviour.
  */
-export function mapRequestToApproaches(req: RequestLike): PlannerInput[] {
+export function mapRequestToApproaches(req: RequestLike, baseOverride?: PlannerInput): PlannerInput[] {
   const categories = REQUEST_TO_PLANNER_APPROACHES[req.event_type]
   if (!categories?.length) return []
 
-  const base = mapRequestToPlannerInput(req)
+  const base = baseOverride ?? mapRequestToPlannerInput(req)
   if (!base) return []
 
   const seen = new Set<PlannerInput['category']>()
