@@ -2,7 +2,8 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
-import type { VendorRequest } from '@/lib/types'
+import { canEditPrep } from '@/lib/workspace/lifecycle'
+import type { VendorRequest, OpePlanPrepState, OpePlanPhase } from '@/lib/types'
 
 // ── Vendor Sourcing actions (migration 030) ─────────────────────────────────
 // Organizer side is owner-only RLS CRUD over vendor_requests / vendor_quotes; the
@@ -99,6 +100,37 @@ export async function selectVendorQuote(formData: FormData): Promise<void> {
     .update({ selected_quote_id: quoteId, status: 'closed' })
     .eq('id', requestId)
     .eq('organizer_id', user.id)
+
+  // Sync: selecting a vendor for a plan resource auto-marks that resource secured in
+  // the plan's readiness (prep_state.resources_sourced). Owner-scoped; idempotent; other
+  // prep_state fields preserved; respects the prep freeze; no-op when no resource_item_key.
+  const { data: req } = await supabase
+    .from('vendor_requests')
+    .select('resource_item_key, plan_id')
+    .eq('id', requestId)
+    .eq('organizer_id', user.id)
+    .maybeSingle()
+  const itemKey = (req?.resource_item_key as string | null) ?? ''
+  const reqPlanId = (req?.plan_id as string | null) ?? planId
+  if (itemKey && reqPlanId) {
+    const { data: plan } = await supabase
+      .from('ope_plans')
+      .select('prep_state, phase')
+      .eq('id', reqPlanId)
+      .eq('organizer_id', user.id)
+      .maybeSingle()
+    if (plan && canEditPrep(plan.phase as OpePlanPhase)) {
+      const prep = (plan.prep_state ?? {}) as OpePlanPrepState
+      const sourced = prep.resources_sourced ?? []
+      if (!sourced.includes(itemKey)) {
+        await supabase
+          .from('ope_plans')
+          .update({ prep_state: { ...prep, resources_sourced: [...sourced, itemKey] } })
+          .eq('id', reqPlanId)
+          .eq('organizer_id', user.id)
+      }
+    }
+  }
 
   if (planId) revalidatePath(`/${locale}/dashboard/plans/${planId}`)
 }
