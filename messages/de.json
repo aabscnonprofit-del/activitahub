@@ -2369,6 +2369,18 @@
     "validation": {
       "rolesRequired": "Mindestens eine Rolle auswählen.",
       "dobFuture": "Das Geburtsdatum darf nicht in der Zukunft liegen."
+    },
+    "filters": {
+      "searchPlaceholder": "Nach Name, E-Mail, Telefon suchen…",
+      "allRoles": "Alle Rollen",
+      "allGenders": "Alle Geschlechter",
+      "ageAll": "Jedes Alter",
+      "ageAdult": "Erwachsene",
+      "ageMinor": "Minderjährige",
+      "ageUnknown": "Alter unbekannt",
+      "showing": "{shown} von {total} angezeigt",
+      "showMore": "Mehr anzeigen",
+      "noMatch": "Keine Mitarbeiter passen zu den Filtern."
     }
   }
 }

@@ -2369,6 +2369,18 @@
     "validation": {
       "rolesRequired": "Select at least one role.",
       "dobFuture": "Date of birth cannot be in the future."
+    },
+    "filters": {
+      "searchPlaceholder": "Search by name, email, phone…",
+      "allRoles": "All roles",
+      "allGenders": "All genders",
+      "ageAll": "Any age",
+      "ageAdult": "Adults",
+      "ageMinor": "Minors",
+      "ageUnknown": "Age unknown",
+      "showing": "Showing {shown} of {total}",
+      "showMore": "Show more",
+      "noMatch": "No workers match your filters."
     }
   }
 }

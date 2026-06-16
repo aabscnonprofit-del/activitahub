@@ -1,9 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
-import { UserPlus, Pencil, Trash2, Mail, Phone, MapPin, Clock, AlertTriangle } from 'lucide-react'
+import { UserPlus, Pencil, Trash2, Mail, Phone, MapPin, Clock, AlertTriangle, Search } from 'lucide-react'
 import {
   addWorkerFromOrganizer,
   updateUnclaimedWorkerFromOrganizer,
@@ -32,6 +32,35 @@ export default function OrganizerWorkersClient({ initialWorkers }: { initialWork
   const [editTarget, setEditTarget] = useState<WorkerProfile | null>(null)
   const [deleteTarget, setDeleteTarget] = useState<WorkerProfile | null>(null)
   const [pending, setPending] = useState(false)
+
+  // ── Client-side list controls (no backend; operate on initialWorkers only) ──
+  const PAGE = 25
+  const [query, setQuery] = useState('')
+  const [roleFilter, setRoleFilter] = useState('')
+  const [genderFilter, setGenderFilter] = useState('')
+  const [ageFilter, setAgeFilter] = useState<'all' | 'adult' | 'minor' | 'unknown'>('all')
+  const [visibleCount, setVisibleCount] = useState(PAGE)
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase()
+    return initialWorkers.filter((w) => {
+      if (q && !`${w.display_name} ${w.email ?? ''} ${w.phone ?? ''}`.toLowerCase().includes(q)) return false
+      if (roleFilter && !w.roles.includes(roleFilter)) return false
+      if (genderFilter && w.gender !== genderFilter) return false
+      if (ageFilter !== 'all') {
+        const m = isMinor(w.date_of_birth) // true | false | null
+        if (ageFilter === 'minor' && m !== true) return false
+        if (ageFilter === 'adult' && m !== false) return false
+        if (ageFilter === 'unknown' && m !== null) return false
+      }
+      return true
+    })
+  }, [initialWorkers, query, roleFilter, genderFilter, ageFilter])
+
+  // Reset paging whenever the result set changes.
+  useEffect(() => { setVisibleCount(PAGE) }, [query, roleFilter, genderFilter, ageFilter])
+
+  const visible = filtered.slice(0, visibleCount)
 
   async function handleAdd(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -156,52 +185,85 @@ export default function OrganizerWorkersClient({ initialWorkers }: { initialWork
         {initialWorkers.length === 0 ? (
           <EmptyState icon={UserPlus} title={t('empty')} description={t('emptyDesc')} />
         ) : (
-          <div className="space-y-2">
-            {initialWorkers.map((w) => (
-              <div key={w.id} className="card group flex items-start gap-4 p-4">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-50 text-sm font-bold text-amber-700">
-                  {w.display_name[0]?.toUpperCase()}
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="flex flex-wrap items-center gap-2 truncate font-semibold text-slate-900">
-                    {w.display_name}
-                    <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-500">
-                      <Clock className="h-3 w-3" />{t('pendingBadge')}
-                    </span>
-                    {isMinor(w.date_of_birth) === true && (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-medium text-amber-800">
-                        <AlertTriangle className="h-3 w-3" />{t('minorBadge')}
-                      </span>
-                    )}
-                  </p>
-                  {w.roles.length > 0 && (
-                    <div className="mt-1 flex flex-wrap gap-1">
-                      {w.roles.map((r) => (
-                        <span key={r} className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] text-slate-600">
-                          {tRoles(`roles.${r}` as 'roles.server')}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                  <div className="mt-1 flex flex-wrap gap-3">
-                    {w.email && <span className="flex items-center gap-1 text-xs text-slate-400"><Mail className="h-3 w-3" />{w.email}</span>}
-                    {w.phone && <span className="flex items-center gap-1 text-xs text-slate-400"><Phone className="h-3 w-3" />{w.phone}</span>}
-                    {(w.city || w.country) && (
-                      <span className="flex items-center gap-1 text-xs text-slate-400"><MapPin className="h-3 w-3" />{[w.city, w.country].filter(Boolean).join(', ')}</span>
-                    )}
-                  </div>
-                </div>
-                <div className="flex shrink-0 gap-1 opacity-0 transition-opacity group-hover:opacity-100">
-                  <button onClick={() => setEditTarget(w)} className="rounded-lg p-2 text-slate-400 hover:bg-indigo-50 hover:text-indigo-600">
-                    <Pencil className="h-4 w-4" />
-                  </button>
-                  <button onClick={() => setDeleteTarget(w)} className="rounded-lg p-2 text-slate-400 hover:bg-red-50 hover:text-red-600">
-                    <Trash2 className="h-4 w-4" />
-                  </button>
-                </div>
+          <>
+            {/* Client-side controls — search + filters over the loaded list only. */}
+            <div className="mb-3 flex flex-wrap items-center gap-2">
+              <div className="relative min-w-[12rem] flex-1">
+                <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                <input
+                  type="search"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder={t('filters.searchPlaceholder')}
+                  className="input-base pl-9"
+                />
               </div>
-            ))}
-          </div>
+              <select value={roleFilter} onChange={(e) => setRoleFilter(e.target.value)} className="input-base w-auto">
+                <option value="">{t('filters.allRoles')}</option>
+                {ROLE_KEYS.map((r) => <option key={r} value={r}>{tRoles(`roles.${r}` as 'roles.server')}</option>)}
+              </select>
+              <select value={genderFilter} onChange={(e) => setGenderFilter(e.target.value)} className="input-base w-auto">
+                <option value="">{t('filters.allGenders')}</option>
+                {GENDER_KEYS.map((g) => <option key={g} value={g}>{tRoles(`gender.${g}` as 'gender.female')}</option>)}
+              </select>
+              <select value={ageFilter} onChange={(e) => setAgeFilter(e.target.value as typeof ageFilter)} className="input-base w-auto">
+                <option value="all">{t('filters.ageAll')}</option>
+                <option value="adult">{t('filters.ageAdult')}</option>
+                <option value="minor">{t('filters.ageMinor')}</option>
+                <option value="unknown">{t('filters.ageUnknown')}</option>
+              </select>
+            </div>
+
+            <p className="mb-2 text-xs text-slate-400">{t('filters.showing', { shown: visible.length, total: filtered.length })}</p>
+
+            {filtered.length === 0 ? (
+              <div className="rounded-xl border border-slate-200 bg-white p-8 text-center text-sm text-slate-400">{t('filters.noMatch')}</div>
+            ) : (
+              <>
+                <div className="space-y-2">
+                  {visible.map((w) => (
+                    <div key={w.id} className="card group flex items-center gap-3 p-3">
+                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-amber-50 text-sm font-bold text-amber-700">
+                        {w.display_name[0]?.toUpperCase()}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="flex flex-wrap items-center gap-2 truncate text-sm font-semibold text-slate-900">
+                          {w.display_name}
+                          <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-500">
+                            <Clock className="h-3 w-3" />{t('pendingBadge')}
+                          </span>
+                          {isMinor(w.date_of_birth) === true && (
+                            <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-medium text-amber-800">
+                              <AlertTriangle className="h-3 w-3" />{t('minorBadge')}
+                            </span>
+                          )}
+                        </p>
+                        <div className="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[11px] text-slate-400">
+                          {w.roles.length > 0 && <span className="text-slate-500">{w.roles.map((r) => tRoles(`roles.${r}` as 'roles.server')).join(', ')}</span>}
+                          {w.email && <span className="flex items-center gap-1"><Mail className="h-3 w-3" />{w.email}</span>}
+                          {w.phone && <span className="flex items-center gap-1"><Phone className="h-3 w-3" />{w.phone}</span>}
+                          {(w.city || w.country) && <span className="flex items-center gap-1"><MapPin className="h-3 w-3" />{[w.city, w.country].filter(Boolean).join(', ')}</span>}
+                        </div>
+                      </div>
+                      <div className="flex shrink-0 gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+                        <button onClick={() => setEditTarget(w)} className="rounded-lg p-2 text-slate-400 hover:bg-indigo-50 hover:text-indigo-600">
+                          <Pencil className="h-4 w-4" />
+                        </button>
+                        <button onClick={() => setDeleteTarget(w)} className="rounded-lg p-2 text-slate-400 hover:bg-red-50 hover:text-red-600">
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                {visible.length < filtered.length && (
+                  <div className="mt-4 text-center">
+                    <button onClick={() => setVisibleCount((n) => n + PAGE)} className="btn-secondary">{t('filters.showMore')}</button>
+                  </div>
+                )}
+              </>
+            )}
+          </>
         )}
       </div>
 

@@ -2369,6 +2369,18 @@
     "validation": {
       "rolesRequired": "Selecciona al menos un rol.",
       "dobFuture": "La fecha de nacimiento no puede ser futura."
+    },
+    "filters": {
+      "searchPlaceholder": "Buscar por nombre, correo, teléfono…",
+      "allRoles": "Todos los roles",
+      "allGenders": "Todos los géneros",
+      "ageAll": "Cualquier edad",
+      "ageAdult": "Adultos",
+      "ageMinor": "Menores",
+      "ageUnknown": "Edad desconocida",
+      "showing": "Mostrando {shown} de {total}",
+      "showMore": "Mostrar más",
+      "noMatch": "Ningún trabajador coincide con los filtros."
     }
   }
 }

@@ -2369,6 +2369,18 @@
     "validation": {
       "rolesRequired": "Выберите хотя бы одну роль.",
       "dobFuture": "Дата рождения не может быть в будущем."
+    },
+    "filters": {
+      "searchPlaceholder": "Поиск по имени, email, телефону…",
+      "allRoles": "Все роли",
+      "allGenders": "Все полы",
+      "ageAll": "Любой возраст",
+      "ageAdult": "Взрослые",
+      "ageMinor": "Несовершеннолетние",
+      "ageUnknown": "Возраст неизвестен",
+      "showing": "Показано {shown} из {total}",
+      "showMore": "Показать ещё",
+      "noMatch": "Нет работников по заданным фильтрам."
     }
   }
 }
