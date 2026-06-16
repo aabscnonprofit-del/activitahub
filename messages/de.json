@@ -556,7 +556,8 @@
       "profile": "Profil & Zertifikat",
       "billing": "Abrechnung",
       "admin": "Admin",
-      "plans": "Pläne"
+      "plans": "Pläne",
+      "vendors": "Anbieter"
     },
     "home": {
       "greeting": "Willkommen zurück, {name}",
@@ -2102,5 +2103,57 @@
     "empty": "Noch keine Nachrichten. Starten Sie das Gespräch.",
     "you": "Sie",
     "them": "Andere"
+  },
+  "vendors": {
+    "title": "Anbieter",
+    "subtitle": "Ihre privaten Anbieterkontakte — Fähigkeiten, die OPE später anfragen kann.",
+    "create": "Neuer Anbieter",
+    "searchPlaceholder": "Anbieter suchen…",
+    "noResults": "Keine Ergebnisse für „{q}“",
+    "empty": "Noch keine Anbieter",
+    "emptyDesc": "Fügen Sie Ihren ersten Anbieter hinzu (Catering, Veranstaltungsort, Fotograf…).",
+    "added": "Anbieter „{name}“ hinzugefügt",
+    "updated": "Anbieter aktualisiert",
+    "removed": "Anbieter entfernt",
+    "delete": "Löschen",
+    "confirmDelete": "Diesen Anbieter löschen? Kann nicht rückgängig gemacht werden.",
+    "createTitle": "Neuer Anbieter",
+    "editTitle": "Anbieter bearbeiten",
+    "form": {
+      "name": "Kontaktname",
+      "namePlaceholder": "z. B. Maria Santos",
+      "companyName": "Unternehmen",
+      "companyNamePlaceholder": "z. B. Aloha Events Co.",
+      "email": "E-Mail",
+      "emailPlaceholder": "name@beispiel.com",
+      "phone": "Telefon",
+      "phonePlaceholder": "Telefonnummer",
+      "city": "Stadt",
+      "cityPlaceholder": "z. B. Honolulu",
+      "country": "Land",
+      "countryPlaceholder": "z. B. USA",
+      "languages": "Sprachen",
+      "languagesPlaceholder": "Deutsch, Englisch",
+      "capabilities": "Fähigkeiten",
+      "description": "Beschreibung",
+      "descriptionPlaceholder": "Spezialitäten, Notizen, Konditionen…",
+      "cancel": "Abbrechen",
+      "create": "Erstellen",
+      "save": "Speichern",
+      "creating": "Wird erstellt…",
+      "saving": "Wird gespeichert…"
+    },
+    "capabilities": {
+      "venue": "Veranstaltungsort",
+      "catering": "Catering",
+      "bakery": "Bäckerei",
+      "equipment": "Geräteverleih",
+      "decoration": "Dekoration",
+      "transportation": "Transport",
+      "photography": "Fotografie",
+      "entertainment": "Unterhaltung",
+      "cleaning": "Reinigung",
+      "printing": "Druck"
+    }
   }
 }

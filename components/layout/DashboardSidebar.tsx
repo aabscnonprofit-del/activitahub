@@ -10,6 +10,7 @@ import {
   FileText,
   Users,
   MapPin,
+  Store,
   BarChart2,
   UserCircle,
   CreditCard,
@@ -55,6 +56,7 @@ export async function DashboardSidebar({
     { key: 'proposals', href: `${base}/proposals`, icon: FileText },
     { key: 'clients', href: `${base}/clients`, icon: Users },
     { key: 'venues', href: `${base}/venues`, icon: MapPin },
+    { key: 'vendors', href: `${base}/vendors`, icon: Store },
     { key: 'analytics', href: `${base}/analytics`, icon: BarChart2 },
     { key: 'profile', href: `${base}/profile`, icon: UserCircle },
   ]

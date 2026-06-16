@@ -556,7 +556,8 @@
       "profile": "Profile & Certificate",
       "billing": "Billing",
       "admin": "Admin",
-      "plans": "Plans"
+      "plans": "Plans",
+      "vendors": "Vendors"
     },
     "home": {
       "greeting": "Welcome back, {name}",
@@ -2102,5 +2103,57 @@
     "empty": "No messages yet. Start the conversation.",
     "you": "You",
     "them": "Them"
+  },
+  "vendors": {
+    "title": "Vendors",
+    "subtitle": "Your private provider contacts — capabilities OPE can source later.",
+    "create": "New vendor",
+    "searchPlaceholder": "Search vendors…",
+    "noResults": "No results for “{q}”",
+    "empty": "No vendors yet",
+    "emptyDesc": "Add your first provider (caterer, venue, photographer…).",
+    "added": "Vendor “{name}” added",
+    "updated": "Vendor updated",
+    "removed": "Vendor removed",
+    "delete": "Delete",
+    "confirmDelete": "Delete this vendor? This cannot be undone.",
+    "createTitle": "New vendor",
+    "editTitle": "Edit vendor",
+    "form": {
+      "name": "Contact name",
+      "namePlaceholder": "e.g. Maria Santos",
+      "companyName": "Company",
+      "companyNamePlaceholder": "e.g. Aloha Events Co.",
+      "email": "Email",
+      "emailPlaceholder": "name@example.com",
+      "phone": "Phone",
+      "phonePlaceholder": "Phone number",
+      "city": "City",
+      "cityPlaceholder": "e.g. Honolulu",
+      "country": "Country",
+      "countryPlaceholder": "e.g. USA",
+      "languages": "Languages",
+      "languagesPlaceholder": "English, Spanish",
+      "capabilities": "Capabilities",
+      "description": "Description",
+      "descriptionPlaceholder": "Specialties, notes, terms…",
+      "cancel": "Cancel",
+      "create": "Create",
+      "save": "Save",
+      "creating": "Creating…",
+      "saving": "Saving…"
+    },
+    "capabilities": {
+      "venue": "Venue",
+      "catering": "Catering",
+      "bakery": "Bakery",
+      "equipment": "Equipment rental",
+      "decoration": "Decoration",
+      "transportation": "Transportation",
+      "photography": "Photography",
+      "entertainment": "Entertainment",
+      "cleaning": "Cleaning",
+      "printing": "Printing"
+    }
   }
 }

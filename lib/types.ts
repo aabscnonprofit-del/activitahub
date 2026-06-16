@@ -170,6 +170,25 @@ export type Client = {
   updated_at: string
 }
 
+// ── Provider Profiles (Vendor Network foundation, migration 029) ────────────
+// An organizer-owned PRIVATE provider record (capability-tagged). Mirrors Client/
+// Venue ownership; referenced by OPE/Vendor Sourcing in later phases.
+export type Vendor = {
+  id: string
+  organizer_id: string
+  name: string
+  company_name: string | null
+  email: string | null
+  phone: string | null
+  city: string | null
+  country: string | null
+  languages: string[] | null
+  capabilities: string[]
+  description: string | null
+  created_at: string
+  updated_at: string
+}
+
 export type CalendarEventType = 'session' | 'block' | 'personal'
 
 export type CalendarEvent = {

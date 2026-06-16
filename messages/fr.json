@@ -556,7 +556,8 @@
       "profile": "Profil et Certificat",
       "billing": "Facturation",
       "admin": "Administration",
-      "plans": "Plans"
+      "plans": "Plans",
+      "vendors": "Prestataires"
     },
     "home": {
       "greeting": "Bon retour, {name}",
@@ -2102,5 +2103,57 @@
     "empty": "Pas encore de messages. Démarrez la conversation.",
     "you": "Vous",
     "them": "Eux"
+  },
+  "vendors": {
+    "title": "Prestataires",
+    "subtitle": "Vos contacts prestataires privés — des capacités qu’OPE pourra solliciter plus tard.",
+    "create": "Nouveau prestataire",
+    "searchPlaceholder": "Rechercher des prestataires…",
+    "noResults": "Aucun résultat pour « {q} »",
+    "empty": "Aucun prestataire",
+    "emptyDesc": "Ajoutez votre premier prestataire (traiteur, lieu, photographe…).",
+    "added": "Prestataire « {name} » ajouté",
+    "updated": "Prestataire mis à jour",
+    "removed": "Prestataire supprimé",
+    "delete": "Supprimer",
+    "confirmDelete": "Supprimer ce prestataire ? Action irréversible.",
+    "createTitle": "Nouveau prestataire",
+    "editTitle": "Modifier le prestataire",
+    "form": {
+      "name": "Nom du contact",
+      "namePlaceholder": "ex. Maria Santos",
+      "companyName": "Société",
+      "companyNamePlaceholder": "ex. Aloha Events Co.",
+      "email": "E-mail",
+      "emailPlaceholder": "nom@exemple.com",
+      "phone": "Téléphone",
+      "phonePlaceholder": "Numéro de téléphone",
+      "city": "Ville",
+      "cityPlaceholder": "ex. Honolulu",
+      "country": "Pays",
+      "countryPlaceholder": "ex. USA",
+      "languages": "Langues",
+      "languagesPlaceholder": "Français, Anglais",
+      "capabilities": "Capacités",
+      "description": "Description",
+      "descriptionPlaceholder": "Spécialités, notes, conditions…",
+      "cancel": "Annuler",
+      "create": "Créer",
+      "save": "Enregistrer",
+      "creating": "Création…",
+      "saving": "Enregistrement…"
+    },
+    "capabilities": {
+      "venue": "Lieu",
+      "catering": "Traiteur",
+      "bakery": "Pâtisserie",
+      "equipment": "Location de matériel",
+      "decoration": "Décoration",
+      "transportation": "Transport",
+      "photography": "Photographie",
+      "entertainment": "Animation",
+      "cleaning": "Nettoyage",
+      "printing": "Impression"
+    }
   }
 }

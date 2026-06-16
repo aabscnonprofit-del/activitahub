@@ -556,7 +556,8 @@
       "profile": "Perfil e Certificado",
       "billing": "Faturação",
       "admin": "Admin",
-      "plans": "Planos"
+      "plans": "Planos",
+      "vendors": "Fornecedores"
     },
     "home": {
       "greeting": "Bem-vindo de volta, {name}",
@@ -2102,5 +2103,57 @@
     "empty": "Ainda não há mensagens. Inicie a conversa.",
     "you": "Você",
     "them": "Eles"
+  },
+  "vendors": {
+    "title": "Fornecedores",
+    "subtitle": "Seus contatos de fornecedores privados — capacidades que o OPE poderá contratar depois.",
+    "create": "Novo fornecedor",
+    "searchPlaceholder": "Buscar fornecedores…",
+    "noResults": "Sem resultados para “{q}”",
+    "empty": "Ainda não há fornecedores",
+    "emptyDesc": "Adicione seu primeiro fornecedor (buffet, local, fotógrafo…).",
+    "added": "Fornecedor “{name}” adicionado",
+    "updated": "Fornecedor atualizado",
+    "removed": "Fornecedor removido",
+    "delete": "Excluir",
+    "confirmDelete": "Excluir este fornecedor? Não pode ser desfeito.",
+    "createTitle": "Novo fornecedor",
+    "editTitle": "Editar fornecedor",
+    "form": {
+      "name": "Nome do contato",
+      "namePlaceholder": "ex. Maria Santos",
+      "companyName": "Empresa",
+      "companyNamePlaceholder": "ex. Aloha Events Co.",
+      "email": "E-mail",
+      "emailPlaceholder": "nome@exemplo.com",
+      "phone": "Telefone",
+      "phonePlaceholder": "Número de telefone",
+      "city": "Cidade",
+      "cityPlaceholder": "ex. Honolulu",
+      "country": "País",
+      "countryPlaceholder": "ex. EUA",
+      "languages": "Idiomas",
+      "languagesPlaceholder": "Português, Inglês",
+      "capabilities": "Capacidades",
+      "description": "Descrição",
+      "descriptionPlaceholder": "Especialidades, notas, termos…",
+      "cancel": "Cancelar",
+      "create": "Criar",
+      "save": "Salvar",
+      "creating": "Criando…",
+      "saving": "Salvando…"
+    },
+    "capabilities": {
+      "venue": "Local",
+      "catering": "Catering",
+      "bakery": "Padaria",
+      "equipment": "Aluguel de equipamentos",
+      "decoration": "Decoração",
+      "transportation": "Transporte",
+      "photography": "Fotografia",
+      "entertainment": "Entretenimento",
+      "cleaning": "Limpeza",
+      "printing": "Impressão"
+    }
   }
 }

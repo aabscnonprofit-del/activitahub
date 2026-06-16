@@ -556,7 +556,8 @@
       "profile": "Профиль и сертификат",
       "billing": "Подписка",
       "admin": "Администратор",
-      "plans": "Планы"
+      "plans": "Планы",
+      "vendors": "Поставщики"
     },
     "home": {
       "greeting": "С возвращением, {name}",
@@ -2102,5 +2103,57 @@
     "empty": "Сообщений пока нет. Начните разговор.",
     "you": "Вы",
     "them": "Собеседник"
+  },
+  "vendors": {
+    "title": "Поставщики",
+    "subtitle": "Ваши частные контакты поставщиков — возможности, которые OPE сможет привлечь позже.",
+    "create": "Новый поставщик",
+    "searchPlaceholder": "Поиск поставщиков…",
+    "noResults": "Нет результатов по «{q}»",
+    "empty": "Поставщиков пока нет",
+    "emptyDesc": "Добавьте первого поставщика (кейтеринг, площадка, фотограф…).",
+    "added": "Поставщик «{name}» добавлен",
+    "updated": "Поставщик обновлён",
+    "removed": "Поставщик удалён",
+    "delete": "Удалить",
+    "confirmDelete": "Удалить этого поставщика? Действие необратимо.",
+    "createTitle": "Новый поставщик",
+    "editTitle": "Редактировать поставщика",
+    "form": {
+      "name": "Контактное имя",
+      "namePlaceholder": "напр. Мария Сантос",
+      "companyName": "Компания",
+      "companyNamePlaceholder": "напр. Aloha Events Co.",
+      "email": "Эл. почта",
+      "emailPlaceholder": "name@example.com",
+      "phone": "Телефон",
+      "phonePlaceholder": "Номер телефона",
+      "city": "Город",
+      "cityPlaceholder": "напр. Гонолулу",
+      "country": "Страна",
+      "countryPlaceholder": "напр. США",
+      "languages": "Языки",
+      "languagesPlaceholder": "Русский, Английский",
+      "capabilities": "Возможности",
+      "description": "Описание",
+      "descriptionPlaceholder": "Специализация, заметки, условия…",
+      "cancel": "Отмена",
+      "create": "Создать",
+      "save": "Сохранить",
+      "creating": "Создание…",
+      "saving": "Сохранение…"
+    },
+    "capabilities": {
+      "venue": "Площадка",
+      "catering": "Кейтеринг",
+      "bakery": "Выпечка",
+      "equipment": "Аренда оборудования",
+      "decoration": "Декор",
+      "transportation": "Транспорт",
+      "photography": "Фотография",
+      "entertainment": "Развлечения",
+      "cleaning": "Уборка",
+      "printing": "Печать"
+    }
   }
 }

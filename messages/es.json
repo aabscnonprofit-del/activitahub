@@ -556,7 +556,8 @@
       "profile": "Perfil y Certificado",
       "billing": "Facturación",
       "admin": "Administrador",
-      "plans": "Planes"
+      "plans": "Planes",
+      "vendors": "Proveedores"
     },
     "home": {
       "greeting": "Bienvenido de nuevo, {name}",
@@ -2102,5 +2103,57 @@
     "empty": "Aún no hay mensajes. Inicia la conversación.",
     "you": "Tú",
     "them": "Ellos"
+  },
+  "vendors": {
+    "title": "Proveedores",
+    "subtitle": "Tus contactos de proveedores privados — capacidades que OPE podrá contratar luego.",
+    "create": "Nuevo proveedor",
+    "searchPlaceholder": "Buscar proveedores…",
+    "noResults": "Sin resultados para «{q}»",
+    "empty": "Aún no hay proveedores",
+    "emptyDesc": "Añade tu primer proveedor (catering, local, fotógrafo…).",
+    "added": "Proveedor «{name}» añadido",
+    "updated": "Proveedor actualizado",
+    "removed": "Proveedor eliminado",
+    "delete": "Eliminar",
+    "confirmDelete": "¿Eliminar este proveedor? No se puede deshacer.",
+    "createTitle": "Nuevo proveedor",
+    "editTitle": "Editar proveedor",
+    "form": {
+      "name": "Nombre de contacto",
+      "namePlaceholder": "p. ej. María Santos",
+      "companyName": "Empresa",
+      "companyNamePlaceholder": "p. ej. Aloha Events Co.",
+      "email": "Correo",
+      "emailPlaceholder": "nombre@ejemplo.com",
+      "phone": "Teléfono",
+      "phonePlaceholder": "Número de teléfono",
+      "city": "Ciudad",
+      "cityPlaceholder": "p. ej. Honolulu",
+      "country": "País",
+      "countryPlaceholder": "p. ej. EE. UU.",
+      "languages": "Idiomas",
+      "languagesPlaceholder": "Español, Inglés",
+      "capabilities": "Capacidades",
+      "description": "Descripción",
+      "descriptionPlaceholder": "Especialidades, notas, términos…",
+      "cancel": "Cancelar",
+      "create": "Crear",
+      "save": "Guardar",
+      "creating": "Creando…",
+      "saving": "Guardando…"
+    },
+    "capabilities": {
+      "venue": "Local",
+      "catering": "Catering",
+      "bakery": "Pastelería",
+      "equipment": "Alquiler de equipos",
+      "decoration": "Decoración",
+      "transportation": "Transporte",
+      "photography": "Fotografía",
+      "entertainment": "Entretenimiento",
+      "cleaning": "Limpieza",
+      "printing": "Impresión"
+    }
   }
 }
