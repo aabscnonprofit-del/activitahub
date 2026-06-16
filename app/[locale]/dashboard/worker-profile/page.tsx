@@ -1,6 +1,6 @@
 import { getTranslations } from 'next-intl/server'
 import { redirect } from 'next/navigation'
-import { HardHat, CheckCircle2 } from 'lucide-react'
+import { HardHat, CheckCircle2, BadgeCheck } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { getMyWorkerProfile, upsertMyWorkerProfile } from '@/lib/actions/workerProfiles'
 
@@ -36,9 +36,16 @@ export default async function WorkerProfilePage({ params }: Props) {
       </div>
 
       {profile && (
-        <div className="mb-4 flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
-          <CheckCircle2 className="h-4 w-4 shrink-0" />
-          <span>{profile.published ? t('liveListed') : t('savedNotListed')}</span>
+        <div className="mb-4 space-y-2">
+          <div className="flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+            <CheckCircle2 className="h-4 w-4 shrink-0" />
+            <span>{profile.published ? t('liveListed') : t('savedNotListed')}</span>
+          </div>
+          {/* Verification status — read-only; the worker cannot self-set it. */}
+          <div className={`flex items-center gap-2 rounded-xl border px-4 py-2 text-sm ${profile.verified ? 'border-sky-200 bg-sky-50 text-sky-800' : 'border-slate-200 bg-slate-50 text-slate-500'}`}>
+            <BadgeCheck className="h-4 w-4 shrink-0" />
+            <span>{profile.verified ? t('verifiedYes') : t('verifiedNo')}</span>
+          </div>
         </div>
       )}
 

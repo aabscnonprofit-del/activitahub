@@ -2238,7 +2238,9 @@
       "videographer": "Видеограф",
       "assistant": "Ассистент",
       "coordinator": "Координатор"
-    }
+    },
+    "verifiedYes": "Проверено ActivLife Hub",
+    "verifiedNo": "Проверка ожидается — её проводит ActivLife Hub, не задаётся самостоятельно."
   },
   "workPage": {
     "meta": {

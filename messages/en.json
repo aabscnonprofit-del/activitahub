@@ -2238,7 +2238,9 @@
       "videographer": "Videographer",
       "assistant": "Assistant",
       "coordinator": "Coordinator"
-    }
+    },
+    "verifiedYes": "Verified by ActivLife Hub",
+    "verifiedNo": "Verification pending — reviewed by ActivLife Hub, not self-set."
   },
   "workPage": {
     "meta": {

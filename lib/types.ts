@@ -240,6 +240,7 @@ export type WorkerProfile = {
   bio: string | null
   available: boolean
   published: boolean
+  verified: boolean // platform verification (default false); set by admin only, never self-set
   created_by_organizer_id: string | null
   created_at: string
   updated_at: string
