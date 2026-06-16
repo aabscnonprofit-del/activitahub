@@ -3,7 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { userHasOrganizerAccess } from '@/lib/auth/organizer-access.server'
-import type { WorkerProfile } from '@/lib/types'
+import type { WorkerProfile, AddWorkerOutcome } from '@/lib/types'
 
 // ── Worker Profiles actions (migration 031) ─────────────────────────────────
 // Workers own their profile (self-registered = claimed). Self-service CRUD is
@@ -110,10 +110,11 @@ export async function setMyWorkerAvailability(formData: FormData): Promise<void>
 
 /**
  * Organizer adds a worker (dedupe by normalized email → reuse or create UNCLAIMED).
- * The organizer references the profile; they do not own it. Returns the profile id,
- * or null on failure. Entitlement-gated. (No dedicated UI in this slice.)
+ * The organizer references the profile; they do not own it. Returns { id, outcome }
+ * (outcome ∈ created | reused_unclaimed | reused_claimed) — never the (possibly
+ * claimed) worker's contact data — or null on failure. Entitlement-gated. (No UI yet.)
  */
-export async function addWorkerFromOrganizer(formData: FormData): Promise<string | null> {
+export async function addWorkerFromOrganizer(formData: FormData): Promise<AddWorkerOutcome | null> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return null
@@ -125,6 +126,48 @@ export async function addWorkerFromOrganizer(formData: FormData): Promise<string
     p_phone: str(formData.get('phone')) ?? '',
     p_role: str(formData.get('role')) ?? '',
   })
-  if (error) return null
-  return (data as string) ?? null
+  if (error || !data) return null
+  return data as AddWorkerOutcome
+}
+
+/**
+ * Organizer correction: update an UNCLAIMED worker profile THEY created (mistake fix).
+ * Only the allowed fields are touched — never email_normalized / status / user_id — and
+ * the RPC no-ops on claimed rows or rows another organizer created. Returns true on
+ * success. Entitlement-gated.
+ */
+export async function updateUnclaimedWorkerFromOrganizer(id: string, formData: FormData): Promise<boolean> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return false
+  if (!(await userHasOrganizerAccess(supabase, user.id))) return false
+
+  const { data, error } = await supabase.rpc('update_unclaimed_worker', {
+    p_id: id,
+    p_display_name: str(formData.get('display_name')) ?? '',
+    p_phone: str(formData.get('phone')),
+    p_roles: formData.getAll('roles').map(String).filter(Boolean),
+    p_city: str(formData.get('city')),
+    p_country: str(formData.get('country')),
+    p_languages: list(formData.get('languages')),
+    p_pay_rate_cents: cents(formData.get('pay_rate')),
+    p_bio: str(formData.get('bio')),
+  })
+  if (error || !data) return false
+  return (data as { ok?: boolean }).ok === true
+}
+
+/**
+ * Organizer correction: delete an UNCLAIMED worker profile THEY created (typo cleanup).
+ * No-ops on claimed rows or rows another organizer created. Entitlement-gated.
+ */
+export async function deleteUnclaimedWorkerFromOrganizer(id: string): Promise<boolean> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return false
+  if (!(await userHasOrganizerAccess(supabase, user.id))) return false
+
+  const { data, error } = await supabase.rpc('delete_unclaimed_worker', { p_id: id })
+  if (error || !data) return false
+  return (data as { ok?: boolean }).ok === true
 }

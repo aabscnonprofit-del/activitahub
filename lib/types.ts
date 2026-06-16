@@ -246,6 +246,13 @@ export type WorkerProfile = {
   updated_at: string
 }
 
+// Result of the organizer add_worker RPC (dedupe by email_normalized). Returns only
+// id + outcome — never the (possibly claimed) worker's contact data.
+export type AddWorkerOutcome = {
+  id: string
+  outcome: 'created' | 'reused_unclaimed' | 'reused_claimed'
+}
+
 export type CalendarEventType = 'session' | 'block' | 'personal'
 
 export type CalendarEvent = {
