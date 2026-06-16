@@ -2239,5 +2239,52 @@
       "assistant": "Assistente",
       "coordinator": "Coordenador"
     }
+  },
+  "workPage": {
+    "meta": {
+      "title": "Trabalhe em eventos — junte-se como profissional",
+      "description": "Crie um perfil gratuito e receba convites para eventos perto de você."
+    },
+    "hero": {
+      "badge": "Para profissionais",
+      "title": "Seja contratado para eventos perto de você",
+      "subtitle": "Crie um perfil gratuito, informe suas funções, e organizadores poderão convidá-lo para seus eventos.",
+      "signinHint": "Você se cadastra (ou entra) primeiro — é grátis."
+    },
+    "cta": "Tornar-se profissional",
+    "ctaLoggedIn": "Criar perfil",
+    "rolesTitle": "Funções que organizadores contratam",
+    "rolesSubtitle": "Escolha as funções que você faz — pode marcar várias.",
+    "rolesMore": "E mais — você define suas próprias funções no perfil.",
+    "roles": {
+      "waiter": "Garçom",
+      "bartender": "Barman",
+      "driver": "Motorista",
+      "stage_crew": "Equipe de palco",
+      "cleaner": "Faxineiro",
+      "instructor": "Instrutor",
+      "guide": "Guia",
+      "assistant": "Assistente",
+      "coordinator": "Coordenador"
+    },
+    "stepsTitle": "Como funciona",
+    "steps": {
+      "create": {
+        "title": "1. Crie seu perfil",
+        "desc": "Informe funções, área, idiomas e valor. Grátis, poucos minutos."
+      },
+      "invited": {
+        "title": "2. Receba convites",
+        "desc": "Organizadores encontram você e convidam para eventos específicos."
+      },
+      "work": {
+        "title": "3. Aceite e trabalhe",
+        "desc": "Aceite as solicitações que cabem na sua agenda e mãos à obra."
+      }
+    },
+    "bottomCta": {
+      "title": "Pronto para ser contratado?",
+      "subtitle": "Seu perfil serve para todos os organizadores da plataforma."
+    }
   }
 }

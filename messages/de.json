@@ -2239,5 +2239,52 @@
       "assistant": "Assistent",
       "coordinator": "Koordinator"
     }
+  },
+  "workPage": {
+    "meta": {
+      "title": "Bei Events arbeiten — als Mitarbeiter mitmachen",
+      "description": "Erstellen Sie ein kostenloses Mitarbeiterprofil und werden Sie zu Events in Ihrer Nähe eingeladen."
+    },
+    "hero": {
+      "badge": "Für Mitarbeiter",
+      "title": "Werden Sie für Events in Ihrer Nähe gebucht",
+      "subtitle": "Erstellen Sie ein kostenloses Profil, geben Sie Ihre Rollen an — und Organisatoren können Sie zu ihren Events einladen.",
+      "signinHint": "Sie registrieren sich (oder melden sich an) zuerst — kostenlos."
+    },
+    "cta": "Mitarbeiter werden",
+    "ctaLoggedIn": "Mitarbeiterprofil erstellen",
+    "rolesTitle": "Rollen, die Organisatoren buchen",
+    "rolesSubtitle": "Wählen Sie Ihre Rollen — mehrere möglich.",
+    "rolesMore": "Und mehr — Sie legen Ihre Rollen im Profil selbst fest.",
+    "roles": {
+      "waiter": "Kellner",
+      "bartender": "Barkeeper",
+      "driver": "Fahrer",
+      "stage_crew": "Bühnencrew",
+      "cleaner": "Reinigungskraft",
+      "instructor": "Trainer",
+      "guide": "Guide",
+      "assistant": "Assistent",
+      "coordinator": "Koordinator"
+    },
+    "stepsTitle": "So funktioniert es",
+    "steps": {
+      "create": {
+        "title": "1. Profil erstellen",
+        "desc": "Rollen, Gebiet, Sprachen und Satz angeben. Kostenlos, wenige Minuten."
+      },
+      "invited": {
+        "title": "2. Eingeladen werden",
+        "desc": "Organisatoren finden Sie und laden Sie zu konkreten Events ein."
+      },
+      "work": {
+        "title": "3. Annehmen & arbeiten",
+        "desc": "Nehmen Sie passende Anfragen an und legen Sie los."
+      }
+    },
+    "bottomCta": {
+      "title": "Bereit, gebucht zu werden?",
+      "subtitle": "Ihr Profil gilt für alle Organisatoren der Plattform."
+    }
   }
 }

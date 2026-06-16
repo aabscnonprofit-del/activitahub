@@ -2239,5 +2239,52 @@
       "assistant": "Assistant",
       "coordinator": "Coordinator"
     }
+  },
+  "workPage": {
+    "meta": {
+      "title": "Work events — join as a worker",
+      "description": "Create a free worker profile and get invited to staff events near you."
+    },
+    "hero": {
+      "badge": "For workers",
+      "title": "Get hired for events near you",
+      "subtitle": "Create a free worker profile, list your roles, and organizers can invite you to staff their events.",
+      "signinHint": "You’ll sign up (or sign in) first — it’s free."
+    },
+    "cta": "Become a worker",
+    "ctaLoggedIn": "Create worker profile",
+    "rolesTitle": "Roles organizers hire for",
+    "rolesSubtitle": "Pick the roles you do — you can choose several.",
+    "rolesMore": "And more — you set your own roles on your profile.",
+    "roles": {
+      "waiter": "Waiter / Server",
+      "bartender": "Bartender",
+      "driver": "Driver",
+      "stage_crew": "Stage crew",
+      "cleaner": "Cleaner",
+      "instructor": "Instructor",
+      "guide": "Guide",
+      "assistant": "Assistant",
+      "coordinator": "Coordinator"
+    },
+    "stepsTitle": "How it works",
+    "steps": {
+      "create": {
+        "title": "1. Create your profile",
+        "desc": "List your roles, area, languages and rate. Free, a few minutes."
+      },
+      "invited": {
+        "title": "2. Get invited",
+        "desc": "Organizers find you and invite you to staff specific events."
+      },
+      "work": {
+        "title": "3. Accept & work",
+        "desc": "Accept the requests that fit your schedule and get to work."
+      }
+    },
+    "bottomCta": {
+      "title": "Ready to get hired?",
+      "subtitle": "Your profile is reusable across every organizer on the platform."
+    }
   }
 }

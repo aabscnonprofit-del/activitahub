@@ -2239,5 +2239,52 @@
       "assistant": "Asistente",
       "coordinator": "Coordinador"
     }
+  },
+  "workPage": {
+    "meta": {
+      "title": "Trabaja en eventos — únete como trabajador",
+      "description": "Crea un perfil de trabajador gratis y recibe invitaciones para eventos cerca de ti."
+    },
+    "hero": {
+      "badge": "Para trabajadores",
+      "title": "Consigue trabajo en eventos cerca de ti",
+      "subtitle": "Crea un perfil de trabajador gratis, indica tus roles y los organizadores podrán invitarte a sus eventos.",
+      "signinHint": "Primero te registrarás (o iniciarás sesión) — es gratis."
+    },
+    "cta": "Conviértete en trabajador",
+    "ctaLoggedIn": "Crear perfil de trabajador",
+    "rolesTitle": "Roles que contratan los organizadores",
+    "rolesSubtitle": "Elige los roles que haces — puedes seleccionar varios.",
+    "rolesMore": "Y más — tú defines tus propios roles en tu perfil.",
+    "roles": {
+      "waiter": "Camarero",
+      "bartender": "Barman",
+      "driver": "Conductor",
+      "stage_crew": "Equipo de escenario",
+      "cleaner": "Limpieza",
+      "instructor": "Instructor",
+      "guide": "Guía",
+      "assistant": "Asistente",
+      "coordinator": "Coordinador"
+    },
+    "stepsTitle": "Cómo funciona",
+    "steps": {
+      "create": {
+        "title": "1. Crea tu perfil",
+        "desc": "Indica tus roles, zona, idiomas y tarifa. Gratis, unos minutos."
+      },
+      "invited": {
+        "title": "2. Recibe invitaciones",
+        "desc": "Los organizadores te encuentran y te invitan a eventos concretos."
+      },
+      "work": {
+        "title": "3. Acepta y trabaja",
+        "desc": "Acepta las solicitudes que encajen con tu agenda y a trabajar."
+      }
+    },
+    "bottomCta": {
+      "title": "¿Listo para trabajar?",
+      "subtitle": "Tu perfil sirve para todos los organizadores de la plataforma."
+    }
   }
 }

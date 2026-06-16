@@ -2239,5 +2239,52 @@
       "assistant": "Assistant",
       "coordinator": "Coordinateur"
     }
+  },
+  "workPage": {
+    "meta": {
+      "title": "Travaillez sur des événements — rejoignez en tant que personnel",
+      "description": "Créez un profil gratuit et recevez des invitations pour des événements près de chez vous."
+    },
+    "hero": {
+      "badge": "Pour le personnel",
+      "title": "Soyez recruté pour des événements près de chez vous",
+      "subtitle": "Créez un profil gratuit, indiquez vos rôles, et les organisateurs peuvent vous inviter sur leurs événements.",
+      "signinHint": "Vous vous inscrirez (ou connecterez) d’abord — c’est gratuit."
+    },
+    "cta": "Devenir membre du personnel",
+    "ctaLoggedIn": "Créer mon profil",
+    "rolesTitle": "Rôles recherchés par les organisateurs",
+    "rolesSubtitle": "Choisissez vos rôles — vous pouvez en sélectionner plusieurs.",
+    "rolesMore": "Et plus — vous définissez vos propres rôles sur votre profil.",
+    "roles": {
+      "waiter": "Serveur",
+      "bartender": "Barman",
+      "driver": "Chauffeur",
+      "stage_crew": "Régisseur",
+      "cleaner": "Agent de nettoyage",
+      "instructor": "Instructeur",
+      "guide": "Guide",
+      "assistant": "Assistant",
+      "coordinator": "Coordinateur"
+    },
+    "stepsTitle": "Comment ça marche",
+    "steps": {
+      "create": {
+        "title": "1. Créez votre profil",
+        "desc": "Indiquez vos rôles, zone, langues et tarif. Gratuit, quelques minutes."
+      },
+      "invited": {
+        "title": "2. Soyez invité",
+        "desc": "Les organisateurs vous trouvent et vous invitent sur des événements précis."
+      },
+      "work": {
+        "title": "3. Acceptez et travaillez",
+        "desc": "Acceptez les demandes qui conviennent à votre planning et au travail."
+      }
+    },
+    "bottomCta": {
+      "title": "Prêt à être recruté ?",
+      "subtitle": "Votre profil est réutilisable par tous les organisateurs de la plateforme."
+    }
   }
 }
