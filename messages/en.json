@@ -2155,5 +2155,44 @@
       "cleaning": "Cleaning",
       "printing": "Printing"
     }
+  },
+  "vendorSourcing": {
+    "title": "Vendor sourcing",
+    "subtitle": "Request quotes from your vendors for this plan’s resources.",
+    "noNeeds": "No priceable resources to source yet.",
+    "noVendors": "Add vendor profiles to start sourcing.",
+    "addVendors": "Add vendors",
+    "estimate": "Est.",
+    "awaiting": "Awaiting vendor response…",
+    "requestQuotes": "Request quotes",
+    "spec": "What to ask for",
+    "specPlaceholder": "Details, quantity, style, date…",
+    "budget": "Target budget",
+    "selectVendors": "Invite vendors",
+    "send": "Send request",
+    "select": "Select",
+    "status": {
+      "invited": "Invited",
+      "quoted": "Quoted",
+      "declined": "Declined",
+      "selected": "Selected"
+    },
+    "quote": {
+      "invited": "You’ve been invited to quote",
+      "greeting": "Hi {name}, please send your quote below.",
+      "budget": "Target budget",
+      "price": "Your price",
+      "pricePlaceholder": "e.g. 500",
+      "message": "Message",
+      "messagePlaceholder": "What’s included, availability, terms…",
+      "submit": "Submit quote",
+      "sending": "Sending…",
+      "decline": "Decline",
+      "invalid": "This quote link is invalid or expired.",
+      "declinedConfirm": "You declined this request. Thank you.",
+      "submittedConfirm": "Quote submitted: {price}. The organizer has been notified."
+    },
+    "previous": "Previous requests",
+    "previousHint": "No longer in the current plan budget — kept so sent requests and quotes stay visible."
   }
 }

@@ -5,6 +5,8 @@ import { ArrowLeft } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { getPlan } from '@/lib/actions/opePlans'
 import PlanDetailClient from '@/components/dashboard/PlanDetailClient'
+import VendorSourcingPanel from '@/components/vendors/VendorSourcingPanel'
+import type { Locale } from '@/lib/types'
 
 // Organizer detail view of a saved OPE plan. Loads from PlanStore (getPlan →
 // ope_plans) on the server, then hands off to PlanDetailClient, which renders the
@@ -42,6 +44,7 @@ export default async function SavedPlanPage({ params }: Props) {
     <div className="mx-auto max-w-3xl px-4 py-8 sm:py-10">
       {backLink}
       <PlanDetailClient initialPlan={res.data} />
+      <VendorSourcingPanel plan={res.data} locale={locale as Locale} />
     </div>
   )
 }

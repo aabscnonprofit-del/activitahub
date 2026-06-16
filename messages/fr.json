@@ -2155,5 +2155,44 @@
       "cleaning": "Nettoyage",
       "printing": "Impression"
     }
+  },
+  "vendorSourcing": {
+    "title": "Recherche de prestataires",
+    "subtitle": "Demandez des devis à vos prestataires pour les ressources de ce plan.",
+    "noNeeds": "Aucune ressource chiffrable à sourcer pour l’instant.",
+    "noVendors": "Ajoutez des prestataires pour commencer.",
+    "addVendors": "Ajouter des prestataires",
+    "estimate": "Est.",
+    "awaiting": "En attente de réponse du prestataire…",
+    "requestQuotes": "Demander des devis",
+    "spec": "Ce qu’il faut demander",
+    "specPlaceholder": "Détails, quantité, style, date…",
+    "budget": "Budget cible",
+    "selectVendors": "Inviter des prestataires",
+    "send": "Envoyer la demande",
+    "select": "Sélectionner",
+    "status": {
+      "invited": "Invité",
+      "quoted": "Devis reçu",
+      "declined": "Refusé",
+      "selected": "Sélectionné"
+    },
+    "quote": {
+      "invited": "Vous êtes invité à proposer un devis",
+      "greeting": "Bonjour {name}, envoyez votre devis ci-dessous.",
+      "budget": "Budget cible",
+      "price": "Votre prix",
+      "pricePlaceholder": "ex. 500",
+      "message": "Message",
+      "messagePlaceholder": "Ce qui est inclus, disponibilité, conditions…",
+      "submit": "Envoyer le devis",
+      "sending": "Envoi…",
+      "decline": "Refuser",
+      "invalid": "Ce lien de devis est invalide ou expiré.",
+      "declinedConfirm": "Vous avez refusé cette demande. Merci.",
+      "submittedConfirm": "Devis envoyé : {price}. L’organisateur a été notifié."
+    },
+    "previous": "Demandes précédentes",
+    "previousHint": "Plus dans le budget actuel du plan — conservées pour que les demandes et devis restent visibles."
   }
 }

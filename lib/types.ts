@@ -189,6 +189,38 @@ export type Vendor = {
   updated_at: string
 }
 
+// ── Vendor Sourcing (migration 030) ─────────────────────────────────────────
+// An OPE plan resource need → a sourcing request; each invited vendor profile gets
+// a token-based quote (no account, like RSVP). Organizer-owned; vendor responds via RPC.
+export type VendorQuote = {
+  id: string
+  vendor_request_id: string
+  vendor_id: string | null
+  vendor_name: string
+  vendor_email: string | null
+  token: string
+  price_cents: number | null
+  message: string | null
+  status: 'invited' | 'quoted' | 'declined' | 'selected'
+  responded_at: string | null
+  created_at: string
+}
+
+export type VendorRequest = {
+  id: string
+  organizer_id: string
+  plan_id: string
+  resource_label: string
+  resource_item_key: string | null
+  spec: string | null
+  budget_cents: number | null
+  status: 'open' | 'closed'
+  selected_quote_id: string | null
+  created_at: string
+  // Embedded quotes (from the nested select); absent on bare reads.
+  vendor_quotes?: VendorQuote[]
+}
+
 export type CalendarEventType = 'session' | 'block' | 'personal'
 
 export type CalendarEvent = {
@@ -381,6 +413,7 @@ export type NotificationType =
   | 'event_update'
   | 'event_reminder'
   | 'message_received'
+  | 'vendor_quote_received'
 
 // ── Messaging (membership model, migration 028) ─────────────────────────────
 // A conversation is a 1:1 thread (MVP) identified by its members, with an optional

@@ -2155,5 +2155,44 @@
       "cleaning": "Limpeza",
       "printing": "Impressão"
     }
+  },
+  "vendorSourcing": {
+    "title": "Busca de fornecedores",
+    "subtitle": "Solicite orçamentos aos seus fornecedores para os recursos deste plano.",
+    "noNeeds": "Ainda não há recursos com preço para contratar.",
+    "noVendors": "Adicione fornecedores para começar.",
+    "addVendors": "Adicionar fornecedores",
+    "estimate": "Est.",
+    "awaiting": "Aguardando resposta do fornecedor…",
+    "requestQuotes": "Solicitar orçamentos",
+    "spec": "O que solicitar",
+    "specPlaceholder": "Detalhes, quantidade, estilo, data…",
+    "budget": "Orçamento alvo",
+    "selectVendors": "Convidar fornecedores",
+    "send": "Enviar solicitação",
+    "select": "Selecionar",
+    "status": {
+      "invited": "Convidado",
+      "quoted": "Orçado",
+      "declined": "Recusado",
+      "selected": "Selecionado"
+    },
+    "quote": {
+      "invited": "Você foi convidado a orçar",
+      "greeting": "Olá {name}, envie seu orçamento abaixo.",
+      "budget": "Orçamento alvo",
+      "price": "Seu preço",
+      "pricePlaceholder": "ex. 500",
+      "message": "Mensagem",
+      "messagePlaceholder": "O que está incluído, disponibilidade, termos…",
+      "submit": "Enviar orçamento",
+      "sending": "Enviando…",
+      "decline": "Recusar",
+      "invalid": "Este link de orçamento é inválido ou expirou.",
+      "declinedConfirm": "Você recusou esta solicitação. Obrigado.",
+      "submittedConfirm": "Orçamento enviado: {price}. O organizador foi notificado."
+    },
+    "previous": "Solicitações anteriores",
+    "previousHint": "Não estão mais no orçamento atual do plano — mantidas para que solicitações e orçamentos permaneçam visíveis."
   }
 }

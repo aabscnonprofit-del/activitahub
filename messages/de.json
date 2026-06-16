@@ -2155,5 +2155,44 @@
       "cleaning": "Reinigung",
       "printing": "Druck"
     }
+  },
+  "vendorSourcing": {
+    "title": "Anbietersuche",
+    "subtitle": "Holen Sie Angebote Ihrer Anbieter für die Ressourcen dieses Plans ein.",
+    "noNeeds": "Noch keine bepreisbaren Ressourcen zur Beschaffung.",
+    "noVendors": "Fügen Sie Anbieter hinzu, um zu beginnen.",
+    "addVendors": "Anbieter hinzufügen",
+    "estimate": "Gesch.",
+    "awaiting": "Warte auf Antwort des Anbieters…",
+    "requestQuotes": "Angebote anfordern",
+    "spec": "Was angefragt wird",
+    "specPlaceholder": "Details, Menge, Stil, Datum…",
+    "budget": "Zielbudget",
+    "selectVendors": "Anbieter einladen",
+    "send": "Anfrage senden",
+    "select": "Auswählen",
+    "status": {
+      "invited": "Eingeladen",
+      "quoted": "Angebot erhalten",
+      "declined": "Abgelehnt",
+      "selected": "Ausgewählt"
+    },
+    "quote": {
+      "invited": "Sie wurden eingeladen, ein Angebot abzugeben",
+      "greeting": "Hallo {name}, senden Sie unten Ihr Angebot.",
+      "budget": "Zielbudget",
+      "price": "Ihr Preis",
+      "pricePlaceholder": "z. B. 500",
+      "message": "Nachricht",
+      "messagePlaceholder": "Was enthalten ist, Verfügbarkeit, Konditionen…",
+      "submit": "Angebot senden",
+      "sending": "Wird gesendet…",
+      "decline": "Ablehnen",
+      "invalid": "Dieser Angebots-Link ist ungültig oder abgelaufen.",
+      "declinedConfirm": "Sie haben diese Anfrage abgelehnt. Danke.",
+      "submittedConfirm": "Angebot gesendet: {price}. Der Organisator wurde benachrichtigt."
+    },
+    "previous": "Frühere Anfragen",
+    "previousHint": "Nicht mehr im aktuellen Planbudget — beibehalten, damit gesendete Anfragen und Angebote sichtbar bleiben."
   }
 }
