@@ -2440,6 +2440,9 @@
       "invalid_amount": "Geben Sie einen gültigen Betrag ein.",
       "title_required": "Geben Sie einen Titel ein.",
       "generic": "Die Rechnung konnte nicht erstellt werden. Bitte versuchen Sie es erneut."
-    }
+    },
+    "sumInvoiced": "Berechnet",
+    "sumPaid": "Bezahlt",
+    "sumOutstanding": "Ausstehend"
   }
 }

@@ -2440,6 +2440,9 @@
       "invalid_amount": "Saisissez un montant valide.",
       "title_required": "Saisissez un titre.",
       "generic": "Impossible de créer la facture. Veuillez réessayer."
-    }
+    },
+    "sumInvoiced": "Facturé",
+    "sumPaid": "Payé",
+    "sumOutstanding": "Restant dû"
   }
 }

@@ -2440,6 +2440,9 @@
       "invalid_amount": "Insira um valor válido.",
       "title_required": "Insira um título.",
       "generic": "Não foi possível criar a fatura. Tente novamente."
-    }
+    },
+    "sumInvoiced": "Faturado",
+    "sumPaid": "Pago",
+    "sumOutstanding": "Pendente"
   }
 }

@@ -43,6 +43,21 @@ export default async function InvoicesPanel({
   const invoices = await getInvoicesForPlan(plan.id)
   const currency = (plan.result.plan?.section_c_budget?.currency as string | undefined) ?? 'usd'
 
+  // Derived totals (cents). Invoiced = open + paid; paid = paid; outstanding = open.
+  // Draft and void are excluded. (MVP: all of a plan's invoices share its currency.)
+  let invoicedCents = 0
+  let paidCents = 0
+  let outstandingCents = 0
+  for (const inv of invoices) {
+    if (inv.status === 'paid') {
+      paidCents += inv.amount_cents
+      invoicedCents += inv.amount_cents
+    } else if (inv.status === 'open') {
+      outstandingCents += inv.amount_cents
+      invoicedCents += inv.amount_cents
+    }
+  }
+
   return (
     <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-6">
       <div className="mb-4 flex items-center gap-2">
@@ -71,6 +86,23 @@ export default async function InvoicesPanel({
         </div>
         <button type="submit" className="btn-primary">{t('create')}</button>
       </form>
+
+      {invoices.length > 0 && (
+        <div className="mb-4 grid grid-cols-3 gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4 text-center">
+          <div>
+            <p className="text-xs text-slate-500">{t('sumInvoiced')}</p>
+            <p className="mt-0.5 text-sm font-bold text-slate-800">{money(invoicedCents, currency)}</p>
+          </div>
+          <div>
+            <p className="text-xs text-slate-500">{t('sumPaid')}</p>
+            <p className="mt-0.5 text-sm font-bold text-emerald-700">{money(paidCents, currency)}</p>
+          </div>
+          <div>
+            <p className="text-xs text-slate-500">{t('sumOutstanding')}</p>
+            <p className="mt-0.5 text-sm font-bold text-amber-700">{money(outstandingCents, currency)}</p>
+          </div>
+        </div>
+      )}
 
       {invoices.length === 0 ? (
         <p className="text-sm text-slate-400">{t('empty')}</p>

@@ -2440,6 +2440,9 @@
       "invalid_amount": "Enter a valid amount.",
       "title_required": "Enter a title.",
       "generic": "Couldn’t create the invoice. Please try again."
-    }
+    },
+    "sumInvoiced": "Invoiced",
+    "sumPaid": "Paid",
+    "sumOutstanding": "Outstanding"
   }
 }
