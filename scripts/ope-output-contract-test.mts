@@ -83,8 +83,85 @@ console.log('Case A — priced plan (birthday/honolulu/kids):')
   // Event summary minimums.
   check('A: headcount.total === guest_count',
     out.event_summary.headcount.total === plan.section_a_what_you_told_us.guest_count)
-  check('A: resources derived from breakdown',
-    out.resources.length === (plan.section_c_budget.breakdown?.length ?? 0))
+
+  // Budget linkage preserved: every priced line appears as a budget-linked resource.
+  const linked = new Set(out.resources.map((r) => r.linked_budget_item_key).filter(Boolean))
+  const allLinesLinked = (plan.section_c_budget.breakdown ?? []).every((l) => linked.has(l.item_key))
+  check('A: every budget line is a linked resource', allLinesLinked)
+  check('A: resource classification (venue=space, food/cake=material)',
+    out.resources.every((r) =>
+      !(/venue/.test(r.id) && r.type !== 'space') &&
+      !(/cake|food/.test(r.id) && r.type !== 'material')))
+
+  // Staffing improvement: a kids birthday with no staff line derives a Host role.
+  check('A: staffing derived (Host) for birthday with no staff line',
+    out.staffing.roles.some((r) => /host/i.test(r.role)) && out.staffing.staffing_status === 'unknown')
+  check('A: derived staff is a resource (type staff, not budget-linked)',
+    out.resources.some((r) => r.type === 'staff' && r.linked_budget_item_key === null))
+  check('A: low-confidence staffing creates an organizer decision',
+    out.organizer_decisions_required.some((d) => d.id === 'staffing_estimated'))
+}
+
+// ── Case E: bbq derives a Host (no staff budget line) ───────────────────────
+console.log('Case E — bbq staffing derivation:')
+{
+  const input: PlannerInput = {
+    category: 'bbq', guestCount: 30, adults: 24, kids: 6, venueType: 'public_park', budget: 450,
+    specialRequirements: ['vegetarian options'],
+    location: { city: 'Honolulu', state: 'HI', country: 'USA', postalCode: null },
+  }
+  const out = assembleOpeOutput(generatePlan(input).plan as PlannerOutput)
+  check('E: validator ok', validateOpeOutput(out).ok)
+  check('E: Host role derived', out.staffing.roles.some((r) => r.role === 'Host'))
+  check('E: Host headcount estimated as 1', out.staffing.roles.find((r) => r.role === 'Host')?.headcount === 1)
+  check('E: staffing_status unknown (derived)', out.staffing.staffing_status === 'unknown')
+  check('E: staffing_estimated decision present',
+    out.organizer_decisions_required.some((d) => d.id === 'staffing_estimated'))
+}
+
+// ── Case F: class instructor comes from the BUDGET line (staff is a resource) ─
+console.log('Case F — class instructor from budget line:')
+{
+  const input: PlannerInput = {
+    category: 'fitness_class', guestCount: 12, adults: 12, kids: 0, venueType: null, budget: null,
+    specialRequirements: ['yoga'], instructor: 'need', materials: 'provided',
+    location: { city: 'Honolulu', state: 'HI', country: 'USA', postalCode: null },
+  }
+  const plan = generatePlan(input).plan as PlannerOutput
+  const out = assembleOpeOutput(plan)
+  check('F: validator ok', validateOpeOutput(out).ok)
+  const instructor = out.staffing.roles.find((r) => /instructor/i.test(r.role))
+  check('F: instructor role present from budget', !!instructor)
+  check('F: instructor resource is budget-linked (not derived)',
+    out.resources.some((r) => r.type === 'staff' && r.linked_budget_item_key !== null))
+  check('F: staffing_status needs_hiring (priced staff, none derived)', out.staffing.staffing_status === 'needs_hiring')
+  check('F: priced staff → staffing_source decision (not estimated)',
+    out.organizer_decisions_required.some((d) => d.id === 'staffing_source') &&
+    !out.organizer_decisions_required.some((d) => d.id === 'staffing_estimated'))
+}
+
+// ── Case G: venue null + derived staffing → venue-affects-staffing decision ──
+console.log('Case G — venue assumption affects staffing (hand-built):')
+{
+  const built: PlannerOutput = {
+    _meta: { kind: 'plan', format: 'v1', modules_used: [], ai_layer: 'off' },
+    section_a_what_you_told_us: {
+      activity_type: 'BBQ / Family Picnic', guest_count: 30, guest_breakdown: null, age_group: 'mixed',
+      venue_type: null, location: { city: 'X', country: 'Y' }, region: 'Y', budget: null, special_requirements: [],
+    },
+    section_b_your_plan: {
+      summary: null, headline: null, timeline: [],
+      preparation_checklist: [], day_of_checklist: [], after_event_checklist: [],
+    },
+    section_c_budget: { is_priced: false, pricing_source: 'none', is_fallback: false, fallback_note: null },
+    section_d_key_risks: { risks: [], excluded_conditional: [] },
+    section_e_ready_messages: {},
+    section_f_upgrade_path: { current_scale: 0, threshold_hint: null, text: null },
+  }
+  const out = assembleOpeOutput(built)
+  check('G: Host derived despite no budget', out.staffing.roles.some((r) => r.role === 'Host'))
+  check('G: venue_affects_staffing decision present',
+    out.organizer_decisions_required.some((d) => d.id === 'venue_affects_staffing'))
 }
 
 // ── Case B: real fallback plan — surfaces a budget decision ─────────────────
@@ -114,7 +191,8 @@ console.log('Case C — minimal/empty PlannerOutput (resilience):')
   const empty: PlannerOutput = {
     _meta: { kind: 'plan', format: 'v1', modules_used: [], ai_layer: 'off' },
     section_a_what_you_told_us: {
-      activity_type: 'gathering', guest_count: 0, guest_breakdown: null, age_group: 'mixed',
+      // Unrecognized type → no staff derivation (keeps this a pure empty-resilience case).
+      activity_type: 'unspecified', guest_count: 0, guest_breakdown: null, age_group: 'mixed',
       venue_type: null, location: { city: '', country: '' }, region: '', budget: null, special_requirements: [],
     },
     section_b_your_plan: {

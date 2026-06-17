@@ -123,12 +123,57 @@ const cap = (s: string): string => (s ? s.charAt(0).toUpperCase() + s.slice(1) :
 /** Heuristic resource typing from the budget item key + basis (mapping only). */
 function classifyResource(itemKey: string, basis: string): OpeResourceType {
   const k = `${itemKey} ${basis}`.toLowerCase()
-  if (/(staff|instructor|coordinator|server|waiter|host|labou?r|crew|facilitator|guide|bartender|security)/.test(k)) return 'staff'
-  if (/(photographer|videographer|\bdj\b|entertainer|magician|vendor|performer)/.test(k)) return 'vendor'
-  if (/(venue|space|hall|\broom\b|site|location_rental)/.test(k)) return 'space'
-  if (/(equipment|rental|\bav\b|sound|tent|table|chair|decor|lighting|furniture|stage)/.test(k)) return 'equipment'
-  if (/(food|catering|cake|drink|beverage|material|supplies|favou?r|consumable|cutlery|tableware)/.test(k)) return 'material'
+  if (/(staff|instructor|coordinator|server|waiter|host|labou?r|crew|facilitator|guide|bartender|security|referee|first.?aid)/.test(k)) return 'staff'
+  if (/(photographer|videographer|\bdj\b|entertainer|magician|vendor|performer|caterer)/.test(k)) return 'vendor'
+  if (/(venue|space|hall|\broom\b|site|location_rental|permit)/.test(k)) return 'space'
+  if (/(equipment|rental|\bav\b|sound|tent|table|chair|lighting|furniture|stage|grill)/.test(k)) return 'equipment'
+  if (/(food|catering|cake|drink|beverage|\bbar|material|supplies|favou?r|consumable|cutlery|tableware|disposable|decor|fuel|\bice\b|prize|gift)/.test(k)) return 'material'
   return 'other'
+}
+
+/** A staff role derived from the event type when the budget carries no staff line. */
+interface DerivedRole {
+  role: string
+  headcount: number | null
+  estimated: boolean // true = a scaled estimate (lower confidence) vs a single lead role
+}
+
+/**
+ * Deterministically derive likely staff roles + headcount from the event type, used
+ * ONLY when the priced breakdown has no staff line. A single lead role (host /
+ * coordinator / instructor) is reasonably confident; scaled roles (helpers,
+ * volunteers, support) are flagged `estimated` and drive an organizer decision —
+ * never asserted as certainty. Returns [] when the event type is unrecognized.
+ */
+function deriveStaffRoles(activityType: string, guestCount: number): DerivedRole[] {
+  const k = (activityType || '').toLowerCase()
+  const scaled = (per: number) => (guestCount > per ? Math.ceil(guestCount / per) : 0)
+  const roles: DerivedRole[] = []
+
+  if (/(class|yoga|fitness|workshop|lesson|course|training)/.test(k)) {
+    roles.push({ role: 'Instructor', headcount: 1, estimated: false })
+  } else if (/(wedding|marriage|ceremony)/.test(k)) {
+    roles.push({ role: 'Coordinator', headcount: 1, estimated: false })
+    const s = scaled(30)
+    if (s) roles.push({ role: 'Server', headcount: s, estimated: true })
+  } else if (/(bbq|barbecue|cookout|picnic|grill)/.test(k)) {
+    roles.push({ role: 'Host', headcount: 1, estimated: false })
+    const h = scaled(25)
+    if (h) roles.push({ role: 'Helper', headcount: h, estimated: true })
+  } else if (/(network|corporate|conference|seminar|meetup|mixer)/.test(k)) {
+    roles.push({ role: 'Coordinator', headcount: 1, estimated: false })
+    const s = scaled(40)
+    if (s) roles.push({ role: 'Support staff', headcount: s, estimated: true })
+  } else if (/(community|festival|gathering|charity|fundrais|volunteer|reunion)/.test(k)) {
+    roles.push({ role: 'Coordinator', headcount: 1, estimated: false })
+    const v = scaled(20)
+    if (v) roles.push({ role: 'Volunteer', headcount: v, estimated: true })
+  } else if (/(birthday|party|anniversary|graduation|baby ?shower|celebration)/.test(k)) {
+    roles.push({ role: 'Host', headcount: 1, estimated: false })
+    const h = scaled(30)
+    if (h) roles.push({ role: 'Helper', headcount: h, estimated: true })
+  }
+  return roles
 }
 
 function venueIndoorOutdoor(venueType: string | null): 'indoor' | 'outdoor' | 'either' | null {
@@ -203,7 +248,27 @@ export function assembleOpeOutput(plan: PlannerOutput): OpeOutputV1 {
   }))
 
   // ── §4 Staffing (staff-typed subset of resources) ──
+  // Staff is a resource type. When the priced breakdown carries no staff line,
+  // derive likely roles from the event type and ADD them as resources, so Staffing
+  // stays a strict view of Resources. Derived roles are low-confidence (source
+  // 'unknown', not budget-linked) and drive an organizer decision below — never
+  // asserted as certainty.
+  const budgetStaffCount = resources.filter((r) => r.type === 'staff').length
+  const derivedRoles = budgetStaffCount === 0 ? deriveStaffRoles(a.activity_type, total) : []
+  for (const dr of derivedRoles) {
+    resources.push({
+      id: `staff_${dr.role.toLowerCase().replace(/\s+/g, '_')}`,
+      label: dr.role,
+      type: 'staff',
+      quantity: dr.headcount,
+      required: true,
+      unit: 'person',
+      linked_budget_item_key: null, // derived, not a priced line
+      lever: null,
+    })
+  }
   const staffResources = resources.filter((r) => r.type === 'staff')
+  const hasDerivedStaff = staffResources.some((r) => r.linked_budget_item_key === null)
   const staffing: OpeStaffing = {
     roles: staffResources.map((r) => ({
       role: r.label,
@@ -211,7 +276,8 @@ export function assembleOpeOutput(plan: PlannerOutput): OpeOutputV1 {
       source: 'unknown',
       required: r.required,
     })),
-    staffing_status: staffResources.length === 0 ? 'self_serviceable' : 'unknown',
+    staffing_status:
+      staffResources.length === 0 ? 'self_serviceable' : hasDerivedStaff ? 'unknown' : 'needs_hiring',
   }
 
   // ── §5 Venue Requirements ──
@@ -263,15 +329,39 @@ export function assembleOpeOutput(plan: PlannerOutput): OpeOutputV1 {
 
   // ── §8 Organizer Decisions Required ──
   const organizer_decisions_required: OpeDecision[] = []
-  if (staffing.roles.length > 0 && staffing.staffing_status !== 'self_serviceable') {
+  // Staffing: estimated (low confidence) → confirm; priced roles → how to fill them.
+  if (hasDerivedStaff) {
+    organizer_decisions_required.push({
+      id: 'staffing_estimated',
+      prompt: `Staffing is an estimate (${staffing.roles
+        .map((r) => (r.headcount != null ? `${r.headcount}× ${r.role}` : r.role))
+        .join(', ')}). Confirm the roles and headcount.`,
+      type: 'confirm',
+      impacts: 'staffing',
+      required_before: 'execute',
+      linked_section: 'staffing',
+    })
+  } else if (staffResources.length > 0) {
     organizer_decisions_required.push({
       id: 'staffing_source',
-      prompt: `Decide how you will staff: ${staffing.roles.map((r) => r.role).join(', ')}.`,
+      prompt: `Decide how you will fill these roles: ${staffResources.map((r) => r.label).join(', ')}.`,
       type: 'choice',
       impacts: 'staffing',
       required_before: 'execute',
       options: ['Do it yourself', 'Hire / source workers', 'Use a vendor'],
       linked_section: 'staffing',
+    })
+  }
+  // Required, non-staff resources whose quantity could not be derived.
+  const unknownQty = resources.filter((r) => r.type !== 'staff' && r.required && r.quantity === null)
+  if (unknownQty.length > 0) {
+    organizer_decisions_required.push({
+      id: 'resource_quantity',
+      prompt: `Confirm quantities for: ${unknownQty.map((r) => r.label).join(', ')}.`,
+      type: 'input',
+      impacts: 'resources',
+      required_before: 'execute',
+      linked_section: 'resources',
     })
   }
   if (!budget.is_priced) {
@@ -302,6 +392,17 @@ export function assembleOpeOutput(plan: PlannerOutput): OpeOutputV1 {
       required_before: 'execute',
       linked_section: 'venue',
     })
+    // Venue assumptions affect derived staffing/resources — flag the dependency.
+    if (hasDerivedStaff) {
+      organizer_decisions_required.push({
+        id: 'venue_affects_staffing',
+        prompt: 'No venue is set yet — the final staffing and resource needs may shift once you choose one.',
+        type: 'confirm',
+        impacts: 'venue',
+        required_before: 'execute',
+        linked_section: 'venue',
+      })
+    }
   }
   const topLever = (budgetSrc.key_cost_drivers ?? []).find((d) => d.lever)
   if (topLever?.lever) {
