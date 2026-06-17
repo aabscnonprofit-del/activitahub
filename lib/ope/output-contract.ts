@@ -107,6 +107,27 @@ export interface OpeDecision {
   linked_section?: 'venue' | 'staffing' | 'budget' | 'resources' | 'timeline'
 }
 
+// Normalized execution-readiness checklist (derived from the same signals as the
+// organizer decisions). `required` = a blocker; `confirmed` = ready on that axis.
+export type ReadinessKey =
+  | 'venue_confirmed'
+  | 'staffing_confirmed'
+  | 'resource_quantities_confirmed'
+  | 'budget_confirmed'
+  | 'weather_plan_confirmed'
+export interface OpeReadinessItem {
+  key: ReadinessKey
+  label: string
+  status: 'confirmed' | 'required'
+  reason: string
+  linked_decision_id: string | null // the organizer decision that resolves this item
+}
+export interface OpeExecutionReadiness {
+  ready: boolean // true only when there are no required (blocking) items
+  blockers: ReadinessKey[] // keys still 'required'
+  checklist: OpeReadinessItem[] // always all five axes
+}
+
 export interface OpeOutputV1 {
   status: 'plan_ready'
   event_summary: OpeEventSummary
@@ -117,6 +138,7 @@ export interface OpeOutputV1 {
   budget: OpeBudget
   risks: OpeRisk[]
   organizer_decisions_required: OpeDecision[]
+  execution_readiness: OpeExecutionReadiness
   _meta: { contract_version: 'v1'; deterministic: true; modules_used: string[] }
 }
 
@@ -473,11 +495,16 @@ export function assembleOpeOutput(plan: PlannerOutput): OpeOutputV1 {
       linked_section: 'resources',
     })
   }
-  // Weather backup is uncertain (outdoor-leaning but venue/season unconfirmed).
-  if (venue_requirements.weather_backup === 'recommended') {
+  // Weather backup needed — required (outdoor, known venue) or recommended (outdoor-
+  // leaning, venue/season unconfirmed). Emit a decision in BOTH cases so the
+  // weather_plan_confirmed readiness blocker always maps to an actionable item.
+  if (venue_requirements.weather_backup !== 'not_needed') {
+    const weatherRequired = venue_requirements.weather_backup === 'required'
     organizer_decisions_required.push({
       id: 'weather_backup',
-      prompt: 'Decide on a weather backup plan — recommended for this event, but it depends on the venue and season.',
+      prompt: weatherRequired
+        ? 'Confirm your weather backup plan — required for this outdoor event.'
+        : 'Decide on a weather backup plan — recommended for this event, but it depends on the venue and season.',
       type: 'confirm',
       impacts: 'venue',
       required_before: 'execute',
@@ -536,6 +563,60 @@ export function assembleOpeOutput(plan: PlannerOutput): OpeOutputV1 {
     })
   }
 
+  // ── Execution Readiness (V2): normalize the decisions into a fixed five-axis
+  // checklist that answers "ready for execution?". Each axis is `required` (a
+  // blocker) when its certainty is missing, derived deterministically from the
+  // same state as the decisions above. Readiness is never claimed when low. ──
+  const hasDecision = (id: string) => organizer_decisions_required.some((d) => d.id === id)
+  const READINESS_LABELS: Record<ReadinessKey, string> = {
+    venue_confirmed: 'Venue confirmed',
+    staffing_confirmed: 'Staffing confirmed',
+    resource_quantities_confirmed: 'Resource quantities confirmed',
+    budget_confirmed: 'Budget confirmed',
+    weather_plan_confirmed: 'Weather plan confirmed',
+  }
+  const checklist: OpeReadinessItem[] = []
+  const axis = (key: ReadinessKey, required: boolean, reason: string, linkedId: string | null) =>
+    checklist.push({
+      key,
+      label: READINESS_LABELS[key],
+      status: required ? 'required' : 'confirmed',
+      reason,
+      linked_decision_id: required && linkedId && hasDecision(linkedId) ? linkedId : null,
+    })
+
+  const venueRequired = !venue_requirements.venue_type
+  axis('venue_confirmed', venueRequired,
+    venueRequired ? 'No venue selected yet.' : 'Venue is set.', 'venue_choose')
+
+  const staffingRequired = staffing.staffing_status !== 'self_serviceable'
+  axis('staffing_confirmed', staffingRequired,
+    staffingRequired ? (hasDerivedStaff ? 'Staffing is an estimate.' : 'Staffing roles need a sourcing decision.') : 'No staffing required.',
+    hasDerivedStaff ? 'staffing_estimated' : 'staffing_source')
+
+  const resourcesRequired = hasDecision('resource_quantity_estimated') || hasDecision('resource_quantity')
+  axis('resource_quantities_confirmed', resourcesRequired,
+    resourcesRequired ? 'Resource quantities are estimates / unconfirmed.' : 'Resource quantities are confirmed.',
+    hasDecision('resource_quantity_estimated') ? 'resource_quantity_estimated' : 'resource_quantity')
+
+  const budgetRequired =
+    !budget.is_priced || budget.is_fallback || budget.pricing_source === 'fallback-seed' || budget.pricing_source === 'none'
+  axis('budget_confirmed', budgetRequired,
+    !budget.is_priced ? 'No automatic budget estimate.' : budgetRequired ? 'Budget uses fallback pricing.' : 'Budget is priced.',
+    !budget.is_priced ? 'budget_unpriced' : 'budget_fallback')
+
+  const weatherRequired = venue_requirements.weather_backup !== 'not_needed'
+  axis('weather_plan_confirmed', weatherRequired,
+    weatherRequired ? `Weather backup ${venue_requirements.weather_backup} for this event.` : 'No weather backup needed.',
+    'weather_backup')
+
+  const blockers = checklist.filter((i) => i.status === 'required').map((i) => i.key)
+  const execution_readiness: OpeExecutionReadiness = {
+    ready: blockers.length === 0,
+    blockers,
+    checklist,
+  }
+
   return {
     status: 'plan_ready',
     event_summary,
@@ -546,6 +627,7 @@ export function assembleOpeOutput(plan: PlannerOutput): OpeOutputV1 {
     budget,
     risks,
     organizer_decisions_required,
+    execution_readiness,
     _meta: {
       contract_version: 'v1',
       deterministic: true,
@@ -581,6 +663,13 @@ export function validateOpeOutput(o: OpeOutputV1): OpeOutputValidation {
   need(!!o.budget && typeof o.budget.is_priced === 'boolean', 'budget')
   need(Array.isArray(o.risks), 'risks')
   need(Array.isArray(o.organizer_decisions_required), 'organizer_decisions_required')
+  need(
+    !!o.execution_readiness &&
+      typeof o.execution_readiness.ready === 'boolean' &&
+      Array.isArray(o.execution_readiness.checklist) &&
+      Array.isArray(o.execution_readiness.blockers),
+    'execution_readiness',
+  )
 
   if (o.event_summary) {
     if (!o.event_summary.title) issues.push('event_summary.title is empty')

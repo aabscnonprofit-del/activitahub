@@ -298,6 +298,93 @@ console.log('Case D — read-path guard (saved plan with no PlannerOutput):')
     sparse.plan === null ? out === null : out !== null && validateOpeOutput(out).ok)
 }
 
+// ── Case I: Execution Readiness — NOT ready (many blockers) ─────────────────
+console.log('Case I — execution readiness (not ready):')
+{
+  // bbq, no venue, unpriced → venue/staffing/resources/budget/weather all required.
+  const built: PlannerOutput = {
+    _meta: { kind: 'plan', format: 'v1', modules_used: [], ai_layer: 'off' },
+    section_a_what_you_told_us: {
+      activity_type: 'BBQ / Family Picnic', guest_count: 30, guest_breakdown: null, age_group: 'mixed',
+      venue_type: null, location: { city: 'X', country: 'Y' }, region: 'Y', budget: null, special_requirements: [],
+    },
+    section_b_your_plan: {
+      summary: null, headline: null, timeline: [],
+      preparation_checklist: [], day_of_checklist: [], after_event_checklist: [],
+    },
+    section_c_budget: { is_priced: false, pricing_source: 'none', is_fallback: false, fallback_note: null },
+    section_d_key_risks: { risks: [], excluded_conditional: [] },
+    section_e_ready_messages: {}, section_f_upgrade_path: { current_scale: 0, threshold_hint: null, text: null },
+  }
+  const outI = assembleOpeOutput(built)
+  const r = outI.execution_readiness
+  check('I: checklist always has 5 axes', r.checklist.length === 5)
+  check('I: ready === false', r.ready === false)
+  const want = ['venue_confirmed', 'staffing_confirmed', 'resource_quantities_confirmed', 'budget_confirmed', 'weather_plan_confirmed']
+  check('I: every axis is a blocker here', want.every((k) => r.blockers.includes(k as never)))
+  check('I: EVERY blocker now maps to a linked decision (incl. weather)',
+    r.checklist.filter((i) => i.status === 'required').every((i) => typeof i.linked_decision_id === 'string'))
+  check('I: blockers match required checklist items',
+    r.blockers.length === r.checklist.filter((i) => i.status === 'required').length)
+  check('I: not-ready ⇒ organizer_decisions_required non-empty', outI.organizer_decisions_required.length > 0)
+}
+
+// ── Case K: readiness invariants across real categories ─────────────────────
+console.log('Case K — readiness invariants (real plans):')
+{
+  const inputs: PlannerInput[] = [
+    { category: 'birthday', guestCount: 20, adults: 8, kids: 12, venueType: 'backyard_home', budget: 600, specialRequirements: ['theme'], location: { city: 'Honolulu', state: 'HI', country: 'USA', postalCode: '96815' } },
+    { category: 'bbq', guestCount: 30, adults: 24, kids: 6, venueType: 'public_park', budget: 450, specialRequirements: [], location: { city: 'Honolulu', state: 'HI', country: 'USA', postalCode: null } },
+    { category: 'networking', guestCount: 40, adults: 40, kids: 0, venueType: null, budget: 300, specialRequirements: ['AV'], location: { city: 'Lisbon', state: null, country: 'Portugal', postalCode: null } },
+    { category: 'fitness_class', guestCount: 12, adults: 12, kids: 0, venueType: null, budget: null, specialRequirements: ['yoga'], instructor: 'need', materials: 'provided', location: { city: 'Honolulu', state: 'HI', country: 'USA', postalCode: null } },
+  ]
+  let okAll = true
+  for (const input of inputs) {
+    const res = generatePlan(input)
+    if (!res.plan) continue
+    const out = assembleOpeOutput(res.plan)
+    const er = out.execution_readiness
+    const ids = new Set(out.organizer_decisions_required.map((d) => d.id))
+    // 5 axes; ready ⟺ no blockers; no dangling links; not-ready ⇒ decisions exist.
+    if (er.checklist.length !== 5) okAll = false
+    if (er.ready !== (er.blockers.length === 0)) okAll = false
+    if (!er.checklist.every((i) => i.linked_decision_id === null || ids.has(i.linked_decision_id))) okAll = false
+    if (!er.ready && out.organizer_decisions_required.length === 0) okAll = false
+  }
+  check('K: all real plans satisfy the readiness invariants', okAll)
+}
+
+// ── Case J: Execution Readiness — READY (all confirmed) ─────────────────────
+console.log('Case J — execution readiness (ready):')
+{
+  // Unrecognized type (no staff/seating derivation), venue set, priced non-fallback.
+  const built: PlannerOutput = {
+    _meta: { kind: 'plan', format: 'v1', modules_used: [], ai_layer: 'off' },
+    section_a_what_you_told_us: {
+      activity_type: 'unspecified', guest_count: 10, guest_breakdown: null, age_group: 'mixed',
+      venue_type: 'rented_hall', location: { city: 'X', country: 'Y' }, region: 'Y', budget: 500, special_requirements: [],
+    },
+    section_b_your_plan: {
+      summary: null, headline: null, timeline: [],
+      preparation_checklist: [], day_of_checklist: [], after_event_checklist: [],
+    },
+    section_c_budget: {
+      is_priced: true, currency: 'usd', estimate: { low: 400, likely: 500, high: 650 },
+      breakdown: [{ item_key: 'catering', module: 'm', basis: 'flat', ucd: 'event', quantity: 1, line: { low: 400, likely: 500, high: 650 }, included_in: [], optional: false, lever: null }],
+      pricing_source: 'local', is_fallback: false, fallback_note: null,
+    },
+    section_d_key_risks: { risks: [], excluded_conditional: [] },
+    section_e_ready_messages: {}, section_f_upgrade_path: { current_scale: 0, threshold_hint: null, text: null },
+  }
+  const out = assembleOpeOutput(built)
+  const r = out.execution_readiness
+  check('J: validator ok', validateOpeOutput(out).ok)
+  check('J: checklist has 5 axes', r.checklist.length === 5)
+  check('J: ready === true', r.ready === true)
+  check('J: no blockers', r.blockers.length === 0)
+  check('J: all axes confirmed', r.checklist.every((i) => i.status === 'confirmed'))
+}
+
 console.log('')
 if (failures === 0) {
   console.log('OPE Output Contract V1 OK — all 8 sections assembled; budget/risks/timeline map verbatim; empty plan is resilient.')
