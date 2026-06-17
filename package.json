@@ -12,6 +12,8 @@
     "test:ope-text": "npx tsx scripts/ope-text-understanding-test.mts",
     "test:rental": "npx tsx scripts/rental-taxonomy-test.mts",
     "test:rental-search": "npx tsx scripts/rental-search-request-test.mts",
+    "test:supplier": "npx tsx scripts/supplier-discovery-test.mts",
+    "test:rfq": "npx tsx scripts/rfq-test.mts",
     "test:stripe-sync": "npx tsx scripts/stripe-sync-test.mts",
     "test:refund-sync": "npx tsx scripts/refund-sync-test.mts"
   },
