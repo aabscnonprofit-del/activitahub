@@ -448,6 +448,7 @@ export type NotificationType =
   | 'event_reminder'
   | 'message_received'
   | 'vendor_quote_received'
+  | 'invoice_paid' // organizer notified when a customer pays an invoice (migration 036)
 
 // ── Messaging (membership model, migration 028) ─────────────────────────────
 // A conversation is a 1:1 thread (MVP) identified by its members, with an optional
