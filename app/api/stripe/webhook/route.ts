@@ -87,6 +87,13 @@ export async function POST(request: NextRequest) {
         break
       }
 
+      case 'account.updated': {
+        // A connected (organizer) account's capabilities changed — sync the flags
+        // that gate receiving customer funds. Sync-only; never creates rows.
+        await handleAccountUpdated(admin, event.data.object as Stripe.Account)
+        break
+      }
+
       default:
         // Unhandled event types are acknowledged so Stripe stops retrying.
         break
@@ -199,4 +206,37 @@ async function handleInvoice(
   const subscriptionId = typeof sub === 'string' ? sub : sub.id
   const subscription = await stripe.subscriptions.retrieve(subscriptionId)
   await syncSubscription(admin, subscription)
+}
+
+/**
+ * account.updated — keep an organizer's Stripe Connect (Express) capability flags
+ * in sync (migration 035). Mirrors Stripe's own state onto the row; the derived
+ * receive-payments gate (organizerCanReceivePayments) follows automatically.
+ *
+ * Sync-only: keyed on stripe_account_id (UNIQUE), it UPDATEs an existing row and
+ * NEVER inserts — the onboarding action is the sole creator of rows. An
+ * account.updated for an untracked acct_ is acknowledged and ignored (no row
+ * created, no error → Stripe stops retrying). Reprocessing the same event
+ * converges to the same values (idempotent).
+ */
+async function handleAccountUpdated(
+  admin: AdminClient,
+  account: Stripe.Account
+): Promise<void> {
+  const { data } = await admin
+    .from('organizer_connect_accounts')
+    .update({
+      charges_enabled: account.charges_enabled ?? false,
+      payouts_enabled: account.payouts_enabled ?? false,
+      details_submitted: account.details_submitted ?? false,
+      disabled_reason: account.requirements?.disabled_reason ?? null,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('stripe_account_id', account.id)
+    .select('organizer_id')
+
+  if (!data || data.length === 0) {
+    // Untracked connected account — acknowledge without creating a row.
+    console.warn(`[stripe webhook] account.updated for untracked account ${account.id}; ignoring`)
+  }
 }
