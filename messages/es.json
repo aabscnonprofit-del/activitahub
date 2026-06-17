@@ -2415,5 +2415,31 @@
       "restricted": "Los pagos para este organizador no están disponibles temporalmente.",
       "generic": "Algo salió mal. Inténtalo de nuevo."
     }
+  },
+  "invoiceManage": {
+    "title": "Facturas",
+    "empty": "Aún no hay facturas.",
+    "fTitle": "Título",
+    "fTitlePh": "p. ej. Depósito del evento",
+    "fAmount": "Importe",
+    "create": "Crear factura",
+    "open": "Abrir",
+    "copy": "Copiar enlace",
+    "copied": "Copiado",
+    "void": "Anular",
+    "status": {
+      "draft": "Borrador",
+      "open": "Abierta",
+      "paid": "Pagada",
+      "void": "Anulada"
+    },
+    "error": {
+      "no_access": "Se requiere acceso de organizador.",
+      "connect_required": "Completa la configuración de pagos de Stripe antes de crear facturas.",
+      "connect_restricted": "Tu cuenta de Stripe necesita atención antes de poder facturar.",
+      "invalid_amount": "Introduce un importe válido.",
+      "title_required": "Introduce un título.",
+      "generic": "No se pudo crear la factura. Inténtalo de nuevo."
+    }
   }
 }

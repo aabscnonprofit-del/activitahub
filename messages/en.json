@@ -2415,5 +2415,31 @@
       "restricted": "Payments for this organizer are temporarily unavailable.",
       "generic": "Something went wrong. Please try again."
     }
+  },
+  "invoiceManage": {
+    "title": "Invoices",
+    "empty": "No invoices yet.",
+    "fTitle": "Title",
+    "fTitlePh": "e.g. Event deposit",
+    "fAmount": "Amount",
+    "create": "Create invoice",
+    "open": "Open",
+    "copy": "Copy link",
+    "copied": "Copied",
+    "void": "Void",
+    "status": {
+      "draft": "Draft",
+      "open": "Open",
+      "paid": "Paid",
+      "void": "Cancelled"
+    },
+    "error": {
+      "no_access": "Organizer access required.",
+      "connect_required": "Finish Stripe payment setup before creating invoices.",
+      "connect_restricted": "Your Stripe account needs attention before you can invoice.",
+      "invalid_amount": "Enter a valid amount.",
+      "title_required": "Enter a title.",
+      "generic": "Couldn’t create the invoice. Please try again."
+    }
   }
 }

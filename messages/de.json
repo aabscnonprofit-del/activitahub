@@ -2415,5 +2415,31 @@
       "restricted": "Zahlungen für diesen Veranstalter sind vorübergehend nicht verfügbar.",
       "generic": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut."
     }
+  },
+  "invoiceManage": {
+    "title": "Rechnungen",
+    "empty": "Noch keine Rechnungen.",
+    "fTitle": "Titel",
+    "fTitlePh": "z. B. Anzahlung für die Veranstaltung",
+    "fAmount": "Betrag",
+    "create": "Rechnung erstellen",
+    "open": "Öffnen",
+    "copy": "Link kopieren",
+    "copied": "Kopiert",
+    "void": "Stornieren",
+    "status": {
+      "draft": "Entwurf",
+      "open": "Offen",
+      "paid": "Bezahlt",
+      "void": "Storniert"
+    },
+    "error": {
+      "no_access": "Veranstalterzugang erforderlich.",
+      "connect_required": "Schließen Sie die Stripe-Zahlungseinrichtung ab, bevor Sie Rechnungen erstellen.",
+      "connect_restricted": "Ihr Stripe-Konto benötigt Aufmerksamkeit, bevor Sie abrechnen können.",
+      "invalid_amount": "Geben Sie einen gültigen Betrag ein.",
+      "title_required": "Geben Sie einen Titel ein.",
+      "generic": "Die Rechnung konnte nicht erstellt werden. Bitte versuchen Sie es erneut."
+    }
   }
 }

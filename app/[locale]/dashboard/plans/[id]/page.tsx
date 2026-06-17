@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getPlan } from '@/lib/actions/opePlans'
 import PlanDetailClient from '@/components/dashboard/PlanDetailClient'
 import VendorSourcingPanel from '@/components/vendors/VendorSourcingPanel'
+import InvoicesPanel from '@/components/dashboard/InvoicesPanel'
 import type { Locale } from '@/lib/types'
 
 // Organizer detail view of a saved OPE plan. Loads from PlanStore (getPlan →
@@ -13,10 +14,14 @@ import type { Locale } from '@/lib/types'
 // persisted result read-only and hosts the WP5.1 inputs editor (Save & Recalculate
 // → updatePlanInputs). The engine is never run on read; recompute is server-side.
 
-type Props = { params: Promise<{ locale: string; id: string }> }
+type Props = {
+  params: Promise<{ locale: string; id: string }>
+  searchParams: Promise<{ invoiceError?: string }>
+}
 
-export default async function SavedPlanPage({ params }: Props) {
+export default async function SavedPlanPage({ params, searchParams }: Props) {
   const { locale, id } = await params
+  const { invoiceError } = await searchParams
   const t = await getTranslations({ locale, namespace: 'workspace' })
 
   const supabase = await createClient()
@@ -45,6 +50,7 @@ export default async function SavedPlanPage({ params }: Props) {
       {backLink}
       <PlanDetailClient initialPlan={res.data} />
       <VendorSourcingPanel plan={res.data} locale={locale as Locale} />
+      <InvoicesPanel plan={res.data} locale={locale as Locale} errorCode={invoiceError} />
     </div>
   )
 }

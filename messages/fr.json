@@ -2415,5 +2415,31 @@
       "restricted": "Les paiements pour cet organisateur sont temporairement indisponibles.",
       "generic": "Une erreur s’est produite. Veuillez réessayer."
     }
+  },
+  "invoiceManage": {
+    "title": "Factures",
+    "empty": "Aucune facture pour le moment.",
+    "fTitle": "Titre",
+    "fTitlePh": "ex. Acompte de l’événement",
+    "fAmount": "Montant",
+    "create": "Créer une facture",
+    "open": "Ouvrir",
+    "copy": "Copier le lien",
+    "copied": "Copié",
+    "void": "Annuler",
+    "status": {
+      "draft": "Brouillon",
+      "open": "Ouverte",
+      "paid": "Payée",
+      "void": "Annulée"
+    },
+    "error": {
+      "no_access": "Accès organisateur requis.",
+      "connect_required": "Terminez la configuration des paiements Stripe avant de créer des factures.",
+      "connect_restricted": "Votre compte Stripe nécessite une action avant de pouvoir facturer.",
+      "invalid_amount": "Saisissez un montant valide.",
+      "title_required": "Saisissez un titre.",
+      "generic": "Impossible de créer la facture. Veuillez réessayer."
+    }
   }
 }
