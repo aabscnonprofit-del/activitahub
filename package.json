@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "test:ope": "npx tsx scripts/ope-snapshot-test.mts",
+    "test:ope-contract": "npx tsx scripts/ope-output-contract-test.mts",
     "test:stripe-sync": "npx tsx scripts/stripe-sync-test.mts",
     "test:refund-sync": "npx tsx scripts/refund-sync-test.mts"
   },
