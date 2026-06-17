@@ -152,6 +152,24 @@ console.log('Case C — minimal/empty PlannerOutput (resilience):')
   }
 }
 
+// ── Case D: read-path guard — saved result with no plan → null, no crash ────
+// Mirrors the plan-detail read path: `result.plan ? assembleOpeOutput(plan) : null`.
+console.log('Case D — read-path guard (saved plan with no PlannerOutput):')
+{
+  const guard = (plan: PlannerOutput | null) => (plan ? assembleOpeOutput(plan) : null)
+  check('D: null plan yields null OpeOutput (no crash)', guard(null) === null)
+
+  // A non-ready generation (needs_clarification / unsupported) carries plan === null;
+  // the guard must produce null for it too.
+  const sparse = generatePlan({
+    category: 'birthday', guestCount: 1,
+    location: { city: '', state: null, country: '', postalCode: null },
+  } as PlannerInput)
+  const out = guard(sparse.plan)
+  check('D: guard is safe for a real non-ready result',
+    sparse.plan === null ? out === null : out !== null && validateOpeOutput(out).ok)
+}
+
 console.log('')
 if (failures === 0) {
   console.log('OPE Output Contract V1 OK — all 8 sections assembled; budget/risks/timeline map verbatim; empty plan is resilient.')

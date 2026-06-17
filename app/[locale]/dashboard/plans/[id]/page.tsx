@@ -7,6 +7,8 @@ import { getPlan } from '@/lib/actions/opePlans'
 import PlanDetailClient from '@/components/dashboard/PlanDetailClient'
 import VendorSourcingPanel from '@/components/vendors/VendorSourcingPanel'
 import InvoicesPanel from '@/components/dashboard/InvoicesPanel'
+import OpeOutputPreview from '@/components/dashboard/OpeOutputPreview'
+import { assembleOpeOutput } from '@/lib/ope/output-contract'
 import type { Locale } from '@/lib/types'
 
 // Organizer detail view of a saved OPE plan. Loads from PlanStore (getPlan →
@@ -45,12 +47,17 @@ export default async function SavedPlanPage({ params, searchParams }: Props) {
     )
   }
 
+  // Assemble the OPE Output Contract V1 from the SAVED PlannerOutput (read-only;
+  // the engine is not run here). Null when the saved result has no plan.
+  const opeOutput = res.data.result.plan ? assembleOpeOutput(res.data.result.plan) : null
+
   return (
     <div className="mx-auto max-w-3xl px-4 py-8 sm:py-10">
       {backLink}
       <PlanDetailClient initialPlan={res.data} />
       <VendorSourcingPanel plan={res.data} locale={locale as Locale} />
       <InvoicesPanel plan={res.data} locale={locale as Locale} errorCode={invoiceError} />
+      <OpeOutputPreview output={opeOutput} />
     </div>
   )
 }
