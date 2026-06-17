@@ -682,6 +682,23 @@ export type Booking = {
 
 export type BookingPaymentStatus = 'unpaid' | 'processing' | 'paid' | 'refunded' | 'failed'
 
+// ── Stripe Connect (organizer-owned payments, migration 035) ────────────────
+// One row per organizer holding their Stripe Connect (Express) account state.
+// Owner SELECT only; capability flags are written exclusively by the service role
+// (onboarding action + account.updated webhook) — never self-set. See
+// lib/billing/connect.ts for status derivation and the receive-payments gate.
+export type OrganizerConnectAccount = {
+  organizer_id: string
+  stripe_account_id: string // acct_…
+  account_type: 'express'
+  charges_enabled: boolean // may accept customer funds (the hard gate)
+  payouts_enabled: boolean // may withdraw (informational)
+  details_submitted: boolean // finished hosted onboarding
+  disabled_reason: string | null // Stripe requirements.disabled_reason when restricted, else null
+  created_at: string
+  updated_at: string
+}
+
 export type RefundRequestStatus = 'requested' | 'approved' | 'rejected' | 'refunded' | 'failed'
 
 export type RefundRequest = {
