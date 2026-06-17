@@ -2382,5 +2382,38 @@
       "showMore": "Afficher plus",
       "noMatch": "Aucun membre ne correspond aux filtres."
     }
+  },
+  "invoicePage": {
+    "notFound": "Facture introuvable",
+    "notFoundHint": "Ce lien de paiement est invalide ou a expiré.",
+    "fromOrganizer": "De {name}",
+    "amountDue": "Montant dû",
+    "payNow": "Payer maintenant",
+    "secure": "Paiement sécurisé via Stripe",
+    "paidNote": "Cette facture a été payée. Merci !",
+    "processingNote": "Paiement reçu — nous le confirmons. Cette page sera mise à jour sous peu.",
+    "voidNote": "Cette facture a été annulée.",
+    "draftNote": "Cette facture n’est pas encore prête pour le paiement.",
+    "status": {
+      "draft": "Brouillon",
+      "open": "En attente de paiement",
+      "paid": "Payée",
+      "void": "Annulée"
+    },
+    "kind": {
+      "deposit": "Acompte",
+      "final": "Paiement final",
+      "full": "Paiement",
+      "additional": "Frais supplémentaires"
+    },
+    "error": {
+      "notfound": "Nous n’avons pas trouvé cette facture.",
+      "lookup_error": "Une erreur s’est produite lors du chargement de cette facture. Veuillez réessayer.",
+      "not_payable": "Cette facture ne peut pas être payée pour le moment.",
+      "not_connected": "Cet organisateur ne peut pas encore accepter les paiements.",
+      "onboarding": "Cet organisateur configure encore les paiements.",
+      "restricted": "Les paiements pour cet organisateur sont temporairement indisponibles.",
+      "generic": "Une erreur s’est produite. Veuillez réessayer."
+    }
   }
 }

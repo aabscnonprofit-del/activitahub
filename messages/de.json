@@ -2382,5 +2382,38 @@
       "showMore": "Mehr anzeigen",
       "noMatch": "Keine Mitarbeiter passen zu den Filtern."
     }
+  },
+  "invoicePage": {
+    "notFound": "Rechnung nicht gefunden",
+    "notFoundHint": "Dieser Zahlungslink ist ungültig oder abgelaufen.",
+    "fromOrganizer": "Von {name}",
+    "amountDue": "Fälliger Betrag",
+    "payNow": "Jetzt bezahlen",
+    "secure": "Sichere Zahlung über Stripe",
+    "paidNote": "Diese Rechnung wurde bezahlt. Vielen Dank!",
+    "processingNote": "Zahlung erhalten – wir bestätigen sie. Diese Seite wird in Kürze aktualisiert.",
+    "voidNote": "Diese Rechnung wurde storniert.",
+    "draftNote": "Diese Rechnung ist noch nicht zur Zahlung bereit.",
+    "status": {
+      "draft": "Entwurf",
+      "open": "Zahlung ausstehend",
+      "paid": "Bezahlt",
+      "void": "Storniert"
+    },
+    "kind": {
+      "deposit": "Anzahlung",
+      "final": "Restzahlung",
+      "full": "Zahlung",
+      "additional": "Zusätzliche Gebühr"
+    },
+    "error": {
+      "notfound": "Wir konnten diese Rechnung nicht finden.",
+      "lookup_error": "Beim Laden dieser Rechnung ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.",
+      "not_payable": "Diese Rechnung kann derzeit nicht bezahlt werden.",
+      "not_connected": "Dieser Veranstalter kann noch keine Zahlungen annehmen.",
+      "onboarding": "Dieser Veranstalter richtet die Zahlungen noch ein.",
+      "restricted": "Zahlungen für diesen Veranstalter sind vorübergehend nicht verfügbar.",
+      "generic": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut."
+    }
   }
 }

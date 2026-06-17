@@ -2382,5 +2382,38 @@
       "showMore": "Show more",
       "noMatch": "No workers match your filters."
     }
+  },
+  "invoicePage": {
+    "notFound": "Invoice not found",
+    "notFoundHint": "This payment link is invalid or has expired.",
+    "fromOrganizer": "From {name}",
+    "amountDue": "Amount due",
+    "payNow": "Pay now",
+    "secure": "Secure payment via Stripe",
+    "paidNote": "This invoice has been paid. Thank you!",
+    "processingNote": "Payment received — we’re confirming it now. This page will update shortly.",
+    "voidNote": "This invoice has been cancelled.",
+    "draftNote": "This invoice isn’t ready for payment yet.",
+    "status": {
+      "draft": "Draft",
+      "open": "Awaiting payment",
+      "paid": "Paid",
+      "void": "Cancelled"
+    },
+    "kind": {
+      "deposit": "Deposit",
+      "final": "Final payment",
+      "full": "Payment",
+      "additional": "Additional charge"
+    },
+    "error": {
+      "notfound": "We couldn’t find that invoice.",
+      "lookup_error": "Something went wrong loading this invoice. Please try again.",
+      "not_payable": "This invoice can’t be paid right now.",
+      "not_connected": "This organizer can’t accept payments yet.",
+      "onboarding": "This organizer is still setting up payments.",
+      "restricted": "Payments for this organizer are temporarily unavailable.",
+      "generic": "Something went wrong. Please try again."
+    }
   }
 }

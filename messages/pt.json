@@ -2382,5 +2382,38 @@
       "showMore": "Mostrar mais",
       "noMatch": "Nenhum trabalhador corresponde aos filtros."
     }
+  },
+  "invoicePage": {
+    "notFound": "Fatura não encontrada",
+    "notFoundHint": "Este link de pagamento é inválido ou expirou.",
+    "fromOrganizer": "De {name}",
+    "amountDue": "Valor a pagar",
+    "payNow": "Pagar agora",
+    "secure": "Pagamento seguro via Stripe",
+    "paidNote": "Esta fatura foi paga. Obrigado!",
+    "processingNote": "Pagamento recebido — estamos confirmando. Esta página será atualizada em breve.",
+    "voidNote": "Esta fatura foi cancelada.",
+    "draftNote": "Esta fatura ainda não está pronta para pagamento.",
+    "status": {
+      "draft": "Rascunho",
+      "open": "Aguardando pagamento",
+      "paid": "Paga",
+      "void": "Cancelada"
+    },
+    "kind": {
+      "deposit": "Depósito",
+      "final": "Pagamento final",
+      "full": "Pagamento",
+      "additional": "Cobrança adicional"
+    },
+    "error": {
+      "notfound": "Não encontramos essa fatura.",
+      "lookup_error": "Ocorreu um erro ao carregar esta fatura. Tente novamente.",
+      "not_payable": "Esta fatura não pode ser paga no momento.",
+      "not_connected": "Este organizador ainda não pode aceitar pagamentos.",
+      "onboarding": "Este organizador ainda está configurando os pagamentos.",
+      "restricted": "Os pagamentos para este organizador estão temporariamente indisponíveis.",
+      "generic": "Algo deu errado. Tente novamente."
+    }
   }
 }
