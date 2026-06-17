@@ -223,7 +223,7 @@ async function handleAccountUpdated(
   admin: AdminClient,
   account: Stripe.Account
 ): Promise<void> {
-  const { data } = await admin
+  const { data, error } = await admin
     .from('organizer_connect_accounts')
     .update({
       charges_enabled: account.charges_enabled ?? false,
@@ -234,6 +234,13 @@ async function handleAccountUpdated(
     })
     .eq('stripe_account_id', account.id)
     .select('organizer_id')
+
+  // A real DB failure must NOT be acknowledged: throw so the outer catch returns
+  // 500 and Stripe retries, otherwise a capability change (e.g. a restriction
+  // flipping charges_enabled to false) could be silently lost.
+  if (error) {
+    throw new Error(`account.updated sync failed for ${account.id}: ${error.message}`)
+  }
 
   if (!data || data.length === 0) {
     // Untracked connected account — acknowledge without creating a row.

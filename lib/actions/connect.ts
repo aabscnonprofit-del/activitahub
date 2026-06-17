@@ -41,11 +41,15 @@ export async function startConnectOnboarding(formData: FormData): Promise<void> 
   // 4. Create or reuse the Express account. Reads/writes go through the service
   // role: the connect table has no owner-write policy by design (035).
   const admin = await createAdminClient()
-  const { data: existing } = await admin
+  const { data: existing, error: readErr } = await admin
     .from('organizer_connect_accounts')
     .select('stripe_account_id')
     .eq('organizer_id', user.id)
     .maybeSingle()
+
+  // Never proceed on an ambiguous read: treating a transient error as "no account"
+  // would create a duplicate Stripe account on the next branch.
+  if (readErr) return dash('setup_error')
 
   let accountId = (existing?.stripe_account_id as string | undefined) ?? undefined
 
@@ -56,21 +60,29 @@ export async function startConnectOnboarding(formData: FormData): Promise<void> 
       .eq('id', user.id)
       .single()
 
-    const account = await stripe.accounts.create({
-      type: 'express',
-      email: (profile?.email as string | null) ?? undefined,
-      metadata: { organizer_id: user.id },
-      capabilities: {
-        card_payments: { requested: true },
-        transfers: { requested: true },
+    // Idempotency key keyed on the organizer makes a retried/double-submitted
+    // create return the same account instead of minting a duplicate.
+    const account = await stripe.accounts.create(
+      {
+        type: 'express',
+        email: (profile?.email as string | null) ?? undefined,
+        metadata: { organizer_id: user.id },
+        capabilities: {
+          card_payments: { requested: true },
+          transfers: { requested: true },
+        },
       },
-    })
+      { idempotencyKey: `connect_acct_create_${user.id}` }
+    )
     accountId = account.id
 
     // Persist the account id (capability booleans stay FALSE until the webhook syncs).
-    await admin
+    // If this write fails we must NOT continue to onboarding: a missing row would
+    // orphan this account and cause a second one to be created next time.
+    const { error: insertErr } = await admin
       .from('organizer_connect_accounts')
       .insert({ organizer_id: user.id, stripe_account_id: accountId })
+    if (insertErr) return dash('setup_error')
   }
 
   // 5. Fresh onboarding link (Account Links are short-lived; create one per call).
