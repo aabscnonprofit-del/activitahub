@@ -699,6 +699,47 @@ export type OrganizerConnectAccount = {
   updated_at: string
 }
 
+// ── Invoices (all-invoice payment rail, migration 036) ──────────────────────
+// A Booking is the agreement; an Invoice is a money request that settles to the
+// organizer's Stripe Connect account. Owner manages own rows (RLS); `status='paid'`,
+// `paid_at`, and stripe_* fields are service-role-only (webhook). Anonymous payment
+// via `token` + invoice_lookup(). See lib/billing/invoices.ts for pure helpers.
+export type InvoiceKind = 'deposit' | 'final' | 'full' | 'additional'
+export type InvoiceStatus = 'draft' | 'open' | 'paid' | 'void'
+
+export type Invoice = {
+  id: string
+  organizer_id: string // payee
+  customer_id: string | null // known payer, else null
+  customer_email: string | null
+  plan_id: string | null
+  booking_id: string | null
+  proposal_id: string | null
+  request_id: string | null
+  kind: InvoiceKind
+  title: string
+  description: string | null
+  amount_cents: number
+  currency: string
+  status: InvoiceStatus
+  token: string // durable public payment-link handle
+  stripe_checkout_session_id: string | null
+  stripe_payment_intent_id: string | null
+  stripe_destination_account_id: string | null // organizer acct snapshot (audit)
+  paid_at: string | null
+  created_at: string
+  updated_at: string
+}
+
+// Derived payment summary for a plan/booking against its invoices (see deriveBalance).
+export type InvoiceBalance = {
+  totalCents: number // the agreed plan/booking total (0 when unknown)
+  paidCents: number // sum of paid invoices
+  openCents: number // sum of open (sent, unpaid) invoices
+  remainingCents: number // totalCents − paidCents (may be negative if overpaid)
+  fullyPaid: boolean // totalCents > 0 and paidCents ≥ totalCents
+}
+
 export type RefundRequestStatus = 'requested' | 'approved' | 'rejected' | 'refunded' | 'failed'
 
 export type RefundRequest = {
