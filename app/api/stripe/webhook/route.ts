@@ -141,6 +141,56 @@ async function handleCheckoutCompleted(
     return
   }
 
+  // Invoice payment — all customer money flows through invoices (Booking is the
+  // agreement, not a payment rail). Flip the open invoice to paid; no profile_id
+  // (the payer is anonymous), so this must run before the profile_id guard below.
+  if (kind === 'invoice') {
+    const invoiceId = session.metadata?.invoice_id
+    if (!invoiceId) return // nothing to reconcile — ignore safely
+
+    const paymentIntentId =
+      typeof session.payment_intent === 'string'
+        ? session.payment_intent
+        : (session.payment_intent?.id ?? null)
+
+    // Only an 'open' invoice transitions to paid, so reprocessing the same event
+    // (or a paid/void invoice) is a harmless no-op.
+    const { data, error } = await admin
+      .from('invoices')
+      .update({
+        status: 'paid',
+        paid_at: new Date().toISOString(),
+        stripe_checkout_session_id: session.id,
+        stripe_payment_intent_id: paymentIntentId,
+      })
+      .eq('id', invoiceId)
+      .eq('status', 'open')
+      .select('organizer_id')
+
+    // Surface DB failures so Stripe retries rather than silently losing paid state.
+    if (error) {
+      throw new Error(`invoice paid-sync failed for ${invoiceId}: ${error.message}`)
+    }
+
+    // Notify the organizer once, only on the actual open→paid transition (a
+    // duplicate delivery flips nothing, so it won't re-notify). Best-effort: a
+    // failed notification never blocks acknowledging the payment.
+    const organizerId = data?.[0]?.organizer_id as string | undefined
+    if (organizerId) {
+      const { error: notifyErr } = await admin.from('notifications').insert({
+        profile_id: organizerId,
+        type: 'invoice_paid',
+        title: 'Invoice paid',
+        body: 'A customer paid an invoice.',
+        data: { invoice_id: invoiceId },
+      })
+      if (notifyErr) {
+        console.warn(`[stripe webhook] invoice_paid notification failed for ${invoiceId}: ${notifyErr.message}`)
+      }
+    }
+    return
+  }
+
   if (!profileId) return
 
   // Persist the Stripe customer id on the profile (idempotent).
