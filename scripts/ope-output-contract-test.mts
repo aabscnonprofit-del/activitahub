@@ -162,6 +162,56 @@ console.log('Case G — venue assumption affects staffing (hand-built):')
   check('G: Host derived despite no budget', out.staffing.roles.some((r) => r.role === 'Host'))
   check('G: venue_affects_staffing decision present',
     out.organizer_decisions_required.some((d) => d.id === 'venue_affects_staffing'))
+  check('G: outdoor-leaning + venue null → weather_backup recommended + decision',
+    out.venue_requirements.weather_backup === 'recommended' &&
+    out.organizer_decisions_required.some((d) => d.id === 'weather_backup'))
+}
+
+// ── Case H: Venue Requirements + Resource Quantity derivation (Step 4) ───────
+console.log('Case H — venue requirements + resource quantities:')
+{
+  // Birthday in a backyard (outdoor known) → weather required, parking recommended.
+  const bday = assembleOpeOutput(generatePlan({
+    category: 'birthday', guestCount: 20, adults: 8, kids: 12, venueType: 'backyard_home', budget: 600,
+    specialRequirements: ['superhero theme'],
+    location: { city: 'Honolulu', state: 'HI', country: 'USA', postalCode: '96815' },
+  } as PlannerInput).plan as PlannerOutput)
+  check('H: birthday backyard → weather_backup required', bday.venue_requirements.weather_backup === 'required')
+  check('H: capacity_needed = ceil(20*1.1) = 22', bday.venue_requirements.capacity_needed === 22)
+  check('H: parking recommended (20 guests)', bday.venue_requirements.parking === 'recommended')
+  check('H: restroom required (outdoor)', bday.venue_requirements.restroom === 'required')
+  const chairs = bday.resources.find((r) => r.id === 'seating_chairs')
+  check('H: chairs derived = guest count (20), not budget-linked',
+    chairs?.quantity === 20 && chairs?.linked_budget_item_key === null)
+  check('H: tables derived = ceil(20/8) = 3', bday.resources.find((r) => r.id === 'seating_tables')?.quantity === 3)
+  check('H: estimated-quantity decision present',
+    bday.organizer_decisions_required.some((d) => d.id === 'resource_quantity_estimated'))
+
+  // Class with no venue → indoor inferred, weather not needed, power recommended; classroom seating.
+  const cls = assembleOpeOutput(generatePlan({
+    category: 'fitness_class', guestCount: 12, adults: 12, kids: 0, venueType: null, budget: null,
+    specialRequirements: ['yoga'], instructor: 'need', materials: 'provided',
+    location: { city: 'Honolulu', state: 'HI', country: 'USA', postalCode: null },
+  } as PlannerInput).plan as PlannerOutput)
+  check('H: class indoor_outdoor inferred indoor', cls.venue_requirements.indoor_outdoor === 'indoor')
+  check('H: class weather_backup not_needed', cls.venue_requirements.weather_backup === 'not_needed')
+  check('H: class power recommended (indoor, AV-leaning)', cls.venue_requirements.power === 'recommended')
+  check('H: classroom seating chairs=12, worktables=ceil(12/4)=3',
+    cls.resources.find((r) => r.id === 'seating_chairs')?.quantity === 12 &&
+    cls.resources.find((r) => r.id === 'seating_tables')?.quantity === 3)
+
+  // Networking with no venue → registration area + (mostly standing) optional seating.
+  const net = assembleOpeOutput(generatePlan({
+    category: 'networking', guestCount: 40, adults: 40, kids: 0, venueType: null, budget: 300,
+    specialRequirements: ['name tags', 'AV'],
+    location: { city: 'Honolulu', state: 'HI', country: 'USA', postalCode: null },
+  } as PlannerInput).plan as PlannerOutput)
+  check('H: networking power recommended (AV)', net.venue_requirements.power === 'recommended')
+  check('H: networking registration area derived (space resource)',
+    net.resources.some((r) => r.id === 'registration_area' && r.type === 'space'))
+  const netChairs = net.resources.find((r) => r.id === 'seating_chairs')
+  check('H: networking standing seating = ceil(40/2)=20, optional',
+    netChairs?.quantity === 20 && netChairs?.required === false)
 }
 
 // ── Case B: real fallback plan — surfaces a budget decision ─────────────────

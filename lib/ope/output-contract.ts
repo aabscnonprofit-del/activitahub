@@ -57,10 +57,15 @@ export interface OpeStaffing {
   staffing_status: 'self_serviceable' | 'needs_hiring' | 'unknown'
 }
 
+export type VenueNeed = 'required' | 'recommended' | 'not_needed'
 export interface OpeVenueRequirements {
   venue_type: string | null
   indoor_outdoor: 'indoor' | 'outdoor' | 'either' | null
   capacity_needed: number | null
+  weather_backup: VenueNeed
+  parking: VenueNeed
+  power: VenueNeed
+  restroom: VenueNeed
   must_haves: string[]
 }
 
@@ -182,6 +187,56 @@ function venueIndoorOutdoor(venueType: string | null): 'indoor' | 'outdoor' | 'e
   return null
 }
 
+// Event-type leanings used to derive venue needs when the venue itself is unknown.
+const isOutdoorLeaning = (k: string) => /(bbq|barbecue|cookout|picnic|grill|festival|community|gathering|charity|reunion)/.test(k)
+const isIndoorLeaning = (k: string) => /(class|yoga|fitness|workshop|lesson|course|training|network|corporate|conference|seminar|meetup|mixer)/.test(k)
+const needsPower = (k: string, reqs: string[]) =>
+  isIndoorLeaning(k) || reqs.some((r) => /(av|sound|music|\bdj\b|microphone|projector|speaker|amp|pa system)/i.test(r))
+
+/** A seating/space resource estimated from guest count (operational, not priced). */
+interface DerivedResourceSpec {
+  id: string
+  label: string
+  type: OpeResourceType
+  quantity: number
+  required: boolean
+  unit: string
+}
+
+/**
+ * Conservatively estimate seating / staging resources from the event type and guest
+ * count, used to enrich Resources beyond the priced budget lines. Quantities are
+ * deliberate over-estimates (e.g. 1 chair/guest) and are flagged via an organizer
+ * decision — never precise. Returns [] for unknown types or zero guests.
+ */
+function deriveSeating(activityType: string, guestCount: number): DerivedResourceSpec[] {
+  const k = (activityType || '').toLowerCase()
+  if (guestCount <= 0) return []
+  const out: DerivedResourceSpec[] = []
+  const chairs = (required: boolean) =>
+    out.push({ id: 'seating_chairs', label: 'Seating (chairs)', type: 'equipment', quantity: guestCount, required, unit: 'chairs' })
+  const tables = (per: number, label: string, required: boolean) =>
+    out.push({ id: 'seating_tables', label, type: 'equipment', quantity: Math.ceil(guestCount / per), required, unit: 'tables' })
+  const area = () =>
+    out.push({ id: 'registration_area', label: 'Registration / check-in area', type: 'space', quantity: 1, required: false, unit: 'area' })
+
+  if (/(class|yoga|fitness|workshop|lesson|course|training)/.test(k)) {
+    chairs(true)
+    tables(4, 'Worktables', true) // classroom / workshop worktables
+  } else if (/(bbq|barbecue|cookout|picnic|grill)/.test(k)) {
+    tables(8, 'Picnic tables', true)
+    chairs(false) // outdoor casual — seating optional
+  } else if (/(network|corporate|conference|seminar|meetup|mixer)/.test(k)) {
+    out.push({ id: 'seating_chairs', label: 'Seating (chairs)', type: 'equipment', quantity: Math.ceil(guestCount / 2), required: false, unit: 'chairs' }) // mostly standing
+    area()
+  } else if (/(birthday|party|anniversary|graduation|reunion|baby ?shower|celebration|wedding|festival|community|gathering)/.test(k)) {
+    chairs(true)
+    tables(8, 'Tables', true)
+    if (guestCount > 40) area()
+  }
+  return out
+}
+
 // ── Assembler ───────────────────────────────────────────────────────────────
 
 /**
@@ -280,18 +335,59 @@ export function assembleOpeOutput(plan: PlannerOutput): OpeOutputV1 {
       staffResources.length === 0 ? 'self_serviceable' : hasDerivedStaff ? 'unknown' : 'needs_hiring',
   }
 
-  // ── §5 Venue Requirements ──
+  // ── Resource quantities: estimate seating/staging from guest count (operational,
+  // not priced). Skipped when the budget already carries a furniture line. ──
+  const hasFurniture = lines.some((l) => /\bchairs?\b|\btables?\b|seating/.test(l.item_key.toLowerCase()))
+  const seatingSpecs = hasFurniture ? [] : deriveSeating(a.activity_type, total)
+  for (const s of seatingSpecs) {
+    resources.push({
+      id: s.id,
+      label: s.label,
+      type: s.type,
+      quantity: s.quantity,
+      required: s.required,
+      unit: s.unit,
+      linked_budget_item_key: null, // derived estimate, not a priced line
+      lever: null,
+    })
+  }
+
+  // ── §5 Venue Requirements (derived from event type + guests + venue) ──
   const venueType = a.venue_type ?? null
-  const io = venueIndoorOutdoor(venueType)
+  const ak = (a.activity_type || '').toLowerCase()
+  const reqsList = a.special_requirements ?? []
+  const venueIO = venueIndoorOutdoor(venueType)
+  // Preference when the venue is unknown: lean from the activity type.
+  const indoor_outdoor: OpeVenueRequirements['indoor_outdoor'] =
+    venueIO ?? (isOutdoorLeaning(ak) ? 'outdoor' : isIndoorLeaning(ak) ? 'indoor' : null)
+  const outdoorKnown = venueIO === 'outdoor'
+  const outdoor = outdoorKnown || indoor_outdoor === 'outdoor'
   const capacity_needed = total > 0 ? Math.ceil(total * 1.1) : null
-  const must_haves: string[] = ['restroom access']
+
+  const weather_backup: VenueNeed = outdoorKnown ? 'required' : isOutdoorLeaning(ak) ? 'recommended' : 'not_needed'
+  const parking: VenueNeed = total > 50 ? 'required' : total >= 20 ? 'recommended' : 'not_needed'
+  const power: VenueNeed = needsPower(ak, reqsList) ? (outdoor ? 'required' : 'recommended') : 'not_needed'
+  const restroom: VenueNeed = total > 20 || outdoor ? 'required' : 'recommended'
+
+  const must_haves: string[] = []
   if (capacity_needed) must_haves.push(`space for ~${capacity_needed} people`)
-  if (io === 'outdoor') must_haves.push('weather contingency / cover')
-  if (total > 50) must_haves.push('parking')
+  const needLabel = (n: VenueNeed, req: string, rec: string) => {
+    if (n === 'required') must_haves.push(req)
+    else if (n === 'recommended') must_haves.push(rec)
+  }
+  needLabel(restroom, 'restroom access', 'restroom access (recommended)')
+  needLabel(power, 'power supply', 'power supply (recommended)')
+  needLabel(parking, 'parking', 'parking (recommended)')
+  needLabel(weather_backup, 'weather backup / cover', 'weather backup (recommended)')
+
   const venue_requirements: OpeVenueRequirements = {
     venue_type: venueType,
-    indoor_outdoor: io,
+    indoor_outdoor,
     capacity_needed,
+    weather_backup,
+    parking,
+    power,
+    restroom,
     must_haves,
   }
 
@@ -362,6 +458,30 @@ export function assembleOpeOutput(plan: PlannerOutput): OpeOutputV1 {
       impacts: 'resources',
       required_before: 'execute',
       linked_section: 'resources',
+    })
+  }
+  // Estimated seating/staging quantities — low confidence, confirm before ordering.
+  if (seatingSpecs.length > 0) {
+    organizer_decisions_required.push({
+      id: 'resource_quantity_estimated',
+      prompt: `Resource quantities are estimates (${seatingSpecs
+        .map((s) => `${s.quantity} ${s.unit}`)
+        .join(', ')}). Confirm before ordering.`,
+      type: 'confirm',
+      impacts: 'resources',
+      required_before: 'execute',
+      linked_section: 'resources',
+    })
+  }
+  // Weather backup is uncertain (outdoor-leaning but venue/season unconfirmed).
+  if (venue_requirements.weather_backup === 'recommended') {
+    organizer_decisions_required.push({
+      id: 'weather_backup',
+      prompt: 'Decide on a weather backup plan — recommended for this event, but it depends on the venue and season.',
+      type: 'confirm',
+      impacts: 'venue',
+      required_before: 'execute',
+      linked_section: 'venue',
     })
   }
   if (!budget.is_priced) {
