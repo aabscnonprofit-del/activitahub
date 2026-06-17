@@ -12,9 +12,10 @@
 // deterministic mapper for fallback values, but adds no LLM dependency to the engine.
 
 import OpenAI from 'openai'
-import type { PlannerInput } from '@/lib/ope/types'
+import type { PlannerInput, PlannerLocation } from '@/lib/ope/types'
 import { plannerInputSchema } from '@/lib/ope/validation'
 import { mapRequestToPlannerInput, REQUEST_TO_PLANNER_CATEGORY, type RequestLike } from '@/lib/ope/request-plan'
+import { parseEventText, buildPlannerInput, deriveRecurrence, mergeTextExtraction, type TextExtraction } from '@/lib/ope/request-text'
 
 /** The 11 priceable categories the engine can plan — the only values AI may pick. */
 const CATEGORIES = [
@@ -154,5 +155,99 @@ export async function understandRequest(req: RequestLike): Promise<PlannerInput 
   } catch {
     // Any failure (no key, network, timeout, bad JSON, schema mismatch) → deterministic fallback.
     return null
+  }
+}
+
+// ── Natural-language understanding (Step 6) ─────────────────────────────────
+// Free-text request → validated PlannerInput. AI may ONLY extract fields; it never
+// generates a plan. The deterministic parser (parseEventText) is the mandatory
+// fallback and the merge base, so AI-off / timeout / bad-response behaves exactly as
+// the deterministic path. Returns null only when even the deterministic parse can't
+// build a valid input (e.g. no category / no headcount stated).
+
+/** Strict JSON-Schema for free-text extraction (adds adults, timeframe, desiredOutcome). */
+const TEXT_EXTRACTION_SCHEMA = {
+  type: 'object',
+  additionalProperties: false,
+  properties: {
+    category: { type: ['string', 'null'], enum: [...CATEGORIES, null], description: 'Normalized event category, or null if unclear.' },
+    guestCount: { type: ['integer', 'null'], description: 'Total expected attendees, or null if not stated.' },
+    adults: { type: ['integer', 'null'], description: 'Number of adults, or null.' },
+    kids: { type: ['integer', 'null'], description: 'Number of children, or null.' },
+    budget: { type: ['number', 'null'], description: 'Budget in whole currency units, or null.' },
+    venueType: { type: ['string', 'null'], enum: ['backyard_home', 'public_park', null], description: 'Venue cue if expressed, else null.' },
+    timeframe: { type: ['string', 'null'], description: 'When / cadence as stated (e.g. "every Sunday", "next month"), or null.' },
+    desiredOutcome: { type: ['string', 'null'], description: 'One short phrase: what success looks like, or null.' },
+    requirements: { type: 'array', items: { type: 'string' }, description: 'Concrete constraints/needs explicitly stated.' },
+  },
+  required: ['category', 'guestCount', 'adults', 'kids', 'budget', 'venueType', 'timeframe', 'desiredOutcome', 'requirements'],
+} as const
+
+type TextAi = {
+  category: string | null
+  guestCount: number | null
+  adults: number | null
+  kids: number | null
+  budget: number | null
+  venueType: 'backyard_home' | 'public_park' | null
+  timeframe: string | null
+  desiredOutcome: string | null
+  requirements: string[]
+}
+
+/**
+ * Understand a free-text event request into a validated PlannerInput. Uses the
+ * deterministic parse as the base/fallback and, when AI is enabled, merges valid AI
+ * fields over it (AI never overrides a stated value with null). Any failure returns
+ * the deterministic input. AI only produces a PlannerInput — never a plan.
+ */
+export async function understandEventText(text: string, location: PlannerLocation): Promise<PlannerInput | null> {
+  const base = parseEventText(text, location) // deterministic baseline = the fallback
+  if (!aiUnderstandingEnabled()) return base.input
+
+  try {
+    const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY, timeout: 10_000, maxRetries: 1 })
+    const model = process.env.OPENAI_MODEL || 'gpt-4o-mini'
+
+    const completion = await client.chat.completions.create({
+      model,
+      messages: [
+        { role: 'system', content: SYSTEM_PROMPT },
+        { role: 'user', content: (text || '').slice(0, 2000) },
+      ],
+      response_format: {
+        type: 'json_schema',
+        json_schema: { name: 'event_text_understanding', strict: true, schema: TEXT_EXTRACTION_SCHEMA },
+      },
+    })
+
+    const raw = completion.choices[0]?.message?.content
+    if (!raw) return base.input
+    const ai = JSON.parse(raw) as TextAi
+
+    // Normalize the AI response into a TextExtraction, then merge with DETERMINISTIC
+    // PRECEDENCE: a value the deterministic parser found wins; AI only fills gaps and
+    // can never override an explicitly stated value.
+    const aiExt: TextExtraction = {
+      category:
+        ai.category && (CATEGORIES as readonly string[]).includes(ai.category)
+          ? (ai.category as TextExtraction['category'])
+          : null,
+      guestCount: clampInt(ai.guestCount, 1, 100_000),
+      adults: clampInt(ai.adults, 0, 100_000),
+      kids: clampInt(ai.kids, 0, 100_000),
+      venueType: ai.venueType ?? null,
+      budget: ai.budget != null && Number.isFinite(ai.budget) && ai.budget >= 0 ? Math.round(ai.budget) : null,
+      timeframe: ai.timeframe ?? null,
+      recurrenceFrequency: deriveRecurrence(ai.timeframe ?? null),
+      specialRequirements: (ai.requirements ?? []).map((r) => (r ?? '').trim()).filter(Boolean).slice(0, 20),
+      desiredOutcome: ai.desiredOutcome?.trim() || null,
+    }
+    const merged = mergeTextExtraction(base.extraction, aiExt)
+
+    return buildPlannerInput(merged, location) ?? base.input
+  } catch {
+    // No key / network / timeout / bad JSON / schema mismatch → deterministic fallback.
+    return base.input
   }
 }
