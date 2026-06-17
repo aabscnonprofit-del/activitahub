@@ -333,3 +333,22 @@ Rules (non-negotiable):
 5. If a user subscribes during the included window, the **paid subscription starts immediately** (no Stripe trial/deferral implemented).
 
 **Implementation:** the window is an internal entitlement on `profiles.organizer_access_until` (TIMESTAMPTZ, nullable), set at first certification by an `AFTER INSERT ON certificates` trigger (`supabase/migrations/017_organizer_access.sql`). Effective access = `role ∈ {certified_organizer, admin}` **AND** (`subscription.status ∈ {active, trialing}` **OR** `organizer_access_until > now()`), centralised in `lib/auth/organizer-access.ts` and enforced in `middleware.ts` (dashboard) and the organizer write actions. **No Stripe pricing change; no Stripe trial.**
+
+## Decision — Final Billing Architecture (2026-06-16) ✅ Decided
+
+**Customer Request → Proposal → Booking → Invoice(s) → Payment.**
+
+**Rules:**
+
+1. **Booking is agreement only** — it records the accepted engagement.
+2. **Booking is not a payment rail** — it does not hold or move customer money.
+3. **All customer money flows through invoices** — invoices are the single payment surface.
+4. **Future deposit, final, and additional invoices all use the same Stripe Connect invoice
+   checkout path** (destination charge to the organizer's connected account); there is no
+   separate per-kind payment mechanism.
+5. **OPE must create/coordinate invoices, not direct Stripe payments** — OPE issues and
+   sequences invoices; it never calls Stripe checkout directly.
+
+**Rationale:** one money rail keeps charge routing, the webhook, refunds, and Connect
+gating consistent, decouples the agreement record from the money record, and gives OPE a
+single billing surface to drive milestone-based invoicing.
