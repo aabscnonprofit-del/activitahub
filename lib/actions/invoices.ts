@@ -2,10 +2,12 @@
 
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
-import { createClient } from '@/lib/supabase/server'
+import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { userHasOrganizerAccess } from '@/lib/auth/organizer-access.server'
 import { getMyConnectAccount } from '@/lib/billing/connect.server'
 import { organizerCanReceivePayments, deriveConnectStatus } from '@/lib/billing/connect'
+import { createConnectCheckoutSession } from '@/lib/billing/connect-checkout'
+import { absoluteUrl } from '@/lib/utils'
 import type { InvoiceKind, InvoiceStatus } from '@/lib/types'
 
 // ── Organizer invoice actions (migration 036) ───────────────────────────────
@@ -158,4 +160,71 @@ export async function voidInvoice(formData: FormData): Promise<void> {
 
   revalidatePath(returnPath)
   back()
+}
+
+// ── Public token-gated payment flow (Commit 5) ──────────────────────────────
+// Anonymous customers pay an invoice via its durable token. No login. The lookup
+// returns only curated fields (SECURITY DEFINER invoice_lookup RPC); the checkout
+// reads the full row via the service role (anon cannot RLS-read invoices) and pays
+// through the shared Connect helper so funds settle to the organizer's account.
+// All customer money flows through invoices — Booking is agreement only.
+
+/** Public read of an invoice's safe fields by token (no auth). NULL if not found. */
+export async function invoiceLookup(token: string): Promise<Record<string, unknown> | null> {
+  const supabase = await createClient()
+  const { data } = await supabase.rpc('invoice_lookup', { p_token: token })
+  return (data as Record<string, unknown>) ?? null
+}
+
+/**
+ * Anonymous, token-gated: create a Stripe Checkout Session for an open invoice and
+ * redirect the payer to Stripe. Re-validates payability server-side; amount/currency/
+ * payee all come from the DB row, never the client. Funds settle to the organizer's
+ * connected account via createConnectCheckoutSession (destination + on_behalf_of).
+ */
+export async function createInvoiceCheckout(formData: FormData): Promise<void> {
+  const token = (formData.get('token') as string) || ''
+  const locale = (formData.get('locale') as string) || 'en'
+  const pay = (reason: string) => redirect(`/${locale}/invoice/${token}?pay=${reason}`)
+  if (!token) redirect(`/${locale}`)
+
+  // Anonymous reader: the invoices table has no anon RLS policy, so read the row
+  // we need via the service role (token is the capability).
+  const admin = await createAdminClient()
+  const { data: inv, error } = await admin
+    .from('invoices')
+    .select('id, organizer_id, amount_cents, currency, title, status, customer_email')
+    .eq('token', token)
+    .maybeSingle()
+  if (error) return pay('lookup_error')
+  if (!inv) return pay('notfound')
+  if (inv.status === 'paid') redirect(`/${locale}/invoice/${token}?paid=1`)
+  if (inv.status !== 'open') return pay('not_payable') // draft or void cannot be paid
+
+  const result = await createConnectCheckoutSession({
+    organizerId: inv.organizer_id as string,
+    amountCents: inv.amount_cents as number,
+    currency: inv.currency as string,
+    name: inv.title as string,
+    customerEmail: (inv.customer_email as string | null) ?? undefined,
+    metadata: { kind: 'invoice', invoice_id: inv.id as string },
+    successUrl: absoluteUrl(`/${locale}/invoice/${token}?paid=1`),
+    cancelUrl: absoluteUrl(`/${locale}/invoice/${token}`),
+    idempotencyKey: `invoice_checkout_${inv.id as string}`,
+  })
+  if (!result.ok) return pay(result.reason)
+
+  // Best-effort audit: persist the session + destination snapshot (service role,
+  // pay-time fields). Never block payment on this write — the webhook marks paid by
+  // metadata.invoice_id regardless.
+  const { error: upErr } = await admin
+    .from('invoices')
+    .update({
+      stripe_checkout_session_id: result.sessionId,
+      stripe_destination_account_id: result.accountId,
+    })
+    .eq('id', inv.id)
+  if (upErr) console.warn(`[invoice checkout] session persist failed for ${inv.id}: ${upErr.message}`)
+
+  redirect(result.url)
 }
