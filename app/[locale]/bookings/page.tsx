@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/server'
 import { PublicHeader } from '@/components/layout/PublicHeader'
 import { Badge } from '@/components/ui/Badge'
 import { cancelBooking } from '@/lib/actions/bookings'
-import { createBookingCheckout, requestRefund } from '@/lib/actions/bookingPayments'
+import { requestRefund } from '@/lib/actions/bookingPayments'
 import { ReviewForm } from '@/components/reviews/ReviewForm'
 import { StarRating } from '@/components/ui/StarRating'
 import { getCustomerStats } from '@/lib/analytics/queries'
@@ -136,14 +136,6 @@ export default async function BookingsPage({ params }: Props) {
                         <button className="text-sm font-medium text-red-600 hover:underline">{t('cancel')}</button>
                       </form>
                     )}
-                    {(b.status === 'confirmed' || b.status === 'pending') &&
-                      b.payment_status && b.payment_status !== 'paid' && b.payment_status !== 'refunded' && (
-                        <form action={createBookingCheckout}>
-                          <input type="hidden" name="locale" value={locale} />
-                          <input type="hidden" name="booking_id" value={b.id} />
-                          <button className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700">{t('payNow')}</button>
-                        </form>
-                      )}
                     {b.payment_status === 'paid' && !refundStatus.has(b.id) && (
                       <form action={requestRefund} className="flex items-center gap-2">
                         <input type="hidden" name="booking_id" value={b.id} />

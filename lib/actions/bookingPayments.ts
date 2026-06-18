@@ -4,76 +4,18 @@ import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { getStripe } from '@/lib/stripe/client'
-import { absoluteUrl } from '@/lib/utils'
 
 /**
- * Customer pays for a confirmed booking via Stripe Checkout (real PaymentIntent,
- * dynamic price). The webhook flips payment_status → 'paid' on completion.
+ * RETIRED (launch Task #2): the legacy booking checkout was platform-collected (no
+ * Stripe Connect destination), which conflicts with the decided billing architecture —
+ * a Booking is agreement-only and ALL customer money flows through invoices on Stripe
+ * Connect (settling to the organizer). This action no longer creates any Stripe Checkout
+ * session; it redirects back with a marker. Refunds (below) are unchanged. The
+ * booking→invoice bridge is a separate, decided-but-unbuilt follow-up.
  */
 export async function createBookingCheckout(formData: FormData): Promise<void> {
   const locale = (formData.get('locale') as string) || 'en'
-  const bookingId = formData.get('booking_id') as string
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-  if (!user) redirect(`/${locale}/sign-in`)
-
-  const { data: b } = await supabase
-    .from('bookings')
-    .select('id, amount_cents, currency, status, payment_status, customer_id, activity_id')
-    .eq('id', bookingId)
-    .maybeSingle()
-  if (!b || b.customer_id !== user.id) redirect(`/${locale}/bookings`)
-  if (b.payment_status === 'paid') redirect(`/${locale}/bookings`)
-  if (!b.amount_cents || b.amount_cents <= 0) redirect(`/${locale}/bookings?payment=noamount`)
-
-  const { data: prof } = await supabase
-    .from('profiles')
-    .select('email, full_name, stripe_customer_id')
-    .eq('id', user.id)
-    .single()
-
-  const stripe = getStripe()
-  let customerId = prof?.stripe_customer_id as string | null | undefined
-  if (!customerId) {
-    const customer = await stripe.customers.create({
-      email: prof?.email ?? undefined,
-      name: prof?.full_name ?? undefined,
-      metadata: { profile_id: user.id },
-    })
-    customerId = customer.id
-    await supabase.from('profiles').update({ stripe_customer_id: customerId }).eq('id', user.id)
-  }
-
-  let name = 'Activity booking'
-  if (b.activity_id) {
-    const { data: act } = await supabase.from('activities').select('title').eq('id', b.activity_id).maybeSingle()
-    if (act?.title) name = act.title
-  }
-
-  const session = await stripe.checkout.sessions.create({
-    mode: 'payment',
-    customer: customerId,
-    line_items: [
-      {
-        price_data: {
-          currency: (b.currency as string) || 'usd',
-          product_data: { name },
-          unit_amount: b.amount_cents,
-        },
-        quantity: 1,
-      },
-    ],
-    metadata: { booking_id: b.id, kind: 'booking' },
-    payment_intent_data: { metadata: { booking_id: b.id, kind: 'booking' } },
-    success_url: absoluteUrl(`/${locale}/bookings?payment=success`),
-    cancel_url: absoluteUrl(`/${locale}/bookings?payment=cancelled`),
-  })
-
-  await supabase.rpc('start_booking_payment', { p_booking_id: b.id, p_session_id: session.id })
-  if (!session.url) throw new Error('Stripe did not return a checkout URL')
-  redirect(session.url)
+  redirect(`/${locale}/bookings?pay=via_invoice`)
 }
 
 /** Customer or organizer requests a refund on a paid booking. */
