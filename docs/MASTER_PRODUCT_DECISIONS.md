@@ -352,3 +352,51 @@ Rules (non-negotiable):
 **Rationale:** one money rail keeps charge routing, the webhook, refunds, and Connect
 gating consistent, decouples the agreement record from the money record, and gives OPE a
 single billing surface to drive milestone-based invoicing.
+
+## Decision — User Status Levels and Licensing (2026-06-17) ✅ Decided
+
+Three distinct user statuses, and two licenses that grant different rights. **Running an
+event is not the same as being recognized as an organizer.**
+
+### User statuses
+
+**1. Event User**
+
+- Operates under a **One Event License**.
+- May **create and run events** using platform tools.
+- May use **OPE planning and sourcing** tools.
+- May **sell tickets and manage participants**.
+- Is **NOT** verified, certified, or trained by ActivLife Hub.
+- The platform does **not** represent this user as a qualified organizer.
+
+**2. Verified Organizer**
+
+- **Experience verified** by ActivLife Hub.
+- **Not necessarily trained** by ActivLife Hub.
+
+**3. Certified Organizer**
+
+- **Trained and certified** by ActivLife Hub.
+
+### Licensing model
+
+**One Event License — $9.99**
+
+- Grants the **right to run an event**.
+- **Does not grant organizer status.**
+
+**Organizer License — $19.99 / month**
+
+- Intended for **active organizers**.
+- Grants **organizer status** and the **organizer workspace**.
+- Enables the **verification and certification** pathways.
+
+### Core principle
+
+- **One Event License = the right to run an event.**
+- **Organizer License = the right to be recognized as an ActivLife Hub organizer.**
+
+**Rationale:** separating "run one event" from "be an organizer" lets newcomers transact
+on a low-commitment, per-event basis while reserving organizer status (and the trust
+signals of Verified/Certified) for those on the recurring Organizer License — keeping the
+"trust is the product" principle (§1) intact without gating first-time event creators.
