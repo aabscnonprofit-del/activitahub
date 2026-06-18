@@ -2444,5 +2444,37 @@
     "sumInvoiced": "Faturado",
     "sumPaid": "Pago",
     "sumOutstanding": "Pendente"
+  },
+  "connectPayments": {
+    "none": {
+      "title": "Receba pagamentos pelos seus eventos",
+      "body": "Conecte uma conta Stripe para receber pagamentos de clientes diretamente."
+    },
+    "onboarding": {
+      "title": "Conclua a configuração de pagamentos",
+      "body": "A sua integração com o Stripe ainda não está concluída."
+    },
+    "restricted": {
+      "title": "O Stripe precisa de mais informações",
+      "body": "A sua conta não pode aceitar pagamentos até cumprir os requisitos do Stripe."
+    },
+    "enabled": {
+      "title": "Você já pode receber pagamentos",
+      "body": "A sua conta Stripe está conectada e pode aceitar pagamentos.",
+      "short": "Pagamentos conectados — você pode receber pagamentos de clientes."
+    },
+    "cta": {
+      "connect": "Conectar Stripe",
+      "finish": "Concluir configuração",
+      "fix": "Continuar no Stripe"
+    },
+    "marker": {
+      "return": "Configuração de pagamentos atualizada.",
+      "return_pending": "Quase lá — o seu estado será atualizado em instantes.",
+      "refresh": "O seu link de configuração expirou. Retome abaixo.",
+      "no_access": "É necessário acesso de organizador para configurar pagamentos.",
+      "unconfigured": "Os pagamentos não estão disponíveis no momento.",
+      "setup_error": "Algo deu errado. Tente novamente."
+    }
   }
 }

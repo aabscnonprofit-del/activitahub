@@ -2444,5 +2444,37 @@
     "sumInvoiced": "Invoiced",
     "sumPaid": "Paid",
     "sumOutstanding": "Outstanding"
+  },
+  "connectPayments": {
+    "none": {
+      "title": "Get paid for your events",
+      "body": "Connect a Stripe account to receive customer payments directly."
+    },
+    "onboarding": {
+      "title": "Finish your payment setup",
+      "body": "Your Stripe onboarding isn’t complete yet."
+    },
+    "restricted": {
+      "title": "Stripe needs more information",
+      "body": "Your account can’t accept payments until Stripe’s requirements are met."
+    },
+    "enabled": {
+      "title": "You’re ready to receive payments",
+      "body": "Your Stripe account is connected and can accept customer payments.",
+      "short": "Payments connected — you can receive customer payments."
+    },
+    "cta": {
+      "connect": "Connect Stripe",
+      "finish": "Finish setup",
+      "fix": "Continue on Stripe"
+    },
+    "marker": {
+      "return": "Payment setup updated.",
+      "return_pending": "Almost there — your status will update in a moment.",
+      "refresh": "Your setup link expired. Resume below.",
+      "no_access": "Organizer access is required to set up payments.",
+      "unconfigured": "Payments aren’t available right now.",
+      "setup_error": "Something went wrong. Please try again."
+    }
   }
 }

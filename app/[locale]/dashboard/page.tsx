@@ -7,10 +7,14 @@ import {
   Plus, UserPlus, Send, FileText, Sparkles, CheckCircle2, Star, Ticket,
 } from 'lucide-react'
 import { formatDate } from '@/lib/utils'
+import ConnectPanel from '@/components/dashboard/ConnectPanel'
 import type { Locale, Profile } from '@/lib/types'
 import type { Metadata } from 'next'
 
-interface Props { params: Promise<{ locale: string }> }
+interface Props {
+  params: Promise<{ locale: string }>
+  searchParams: Promise<{ connect?: string }>
+}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params
@@ -23,8 +27,9 @@ const safe = async <T,>(p: PromiseLike<{ data: T | null }>, fallback: T): Promis
 }
 const STATUSES = ['invited', 'confirmed', 'maybe', 'declined', 'checked_in', 'no_show'] as const
 
-export default async function CommandCenterPage({ params }: Props) {
+export default async function CommandCenterPage({ params, searchParams }: Props) {
   const { locale } = (await params) as { locale: Locale }
+  const { connect } = await searchParams
   const t = await getTranslations('dashboard.home')
   const tc = await getTranslations('command')
   const tp = await getTranslations('participants')
@@ -157,6 +162,9 @@ export default async function CommandCenterPage({ params }: Props) {
         <h1 className="text-2xl font-extrabold text-slate-900">{firstName ? t('greeting', { name: firstName }) : t('greetingFallback')}</h1>
         <p className="mt-1 text-sm text-slate-500">{tc('subtitle')}</p>
       </div>
+
+      {/* Get paid — Stripe Connect onboarding status (returns here via ?connect=) */}
+      <ConnectPanel locale={locale} statusMarker={connect} />
 
       {noActivities && (
         <div className="overflow-hidden rounded-2xl bg-gradient-to-br from-brand-600 to-brand-800 p-6 text-white sm:p-8">

@@ -2444,5 +2444,37 @@
     "sumInvoiced": "Berechnet",
     "sumPaid": "Bezahlt",
     "sumOutstanding": "Ausstehend"
+  },
+  "connectPayments": {
+    "none": {
+      "title": "Lass dich für deine Events bezahlen",
+      "body": "Verbinde ein Stripe-Konto, um Kundenzahlungen direkt zu erhalten."
+    },
+    "onboarding": {
+      "title": "Schließe deine Zahlungseinrichtung ab",
+      "body": "Dein Stripe-Onboarding ist noch nicht abgeschlossen."
+    },
+    "restricted": {
+      "title": "Stripe benötigt weitere Informationen",
+      "body": "Dein Konto kann keine Zahlungen annehmen, bis die Anforderungen von Stripe erfüllt sind."
+    },
+    "enabled": {
+      "title": "Du kannst Zahlungen empfangen",
+      "body": "Dein Stripe-Konto ist verbunden und kann Kundenzahlungen annehmen.",
+      "short": "Zahlungen verbunden – du kannst Kundenzahlungen empfangen."
+    },
+    "cta": {
+      "connect": "Stripe verbinden",
+      "finish": "Einrichtung abschließen",
+      "fix": "Bei Stripe fortfahren"
+    },
+    "marker": {
+      "return": "Zahlungseinrichtung aktualisiert.",
+      "return_pending": "Fast geschafft – dein Status wird gleich aktualisiert.",
+      "refresh": "Dein Einrichtungslink ist abgelaufen. Unten fortsetzen.",
+      "no_access": "Für die Zahlungseinrichtung ist Veranstalterzugang erforderlich.",
+      "unconfigured": "Zahlungen sind derzeit nicht verfügbar.",
+      "setup_error": "Etwas ist schiefgelaufen. Bitte versuche es erneut."
+    }
   }
 }
