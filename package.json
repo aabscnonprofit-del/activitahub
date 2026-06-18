@@ -15,6 +15,7 @@
     "test:supplier": "npx tsx scripts/supplier-discovery-test.mts",
     "test:rfq": "npx tsx scripts/rfq-test.mts",
     "test:real-discovery": "npx tsx scripts/real-discovery-test.mts",
+    "test:google-places": "npx tsx scripts/google-places-test.mts",
     "test:stripe-sync": "npx tsx scripts/stripe-sync-test.mts",
     "test:refund-sync": "npx tsx scripts/refund-sync-test.mts"
   },
