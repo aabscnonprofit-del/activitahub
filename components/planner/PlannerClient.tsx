@@ -2,9 +2,9 @@
 
 import { useState } from 'react'
 import { useTranslations } from 'next-intl'
-import { Sparkles, Loader2, ArrowLeft } from 'lucide-react'
-import { generatePlanAction } from '@/lib/actions/planner'
-import type { PlanGenerationResult, PlannerInput, RecurrenceFrequency } from '@/lib/ope'
+import { Sparkles, Loader2, ArrowLeft, Wand2 } from 'lucide-react'
+import { analyzeIdeaAction, generateFromIdeaAction, type IdeaPrefill, type IdeaDetails } from '@/lib/actions/planner'
+import type { PlanGenerationResult, RecurrenceFrequency } from '@/lib/ope'
 import PlanResult from './PlanResult'
 import PlanHandoff from './PlanHandoff'
 import PlanClarify from './PlanClarify'
@@ -14,18 +14,30 @@ type Category =
   | 'fitness_class' | 'art_class' | 'language_class' | 'workshop'
 type Venue = 'backyard_home' | 'public_park' | ''
 type Repeats = 'one_time' | RecurrenceFrequency
+type Step = 'idea' | 'wsh' | 'details'
 
-// Class categories (M3) — show instructor/materials inputs and the Repeats control.
 const CLASS_CATEGORIES = new Set<Category>(['fitness_class', 'art_class', 'language_class', 'workshop'])
-
-// Activities that can be planned as a recurring series. Mirrors
-// ACTIVITIES[*].recurringCapable: Meetup (networking) + all Class categories.
 const RECURRING_CAPABLE = new Set<Category>(['networking', ...CLASS_CATEGORIES])
+
+// The idea-first entry: the user writes a free-text dream. Examples shown to set the tone.
+const IDEA_EXAMPLES = [
+  'I want an Antarctica-themed birthday party for my children.',
+  'I want a romantic marriage proposal.',
+  'I want a yoga retreat for wealthy professionals.',
+  'I want a networking night for startup founders.',
+]
 
 export default function PlannerClient() {
   const t = useTranslations('planner')
   const tf = useTranslations('planner.form')
 
+  // Idea-first flow state.
+  const [step, setStep] = useState<Step>('idea')
+  const [idea, setIdea] = useState('')
+  const [whatShouldHappen, setWhatShouldHappen] = useState('')
+  const [needsWsh, setNeedsWsh] = useState(false)
+
+  // Detail-completion form (secondary — prefilled from the idea, completed by the user).
   const [category, setCategory] = useState<Category>('birthday')
   const [total, setTotal] = useState('')
   const [adults, setAdults] = useState('')
@@ -45,14 +57,78 @@ export default function PlannerClient() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(false)
   const [result, setResult] = useState<PlanGenerationResult | null>(null)
-  const [lastInput, setLastInput] = useState<PlannerInput | null>(null)
 
-  async function runPlan(input: PlannerInput) {
-    setLoading(true)
-    setError(false)
-    setLastInput(input)
+  function resetAll() {
+    setStep('idea'); setIdea(''); setWhatShouldHappen(''); setNeedsWsh(false)
+    setCategory('birthday'); setTotal(''); setAdults(''); setKids(''); setVenue(''); setBudget('')
+    setRequirements(''); setCity(''); setStateRegion(''); setCountry(''); setPostal('')
+    setRepeats('one_time'); setSessions(''); setInstructor(''); setMaterials('')
+    setResult(null); setError(false)
+  }
+
+  function applyPrefill(p: IdeaPrefill) {
+    if (p.category) setCategory(p.category as Category)
+    if (p.guestCount != null) setTotal(String(p.guestCount))
+    if (p.adults != null) setAdults(String(p.adults))
+    if (p.kids != null) setKids(String(p.kids))
+    if (p.venueType) setVenue(p.venueType)
+    if (p.budget != null) setBudget(String(p.budget))
+  }
+
+  // Step 1 — understand the dream: run the Concept Funnel (AI-first, deterministic fallback).
+  async function submitIdea(e: React.FormEvent) {
+    e.preventDefault()
+    if (!idea.trim()) return
+    setLoading(true); setError(false)
     try {
-      const res = await generatePlanAction(input)
+      const res = await analyzeIdeaAction(idea)
+      if (!res.ok) { setError(true); return }
+      applyPrefill(res.prefill)
+      // "What should happen": the recognised story, or a request-specific draft to approve/edit.
+      setWhatShouldHappen(res.scenario.whatShouldHappen ?? '')
+      const needs = res.scenario.status === 'scenario_needed'
+      setNeedsWsh(needs)
+      setStep(needs ? 'wsh' : 'details')
+    } catch {
+      setError(true)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  function buildDetails(override?: Partial<IdeaDetails>): IdeaDetails {
+    return {
+      category,
+      guestCount: Number(total),
+      adults: adults ? Number(adults) : undefined,
+      kids: kids ? Number(kids) : undefined,
+      venueType: venue || undefined,
+      budget: budget ? Number(budget) : undefined,
+      requirements: requirements ? requirements.split(',').map((s) => s.trim()).filter(Boolean) : undefined,
+      instructor: CLASS_CATEGORIES.has(category) && instructor ? instructor : undefined,
+      materials: CLASS_CATEGORIES.has(category) && materials ? materials : undefined,
+      recurrence:
+        RECURRING_CAPABLE.has(category) && repeats !== 'one_time'
+          ? { frequency: repeats, sessions: sessions ? Number(sessions) : null }
+          : undefined,
+      ...override,
+    }
+  }
+
+  // Step 2 — plan from the idea: AI understanding + chosen concept + confirmed details → engine.
+  async function submitDetails(override?: Partial<IdeaDetails>) {
+    setLoading(true); setError(false)
+    const details = buildDetails(override)
+    const location = {
+      city: city.trim(),
+      state: stateRegion.trim() || undefined,
+      country: country.trim(),
+      postalCode: postal.trim() || undefined,
+    }
+    try {
+      // Planning is gated on the user-approved/edited "what should happen" (recorded above).
+      const approvedWhatShouldHappen = whatShouldHappen.trim() || null
+      const res = await generateFromIdeaAction({ idea, selectedConcept: null, approvedWhatShouldHappen, details, location })
       if (res.ok) {
         setResult(res.result)
         window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -64,46 +140,25 @@ export default function PlannerClient() {
     }
   }
 
-  function buildInput(): PlannerInput {
-    return {
-      category,
-      guestCount: Number(total),
-      adults: adults ? Number(adults) : undefined,
-      kids: kids ? Number(kids) : undefined,
-      venueType: venue || undefined,
-      budget: budget ? Number(budget) : undefined,
-      specialRequirements: requirements
-        ? requirements.split(',').map((s) => s.trim()).filter(Boolean)
-        : undefined,
-      location: { city: city.trim(), state: stateRegion.trim() || undefined, country: country.trim(), postalCode: postal.trim() || undefined },
-      recurrence:
-        RECURRING_CAPABLE.has(category) && repeats !== 'one_time'
-          ? { frequency: repeats, sessions: sessions ? Number(sessions) : null }
-          : undefined,
-      instructor: CLASS_CATEGORIES.has(category) && instructor ? instructor : undefined,
-      materials: CLASS_CATEGORIES.has(category) && materials ? materials : undefined,
-    }
-  }
-
-  async function onGenerate(e: React.FormEvent) {
+  function onGenerate(e: React.FormEvent) {
     e.preventDefault()
-    await runPlan(buildInput())
+    void submitDetails()
   }
 
-  // Merge clarification answers into the original input and re-run (UNKNOWN → ASK).
+  // Operational clarification (UNKNOWN → ASK) — runs only after a concept direction is set.
   function onClarify(answers: Record<string, string>) {
-    if (!lastInput) return
-    const merged: PlannerInput = { ...lastInput }
-    if (answers.venueType) merged.venueType = answers.venueType as PlannerInput['venueType']
-    if (answers.budget) merged.budget = Number(answers.budget)
-    if (answers.kids) merged.kids = Number(answers.kids)
-    void runPlan(merged)
+    const override: Partial<IdeaDetails> = {}
+    if (answers.venueType) { setVenue(answers.venueType as Venue); override.venueType = answers.venueType as IdeaDetails['venueType'] }
+    if (answers.budget) { setBudget(answers.budget); override.budget = Number(answers.budget) }
+    if (answers.kids) { setKids(answers.kids); override.kids = Number(answers.kids) }
+    void submitDetails(override)
   }
 
+  // ── Result ────────────────────────────────────────────────────────────────────────
   if (result) {
     return (
       <div>
-        <button onClick={() => { setResult(null); setLastInput(null) }} className="mb-4 inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-slate-800">
+        <button onClick={resetAll} className="mb-4 inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-slate-800">
           <ArrowLeft className="h-4 w-4" />
           {t('result.newPlan')}
         </button>
@@ -118,6 +173,82 @@ export default function PlannerClient() {
     )
   }
 
+  // ── Step: "what should happen" — draft to approve/edit BEFORE any planning ───────────
+  if (step === 'wsh') {
+    return (
+      <div className="space-y-4">
+        <button type="button" onClick={() => setStep('idea')} className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-slate-800">
+          <ArrowLeft className="h-4 w-4" />
+          Back
+        </button>
+        <div className="card p-5">
+          <div className="mb-3 flex items-start gap-3">
+            <span className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-100 text-brand-600">
+              <Sparkles className="h-5 w-5" />
+            </span>
+            <div>
+              <h2 className="font-bold text-slate-900">What should happen</h2>
+              <p className="mt-0.5 text-sm text-slate-500">Here&apos;s a draft of what happens, what people experience, and the result we&apos;ll aim for. Edit it until it&apos;s right, then approve — we plan only after this.</p>
+            </div>
+          </div>
+          <textarea
+            value={whatShouldHappen}
+            onChange={(e) => setWhatShouldHappen(e.target.value)}
+            rows={6}
+            className="input-base w-full"
+          />
+        </div>
+        <button type="button" disabled={!whatShouldHappen.trim()} onClick={() => setStep('details')} className="btn-primary w-full px-7 py-3.5 text-base sm:w-auto">
+          <Sparkles className="h-4 w-4" />
+          Approve &amp; continue
+        </button>
+      </div>
+    )
+  }
+
+  // ── Step: raw idea (primary entry) ──────────────────────────────────────────────────
+  if (step === 'idea') {
+    return (
+      <form onSubmit={submitIdea} className="space-y-4">
+        <div className="card p-5">
+          <div className="mb-3 flex items-start gap-3">
+            <span className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-100 text-brand-600">
+              <Wand2 className="h-5 w-5" />
+            </span>
+            <div>
+              <h2 className="font-bold text-slate-900">Tell us what you want to create.</h2>
+              <p className="mt-0.5 text-sm text-slate-500">Describe your event in your own words — we&apos;ll understand the idea first, then sort out the details.</p>
+            </div>
+          </div>
+          <textarea
+            value={idea}
+            onChange={(e) => setIdea(e.target.value)}
+            rows={4}
+            required
+            className="input-base w-full"
+            placeholder="I want an Antarctica-themed birthday party for my children."
+          />
+          <div className="mt-3 flex flex-wrap gap-2">
+            {IDEA_EXAMPLES.map((ex) => (
+              <button key={ex} type="button" onClick={() => setIdea(ex)}
+                className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-500 hover:bg-slate-50">
+                {ex}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {error && <p className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600">{tf('error')}</p>}
+
+        <button type="submit" disabled={loading || !idea.trim()} className="btn-primary w-full px-7 py-3.5 text-base sm:w-auto">
+          {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+          {loading ? 'Understanding your idea…' : 'Understand my idea'}
+        </button>
+      </form>
+    )
+  }
+
+  // ── Step: detail completion (secondary — prefilled, completed by the user) ───────────
   const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
     <div className="card p-5">
       <h2 className="mb-3 font-bold text-slate-900">{title}</h2>
@@ -146,6 +277,23 @@ export default function PlannerClient() {
 
   return (
     <form onSubmit={onGenerate} className="space-y-4">
+      <button type="button" onClick={() => setStep(needsWsh ? 'wsh' : 'idea')}
+        className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-slate-800">
+        <ArrowLeft className="h-4 w-4" />
+        Back
+      </button>
+
+      <div className="rounded-2xl border border-brand-100 bg-brand-50/60 p-4">
+        <p className="text-xs uppercase tracking-wide text-brand-500">Your idea</p>
+        <p className="mt-0.5 text-sm text-slate-700">&ldquo;{idea}&rdquo;</p>
+        {whatShouldHappen.trim() && (
+          <p className="mt-2 rounded-lg bg-white px-3 py-2 text-xs text-slate-600">
+            <span className="font-semibold text-brand-700">What should happen: </span>{whatShouldHappen}
+          </p>
+        )}
+        <p className="mt-2 text-xs text-slate-500">Just a few details left so we can plan it.</p>
+      </div>
+
       <Section title={tf('sectionActivity')}>
         <div className="flex flex-wrap gap-2">
           {cats.map((c) => (

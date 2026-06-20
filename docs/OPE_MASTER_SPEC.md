@@ -22,23 +22,23 @@
    organize an activity and produce the complete planning artifacts an organizer would otherwise
    assemble by hand: plan, timeline, resources, budget, staffing, vendor needs, communications,
    risk/safety register, and an executable schedule.
-2. **Assemble scenarios dynamically from a small base of modules and rules** — explicitly **not** a
-   library of thousands of pre-written scenarios. Breadth comes from composition, not enumeration.
+2. **Assemble Event Plans dynamically from a small base of modules and rules** — explicitly **not** a
+   library of thousands of pre-written Event Plans. Breadth comes from composition, not enumeration.
 3. **Be one engine, two surfaces** (Single Engine Strategy). The same engine serves the consumer
    Planner and the Organizer Platform; surfaces differ by gating and depth, not by engine.
 4. **Stay safe, deterministic, and auditable.** Structure and safety come from curated knowledge and
    deterministic math; AI is a bounded layer that personalizes, never invents facts, math, or safety.
 5. **Be location-aware and degrade gracefully.** Pricing, vendors and staffing resolve by the user's
    location; when data is missing, the engine still produces a usable plan with explicit notes.
-6. **Produce a clean handoff.** OPE output is structured so it can become a marketplace request brief,
-   an organizer's working plan, or a consumer's self-run checklist — from the same object.
+6. **Produce a clean handoff.** OPE output is structured so it can become an Event Request brief
+   (`request_brief`), an organizer's working plan, or a consumer's self-run checklist — from the same object.
 
 ---
 
 ## 2. Core Principles
 
-- **Modules + rules, not scenario enumeration.** Knowledge is stored as small, composable **modules**
-  (per category / per subtype) and **rules** (derivation, applicability, thresholds). A scenario is
+- **Modules + rules, not Event-Plan enumeration.** Knowledge is stored as small, composable **modules**
+  (per category / per subtype) and **rules** (derivation, applicability, thresholds). An Event Plan is
   **assembled at runtime**, never looked up whole.
 - **Curated backbone, bounded AI.** Plan skeletons, resource scaling, cost-driver definitions, risk
   rules and reminder cadence are **curated/deterministic**. AI handles summary, personalization and
@@ -61,6 +61,12 @@
 ## 3. Inputs — Scenario Intake `IMPLEMENTED (subset)`
 
 The typed request that drives the whole pipeline. One contract, consumer- or organizer-sourced.
+
+> **Terminology note (aligns with MASTER glossary):** the **"Scenario" object** named in this
+> section is the **input/request contract**, *not* the canonical pre-planning object. Per
+> MASTER, OPE must first obtain or create an approved **"what should happen"** (what happens +
+> what people experience; not timeline/resources) before planning. The input object here is
+> not "what should happen", and "Scenario" is not yet adopted as the name for it.
 
 - **Purpose:** normalize a user's organize-an-activity request into a structured **Scenario** object
   the engines consume.
@@ -85,9 +91,11 @@ The typed request that drives the whole pipeline. One contract, consumer- or org
 
 ## 4. Activity Classification Engine `PARTIAL`
 
-- **Purpose:** classify the request into a primary activity type (+ subtypes), estimate **scale** and
-  **complexity**, and make the **route decision**: self-runnable vs organizer-grade (route to
-  marketplace), and which module set applies.
+- **Purpose:** classify the request — assign a **category** (metadata / classification label) + subtypes,
+  estimate **scale** and **complexity**, and make the **route decision**: self-runnable vs organizer-grade
+  (route to the **Event Request channel**), and which module set applies. Category **labels and helps
+  select knowledge; it does not determine the Event Plan by itself** — the request's needs drive module
+  selection.
 - **Inputs:** Scenario (`intent`, `guest_count`, `venue_type`, `special_requirements`).
 - **Outputs:** `classification { category, subtypes[], scale_tier, complexity_tier, route_decision,
   module_selector }` — where `route_decision ∈ {self_serve, recommend_organizer}` and `module_selector`
@@ -101,10 +109,10 @@ The typed request that drives the whole pipeline. One contract, consumer- or org
 
 ---
 
-## 5. Scenario Assembly Engine `IMPLEMENTED`
+## 5. Event Plan Assembly Engine `IMPLEMENTED`
 
 - **Purpose:** the heart of "dynamic assembly" — merge the selected **modules** into a single
-  coherent scenario skeleton: phases, tasks, milestones, communication stubs, cost-driver definitions,
+  coherent Event Plan skeleton: phases, tasks, milestones, communication stubs, cost-driver definitions,
   risk definitions, and derived-quantity rules. De-duplicate and order them.
 - **Inputs:** Scenario + `module_selector` (from Classification); the resolved module set.
 - **Outputs:** a **Composed** object: ordered `phases`, merged `tasks`, `risks`, `communication
@@ -127,10 +135,11 @@ The typed request that drives the whole pipeline. One contract, consumer- or org
 - **Inputs:** Composed skeleton (`derived_quantities`, `cost_drivers`, `config_defaults`) + Scenario
   counts (`guest_count`, `kid_count`).
 - **Outputs:** `resource_plan` — a map of `{ resource_key → quantity, basis, driver }`, sized and
-  buffered; the quantity backbone consumed by Budget, Vendor and Staffing.
+  buffered; the quantity backbone consumed by Vendor and Staffing (resource needs) and, once the
+  resource set is complete, by the Cost Estimate.
 - **Dependencies:** Assembly (rules + config); Scenario counts.
-- **Place in process:** **Stage 3** — after assembly, before pricing; its quantities feed Budget,
-  Vendor and Staffing.
+- **Place in process:** **Stage 3** — after assembly; its quantities feed Vendor and Staffing needs,
+  which together with the resources form the **complete resource set the Cost Estimate is calculated from**.
 - **Status:** `IMPLEMENTED` for counts (`engine.ts` `computeQuantity` + `QtyCtx`). **Note:** a
   standalone customer-facing "what you'll need" resource list is not emitted separately today
   (resources surface via budget line items per `ACTIVITY_PLANNER_OUTPUTS_V1`).
@@ -141,15 +150,17 @@ The typed request that drives the whole pipeline. One contract, consumer- or org
 
 - **Purpose:** turn the resource plan into a **low / likely / high** cost estimate with contingency and
   a ranked list of key cost drivers, **priced by the user's location**.
-- **Inputs:** Scenario `location` + `category`; resource quantities; cost-driver definitions.
+- **Inputs:** Scenario `location` + `category`; the **complete resource set** — resource quantities
+  **plus vendor needs and staffing needs** — and cost-driver definitions.
 - **Outputs:** `BudgetResult { is_priced, currency, estimate{low,likely,high}, breakdown[ {item_key,
   line{low,likely,high}, basis, cost_category} ], key_cost_drivers[], pricing_source, is_fallback,
   fallback_note, levers_note }`. Line-item `item_key`s are preserved for later correction.
 - **Dependencies:** **PricingProvider chain** (Resolver): `local → ActivLife historical → external →
   fallback-seed`. Resource Planning (quantities). Each provider may return null; chain resolves the
   first hit, else unpriced with a note.
-- **Place in process:** **Stage 4** — after Resource Planning; its numbers feed Output and the
-  Communication levers note.
+- **Place in process:** **after the complete resource set is determined** (Resource Planning + Vendor +
+  Staffing needs) — the **Cost Estimate** is calculated from that full set; its numbers feed Output and
+  the Communication levers note.
 - **Status:** `IMPLEMENTED` (`budget.ts`, `pricing.ts`). **Real pricing exists only for Honolulu
   (birthday, bbq)**; other locations resolve via fallback-seed in seed currency; historical/external
   providers are stubs (`→ null`); networking has no seed (always unpriced). Multi-currency calibration
@@ -169,8 +180,8 @@ The typed request that drives the whole pipeline. One contract, consumer- or org
   `vendor_options[]` with location-resolved prices that can supersede seed prices in Budget.
 - **Dependencies:** Resource Planning (needs), Budget Engine (price feedback loop), Vendor Network
   (catalog/availability), location.
-- **Place in process:** **Stage 5** — runs alongside/after Budget; can refine Budget when real vendor
-  prices are available; emits vendor needs for the output brief.
+- **Place in process:** **before the Cost Estimate** — vendor needs are part of the resource set; once
+  real vendor prices are available they refine the Cost Estimate; emits vendor needs for the output brief.
 - **Status:** `PLANNED`. Cost categories exist in module data, but no vendor matching/sourcing is
   implemented; Vendor Network is not built.
 
@@ -187,8 +198,8 @@ The typed request that drives the whole pipeline. One contract, consumer- or org
   `crew_options[]`.
 - **Dependencies:** Resource Planning, Risk Engine (safety-driven staffing), Crew Network (future),
   location.
-- **Place in process:** **Stage 5** (parallel to Vendor) — consumes quantities and risk rules; feeds
-  Execution (task owners) and the output brief.
+- **Place in process:** **before the Cost Estimate** (parallel to Vendor) — staffing needs are resources;
+  consumes quantities and risk rules; feeds the Cost Estimate, Execution (task owners) and the output brief.
 - **Status:** `PARTIAL`. `supervising_adults` is derived today (`computeQuantity`), but there is no
   role model, no crew matching, and no Crew Network.
 
@@ -284,13 +295,13 @@ OPE emits one structured **Plan Object** from which all artifacts derive. Canoni
   - `resource_plan`, `budget_breakdown` `IMPLEMENTED (counts/price)`
   - `vendor_needs`, `staffing_plan` `PLANNED / PARTIAL`
   - `execution_plan` (runnable schedule) `PLANNED`
-  - **`request_brief`** — the marketplace handoff contract (plan + scenario → Event Request) `PLANNED`
+  - **`request_brief`** — the Event Request handoff contract (plan + scenario → Event Request) `PLANNED`
   - `monitoring_state` + historical actuals `PLANNED`
 - **Cross-cutting:** every artifact carries provenance (`modules_used`, `source_module`,
   `pricing_source`) for traceability.
 - **Dependencies:** all engines feed it; it is the engine's external contract.
 - **Place in process:** **terminal** — assembled after the engines run; consumed by the consumer
-  surface, the organizer surface, and (via `request_brief`) the Marketplace.
+  surface, the organizer surface, and (via `request_brief`) the **Event Request channel**.
 
 ---
 
@@ -315,7 +326,7 @@ Staffing role model + crew matching, date-anchored Execution, Monitoring/learnin
 ## 16. Future Scope (the full engine)
 
 - **Classification:** scale/complexity tiering + organizer-grade routing (boundary as the conversion
-  trigger to Marketplace).
+  trigger to the Event Request channel).
 - **Budget:** real local + ActivLife historical + external providers; multi-currency, city-calibrated
   ranges; user budget correction persisted and learned.
 - **Vendor Engine + Vendor Network:** need → category → match → price feedback into Budget.
@@ -325,9 +336,9 @@ Staffing role model + crew matching, date-anchored Execution, Monitoring/learnin
 - **Risk:** free-text and threshold-driven risk surfacing; safety competency tie-in (Academy/Certification).
 - **Execution:** date-anchored schedules, task owners/dependencies, reminder cadence inside OPE.
 - **Monitoring:** deviation detection, re-plan/re-estimate, actuals feedback to historical pricing.
-- **Handoff:** `request_brief` contract so any plan becomes a Marketplace Event Request from the same
+- **Handoff:** `request_brief` contract so any Event Plan becomes an Event Request from the same
   object — closing the demand loop OPE sits at the top of.
-- **Category breadth:** new categories via new **modules + rules** only (no engine changes, no scenario
+- **Category breadth:** new categories via new **modules + rules** only (no engine changes, no Event Plan
   library), per the core principle.
 
 ---
@@ -335,12 +346,13 @@ Staffing role model + crew matching, date-anchored Execution, Monitoring/learnin
 ## Appendix A — Canonical pipeline (text)
 
 ```
+Stage -1 Concept Funnel ...... IDEA-FIRST primary entry (raw idea, AI-first w/ deterministic fallback): understand the dream → concept options → user selects a direction; bypassed for operationally-clear briefs. The public planner /plan-an-event is idea-first, NOT form-first. Contract: docs/OPE_CONCEPT_FUNNEL_V1.md. Additive — does not alter Stages 0–9.
 Stage 0  Intake .............. Scenario object
-Stage 1  Classification ...... category/subtypes, scale, complexity, route, module_selector
-Stage 2  Assembly ............ phases, tasks, risks, comms stubs, cost-drivers, derived keys, timeline
+Stage 1  Classification ...... category (metadata) + subtypes, scale, complexity, route, module_selector
+Stage 2  Assembly ............ Event Plan skeleton: phases, tasks, risks, comms stubs, cost-drivers, derived keys, timeline
 Stage 3  Resource Planning ... sized quantities (resource_plan)
-Stage 4  Budget .............. low/likely/high + breakdown (PricingProvider chain)
-Stage 5  Vendor ‖ Staffing ... vendor_needs / staffing_plan (+ matching, future)
+Stage 4  Vendor ‖ Staffing ... vendor_needs / staffing_plan — resource needs (+ matching, future)
+Stage 5  Cost Estimate ....... low/likely/high + breakdown from the complete resource set (Budget Engine; PricingProvider chain)
 Stage 6  Communication ....... messages, summary, levers (AI layer, frozen-field guard)
 Stage 7  Risk ................ applicable risks + mitigations + safety milestones
 Stage 8  Execution ........... runnable schedule (milestones, owners, reminders)
@@ -371,7 +383,8 @@ budget; the order above reflects data dependencies, not a forced sequence.)
 
 - **Academy / Certification** — qualify the humans who take over when Classification routes an event as
   organizer-grade, and define the safety competency the Risk Engine assumes.
-- **Marketplace** — consumes OPE's `request_brief`; OPE is the top of its demand funnel.
+- **Event Request channel** — consumes OPE's `request_brief`; OPE is the top of its demand funnel.
+  (The **Marketplace** proper is the page of public Events.)
 - **Vendor Network** — the data/sourcing backend the Vendor Engine resolves against.
 - **Crew Network** — the data/sourcing backend the Staffing Engine resolves against.
 

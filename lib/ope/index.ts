@@ -8,6 +8,11 @@ import type { ClarificationQuestion, PlannerInput, PlannerOutput, Scenario } fro
 export type { PlannerInput, PlannerOutput, PlannerLocation, OpePattern, PricingCategory, ClarificationQuestion, Recurrence, RecurrenceFrequency, OpeAssessment } from './types'
 export type { CoverageDecision, CoverageStatus } from './coverage'
 
+// Concept Funnel — optional pre-stage that runs on the RAW idea before classification.
+// Additive only; generatePlan and the existing flow are unchanged. (See concept-funnel.ts.)
+export type { ConceptOption, ConceptFunnelResult, ConceptFunnelStatus, ConceptGenerator } from './concept-funnel'
+export { runConceptFunnel, selectConcept, applyConceptToText, conceptRequirement, assessConceptEntry, detectTheme, defaultConceptGenerator } from './concept-funnel'
+
 export type PlanStatus = CoverageDecision['status'] | 'needs_clarification'
 
 /**

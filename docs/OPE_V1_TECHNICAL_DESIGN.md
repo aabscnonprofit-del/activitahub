@@ -1,37 +1,58 @@
 # OPE v1 — Organizer Planning Engine · Technical Design
 
-> **Status:** Design only. No implementation. This document is the contract we build against.
-> **Date:** 2026-06-03 · **Author:** drafted with Claude Code
-> **Scope:** v1 — single-organizer, single-event planning assist inside the dashboard.
+> **Status:** Design contract. **Migrated to the OPE Core V2 model** (per `OPE_CORE_V2_CHANGE_PLAN.md` + the OPE_V1 Impact Analysis). This is a *migration*, not a rewrite: the layering rule, cost engine, assessment model and cross-cutting sections are preserved; §3 and §5 are marked historical/superseded; §1/§2/§4/§6/§8.1/§11/§12 are reworked around the V2 chain.
+> **Date:** 2026-06-03 · **Migrated:** 2026-06-14 · **Author:** drafted with Claude Code
+> **Scope:** single-event planning assist. **Object of record = the Event Plan (what should happen), produced from a Customer Request.**
+>
+> **OPE Core V2 chain (the model this document now describes):**
+> `Customer Request → Request Understanding → Draft Event Plan → Event Plan Approval → Cost Estimate → Execution / Control`
+> The **Event Plan already contains** its **Timeline, Timed Work Items, and Resources** — Staff and Vendors are *resource types*, not separate pipeline stages. The **Cost Estimate is calculated from the approved Event Plan**. Category is **metadata** (a label/pricing key), never the primary driver.
+>
+> **Terminology note (aligns with MASTER glossary):** in MASTER terms, **"what should happen"** (what happens + what people experience; **not** timeline/resources/staffing/vendors/budget/logistics) is the **approved pre-planning object**, and the **Event Plan is its implementation** (which is where Timeline + Resources live). Where this document writes *"Event Plan (what should happen)"*, the **approved "what should happen"** is the pre-implementation story and the **Event Plan** that "already contains Timeline + Resources" is the implementation that follows its approval. "Scenario" is not yet adopted as the name for "what should happen".
 
 ---
 
 ## 1. Summary & goals
 
-**OPE (Organizer Planning Engine)** lets a certified organizer describe an event
-**scenario** (e.g. "kids birthday, 15 guests, Barcelona, ~€600, garden, superhero
-theme") and get back a **structured, editable plan** — phased timeline, task
-checklist, resource/vendor needs, venue suggestions — together with a **cost
-estimate** (low / likely / high). The organizer refines it into a professional
-**client proposal** — the primary outcome (§13 Q4 / Master §10.3) — and can attach it
-to a client request, export it as a PDF, or convert it into a marketplace activity.
+**OPE (Organizer Planning Engine)** takes a **Customer Request** (what someone asks
+for — e.g. "kids birthday, ~15 guests, Barcelona, ~€600, garden, superhero theme"),
+**understands** it, and produces a **Draft Event Plan** — *what should happen* — which
+already contains its **Timeline**, **Timed Work Items**, and **Resources** (Staff and
+Vendors are resource types). The organizer **approves** it; from the **approved Event
+Plan** OPE computes a deterministic **Cost Estimate** (low / likely / high), then
+supports **Execution** and **Control**. The organizer refines this into a professional **client proposal** — the
+primary outcome (§13 Q4 / Master §10.3) — and can attach it to a request, export it as
+a PDF, or convert it into a public Event (Marketplace listing).
 
-### Goals (v1)
-- Turn a short scenario into a credible first-draft plan in < 30s.
-- Ground the plan in a curated **knowledge base** (not free-floating LLM guesses).
-- Produce a **defensible cost estimate** with transparent line items — the LLM
-  proposes items/quantities; **all money math is deterministic code**, never the LLM.
+The **Event Plan is the object of record** — *what should happen*, not an event
+category, not a template, not a catalogue entry. The Customer Request is the input;
+the event **category is metadata** (a label and a pricing key), never the primary
+driver of planning.
+
+### Goals
+- Turn a Customer Request into an **understood, approvable Event Plan**, then a credible
+  first-draft plan, in < 30s.
+- Ground the plan in curated **work knowledge** (not free-floating LLM guesses).
+- Make the **Timeline the backbone**: every Timed Work Item carries *what is
+  performed · start time or dependency · end time or duration · location · responsible
+  role/person · status* (parallel work supported).
+- Produce a **defensible Cost Estimate** with transparent line items — the LLM
+  proposes items/quantities (*what*); **all money math is deterministic code**, never
+  the LLM (*how much*).
 - Keep every plan **owned, private, and editable** by its organizer (RLS).
 - Fit existing conventions: Supabase Postgres + RLS + `SECURITY DEFINER` RPCs,
   Next.js server actions, zod validation, next-intl, the `/dashboard` gate.
 
-### Non-goals (v1 — explicitly later)
-- No vector/embedding semantic search (KB retrieval is structured/tag-based in v1;
+### Non-goals (explicitly later)
+- No vector/embedding semantic search (KB retrieval is structured/tag-based for now;
   pgvector is a documented future step).
 - No automated vendor booking or live vendor marketplace integration.
 - No multi-event / portfolio planning, no team collaboration on a plan.
-- No customer-facing planner (organizer-only — per product decision 2026-06-03).
 - No real-time pricing feeds; pricing is from a curated, versioned reference table.
+
+> *Superseded non-goal:* the original "no customer-facing planner (organizer-only)"
+> is retired — Master §11.5 makes the Activity Planner an official user-facing surface
+> over the shared OPE Core. The single engine serves both surfaces.
 
 ### Who can use it
 Reuse the existing dashboard gate (`middleware.ts`): **`role = certified_organizer`
@@ -43,32 +64,39 @@ role. Per-plan generation is metered (see §7.6 cost controls).
 ## 2. Architecture overview
 
 ```
- Organizer (dashboard, gated)
-        │  1. scenario form (zod-validated)
-        ▼
- Server Action: createPlan ──► planning_scenarios (row) ──► plans (status=generating)
-        │
-        │  2. enqueue generation (same request in v1; see §6.4)
-        ▼
- Planner Workflow (server, Node runtime)
-   a. retrieve KB context  ◄──── knowledge_entries  (by category + tags + region)
-   b. Claude API call (tool-use / structured output)   [KB context prompt-cached]
-   c. parse → plan skeleton: phases, tasks, resource lines, venue hints
-   d. persist plan_items (kind = task | resource | cost_driver)
+ Customer Request  (organizer dashboard or inbound Event Request)
         │
         ▼
- Cost Estimation Engine (deterministic, server, pure TS)
-   plan_items × knowledge_pricing × scenario drivers
-     → cost lines (low/mid/high) → plans.cost_summary (JSONB) + plan status=ready
+ Request Understanding   ── LLM reads the request → structured understanding
+        │                   (intent, constraints, must-haves; category = a derived label)
+        ▼
+ Draft Event Plan  ("what should happen")
+   └─ contains: Timeline · Timed Work Items (what · start/dependency · end/duration ·
+        location · role · status) · Resources (Staff and Vendors are resource types)
         │
         ▼
- Organizer reviews/edits ──► saved revisions ──► actions:
-     convert→activity · attach→client · export PDF · share link
+ Event Plan Approval  (gate)   ── organizer (and/or customer) approves the Event Plan
+        │
+        ▼
+ Cost Estimate  (Budget Engine — deterministic, pure TS)
+   approved Event Plan's work items × pricing × drivers → cost lines (low/likely/high)
+        │
+        ▼
+ Execution / Control   ── run the plan; monitor/deviation/re-plan (see lifecycle)
+        │
+        ▼
+ Organizer reviews/edits ──► actions: proposal · attach→request · export PDF · convert→public Event
 ```
 
-**New runtime dependency:** `@anthropic-ai/sdk` (Claude). Model: **Sonnet 4.6**
+> **Approval gate (V2):** the **Event Plan already includes** the Timeline, Timed Work
+> Items, and Resources — these are not separate downstream stages. **Nothing is
+> committed and no Cost Estimate is calculated until the Event Plan is approved.**
+> Edits after approval recompute deterministically (§9.4); a full re-understanding
+> (new LLM pass) is an explicit, quota-aware action.
+
+**Runtime dependency:** `@anthropic-ai/sdk` (Claude). Model: **Sonnet 4.6**
 default for planning (fast, cheap, structured); **Opus 4.8** optional "deep plan"
-toggle for complex/premium scenarios. Prompt caching on the KB + system prompt.
+toggle for complex/premium events. Prompt caching on the KB + system prompt.
 
 **Layering rule (critical):** the LLM is a *content* engine (what tasks, what
 resources, suggested quantities). The **cost engine is a separate deterministic
@@ -78,6 +106,17 @@ estimates reproducible, testable, and auditable.
 ---
 
 ## 3. Database schema
+
+> **⚠ HISTORICAL / SUPERSEDED.** This `017_ope.sql` table set
+> (`planning_scenarios / plans / plan_items / knowledge_entries / knowledge_pricing`)
+> was **never built**; the as-built store is the single `ope_plans` table (migrations
+> 021/022) + JSON knowledge files (per `OPE_IMPLEMENTATION_ROADMAP.md` §10 C3/C4).
+> It is retained for history only. It also predates OPE Core V2: it has no Event Plan
+> approval state, no Timeline/Timed-Work-Item fields (start/dependency, end/duration,
+> location, responsible role, status), and treats `category` as a primary column
+> rather than metadata. **Do not build these tables.** The V2 object model (Event Plan,
+> Approval, Timeline, Timed Work Items) is described narratively in §4 and §6; its
+> concrete schema is out of scope for this document (no schemas, no code).
 
 New tables follow existing conventions: `uuid` PKs (`uuid_generate_v4()`),
 `created_at/updated_at` with the shared `update_updated_at_column()` trigger, RLS
@@ -214,40 +253,60 @@ Helper: `owns_plan(p_plan_id uuid) RETURNS boolean` (mirrors `owns_request`).
 
 ---
 
-## 4. Scenario storage
+## 4. Request & Event Plan storage
 
-The scenario is the **typed, validated intent**. UI collects it; zod validates it;
-it persists to `planning_scenarios.params` (JSONB) so we can evolve fields without
-migrations. A zod schema is the source of truth and is versioned (`params._v`).
+V2 separates two distinct objects that earlier drafts conflated:
 
-```ts
-// lib/ope/scenario.ts  (design sketch — not implemented)
-const ScenarioParams = z.object({
-  _v: z.literal(1),
-  guests: z.number().int().min(1).max(2000),
-  date: z.string().date().optional(),
-  durationHours: z.number().min(0.5).max(24).optional(),
-  budgetMinor: z.number().int().nonnegative().optional(),  // organizer's target, cents
-  currency: z.string().length(3).default('usd'),
-  region: z.string().optional(),         // city/country for pricing + KB
-  venueType: z.enum(['indoor','outdoor','both']).optional(),  // reuse location_type
-  vibe: z.array(z.string()).max(8).default([]),               // 'cozy','luxury','kid-friendly'
-  mustHaves: z.array(z.string()).max(20).default([]),
-  constraints: z.string().max(2000).optional(),              // free text → LLM context
-})
-```
+1. **Customer Request** — the *input*: the typed, validated facts the customer/
+   organizer supplied (guests, date, duration, budget target, region, venue type,
+   must-haves, free-text constraints). This is **not** the Event Plan; it is what was
+   asked for. (The original `ScenarioParams` zod shape captured exactly these request
+   fields — it is reused here as the **request-inputs** contract, with one change:
+   `date`/`duration` are **load-bearing**, not optional, because the Timeline depends
+   on them. `category` is retained only as a metadata label / pricing key.)
+2. **Event Plan** — *what should happen*: a structured set of desired happenings derived
+   by Request Understanding from the request. Not a category, not a template, not a
+   catalogue entry. The Event Plan is the **object of record**.
 
-- **Why JSONB + zod**, not columns: scenario shape will churn; JSONB keeps schema
-  stable; zod gives type-safety + server validation; `_v` lets us migrate params in
-  code. Indexable bits (category, region) are promoted to real columns.
-- **Immutability:** editing inputs creates a *new plan* under the same scenario (or
-  a new scenario) rather than mutating a generated plan — keeps cost/plan reproducible.
-- **PII:** scenarios may contain client hints; covered by RLS (owner-only) and never
-  sent to third parties except the LLM provider (see §10 privacy note).
+**Pipeline of objects (the Request is the input; the Event Plan is the produced object):**
+- **Request Understanding** reads the Customer Request and produces the **Event Plan**
+  (what should happen) — the LLM proposes the happenings (*what*); no money, no
+  invented facts (frozen-field guard, §6).
+- The **Event Plan already contains** its **Timeline** (which **supports parallel work**)
+  and its **Timed Work Items** — the unit of the plan. Each item carries:
+  *what is performed · start time **or** dependency · end time **or** duration ·
+  location · responsible role/person · status.* **Resources** are part of the Event Plan
+  too (held on the work items); **Staff and Vendors are resource types, not separate
+  pipeline stages**. These are produced *within* the Draft Event Plan, not after it.
+- **Event Plan Approval** is a mandatory gate: the organizer (and, in the Event Request
+  flow, optionally the customer) approves the Event Plan. Approval freezes it as the
+  committed "what should happen."
+- **Cost Estimate** is then **calculated from the approved Event Plan** (its work items
+  and resources) — see §7.
+
+- **Persistence:** request inputs + Event Plan + approval state + timeline/work-items are
+  opaque JSONB on the as-built `ope_plans` row (§3 historical note); a zod schema
+  remains the validation source of truth and is versioned. *(Concrete columns are out
+  of scope here — no schemas, no code.)*
+- **Immutability / recompute:** editing request inputs re-runs Understanding (a new LLM
+  pass, quota-aware); editing approved work items recomputes deterministically via the
+  cost engine only (§9.4). Approval is the boundary between the two.
+- **PII:** requests/Event Plans may carry client hints; covered by RLS (owner-only) and
+  never sent to third parties except the LLM provider (see §10 privacy note).
 
 ---
 
 ## 5. Knowledge base structure
+
+> **⚠ HISTORICAL / SUPERSEDED.** The DB-table KB (`knowledge_entries` /
+> `knowledge_pricing`) was superseded by as-built **JSON knowledge files**
+> (`data/ope/*`) per `OPE_IMPLEMENTATION_ROADMAP.md` §10 C4. It is also pre-V2: the
+> "timeline templates" and **category-keyed retrieval** below frame knowledge as
+> per-category *templates*, whereas V2 keys work knowledge to the Event Plan's
+> *desired happenings* (category is metadata, not the retrieval key). The curated
+> *content* concept survives (work fragments composed at runtime — see Master Spec §2
+> "modules + rules, not Event-Plan enumeration"); the table/template framing here does
+> not. Retained for history only.
 
 The KB makes plans *grounded and consistent* instead of generic. Two stores:
 
@@ -289,44 +348,51 @@ into a compact **context block** injected into the Claude prompt and **prompt-ca
 
 ## 6. Planner workflow
 
-### 6.1 Steps
-1. **Intake** — organizer submits scenario form → `createPlan` server action →
-   zod validate → `create_planning_scenario` → `start_plan` (plan `generating`).
-2. **Ground** — fetch KB context (§5.2) + the organizer's existing **venues**
-   (from `venues`) to let the planner suggest a real owned venue when it fits.
-3. **Generate** — single Claude call with **tool-use structured output** (the model
-   must return JSON matching our schema; the SDK enforces the tool schema). System
-   prompt = role + rules ("propose items & quantities, never compute prices, use the
-   provided knowledge, output only the tool call"). KB + system prompt are cached.
-4. **Parse & persist** — validate the tool output with zod; map to `plan_items`
-   (phases→tasks→resources/cost_drivers); `save_plan_items`.
-5. **Estimate** — run the **cost engine** (§7) over the items → write
-   `cost_summary` + per-item `est_*`; set status `ready`.
-6. **Present** — revalidate `/dashboard/planner/[id]`; organizer sees the plan.
+### 6.1 Steps (V2 chain)
+1. **Intake (Customer Request)** — request submitted (organizer dashboard or inbound
+   Event Request) → `createPlan` server action → zod validate the **request inputs**
+   (§4). Category is recorded as metadata only.
+2. **Request Understanding** — LLM reads the request → a structured understanding
+   (intent, constraints, must-haves). Grounded in curated work knowledge (§5 content)
+   + the organizer's existing **venues**. Frozen-field guard: the LLM may interpret,
+   never alter supplied facts.
+3. **Draft Event Plan (what should happen)** — the understanding is expressed as an Event
+   Plan: the desired happenings, **already laid out as a Timeline of Timed Work Items
+   with their Resources** (Staff and Vendors are resource types; §6.2 contract). *What*
+   and *when*, proposed by the LLM; never money.
+4. **Event Plan Approval (gate)** — organizer (and/or customer, in the Event Request
+   flow) approves the Event Plan. **Nothing is committed and no Cost Estimate is
+   calculated before approval.**
+5. **Cost Estimate** — run the **Budget Engine / cost engine** (§7) over the **approved
+   Event Plan's** work items and resources → `cost_summary` + per-item estimates.
+   Deterministic; no LLM.
+6. **Present → Execution / Control** — organizer reviews/edits; the plan moves through
+   the lifecycle (Execution, Control). Post-approval edits recompute deterministically
+   (§9.4); re-understanding (new LLM pass) is explicit and quota-aware.
 
-### 6.2 Structured output schema (LLM tool)
-```ts
-// the tool the model is forced to call (design sketch)
-{
-  summary: string,
-  phases: Array<{
-    key: string, title: string,
-    items: Array<{
-      kind: 'task'|'resource'|'cost_driver',
-      title: string, detail?: string,
-      // cost hints (engine decides final money):
-      cost_basis?: 'flat'|'per_guest'|'per_hour'|'per_unit',
-      quantity?: number,
-      pricing_ref?: string,   // suggested item_key into knowledge_pricing
-      meta?: object
-    }>
-  }>
-}
-```
-The model maps resources to `pricing_ref` keys it's told about (we pass the list of
-available `knowledge_pricing.item_key`s for the category/region in the prompt), so the
-deterministic engine can price them. Unknown/again-free-text items get a flagged
-"needs pricing" state rather than a hallucinated number.
+### 6.2 Event Plan + Timed Work Item contract (LLM output)
+The LLM returns the **Event Plan** (a summary of what should happen) and a set of
+**Timed Work Items**. Money is never in the LLM output — only *what* and *when*.
+
+The Event Plan carries: a short **summary of what should happen**, and the ordered
+**happenings** it implies.
+
+Each **Timed Work Item** must support the six V2 fields:
+- **what is performed** — the work (task / resource need / staffing need / vendor need);
+- **start time or dependency** — an absolute start, or "after item X" (parallel work allowed);
+- **end time or duration** — an end, or a duration;
+- **location** — where it happens;
+- **responsible role/person** — the role (and later the assigned person/vendor);
+- **status** — execution state (planned → in progress → done / blocked).
+
+Cost hints travel on the work item for the deterministic engine: a **cost basis**
+(`flat | per_guest | per_hour | per_unit`), a **quantity**, and a **pricing ref**
+(an `item_key` the prompt advertised). The engine prices them in §7; unknown or
+free-text items get a flagged "needs pricing" state rather than a hallucinated number.
+Category may be attached as **metadata** for pricing/label resolution only — it does
+not drive item generation.
+
+*(This is a field contract, not a schema — concrete types/columns are out of scope.)*
 
 ### 6.3 Reliability
 - **Validation + one repair retry:** if tool output fails zod, send the validation
@@ -352,7 +418,7 @@ pricing table it's handed. Fully unit-testable; identical inputs → identical o
 
 ### 7.1 Inputs
 - `plan_items` with `cost_basis`, `quantity`, `pricing_ref`.
-- Scenario drivers: `guests`, `durationHours`, `region`, `currency`.
+- Request drivers: `guests`, `durationHours`, `region`, `currency`.
 - Resolved `knowledge_pricing` rows (region resolution: exact city → country → global).
 - Config: `contingencyPct` (default 10%), optional `organizerMarginPct`,
   `platformFeePct` (reuse the marketplace fee constant if one exists).
@@ -369,7 +435,7 @@ line.est_mid  = price.mid  * units
 line.est_high = price.high * units
 ```
 All amounts are **integer minor units** (cents); rounding only at display. Currency
-conversion is **out of scope v1** — pricing rows are expected in the scenario currency,
+conversion is **out of scope v1** — pricing rows are expected in the request currency,
 or flagged if mismatched (no silent FX).
 
 ### 7.3 Aggregation
@@ -411,34 +477,40 @@ engine decides *how much*. Unpriced items are surfaced, never invented.
 Lives under the gated dashboard. New routes:
 ```
 /[locale]/dashboard/planner            → list of plans + "New plan" CTA
-/[locale]/dashboard/planner/new        → scenario form
+/[locale]/dashboard/planner/new        → request form
 /[locale]/dashboard/planner/[id]       → plan view / edit / cost / actions
 ```
 Add a **"Planner"** entry to the dashboard nav (alongside Activities, Requests…).
 
-### 8.1 Screens & flow
-1. **Scenario form** (`/new`) — category picker (reuse `CATEGORIES` from
-   `lib/categories.ts`), guests, date, duration, budget, region, venue type, vibe
-   chips, must-haves, free-text constraints. Submits to `createPlan` server action.
-   Validation via the zod schema (§4); inline errors; `useFormStatus` pending state.
-2. **Generating state** — plan row exists with `status=generating`; show a skeleton
-   / progress affordance; the page resolves to the plan when `ready` (inline await in
-   v1, so the redirect already lands on `ready`; design keeps a polling fallback for
-   the async future).
-3. **Plan view** (`/[id]`):
-   - **Header**: title, category, scenario chips, status, cost range badge.
-   - **Timeline**: phases → tasks (collapsible), reusing card patterns.
-   - **Resources & costs**: line-item table with low/mid/high, "needs pricing" flags,
-     editable quantity → triggers re-estimate (server action → cost engine only, no LLM).
-   - **Cost summary panel**: subtotal, contingency, total range, confidence.
-   - **Edit**: add/remove/reorder items (saves via `save_plan_items`); "Regenerate"
-     (new LLM pass, new plan revision) is explicit and quota-aware.
-4. **Actions** (priority order — §13 Q4 / Master §10.3):
+### 8.1 Screens & flow (V2)
+1. **Request form** (`/new`) — **request-first**: lead with *what do you want to
+   organize?* (intent / free-text) plus the request facts (guests, **date**,
+   **duration**, budget target, region, venue type, must-haves, constraints). Category
+   is optional **metadata** (a label), not the entry point. Submits to `createPlan`;
+   validation via the request-inputs zod schema (§4).
+2. **Understanding → Event Plan** — the system understands the request and presents the
+   **Event Plan (what should happen)** for review. (Generating state: skeleton/progress;
+   resolves when the Event Plan is ready.)
+3. **Event Plan Approval (gate)** — the organizer reviews and **approves** the Event Plan.
+   No Timeline, work items, resources or Cost Estimate are shown as committed until approval;
+   the organizer may edit the Event Plan or re-understand (explicit, quota-aware) first.
+4. **Plan view** (`/[id]`) — *views of the Event Plan; after approval*:
+   - **Header**: title, status, cost range badge (category shown as a metadata tag).
+   - **Timeline**: the backbone — Timed Work Items placed in time, parallel tracks
+     visible; each item shows what · start/dependency · end/duration · location ·
+     responsible role · status. *(Part of the Event Plan.)*
+   - **Resources** (Staff and Vendors are resource types): held on the Event Plan's work items.
+   - **Cost Estimate**: line-item table low/likely/high, "needs pricing" flags — computed
+     from the approved Event Plan; editing a quantity/time triggers a deterministic
+     re-estimate (Budget Engine / cost engine only, no LLM).
+   - **Edit**: add/remove/reorder/retime work items; "Re-understand" (new LLM pass)
+     is explicit and quota-aware.
+5. **Actions** (priority order — §13 Q4 / Master §10.3):
    1. **Generate client proposal** (primary) → render the plan as a proposal document
-      (Executive Summary, event timeline, staffing/resource plan, budget estimate, risks).
+      (Executive Summary, event timeline, staffing/resource plan, Cost Estimate, risks).
    2. **Attach proposal to client request** → link to the customer request / `clients` row.
    3. **Export PDF** → printable/PDF view (server-rendered route; v1 = print stylesheet).
-   4. **Convert to activity** → prefill `/dashboard/activities` create form (title,
+   4. **Convert to public Event** → prefill the `/dashboard/activities` create form (title,
       category, suggested price from `cost_summary.total.mid`, description from summary).
    - **Share** → read-only tokenized link (reuse the public-slug/QR patterns; optional v1).
 
@@ -453,7 +525,7 @@ Add a **"Planner"** entry to the dashboard nav (alongside Activities, Requests�
 
 ---
 
-## 9. Event Request Marketplace
+## 9. Event Requests (demand channel)
 
 The platform supports **two independent models** of supply and demand. OPE is the
 intelligence layer that makes the second one viable.
@@ -490,7 +562,7 @@ The assessment estimates:
 - **Equipment estimate** — gear/rentals (sound, seating, lighting, tents…).
 - **Vendor estimate** — third-party services to source (catering, photography…).
 - **Logistics estimate** — transport, setup/teardown windows, permits, access.
-- **Budget estimate** — low / likely / high range from the cost engine.
+- **Cost Estimate** — low / likely / high range from the Budget Engine / cost engine.
 - **Operational risks** — flagged concerns (weather exposure, capacity, compliance,
   tight timelines) with severity, surfaced — never silently dropped.
 
@@ -545,7 +617,7 @@ plan; the client sees the resulting proposal, not the raw draft, unless shared.
 
 > This reuses the planner editing surface (§8): the same plan view/edit components
 > serve both organizer-authored plans and request-derived assessments — one engine,
-> two entry points (a Ready-Activity scenario, or an inbound Event Request).
+> two entry points (a Ready-Activity Event Plan, or an inbound Event Request).
 
 ---
 
@@ -553,7 +625,7 @@ plan; the client sees the resulting proposal, not the raw draft, unless shared.
 
 - **Security / RLS:** organizer-owned rows are owner-or-admin only; KB is read-only;
   generation writes via service-role with RPC ownership re-checks (Stripe-webhook pattern).
-- **Privacy:** scenario/plan text is sent to the LLM provider (Anthropic). Document in
+- **Privacy:** request/plan text is sent to the LLM provider (Anthropic). Document in
   the privacy policy; no other third-party sharing; KB and pricing are first-party.
 - **Idempotency & spend:** status guards prevent duplicate generation; quotas + caching
   bound cost; `generation_meta` gives per-plan token visibility.
@@ -570,22 +642,39 @@ plan; the client sees the resulting proposal, not the raw draft, unless shared.
 
 | Layer | Artifact |
 |---|---|
-| DB | `supabase/migrations/017_ope.sql` (enums, tables, RLS, RPCs, helper `owns_plan`) |
-| DB seed | `supabase/seed/ope_knowledge.sql` (KB entries + pricing, idempotent) |
-| Dep | `@anthropic-ai/sdk`; env `ANTHROPIC_API_KEY` (+ model + quota config) |
-| Server | `lib/ope/scenario.ts` (zod), `lib/ope/planner.ts` (LLM workflow), `lib/ope/cost/` (engine), `lib/ope/knowledge.ts` (retrieval) |
-| Actions | `lib/actions/planner.ts` (createPlan, savePlanItems, reestimate, regenerate, convert) |
-| UI | `app/[locale]/dashboard/planner/{page,new,[id]}.tsx` + components; `planner.*` i18n |
+| DB | ~~`supabase/migrations/017_ope.sql`~~ **HISTORICAL — never built** (§3); as-built = `ope_plans` (021/022). V2 fields (approval state, timeline/timed-work-items) to be added to the as-built store when implemented — concrete schema **out of scope here**. |
+| DB seed | ~~`supabase/seed/ope_knowledge.sql`~~ **HISTORICAL (§5)** — superseded by JSON work knowledge in `data/ope/*`. |
+| Dep | `@anthropic-ai/sdk`; env `ANTHROPIC_API_KEY` (+ model + quota config) — for Request Understanding (*what*), never for money. |
+| Server | request-understanding (LLM, request → Event Plan), Event Plan + approval state, timeline / timed-work-items, Budget Engine / cost engine (deterministic Cost Estimate), work-knowledge retrieval. *(Module layout out of scope; the deterministic cost engine is preserved as designed.)* |
+| Actions | planner actions: create request, run understanding, **approve Event Plan**, edit/retime work items, deterministic re-estimate, re-understand, convert/attach/export. |
+| UI | request-first form, Event Plan review + **approval gate**, timeline plan view (timed work items), proposal/PDF; `planner.*` i18n. |
 
 ---
 
 ## 12. Phasing
 
-- **v1 (this design):** scenario → grounded plan → deterministic cost → review/edit →
-  convert to activity. Inline generation, tag-based KB retrieval, admin-seeded KB.
-- **v1.1:** async generation + polling; share links; PDF export.
-- **v2:** pgvector semantic KB; per-organizer custom pricing overrides; vendor
-  directory; multi-currency/FX; KB authoring UI.
+Re-sequenced to the OPE Core V2 chain:
+
+- **Phase A — Request → Draft Event Plan → Approval:** request-first intake, Request
+  Understanding (LLM → *what should happen*), and a Draft Event Plan that **already
+  contains** its **Timeline + Timed Work Items + Resources** (each work item carries the
+  six fields — what · start/dependency · end/duration · location · role · status; Staff
+  and Vendors are resource types), then **Event Plan review + the mandatory approval
+  gate**. (Closes the request-first, Event-Plan-definition, timeline-backbone,
+  timed-work-item, and approval conflicts in one object.)
+- **Phase B — Cost Estimate from the approved Event Plan:** the preserved Budget Engine /
+  cost engine prices the approved Event Plan's work items and resources (low/likely/high);
+  deterministic recompute on edit.
+- **Phase C — Execution / Control:** lifecycle execution, status tracking, and the
+  monitoring/deviation/re-plan loop.
+- **Later:** async generation + polling; share links; PDF export; pgvector semantic
+  retrieval; per-organizer pricing overrides; multi-currency/FX.
+
+> Implementation note: today's as-built engine is deterministic and does **not** yet
+> have the LLM understanding layer, the approval gate, or timed work items — these
+> phases describe the migration target, not the current code. The deterministic cost
+> engine, layering rule, assessment model and cross-cutting concerns are already in
+> place and are preserved unchanged.
 
 ---
 
@@ -595,16 +684,16 @@ plan; the client sees the resulting proposal, not the raw draft, unless shared.
    granularity for v1 (global + a few launch cities)?
 2. **Quota & model policy:** how many generations/month per subscription tier; is the
    Opus "deep plan" a paid add-on or just rate-limited?
-3. **Currency:** confirm v1 single-currency-per-scenario (no FX) is acceptable.
+3. **Currency:** confirm v1 single-currency per Event Plan (no FX) is acceptable.
 4. **Output destination priority — ✅ RESOLVED (2026-06-04, Master Decisions §10.3).**
    **Primary Outcome = Client Proposal Generator.** OPE's primary job is to produce a
    professional **client proposal** (Executive Summary, Event Timeline, Staffing Plan,
-   Resource Plan, Budget Estimate, Risk Assessment, proposal-ready document) in minutes.
+   Resource Plan, Cost Estimate, Risk Assessment, proposal-ready document) in minutes.
    **Priority order:**
    1. Client Proposal Generator
    2. Attach Proposal to Client Request
    3. Proposal PDF Export
-   4. Convert Proposal to Marketplace Activity
+   4. Convert Proposal to a public Event (Marketplace listing)
 
    *Sync note:* this fixes intent/priority only — **no change to OPE architecture, DB, or
    API.* "Convert to activity" (formerly framed as a candidate primary outcome, see §1 and

@@ -16,7 +16,7 @@
 **ActivLife Hub is a trust-first platform connecting people who want real-world
 experiences and events with vetted, skilled organizers.** ✅
 
-- Discovery is **emotional / scenario-based**, organized around real moments and
+- Discovery is **emotional / moment-based**, organized around real moments and
   communities — not generic categories.
 - **Trust is the product:** organizers carry meaningful, paid credentials (Verified
   and/or Certified — §3) before they can transact.
@@ -28,10 +28,16 @@ experiences and events with vetted, skilled organizers.** ✅
 
 ## 2. Marketplace structure
 
+> **Canonical terms (see definitions block):** the **Marketplace** is the page that shows
+> **public Events only**. An **Event** is the **primary object shown in the Marketplace**;
+> **visibility (public/private) is a property of the Event**, not a separate entity.
+> "Activity" is the current code name for an Event (`activities` table). **Event Requests**
+> are a separate **demand channel**, not the Marketplace page.
+
 The platform runs **two independent supply/demand models**:
 
-### Ready Activities (supply-first) ✅
-Organizers publish activities in advance; users discover and join them.
+### Ready Activities — public Events (supply-first) ✅
+Organizers publish Events in advance; users discover and join the public ones.
 *Examples:* Yoga on Lisbon Beach · Painting Workshop near the Louvre · Sunset Run
 around Diamond Head. Backed by the `activities` table + marketplace search.
 
@@ -88,24 +94,40 @@ robustness, and booking-payment/refund cases. 🟡
 
 ## 5. OPE™ — Organizer Planning Engine
 
-**Core organizer value proposition.** Design: `docs/OPE_V1_TECHNICAL_DESIGN.md`. 📐
+**Core organizer value proposition: OPE is the organizer's digital assistant.** It helps
+an organizer turn a customer request (or their own idea) into an **executable event
+plan**, then helps organize and manage its execution. Design:
+`docs/OPE_V1_TECHNICAL_DESIGN.md`. 📐
 
-- **Organizer Planning Engine** — turns an event scenario or inbound Event Request into
-  a structured, editable plan with a cost estimate.
-- **Scenario knowledge base** — a curated, versioned, **internal** knowledge base of
-  planning know-how and pricing references (timelines, tasks, resources, regional
-  notes). Not user-facing (see §9).
-- **Scenario adaptation** — the engine adapts a base scenario to the specifics
-  (guests, region, budget, venue, vibe, constraints) rather than emitting a fixed
-  template.
-- **Preliminary planning assessment** — for Event Requests, OPE estimates prep hours,
-  staffing, equipment, vendors, logistics, budget, and operational risks **before** the
-  request reaches organizers.
-- **Budget / cost estimation** — a **deterministic** engine computes all money
-  (low / likely / high). The LLM proposes *what*; the engine computes *how much*. Never
-  mixed.
-- **Organizer editing** — organizers edit quantities, staffing, schedule, budget, and
-  requirements; OPE **recalculates deterministically** (no new LLM call).
+- **Digital assistant for organizers** — OPE *assists* the organizer; it does not replace
+  them. Its job is to reduce planning and coordination work, not to "generate events."
+- **Primary output: an executable event plan** — the core deliverable is a plan an
+  organizer can actually run. It contains: **actions** (what is performed) · **timing**
+  (when / dependencies) · **resources** (what is needed) · **responsible parties** (who) ·
+  **quantities** · **control points** (checks / milestones).
+- **Categories are metadata** — an event category (birthday, wedding, …) is a helpful
+  label and pricing key, **not** the core of the system. Plans are built around *what
+  should happen*, not around a category.
+- **Many valid sources for a plan** — an event plan may be built from any of: **templates,
+  the organizer's previous events / archive, AI-generated ideas, or an imported plan**.
+  No single source is privileged.
+- **AI idea generation is optional** — AI is used **only when** the organizer or customer
+  wants help creating the event concept. A plan can be built with no AI at all (template,
+  archive, or import).
+- **Preliminary planning assessment** — for inbound Event Requests, OPE estimates prep
+  hours, staffing, equipment, vendors, logistics, budget, and operational risks **before**
+  the request reaches organizers.
+- **Resources** — an Event Plan accounts for all resource types: **people, contractors,
+  services, venues, transport, equipment, materials, and money**. OPE builds
+  the plan by analyzing the resources it **requires** against those **available**.
+- **Cost Estimate** — the **aggregated estimate of the resources required to execute the
+  Event Plan**, computed by a **deterministic** engine (low / likely / high). Where AI is
+  used it proposes *what*; the engine computes *how much*. Never mixed.
+- **Organizer editing** — organizers edit actions, quantities, timing, resources,
+  responsible parties, and budget; OPE **recalculates deterministically** (no new AI call).
+- **Value = execution, not generation** — the platform's value is **organizing and
+  managing event execution** and acting as a **unified workspace** for the organizer —
+  not generating events.
 
 ---
 
@@ -167,9 +189,10 @@ These are guardrails for every future decision:
   chat, and similar engagement mechanics until the organizer/marketplace core proves out.
 - **OPE™ is a core organizer value proposition** — protect it as a differentiator;
   prioritize organizer planning leverage over breadth of consumer features.
-- **Scenarios are an internal knowledge base, not a user-facing catalog.** Users never
-  browse "scenarios"; the scenario KB powers OPE's assessments and plans behind the
-  scenes.
+- **Categories are metadata; the platform is not a scenario catalog or event generator.**
+  An event category is a label / pricing key, not the core object, and users never browse
+  "scenarios." A plan may be sourced from templates, the organizer's archive, AI ideas, or
+  an imported plan — OPE **organizes execution**, it does not sell generated events.
 
 ---
 
@@ -198,9 +221,11 @@ people: 1) Learn → 2) Get Certified → 3) Find Clients → 4) Run Events → 
 6) Grow as Professional Organizers. Marketplace, Certification, and OPE are **components
 supporting this journey**, not the end in themselves.
 
-### 10.3 OPE Primary Outcome — Client Proposal Generator ✅ Decided
-OPE's **primary outcome** is a **Client Proposal Generator**: help organizers create professional
-client proposals in **minutes instead of hours**. Generated outputs include:
+### 10.3 OPE Output — Executable Event Plan, surfaced as a Client Proposal ✅ Decided
+OPE's **primary output is an executable event plan** (actions · timing · resources ·
+responsible parties · quantities · control points). The organizer's headline use of that
+plan is a **Client Proposal** — the same plan rendered for a client in **minutes instead of
+hours**. Proposal sections are **views of the executable plan**:
 - Executive Summary
 - Event Timeline
 - Staffing Plan
@@ -209,14 +234,15 @@ client proposals in **minutes instead of hours**. Generated outputs include:
 - Risk Assessment
 - Proposal-ready Document
 
-**Priority order:**
+**Priority order (organizer-facing deliverables built on the executable plan):**
 1. Client Proposal Generator
 2. Attach Proposal to Client Request
 3. Proposal PDF Export
 4. Convert Proposal into Marketplace Activity
 
-> This **answers OPE design §13 Q4** (output destination priority): proposal generation is
-> primary; "convert to activity" drops to priority 4.
+> This **answers OPE design §13 Q4** (output destination priority): the proposal is the
+> primary *deliverable*, **rendered from the executable plan**; "convert to activity"
+> drops to priority 4.
 
 ### 10.4 Success Definition ✅ Decided
 For aspiring organizers, **success is not certification**. Success is reaching:
@@ -269,7 +295,7 @@ a **surface over OPE Core** (§11.6), **not a separate product**, and it can bri
 
 ### 11.6 Single Engine Strategy ✅ Decided
 Activity Planner and the Organizer Platform are **surfaces over one shared OPE Core**
-(scenario · knowledge base · planning workflow · cost engine). They differ only in **input depth,
+(request → event plan · knowledge base · planning workflow · cost engine). They differ only in **input depth,
 output template, capability gating, and pricing layer**. The **OPE Core is shared**; only the
 **professional output layer** (client proposals, quoting, marketplace earning) is organizer-gated.
 The **Knowledge Base and Pricing logic are shared Core content**, authored once per category (Wedding
@@ -333,6 +359,167 @@ Rules (non-negotiable):
 5. If a user subscribes during the included window, the **paid subscription starts immediately** (no Stripe trial/deferral implemented).
 
 **Implementation:** the window is an internal entitlement on `profiles.organizer_access_until` (TIMESTAMPTZ, nullable), set at first certification by an `AFTER INSERT ON certificates` trigger (`supabase/migrations/017_organizer_access.sql`). Effective access = `role ∈ {certified_organizer, admin}` **AND** (`subscription.status ∈ {active, trialing}` **OR** `organizer_access_until > now()`), centralised in `lib/auth/organizer-access.ts` and enforced in `middleware.ts` (dashboard) and the organizer write actions. **No Stripe pricing change; no Stripe trial.**
+
+---
+
+## Decision — OPE & Platform Direction (2026-06-14)
+
+**Status: Decided.** Consolidates the current understanding of ActivLife Hub and OPE.
+Extends §5, §9, §10.3; reverses no prior decision. (No architecture redesign; this is a
+product-direction record.)
+
+1. **OPE is a digital assistant for organizers** — it assists, it does not replace the organizer.
+2. **The primary output of OPE is an executable event plan.**
+3. **An executable event plan contains:** actions · timing · resources · responsible parties · quantities · control points.
+4. **Categories are helpful metadata, not the core of the system.**
+5. **Valid sources for an event plan are all equal:** templates, previous events / organizer archives, AI-generated ideas, and imported plans.
+6. **AI idea generation is optional** — used only when the organizer or customer wants help creating the event concept.
+7. **The platform's value is not event generation** — it is **organizing and managing event execution**.
+8. **The platform is a unified workspace for organizers.**
+
+> Downstream alignment: `OPE_V1_TECHNICAL_DESIGN.md` already reflects the executable-plan /
+> timed-work-item direction (migrated separately). `OPE_MASTER_SPEC.md`,
+> `OPE_IMPLEMENTATION_ROADMAP.md`, and `OPE_EVENT_LIFECYCLE.md` are **not** updated here and
+> retain pre-V2 framing until separately reconciled.
+
+---
+
+## Decision — Canonical Model & Definitions (2026-06-14)
+
+**Status: Decided.** Authoritative glossary aligning terminology across the document.
+Clarifies §1–§11; reverses no prior decision. Where an existing section uses older wording,
+these definitions govern.
+
+- **Marketplace** — the page that shows **public Events only**. (Event Requests are a
+  separate demand channel, §2/§6 — not the Marketplace page.)
+- **Event** — the **primary object shown in the Marketplace**. (Implemented today as the
+  `activities` table; "activity" is the current code name for an Event.)
+- **Event visibility** — a **property of an Event (public / private)**, not a separate entity.
+- **Request** — a **short description of a customer need or requirement** (backed by
+  `customer_requests`).
+- **"What should happen"** — the **description of what must happen at the event and what
+  people should experience** (the desired happenings and the emotional/social result). It is
+  **obtained or created from the Request and approved BEFORE planning begins.** It is **NOT**
+  timeline, staffing, vendors, budget, logistics, or a resource list. *("What should happen"
+  is the control phrase used until the naming is finalized; do not yet rename it "Scenario".)*
+- **Event Plan** — the **implementation of an approved "what should happen"**: timeline,
+  tasks, resources, staffing, vendors, logistics, budget, and risks. It is produced **after**
+  "what should happen" is approved — it is **not** the first output of OPE.
+- **OPE** — the **algorithm that turns a Request into an approved "what should happen", and
+  only then into an Event Plan**, by analyzing the required and available resources, using
+  **AI assistance only when needed**.
+- **AI** — **optional**; one tool available to OPE, not OPE itself. An Event Plan can be
+  produced without AI (from templates, the organizer's archive, or an imported plan).
+- **Resources** — **people, contractors, services, venues, transport, equipment, materials,
+  and money.**
+- **Cost Estimate** — the **aggregated estimate of the resources required to execute the
+  Event Plan** (deterministic; low / likely / high).
+- **Timeline** — **when the approved event elements happen** (the schedule of the Event Plan).
+  It belongs to the Event Plan implementation; it is **not** part of "what should happen".
+- **Account** — **one account = one person**, with **one optional company name** used in
+  documents and payments.
+- **"Scenario" (naming not finalized):** the story of *what should happen* is currently called
+  **"what should happen"** (the control phrase), **Request** is the customer's ask, **Event
+  Plan** is the implementation, and **Event** is the Marketplace object. The label "Scenario"
+  is **not yet adopted** for "what should happen" — do not rename it until the naming is
+  finalized. *(This replaces the earlier "Scenario term retired" wording, which conflicted
+  with the Request → "what should happen" → approval → Event Plan rule.)*
+
+---
+
+## Decision — Post-Event Learning Loop (2026-06-15)
+
+**Status: Decided (product vision).** A product decision only — it introduces **no new
+architecture**, modifies **no OPE or lifecycle design**, and redesigns **no existing
+system**. The mechanics already live in the learning, lifecycle, and monitoring docs
+(cross-referenced below); this records the product intent.
+
+- **A completed Event becomes a source of learning data.** The Event is not "finished"
+  the moment execution ends — it conceptually continues **beyond execution into
+  learning**.
+- **Learning data may improve:**
+  - OPE planning accuracy;
+  - Cost Estimate accuracy;
+  - Resource recommendations;
+  - Organizer training;
+  - Organizer certification;
+  - Venue / vendor / contractor / service evaluation.
+- The **Event lifecycle conceptually continues** past execution into a learning stage —
+  this is a strategic, long-term platform capability, not a reporting side-effect.
+
+> Cross-references (existing docs, unchanged): the learning mechanics, signal capture and
+> promotion rules are defined in `OPE_LEARNING_ARCHITECTURE.md`; the post-execution
+> stages (Completed vs Closed, learning triggered at Closed) in `OPE_EVENT_LIFECYCLE.md`;
+> deviation/actuals → historical store in `OPE_MASTER_SPEC.md` (§13 Monitoring, §16 Future
+> Scope); and the training/certification/quality-evaluation surfaces in the Academy,
+> Certification, and Trust & Verification docs.
+
+---
+
+## Decision — Minimum Planning Inputs (2026-06-15)
+
+**Status: Decided.** A product rule only — it introduces **no architecture**, modifies
+**no OPE documents**, and redesigns **no existing system**.
+
+Before OPE can begin detailed Event Planning, it must obtain enough information to
+establish:
+
+- **When** (date / timing);
+- **Where** (location / venue);
+- **Who** (guests / participants);
+- **Budget**;
+- **Expected Outcome** (what success looks like).
+
+These are **not mandatory form fields.** OPE may obtain them through any of:
+
+- direct customer input;
+- clarification questions;
+- option selection;
+- conversation.
+
+If one or more remain **unknown**, OPE should keep **reducing uncertainty** before
+beginning Event Planning.
+
+**Accepted principle:** *"Uncertainty should be resolved before detailed Event Planning
+begins."*
+
+---
+
+## Decision — Alternative Event Approaches Before Plan Approval (2026-06-15)
+
+**Status: Decided.** Extends §5 / §10.3; reverses no prior decision. Introduces **no new
+architecture entity** (see rule 6).
+
+Before Event Plan approval, OPE may generate **multiple alternative event approaches** for
+the same Request.
+
+**Purpose:** the role of OPE is not only to create a plan, but also to help the
+organizer/customer **evaluate different ways of achieving the desired outcome**.
+
+**Examples:**
+
+- Request: *"Team building for 40 employees"* → possible approaches: BBQ and outdoor
+  social gathering · Sports competition day · City quest / scavenger hunt · Volunteer
+  community project.
+- Request: *"Marriage proposal"* → possible approaches: Beach proposal · Yacht proposal ·
+  Private dinner proposal · Family celebration proposal.
+
+**Rules:**
+
+1. OPE may generate one or more alternative approaches.
+2. Alternative approaches are generated **before** Event Plan approval.
+3. The organizer/customer **selects one** approach.
+4. The selected approach becomes the **approved Event Plan**.
+5. Unselected approaches may be **retained as historical alternatives** but do **not**
+   become active Event Plans.
+6. This decision **does not require new architecture entities.** Alternative approaches may
+   be implemented using existing **plan revision, plan generation, or request-linked plan
+   structures**.
+
+**Rationale:** a single generated plan limits organizer choice and behaves like a
+traditional planning tool. Alternative approaches let OPE function as a **decision-support
+system** and better reflect how experienced organizers evaluate multiple ways to achieve
+the same outcome before committing to a final plan.
 
 ## Decision — Final Billing Architecture (2026-06-16) ✅ Decided
 
