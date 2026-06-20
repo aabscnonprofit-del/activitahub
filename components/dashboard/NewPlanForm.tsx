@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { Sparkles, Loader2 } from 'lucide-react'
 import { createPlan } from '@/lib/actions/opePlans'
+import { draftWhatShouldHappen } from '@/lib/ope/concept-funnel'
 import type { PlannerInput, RecurrenceFrequency } from '@/lib/ope'
 
 // Organizer-side create → persist (M5 WP2). Reuses the localized planner.form
@@ -57,6 +58,9 @@ export default function NewPlanForm({ locale }: { locale: string }) {
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  // "What should happen" step: organizer approves/edits WSH before plan generation.
+  const [step, setStep] = useState<'form' | 'wsh'>('form')
+  const [wsh, setWsh] = useState('')
 
   function buildInput(): PlannerInput {
     return {
@@ -77,13 +81,25 @@ export default function NewPlanForm({ locale }: { locale: string }) {
     }
   }
 
-  async function onSubmit(e: React.FormEvent) {
+  // Step 1 → derive a "what should happen" draft from the structured input and review it.
+  function reviewWsh(e: React.FormEvent) {
     e.preventDefault()
     setError('')
     if (!title.trim()) { setError(tw('errTitle')); return }
+    const input = buildInput()
+    const reqs = (input.specialRequirements ?? []).join(', ')
+    const brief = `A ${input.category} for ${input.guestCount} guests${reqs ? `, ${reqs}` : ''}`
+    setWsh(draftWhatShouldHappen(brief))
+    setStep('wsh')
+  }
+
+  // Step 2 → plan ONLY after the organizer approves "what should happen".
+  async function createWithWsh() {
+    setError('')
+    if (!wsh.trim()) { setError(tw('errCreate')); return }
     setLoading(true)
     try {
-      const res = await createPlan(title.trim(), buildInput())
+      const res = await createPlan(title.trim(), buildInput(), wsh.trim())
       if (res.success && res.data) {
         router.push(`/${locale}/dashboard/plans/${res.data.id}`)
       } else {
@@ -117,8 +133,26 @@ export default function NewPlanForm({ locale }: { locale: string }) {
   const chip = (active: boolean) =>
     `rounded-full border px-4 py-2 text-sm font-medium transition-colors ${active ? 'border-brand-300 bg-brand-50 text-brand-700' : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'}`
 
+  // ── Step: "what should happen" — approve/edit BEFORE the plan is generated ───────────
+  if (step === 'wsh') {
+    return (
+      <div className="space-y-4">
+        <button type="button" onClick={() => setStep('form')} className="text-sm font-medium text-slate-500 hover:text-slate-800">← Back</button>
+        <Section titleText="What should happen">
+          <p className="mb-2 text-sm text-slate-500">Approve or edit what should happen — what happens, what people experience, and the result. The plan is generated only after this.</p>
+          <textarea value={wsh} onChange={(e) => setWsh(e.target.value)} rows={6} className="input-base w-full" />
+        </Section>
+        {error && <p className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600">{error}</p>}
+        <button type="button" disabled={loading || !wsh.trim()} onClick={createWithWsh} className="btn-primary w-full px-7 py-3.5 text-base sm:w-auto">
+          {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+          {loading ? tw('creating') : tw('create')}
+        </button>
+      </div>
+    )
+  }
+
   return (
-    <form onSubmit={onSubmit} className="space-y-4">
+    <form onSubmit={reviewWsh} className="space-y-4">
       <Section titleText={tw('planTitle')}>
         <input required value={title} onChange={(e) => setTitle(e.target.value)} className="input-base" placeholder={tw('planTitlePlaceholder')} />
       </Section>

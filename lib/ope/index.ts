@@ -13,6 +13,11 @@ export type { CoverageDecision, CoverageStatus } from './coverage'
 export type { ConceptOption, ConceptFunnelResult, ConceptFunnelStatus, ConceptGenerator } from './concept-funnel'
 export { runConceptFunnel, selectConcept, applyConceptToText, conceptRequirement, assessConceptEntry, detectTheme, defaultConceptGenerator } from './concept-funnel'
 
+// P-B — WSH → typed planning signals. Enriches PlannerInput before generatePlan so the
+// approved "what should happen" influences planning (additive; organizer fields win).
+export type { PlanningSignals } from './wsh-signals'
+export { extractPlanningSignals, enrichInputWithWsh } from './wsh-signals'
+
 export type PlanStatus = CoverageDecision['status'] | 'needs_clarification'
 
 /**

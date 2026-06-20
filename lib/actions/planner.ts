@@ -8,6 +8,7 @@ import { runConceptFunnelAI, composeWhatShouldHappen } from '@/lib/ai/concept-ge
 import { understandEventText } from '@/lib/ai/request-understanding'
 import { applyConceptToText, conceptRequirement, recognizeScenario, type ConceptFunnelResult, type ConceptOption, type ScenarioSource } from '@/lib/ope/concept-funnel'
 import { extractFromText } from '@/lib/ope/request-text'
+import { enrichInputWithWsh } from '@/lib/ope/wsh-signals'
 
 export type GeneratePlanResult =
   | { ok: true; result: PlanGenerationResult }
@@ -190,7 +191,10 @@ export async function generateFromIdeaAction(payload: IdeaPlanPayload): Promise<
     ...(d.materials ? { materials: d.materials } : {}),
   }
 
-  const parsed = schema.safeParse(merged)
+  // P-B: the approved WSH is a real planning input. Enrich deterministically (no AI needed)
+  // with typed signals — fills blank venue/budget/headcount and adds typed requirements.
+  // Organizer-entered `details` already won above; this only fills gaps / appends signals.
+  const parsed = schema.safeParse(enrichInputWithWsh(merged, wsh))
   if (!parsed.success) return { ok: false, error: 'invalid_input' }
   try {
     const result = generatePlan(parsed.data as PlannerInput)

@@ -550,9 +550,14 @@ event is not the same as being recognized as an organizer.**
 **1. Event User**
 
 - Operates under a **One Event License**.
-- May **create and run events** using platform tools.
-- May use **OPE planning and sourcing** tools.
-- May **sell tickets and manage participants**.
+- May **create a one-time event plan** using platform tools.
+- May use **OPE planning and sourcing** tools for that one event.
+- May **manage planning information / checklists** for that event.
+- May **NOT sell tickets**.
+- May **NOT accept participant payments**.
+- May **NOT receive payouts**.
+- **Must become an Organizer** to use ticketing, participant payment, Stripe Connect, or payout
+  capabilities (see *One-Time Planner payment boundary* below).
 - Is **NOT** verified, certified, or trained by ActivLife Hub.
 - The platform does **not** represent this user as a qualified organizer.
 
@@ -583,7 +588,137 @@ event is not the same as being recognized as an organizer.**
 - **One Event License = the right to run an event.**
 - **Organizer License = the right to be recognized as an ActivLife Hub organizer.**
 
-**Rationale:** separating "run one event" from "be an organizer" lets newcomers transact
+**Rationale:** separating "run one event" from "be an organizer" lets newcomers plan
 on a low-commitment, per-event basis while reserving organizer status (and the trust
 signals of Verified/Certified) for those on the recurring Organizer License — keeping the
-"trust is the product" principle (§1) intact without gating first-time event creators.
+"trust is the product" principle (§1) intact without gating first-time event planners.
+
+### One-Time Planner payment boundary (2026-06-20) ✅ Decided
+
+A **One-Time Planner / Event User is not allowed to sell tickets, accept participant payments, or
+receive money through the platform.** **Ticket sales, participant payments, Stripe Connect, and
+payouts are Organizer-only capabilities** (certified organizer + active subscription). A One-Time
+Planner who wants to transact must become an Organizer.
+
+This resolves the contradiction recorded in `ONE_TIME_PLANNER_PAYMENT_AUDIT.md`: the earlier "may
+sell tickets and manage participants" line for the Event User conflicted with the Activity Planner
+product scope, the §11 monetization gating, the Final Billing Architecture (all money settles to the
+**organizer's** connected account), and the implementation reality (organizer-only Connect; no
+self-serve participant checkout). The Event User definition above is now consistent with that model.
+
+---
+
+## Decision — Planning Readiness Principle (2026-06-19) ✅ Decided
+
+**Status: Decided.** This is the **primary entry rule for OPE.** It **replaces client
+classification as the first architectural decision point.** (Discovery layer detail:
+`OPE_DISCOVERY_ENGINE_PRINCIPLES_V1.md`.)
+
+### Core principle
+
+OPE does **not** begin by classifying clients. OPE begins by evaluating whether **sufficient
+information exists to create a first viable plan.** The primary question is:
+
+> **Can a first viable plan be created from the information currently available?**
+
+### Rule 1 — Planning
+
+If sufficient information exists to create a first viable plan:
+
+`Request → Planning` — **no Discovery process is required.**
+
+### Rule 2 — Discovery
+
+If sufficient information does **not** exist to create a first viable plan:
+
+`Request → Discovery` — Discovery continues until sufficient information exists to create a
+first viable plan.
+
+### Purpose of Discovery
+
+The purpose of Discovery is **not to collect information** — it is to **help the client
+formulate a request that can be converted into a plan.** Discovery may include: clarification
+questions; comparison of alternatives; examples; idea stimulation; expectation calibration;
+preliminary proposals.
+
+### Discovery variations (NOT separate primary entry states)
+
+Insufficient planning information may occur for different reasons, including: the desired result
+is known but the path is unknown; the direction is known but the desired result is unclear;
+several competing possibilities exist; the client has not yet formulated a meaningful request.
+**These are Discovery situations, not separate primary entry states.**
+
+### Architectural consequence
+
+The first decision OPE makes is **not** event category, event type, client category, or
+psychological profile. The first decision OPE makes is:
+
+> **Planning or Discovery?**
+
+### Relationship to existing OPE architecture
+
+Fully compatible; Discovery is an **additive** layer that replaces no existing OPE architecture.
+
+- **Planning readiness exists:** `Request → What Should Happen → Approval → Plan → Execution`.
+- **Planning readiness does not exist:** `Request → Discovery → What Should Happen → Approval → Plan → Execution`.
+
+---
+
+## Decision — WSH as the Planning Input (2026-06-19) ✅ Decided
+
+**Status: Decided.** The **direct input to the Planning Engine** is **not** the client request,
+the conversation history, questionnaire responses, or Discovery output. The direct input to the
+Planning Engine is **"What Should Happen" (WSH)**. (This refines the *Planning Readiness
+Principle* above: the readiness test now operates on **WSH**.)
+
+### Core principle
+
+Planning begins when **WSH contains sufficient information to support creation of a first viable
+plan.** The Planning Readiness test therefore becomes:
+
+> **Does the current WSH contain sufficient information to begin planning?**
+
+### Path A — Direct Planning
+
+If the client request already contains sufficient information, WSH may be created **directly**
+from the request — Discovery is not required:
+
+`Request → WSH → Planning`
+
+### Path B — Discovery-Assisted Planning
+
+If the client request does **not** contain sufficient information, Discovery is used to
+**progressively develop WSH**, continuing until WSH contains sufficient information for planning:
+
+`Request → Discovery → WSH → Planning`
+
+### Consequence
+
+- **Discovery does not create plans — Discovery develops WSH.**
+- **Planning does not interpret client desires — Planning interprets WSH.**
+- **WSH is the bridge** between client understanding and operational planning.
+
+---
+
+## Decision — Organizer Growth Program: First 90 Days (2026-06-20) ✅ Decided
+
+A permanent organizer growth program. It rewards **real organizer activity** (completed activities),
+not registration, training completion, or certification. Too large for a single decision entry — the
+full rules live in a canonical program document:
+
+→ **[docs/ORGANIZER_GROWTH_PROGRAM_90_DAYS_V1.md](ORGANIZER_GROWTH_PROGRAM_90_DAYS_V1.md)**
+
+Summary (see the document for the governing detail):
+
+- **90-day activation program** from the registration date, in three 30-day periods, with completed-
+  activity milestones **3 / 5 / 7** each earning **+1 free organizer month** (max **3**). Free months
+  are **earned during** but **applied after** the first 90 days; normal fees are paid throughout.
+- **Training/certification reimbursement** to the organizer's **internal platform balance**
+  (non-cash) on reaching **15** completed activities in the first 90 days.
+- **Eligibility:** only Completed, non-cancelled activities created after registration that pass
+  anti-fraud; recurring occurrences may each count.
+- **Anti-fraud** exclusion of suspicious patterns; **promotion rules** differ for one-time (link to
+  the activity) vs recurring (link to the organizer).
+
+*Specification of record only — no implementation, billing change, or architecture decision is
+implied. A feasibility/gap audit will follow before any build is scoped.*

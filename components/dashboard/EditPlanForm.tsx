@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { Loader2, RefreshCw, X } from 'lucide-react'
 import { updatePlanInputs } from '@/lib/actions/opePlans'
+import { draftWhatShouldHappen } from '@/lib/ope/concept-funnel'
 import type { PlannerInput } from '@/lib/ope'
 import type { SavedPlan } from '@/lib/types'
 
@@ -82,7 +83,13 @@ export default function EditPlanForm({
     if (!title.trim()) { setError(tw('errTitle')); return }
     setLoading(true)
     try {
-      const res = await updatePlanInputs(plan.id, buildInput(), title.trim())
+      // Recompute is still planning → it needs "what should happen". The plan was WSH-approved
+      // at creation; on edit we auto-derive a fresh WSH from the edited input (Path A: sufficient
+      // input → WSH → plan), so generatePlan never runs without it.
+      const input = buildInput()
+      const reqs = (input.specialRequirements ?? []).join(', ')
+      const wsh = draftWhatShouldHappen(`A ${input.category} for ${input.guestCount} guests${reqs ? `, ${reqs}` : ''}`)
+      const res = await updatePlanInputs(plan.id, input, title.trim(), wsh.trim())
       if (res.success && res.data) {
         onSaved(res.data)
       } else {

@@ -8,6 +8,8 @@ import type { PlannerInput } from '@/lib/ope/types'
 import { plannerInputSchema } from '@/lib/ope/validation'
 import { mapRequestToPlannerInput, mapRequestToApproaches, assessRequestReadiness, buildAssessment, fillClarificationDefaults, type RequestLike } from '@/lib/ope/request-plan'
 import { understandRequest } from '@/lib/ai/request-understanding'
+import { draftWhatShouldHappen } from '@/lib/ope/concept-funnel'
+import { enrichInputWithWsh } from '@/lib/ope/wsh-signals'
 import { buildProposal, type ProposalViewModel } from '@/lib/workspace/proposal'
 import { userHasOrganizerAccess } from '@/lib/auth/organizer-access.server'
 import {
@@ -27,8 +29,32 @@ import type {
 const TABLE = 'ope_plans'
 const SELECT = '*'
 
-/** Create a plan: authenticate, run generatePlan, persist a fresh SavedPlan. */
-export async function createPlan(title: string | null, rawInput: unknown): Promise<ActionResult<SavedPlan>> {
+/** Render a structured planner input to a short brief for deriving "what should happen". */
+function inputBrief(input: PlannerInput): string {
+  const reqs = (input.specialRequirements ?? []).join(', ')
+  return `A ${input.category} for ${input.guestCount} guests${reqs ? `, ${reqs}` : ''}`.trim()
+}
+
+/**
+ * P-B: enrich a validated PlannerInput with typed signals from an approved WSH, then
+ * re-validate. Organizer fields win; WSH only fills blanks / adds requirements. Falls back
+ * to the original input if enrichment ever produced something invalid (defensive — the
+ * enricher already caps lengths). Empty WSH → input returned unchanged.
+ */
+function wshEnriched(input: PlannerInput, wsh: string | null | undefined): PlannerInput {
+  const enriched = enrichInputWithWsh(input, wsh)
+  const parsed = plannerInputSchema.safeParse(enriched)
+  return parsed.success ? (parsed.data as PlannerInput) : input
+}
+
+/**
+ * Create a plan. "What should happen" (WSH) gate (governing decisions: Planning consumes
+ * WSH; no live planning path bypasses WSH): the organizer's sufficient structured input
+ * produces an approved WSH (drafted + approved in the form), and `generatePlan` runs only
+ * after it exists. WSH is the approval artifact; it does not alter the deterministic engine
+ * input (plan output is unchanged from before).
+ */
+export async function createPlan(title: string | null, rawInput: unknown, whatShouldHappen?: string | null): Promise<ActionResult<SavedPlan>> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: 'not_authenticated' }
@@ -36,16 +62,24 @@ export async function createPlan(title: string | null, rawInput: unknown): Promi
   const parsed = plannerInputSchema.safeParse(rawInput)
   if (!parsed.success) return { error: 'invalid_input' }
 
+  // WSH gate: no Event Plan before an approved "what should happen".
+  if (!(whatShouldHappen ?? '').trim()) return { error: 'what_should_happen_required' }
+
+  // P-B: WSH is a real planning input. Extract typed signals from the approved WSH and
+  // enrich the structured input (organizer fields win; WSH fills blanks + adds typed
+  // requirements). The enriched input is what the engine plans from and what we persist.
+  const finalInput = wshEnriched(parsed.data as PlannerInput, whatShouldHappen)
+
   let result
   try {
-    result = generatePlan(parsed.data as PlannerInput)
+    result = generatePlan(finalInput)
   } catch {
     return { error: 'generation_failed' }
   }
 
   // Every plan carries a deterministic assessment (Task #3) — for non-ready results
   // it reflects 'none' coverage / no budget, refreshed on the next recompute.
-  const assessment = buildAssessment(parsed.data as PlannerInput, result)
+  const assessment = buildAssessment(finalInput, result)
 
   // Lifecycle (WP8): a new plan is a Draft and auto-advances to Planning the moment
   // the engine returns plan_ready. Non-ready results (clarify / handoff) stay Draft.
@@ -60,7 +94,7 @@ export async function createPlan(title: string | null, rawInput: unknown): Promi
     .insert({
       organizer_id: user.id,
       title: title?.trim() || null,
-      input: parsed.data,
+      input: finalInput,
       result,
       corrections: {},
       prep_state: {},
@@ -136,6 +170,12 @@ export async function createPlanFromRequest(requestId: string): Promise<CreatePl
   if (!parsed.success) return { ok: false, kind: 'error', error: 'invalid_input' }
 
   let finalInput = parsed.data as PlannerInput
+
+  // WSH first: create "what should happen" from the (sufficient) request input, then plan
+  // from it (governing decision — every live planning path creates WSH before generatePlan).
+  const wsh = draftWhatShouldHappen(inputBrief(finalInput))
+  if (!wsh.trim()) return { ok: false, kind: 'error', error: 'invalid_input' }
+
   let result
   try {
     result = generatePlan(finalInput)
@@ -265,6 +305,17 @@ export async function generateApproachesFromRequest(requestId: string): Promise<
     return { ok: false, kind: 'unsupported', reason: 'Category outside OPE V1 scope' }
   }
 
+  // WSH first: readiness already passed (assessRequestReadiness above); create "what should
+  // happen" from the sufficient request input before planning any approach (governing decision).
+  const wsh = draftWhatShouldHappen(inputBrief(approaches[0] as PlannerInput))
+  if (!wsh.trim()) return { ok: false, kind: 'unsupported', reason: 'Could not establish what should happen' }
+
+  // P-B planning-signal source for this path: the customer's own request narrative (no
+  // human-approved WSH exists here). Typed signals from the notes ENRICH each approach
+  // before generatePlan — structured fields (from mapRequestToApproaches / understandRequest)
+  // always win; the narrative only fills blanks and adds typed requirements. Deterministic.
+  const requestText = [request.notes, request.event_type].filter(Boolean).join('. ')
+
   // Each approach: validate, generate (auto-filling clarifications once), keep only
   // ready plans. Unsupported / unpriced approaches are silently skipped — the organizer
   // sees only the alternatives that actually produced a complete plan.
@@ -272,7 +323,7 @@ export async function generateApproachesFromRequest(requestId: string): Promise<
     const parsed = plannerInputSchema.safeParse(input)
     if (!parsed.success) return []
 
-    let finalInput = parsed.data as PlannerInput
+    let finalInput = wshEnriched(parsed.data as PlannerInput, requestText)
     let result
     try {
       result = generatePlan(finalInput)
@@ -543,13 +594,18 @@ export async function listPlans(): Promise<ActionResult<SavedPlan[]>> {
  * Recompute a plan from edited inputs: re-run generatePlan, persist the new input
  * + result, bump the version, and PRESERVE corrections + prep_state (untouched).
  */
-export async function updatePlanInputs(planId: string, rawInput: unknown, title?: string | null): Promise<ActionResult<SavedPlan>> {
+export async function updatePlanInputs(planId: string, rawInput: unknown, title?: string | null, whatShouldHappen?: string | null): Promise<ActionResult<SavedPlan>> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: 'not_authenticated' }
 
   const parsed = plannerInputSchema.safeParse(rawInput)
   if (!parsed.success) return { error: 'invalid_input' }
+
+  // WSH gate: recompute is still planning — no Event Plan before "what should happen". The
+  // form supplies it (auto-derived from the edited input, since the plan was WSH-approved at
+  // creation). Does not alter the deterministic engine input.
+  if (!(whatShouldHappen ?? '').trim()) return { error: 'what_should_happen_required' }
 
   const { data: existing } = await supabase
     .from(TABLE)
@@ -563,9 +619,13 @@ export async function updatePlanInputs(planId: string, rawInput: unknown, title?
   const phase = existing.phase as OpePlanPhase
   if (!canEditInputs(phase)) return { error: 'frozen' }
 
+  // P-B: enrich the edited input with typed signals from the (approved/derived) WSH
+  // before recompute, then plan from + persist the enriched input.
+  const finalInput = wshEnriched(parsed.data as PlannerInput, whatShouldHappen)
+
   let result
   try {
-    result = generatePlan(parsed.data as PlannerInput)
+    result = generatePlan(finalInput)
   } catch {
     return { error: 'generation_failed' }
   }
@@ -576,9 +636,9 @@ export async function updatePlanInputs(planId: string, rawInput: unknown, title?
   // assessment is recomputed so it never goes stale after a rebuild (Task #3).
   // corrections/prep_state stay as-is.
   const patch: Record<string, unknown> = {
-    input: parsed.data,
+    input: finalInput,
     result,
-    assessment: buildAssessment(parsed.data as PlannerInput, result),
+    assessment: buildAssessment(finalInput, result),
     version: (existing.version as number) + 1,
   }
   if (title !== undefined) patch.title = title?.trim() || null
