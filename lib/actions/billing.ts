@@ -77,6 +77,15 @@ export async function createCertificationCheckout(formData: FormData): Promise<v
   }
   const path = profile.selected_path
 
+  // B1: experienced path may pay only AFTER the review application is activated.
+  // Rejected/redirected applicants never reach checkout, so are not charged.
+  if (path === 'experienced') {
+    const { data: app } = await supabase.rpc('get_experienced_application')
+    if ((app as { status?: string } | null)?.status !== 'activated') {
+      redirect(`/${locale}/onboarding/experienced`)
+    }
+  }
+
   const customerId = await ensureStripeCustomer(supabase, profile)
   const priceId = getCertificationPriceId(path)
 

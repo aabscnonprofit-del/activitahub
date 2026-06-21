@@ -44,6 +44,14 @@ export default async function ExamPage({ params }: ExamPageProps) {
   const enrollment = await getOrCreateEnrollment(supabase, profile)
   if (!enrollment) redirect(`/${locale}/academy`)
 
+  // Experienced (Fast Track) final exam is gated on an activated review application.
+  if (enrollment.course.path === 'experienced') {
+    const { data: app } = await supabase.rpc('get_experienced_application')
+    if ((app as { status?: string } | null)?.status !== 'activated') {
+      redirect(`/${locale}/onboarding/experienced`)
+    }
+  }
+
   // Already certified for this course → straight to the certificate.
   const existingCert = await getCertificate(supabase, user.id, enrollment.course.id)
   if (existingCert) redirect(`/${locale}/academy/certificate`)

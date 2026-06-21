@@ -25,6 +25,7 @@ export default async function AdminLayout({ children, params }: AdminLayoutProps
   const nav = [
     { key: 'dashboard', href: `/${locale}/admin` },
     { key: 'reviews', href: `/${locale}/admin/reviews` },
+    { key: 'experienced', href: `/${locale}/admin/experienced` },
     { key: 'bookings', href: `/${locale}/admin/bookings` },
     { key: 'organizers', href: `/${locale}/admin/organizers` },
   ]

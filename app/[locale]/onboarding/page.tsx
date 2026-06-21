@@ -88,6 +88,16 @@ export default async function OnboardingPage({ params, searchParams }: Onboardin
     typedProfile.onboarding_status = 'path_selected'
   }
 
+  // Experienced path goes through the Review Queue BEFORE payment (B1). Payment is
+  // reachable only from the experienced screen once the application is activated.
+  if (
+    typedProfile?.selected_path === 'experienced' &&
+    (typedProfile.onboarding_status === 'path_selected' ||
+      typedProfile.onboarding_status === 'payment_pending')
+  ) {
+    redirect(`/${locale}/onboarding/experienced`)
+  }
+
   const firstName = typedProfile?.full_name?.split(' ')[0] ?? null
 
   return (
