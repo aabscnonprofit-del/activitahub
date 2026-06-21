@@ -6,7 +6,7 @@ import type { PlannerInput, PlannerLocation } from '@/lib/ope/types'
 import { plannerInputSchema as schema } from '@/lib/ope/validation'
 import { runConceptFunnelAI, composeWhatShouldHappen } from '@/lib/ai/concept-generation'
 import { understandEventText } from '@/lib/ai/request-understanding'
-import { applyConceptToText, conceptRequirement, recognizeScenario, type ConceptFunnelResult, type ConceptOption, type ScenarioSource } from '@/lib/ope/concept-funnel'
+import { applyConceptToText, conceptRequirement, recognizeScenario, assessConceptEntry, type ConceptFunnelResult, type ConceptOption, type ScenarioSource } from '@/lib/ope/concept-funnel'
 import { extractFromText } from '@/lib/ope/request-text'
 import { enrichInputWithWsh } from '@/lib/ope/wsh-signals'
 
@@ -109,6 +109,17 @@ export async function analyzeIdeaAction(idea: string): Promise<AnalyzeIdeaResult
   if (funnel.status === 'bypass_concept_funnel') {
     return { ok: true, funnel, prefill, scenario: { status: 'scenario_recognized', whatShouldHappen: text, source: 'operational' } }
   }
+
+  // Discovery gate: a request with NO plannable anchor (no category AND no structured
+  // signals) is too vague/emotional to draft a "what should happen" from — doing so would
+  // INVENT the outcome. Stop here and require Discovery: return scenario_needed with a NULL
+  // WSH (no draft), which the downstream WSH gate keeps un-plannable until the user supplies
+  // real content. (Generators, request path, and engine are unchanged.)
+  const entry = assessConceptEntry(text)
+  if (entry.category == null && entry.anchors === 0) {
+    return { ok: true, funnel, prefill, scenario: { status: 'scenario_needed', whatShouldHappen: null, source: null } }
+  }
+
   const draft = await composeWhatShouldHappen(text)
   return { ok: true, funnel, prefill, scenario: { status: 'scenario_needed', whatShouldHappen: draft, source: null } }
 }
