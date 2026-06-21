@@ -37,6 +37,13 @@ export default async function NewRequestPage({ params, searchParams }: NewReques
   const prefillAgeMin = activity?.min_age != null ? String(activity.min_age) : ''
   const prefillAgeMax = activity?.max_age != null ? String(activity.max_age) : ''
 
+  // Activity-join prefills (only when joining an existing activity). The activity
+  // already has a scheduled date, so default "When" to its next upcoming session so
+  // OPE doesn't re-ask it; default "Who" to 1 (one joining user = at least one
+  // participant). Both stay editable. Empty for the generic (no-activity) request.
+  const prefillDate = activity?.upcoming?.[0]?.date ?? ''
+  const prefillParticipants = activity ? '1' : ''
+
   return (
     <div className="flex min-h-screen flex-col">
       <PublicHeader locale={locale} isAuthenticated />
@@ -114,11 +121,11 @@ export default async function NewRequestPage({ params, searchParams }: NewReques
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div>
                 <label className="label-base">{t('form.date')}</label>
-                <input name="desired_date" type="date" className="input-base" />
+                <input name="desired_date" type="date" defaultValue={prefillDate} className="input-base" />
               </div>
               <div>
                 <label className="label-base">{t('form.participants')}</label>
-                <input name="participant_count" type="number" min="1" className="input-base" />
+                <input name="participant_count" type="number" min="1" defaultValue={prefillParticipants} className="input-base" />
               </div>
             </div>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
