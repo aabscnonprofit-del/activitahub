@@ -2545,5 +2545,21 @@
     "manageSubscription": "Manage subscription",
     "extendAccess": "Extend access",
     "startSubscription": "Start subscription"
+  },
+  "eventLicense": {
+    "buyCta": "Get a One-Event License — $9.99",
+    "panel": {
+      "body": "Planning one event? A One-Event License is a single $9.99 purchase."
+    },
+    "success": {
+      "title": "Your One-Event License is active",
+      "body": "Thanks for your purchase — you're all set to plan your event below."
+    },
+    "cancelled": {
+      "body": "Checkout cancelled — you can buy a One-Event License whenever you're ready."
+    },
+    "error": {
+      "body": "Something went wrong starting checkout. Please try again."
+    }
   }
 }

@@ -4,6 +4,7 @@ import { getViewerCtaState } from '@/lib/auth/viewer'
 import Link from 'next/link'
 import PublicHeader from '@/components/layout/PublicHeader'
 import PublicFooter from '@/components/layout/PublicFooter'
+import { BuyEventLicenseButton } from '@/components/planner/BuyEventLicenseButton'
 import { Check, ArrowRight, Lock, Sparkles, GraduationCap, Briefcase, BadgeCheck, RefreshCw } from 'lucide-react'
 import type { Locale } from '@/lib/types'
 
@@ -138,6 +139,9 @@ export default async function PricingPage({ params }: Props) {
                     <span className="inline-flex w-full items-center justify-center rounded-lg bg-slate-100 py-3 text-sm font-semibold text-slate-500">
                       {t(`${base}.price` as 'products.planner.price')}
                     </span>
+                  ) : p.key === 'planner' ? (
+                    // One Event License — wire the $9.99 planner CTA to platform checkout.
+                    <BuyEventLicenseButton locale={locale} buttonClassName="btn-secondary w-full py-3 text-base" />
                   ) : (
                     (() => {
                       const o = orgCta(p.key)

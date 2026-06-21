@@ -230,6 +230,27 @@ async function handleCheckoutCompleted(
     return
   }
 
+  // One Event License (Activity Planner $9.99) — record the consumable entitlement
+  // (one purchase = one active license). Idempotent: keyed on the Checkout Session id.
+  if (kind === 'one_event_license') {
+    await admin.from('event_licenses').upsert(
+      {
+        profile_id: profileId,
+        status: 'active',
+        amount: session.amount_total ?? 0,
+        currency: session.currency ?? 'usd',
+        stripe_checkout_session_id: session.id,
+        stripe_payment_intent_id:
+          typeof session.payment_intent === 'string'
+            ? session.payment_intent
+            : (session.payment_intent?.id ?? null),
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: 'stripe_checkout_session_id' }
+    )
+    return
+  }
+
   if (kind === 'subscription' && session.subscription) {
     const subscriptionId =
       typeof session.subscription === 'string'

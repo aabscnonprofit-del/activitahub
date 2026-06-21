@@ -2545,5 +2545,21 @@
     "manageSubscription": "Abo verwalten",
     "extendAccess": "Zugang verlängern",
     "startSubscription": "Abo starten"
+  },
+  "eventLicense": {
+    "buyCta": "Einzel-Event-Lizenz — $9.99",
+    "panel": {
+      "body": "Planen Sie ein einzelnes Event? Die Einzel-Event-Lizenz ist ein einmaliger Kauf für $9.99."
+    },
+    "success": {
+      "title": "Ihre Einzel-Event-Lizenz ist aktiv",
+      "body": "Danke für Ihren Kauf — Sie können Ihr Event unten planen."
+    },
+    "cancelled": {
+      "body": "Bezahlung abgebrochen — Sie können die Lizenz jederzeit kaufen."
+    },
+    "error": {
+      "body": "Beim Start der Bezahlung ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut."
+    }
   }
 }

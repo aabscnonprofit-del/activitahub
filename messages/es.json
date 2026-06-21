@@ -2545,5 +2545,21 @@
     "manageSubscription": "Gestionar suscripción",
     "extendAccess": "Ampliar acceso",
     "startSubscription": "Iniciar suscripción"
+  },
+  "eventLicense": {
+    "buyCta": "Licencia para un evento — $9.99",
+    "panel": {
+      "body": "¿Planeas un solo evento? La licencia para un evento es una compra única de $9.99."
+    },
+    "success": {
+      "title": "Tu licencia para un evento está activa",
+      "body": "Gracias por tu compra: ya puedes planificar tu evento abajo."
+    },
+    "cancelled": {
+      "body": "Pago cancelado: puedes comprar la licencia cuando quieras."
+    },
+    "error": {
+      "body": "Algo salió mal al iniciar el pago. Inténtalo de nuevo."
+    }
   }
 }

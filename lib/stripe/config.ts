@@ -46,6 +46,20 @@ export function getSubscriptionPriceId(): string {
   return priceId
 }
 
+/**
+ * Resolves the One Event License (Activity Planner $9.99) one-time price id, or
+ * throws if unconfigured. A PLATFORM price (not a connected-account product).
+ */
+export function getOneEventLicensePriceId(): string {
+  const priceId = process.env.STRIPE_PRICE_ONE_EVENT_LICENSE
+  if (!priceId) {
+    throw new Error(
+      'Stripe price not configured: set STRIPE_PRICE_ONE_EVENT_LICENSE in your environment.'
+    )
+  }
+  return priceId
+}
+
 /** Maps an onboarding path to the payment kind recorded in the payments table. */
 export function pathToPaymentKind(path: OnboardingPath): PaymentKind {
   return CERTIFICATION_PRODUCTS[path].kind

@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getViewerCtaState } from '@/lib/auth/viewer'
 import { PublicHeader } from '@/components/layout/PublicHeader'
 import { PublicFooter } from '@/components/layout/PublicFooter'
+import { BuyEventLicenseButton } from '@/components/planner/BuyEventLicenseButton'
 import { ProgressionPath } from '@/components/marketing/ProgressionPath'
 import { HeroBackground } from '@/components/marketing/HeroBackground'
 import { CATEGORY_GROUPS, CATEGORIES_BY_GROUP, GROUP_ACCENT } from '@/lib/categories'
@@ -170,10 +171,8 @@ export default async function HomePage({ params }: HomePageProps) {
                 </p>
               </div>
             </div>
-            <Link href={`/${locale}/plan-an-event`} className="btn-secondary shrink-0 px-6 py-2.5">
-              {t('planner.cta')}
-              <ArrowRight className="h-4 w-4" aria-hidden="true" />
-            </Link>
+            {/* One Event License — the $9.99 planner CTA goes to platform checkout. */}
+            <BuyEventLicenseButton locale={locale} buttonClassName="btn-secondary shrink-0 px-6 py-2.5" />
           </div>
         </section>
 
