@@ -1,6 +1,8 @@
 import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
 import { BrandMark } from '@/components/brand/BrandMark'
+import { createClient } from '@/lib/supabase/server'
+import { getViewerCtaState } from '@/lib/auth/viewer'
 import type { Locale } from '@/lib/types'
 
 interface PublicFooterProps {
@@ -9,7 +11,12 @@ interface PublicFooterProps {
 
 export async function PublicFooter({ locale }: PublicFooterProps) {
   const t = await getTranslations('footer')
+  const tNav = await getTranslations('nav')
   const year = new Date().getFullYear()
+
+  // Adapt the organizer link for certified organizers (no redirect — label/target only).
+  const supabase = await createClient()
+  const { isOrganizer } = await getViewerCtaState(supabase)
 
   return (
     <footer className="border-t border-slate-200 bg-slate-50">
@@ -28,10 +35,10 @@ export async function PublicFooter({ locale }: PublicFooterProps) {
           {/* Links */}
           <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
             <Link
-              href={`/${locale}/become-an-organizer`}
+              href={isOrganizer ? `/${locale}/dashboard` : `/${locale}/become-an-organizer`}
               className="text-sm text-slate-500 hover:text-slate-900 transition-colors"
             >
-              {t('links.becomeOrganizer')}
+              {isOrganizer ? tNav('dashboard') : t('links.becomeOrganizer')}
             </Link>
             <Link
               href={`/${locale}/academy`}

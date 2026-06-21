@@ -22,7 +22,9 @@
     "noCourse": {
       "title": "Noch kein Kurs verfügbar",
       "description": "Dein Zertifizierungskurs ist noch nicht bereit. Bitte schau bald wieder vorbei."
-    }
+    },
+    "goDashboard": "Zum Dashboard",
+    "reviewMaterials": "Kursmaterial ansehen"
   },
   "exam": {
     "backToAcademy": "Zurück zur Akademie",
@@ -509,7 +511,7 @@
       "until": "Dein inkludierter Zugang ist aktiv bis {date}.",
       "description": "Nach Ablauf deines inkludierten Zugangs ist ein aktives Organisator-Plattform-Abonnement erforderlich, um weiter zu veröffentlichen, zu verwalten und Buchungen anzunehmen.",
       "goDashboard": "Zum Dashboard",
-      "subscribeCta": "Jetzt abonnieren"
+      "subscribeCta": "Zugang verlängern"
     },
     "noSubscription": {
       "title": "Aktiviere dein Organisator-Konto",
@@ -1218,7 +1220,8 @@
       "dashboard": "Dashboard",
       "reviews": "Bewertungen",
       "bookings": "Buchungen",
-      "organizers": "Organisatoren"
+      "organizers": "Organisatoren",
+      "experienced": "Erfahrene"
     },
     "title": "Plattform-Analysen",
     "unavailable": "Analysen nicht verfügbar.",
@@ -1264,6 +1267,27 @@
       "suspended": "Gesperrt",
       "suspend": "Sperren",
       "unsuspend": "Wiederherstellen"
+    },
+    "experienced": {
+      "title": "Bewerbungen erfahrener Organisatoren",
+      "subtitle": "Optionale Prüfung. Bewerbungen werden automatisch aktiviert; handeln Sie hier nur, wenn Sie früher genehmigen, ablehnen oder zur Akademie umleiten möchten.",
+      "empty": "Keine Bewerbungen zur Prüfung.",
+      "noLinks": "Keine unterstützenden Links angegeben.",
+      "approve": "Genehmigen",
+      "redirect": "Zur Akademie umleiten",
+      "reject": "Ablehnen",
+      "status": {
+        "under_review": "In Prüfung",
+        "approved": "Genehmigt"
+      },
+      "links": {
+        "instagram": "Instagram",
+        "facebook": "Facebook",
+        "meetup": "Meetup",
+        "linkedin": "LinkedIn",
+        "website": "Website",
+        "portfolio": "Portfolio"
+      }
     }
   },
   "account": {
@@ -2476,5 +2500,50 @@
       "unconfigured": "Zahlungen sind derzeit nicht verfügbar.",
       "setup_error": "Etwas ist schiefgelaufen. Bitte versuche es erneut."
     }
+  },
+  "experiencedReview": {
+    "metaTitle": "Bewerbung als erfahrener Organisator",
+    "form": {
+      "title": "Als erfahrener Organisator bewerben",
+      "subtitle": "Zeigen Sie uns, wo wir Ihre Arbeit sehen können. Wir prüfen Ihre Bewerbung, bevor Ihre Zertifizierungsprüfung freigeschaltet wird.",
+      "optionalNote": "Alle Links sind optional – sie helfen uns, sind aber nicht erforderlich.",
+      "placeholder": "https://",
+      "submit": "Bewerbung absenden",
+      "fields": {
+        "instagram": "Instagram",
+        "facebook": "Facebook",
+        "meetup": "Meetup",
+        "linkedin": "LinkedIn",
+        "website": "Website",
+        "portfolio": "Portfolio"
+      }
+    },
+    "underReview": {
+      "title": "Ihre Bewerbung wird geprüft",
+      "body": "Danke für Ihre Bewerbung. Wir benachrichtigen Sie hier, sobald Ihre Zertifizierungsprüfung bereit ist."
+    },
+    "activated": {
+      "title": "Sie sind freigeschaltet",
+      "body": "Ihre Zertifizierungsprüfung ist bereit. Schließen Sie die Zahlung ab, um den Fast-Track-Kurs und die Prüfung zu starten."
+    },
+    "rejected": {
+      "title": "Wir konnten den Weg für Erfahrene nicht freigeben",
+      "body": "Kein Problem – Sie können über den regulären Akademie-Weg zertifizierter Organisator werden.",
+      "academyCta": "Mit der Akademie fortfahren",
+      "browseCta": "Marktplatz durchsuchen"
+    },
+    "redirected": {
+      "title": "Wir haben Sie auf den Akademie-Weg gesetzt",
+      "body": "Setzen Sie Ihre Zertifizierung über die reguläre Organisator-Akademie fort.",
+      "cta": "Weiter"
+    }
+  },
+  "organizerCta": {
+    "dashboard": "Zum Dashboard",
+    "completed": "Abgeschlossen",
+    "viewCertificate": "Zertifikat ansehen",
+    "manageSubscription": "Abo verwalten",
+    "extendAccess": "Zugang verlängern",
+    "startSubscription": "Abo starten"
   }
 }

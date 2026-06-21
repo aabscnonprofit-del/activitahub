@@ -22,7 +22,9 @@
     "noCourse": {
       "title": "No course available yet",
       "description": "Your certification course isn't ready yet. Please check back soon."
-    }
+    },
+    "goDashboard": "Go to dashboard",
+    "reviewMaterials": "Review course materials"
   },
   "exam": {
     "backToAcademy": "Back to academy",
@@ -509,7 +511,7 @@
       "until": "Your included access is active until {date}.",
       "description": "After your included access ends, an active Organizer Platform subscription is required to keep publishing, managing, and accepting bookings.",
       "goDashboard": "Go to Dashboard",
-      "subscribeCta": "Subscribe now"
+      "subscribeCta": "Extend access"
     },
     "noSubscription": {
       "title": "Activate Your Organizer Account",
@@ -1218,7 +1220,8 @@
       "dashboard": "Dashboard",
       "reviews": "Reviews",
       "bookings": "Bookings",
-      "organizers": "Organizers"
+      "organizers": "Organizers",
+      "experienced": "Experienced"
     },
     "title": "Platform analytics",
     "unavailable": "Analytics unavailable.",
@@ -1264,6 +1267,27 @@
       "suspended": "Suspended",
       "suspend": "Suspend",
       "unsuspend": "Restore"
+    },
+    "experienced": {
+      "title": "Experienced applications",
+      "subtitle": "Optional review. Applications activate automatically; act here only if you want to approve sooner, reject, or redirect to the Academy.",
+      "empty": "No applications awaiting review.",
+      "noLinks": "No supporting links provided.",
+      "approve": "Approve",
+      "redirect": "Redirect to Academy",
+      "reject": "Reject",
+      "status": {
+        "under_review": "Under review",
+        "approved": "Approved"
+      },
+      "links": {
+        "instagram": "Instagram",
+        "facebook": "Facebook",
+        "meetup": "Meetup",
+        "linkedin": "LinkedIn",
+        "website": "Website",
+        "portfolio": "Portfolio"
+      }
     }
   },
   "account": {
@@ -2476,5 +2500,50 @@
       "unconfigured": "Payments aren’t available right now.",
       "setup_error": "Something went wrong. Please try again."
     }
+  },
+  "experiencedReview": {
+    "metaTitle": "Experienced organizer application",
+    "form": {
+      "title": "Apply as an experienced organizer",
+      "subtitle": "Tell us where we can see your work. We'll review your application before your certification exam opens.",
+      "optionalNote": "All links are optional — they help us, but none are required.",
+      "placeholder": "https://",
+      "submit": "Submit application",
+      "fields": {
+        "instagram": "Instagram",
+        "facebook": "Facebook",
+        "meetup": "Meetup",
+        "linkedin": "LinkedIn",
+        "website": "Website",
+        "portfolio": "Portfolio"
+      }
+    },
+    "underReview": {
+      "title": "Your application is under review",
+      "body": "Thanks for applying. We'll let you know here once your certification exam is ready."
+    },
+    "activated": {
+      "title": "You're approved to continue",
+      "body": "Your certification exam is ready. Complete payment to start the Fast Track course and exam."
+    },
+    "rejected": {
+      "title": "We couldn't approve the experienced route",
+      "body": "No problem — you can become a certified organizer through the standard Academy path.",
+      "academyCta": "Continue with the Academy",
+      "browseCta": "Browse the marketplace"
+    },
+    "redirected": {
+      "title": "We've set you up on the Academy path",
+      "body": "Continue your certification through the standard Organizer Academy.",
+      "cta": "Continue"
+    }
+  },
+  "organizerCta": {
+    "dashboard": "Go to dashboard",
+    "completed": "Completed",
+    "viewCertificate": "View certificate",
+    "manageSubscription": "Manage subscription",
+    "extendAccess": "Extend access",
+    "startSubscription": "Start subscription"
   }
 }

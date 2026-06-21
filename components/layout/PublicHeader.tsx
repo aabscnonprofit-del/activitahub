@@ -14,6 +14,8 @@ import type { Locale } from '@/lib/types'
 interface PublicHeaderProps {
   locale: Locale
   isAuthenticated: boolean
+  /** Certified organizer / admin: swap the "Become an organizer" CTA for "Dashboard". */
+  isOrganizer?: boolean
 }
 
 const LOCALES: { code: Locale; label: string }[] = [
@@ -25,7 +27,7 @@ const LOCALES: { code: Locale; label: string }[] = [
   { code: 'pt', label: 'Português' },
 ]
 
-export function PublicHeader({ locale, isAuthenticated }: PublicHeaderProps) {
+export function PublicHeader({ locale, isAuthenticated, isOrganizer = false }: PublicHeaderProps) {
   const t = useTranslations('nav')
   const pathname = usePathname()
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -62,10 +64,10 @@ export function PublicHeader({ locale, isAuthenticated }: PublicHeaderProps) {
             {t('marketplace')}
           </Link>
           <Link
-            href={`/${locale}/become-an-organizer`}
+            href={isOrganizer ? `/${locale}/dashboard` : `/${locale}/become-an-organizer`}
             className="text-sm font-medium text-slate-600 hover:text-brand-600 transition-colors"
           >
-            {t('becomeOrganizer')}
+            {isOrganizer ? t('dashboard') : t('becomeOrganizer')}
           </Link>
           <Link
             href={`/${locale}/academy`}
@@ -202,11 +204,11 @@ export function PublicHeader({ locale, isAuthenticated }: PublicHeaderProps) {
               {t('marketplace')}
             </Link>
             <Link
-              href={`/${locale}/become-an-organizer`}
+              href={isOrganizer ? `/${locale}/dashboard` : `/${locale}/become-an-organizer`}
               onClick={() => setMobileOpen(false)}
               className="rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
             >
-              {t('becomeOrganizer')}
+              {isOrganizer ? t('dashboard') : t('becomeOrganizer')}
             </Link>
             <Link
               href={`/${locale}/academy`}

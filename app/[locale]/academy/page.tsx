@@ -71,6 +71,47 @@ export default async function AcademyPage({ params }: AcademyPageProps) {
       ? await getFinalExamId(supabase, enrollment.course.id)
       : null
 
+    // Post-certification: lead with certified status + certificate / dashboard.
+    // The finished course is demoted to a collapsible "review materials" section,
+    // not the primary lifelong screen.
+    if (certificate) {
+      return (
+        <div className="space-y-6">
+          <div className="rounded-2xl border border-green-200 bg-green-50 p-6">
+            <div className="flex items-center gap-3">
+              <Award className="h-6 w-6 shrink-0 text-green-600" aria-hidden="true" />
+              <h1 className="text-xl font-extrabold text-slate-900">{t('certified')}</h1>
+            </div>
+            <p className="mt-1 text-sm text-slate-600">{outline.course.title}</p>
+            <div className="mt-4 flex flex-wrap gap-3">
+              <Link
+                href={`/${locale}/academy/certificate`}
+                className="inline-flex items-center gap-1.5 rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700 transition-colors"
+              >
+                {t('viewCertificate')}
+              </Link>
+              <Link
+                href={`/${locale}/dashboard`}
+                className="inline-flex items-center gap-1.5 rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700 transition-colors"
+              >
+                {t('goDashboard')}
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </Link>
+            </div>
+          </div>
+
+          <details className="rounded-2xl border border-slate-200 bg-white">
+            <summary className="cursor-pointer px-5 py-4 text-sm font-semibold text-slate-700">
+              {t('reviewMaterials')}
+            </summary>
+            <div className="border-t border-slate-100 p-4">
+              <CourseOutline outline={outline} locale={locale} />
+            </div>
+          </details>
+        </div>
+      )
+    }
+
     return (
       <div className="space-y-8">
         <div className="rounded-2xl border border-slate-200 bg-white p-6">

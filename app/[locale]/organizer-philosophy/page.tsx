@@ -2,6 +2,7 @@ import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
+import { getViewerCtaState } from '@/lib/auth/viewer'
 import { PublicHeader } from '@/components/layout/PublicHeader'
 import { PublicFooter } from '@/components/layout/PublicFooter'
 import type { Locale } from '@/lib/types'
@@ -25,12 +26,14 @@ export default async function OrganizerPhilosophyPage({ params }: PageProps) {
   const {
     data: { user },
   } = await supabase.auth.getUser()
+  const viewer = await getViewerCtaState(supabase)
+  const tOrg = await getTranslations('organizerCta')
 
   const principles = Array.from({ length: 11 }, (_, i) => i)
 
   return (
     <div className="flex min-h-screen flex-col">
-      <PublicHeader locale={locale} isAuthenticated={!!user} />
+      <PublicHeader locale={locale} isAuthenticated={!!user} isOrganizer={viewer.isOrganizer} />
 
       <main className="flex-1">
         {/* ── Intro ─────────────────────────────────────────────────────── */}
@@ -84,10 +87,10 @@ export default async function OrganizerPhilosophyPage({ params }: PageProps) {
             </h2>
             <div className="mt-7 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
               <Link
-                href={`/${locale}/become-an-organizer`}
+                href={viewer.isOrganizer ? `/${locale}/dashboard` : `/${locale}/become-an-organizer`}
                 className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-brand-500 px-7 py-3.5 text-base font-bold text-white shadow-lg transition-colors hover:bg-brand-400 sm:w-auto"
               >
-                {t('ctaSection.become')}
+                {viewer.isOrganizer ? tOrg('dashboard') : t('ctaSection.become')}
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
               <Link

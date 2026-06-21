@@ -1,6 +1,7 @@
 import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import { getViewerCtaState } from '@/lib/auth/viewer'
 import { PublicHeader } from '@/components/layout/PublicHeader'
 import { PublicFooter } from '@/components/layout/PublicFooter'
 import { ProgressionPath } from '@/components/marketing/ProgressionPath'
@@ -40,6 +41,11 @@ export default async function HomePage({ params }: HomePageProps) {
     data: { user },
   } = await supabase.auth.getUser()
 
+  // Certified organizers see the same page, but conversion CTAs become "Go to dashboard".
+  const viewer = await getViewerCtaState(supabase)
+  const tOrg = await getTranslations('organizerCta')
+  const orgCtaHref = `/${locale}/dashboard`
+
   const trustband = [
     { icon: BadgeCheck, i: 0 },
     { icon: Lock, i: 1 },
@@ -49,7 +55,7 @@ export default async function HomePage({ params }: HomePageProps) {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <PublicHeader locale={locale} isAuthenticated={!!user} />
+      <PublicHeader locale={locale} isAuthenticated={!!user} isOrganizer={viewer.isOrganizer} />
 
       <main className="flex-1">
         {/* ── Hero ───────────────────────────────────────────────────────── */}
@@ -87,10 +93,10 @@ export default async function HomePage({ params }: HomePageProps) {
                 {t('planner.cta')}
               </Link>
               <Link
-                href={`/${locale}/become-an-organizer`}
+                href={viewer.isOrganizer ? orgCtaHref : `/${locale}/become-an-organizer`}
                 className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-white/25 bg-white/10 px-6 py-3.5 text-base sm:px-8 sm:py-4 font-semibold text-white transition-colors hover:bg-white/20 sm:w-auto"
               >
-                {t('hero.ctaSecondary')}
+                {viewer.isOrganizer ? tOrg('dashboard') : t('hero.ctaSecondary')}
               </Link>
             </div>
             <p className="mt-5 text-sm text-white/75">{t('hero.reassure')}</p>
@@ -223,8 +229,8 @@ export default async function HomePage({ params }: HomePageProps) {
 
             {/* Single CTA */}
             <div className="mt-10 text-center">
-              <Link href={`/${locale}/become-an-organizer`} className="btn-primary px-7 py-3">
-                {t('becomeOrganizer.cta')}
+              <Link href={viewer.isOrganizer ? orgCtaHref : `/${locale}/become-an-organizer`} className="btn-primary px-7 py-3">
+                {viewer.isOrganizer ? tOrg('dashboard') : t('becomeOrganizer.cta')}
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
             </div>
@@ -289,8 +295,8 @@ export default async function HomePage({ params }: HomePageProps) {
                     </li>
                   ))}
                 </ul>
-                <Link href={`/${locale}/become-an-organizer`} className="btn-primary mt-7 w-full">
-                  {t('audience.organize.cta')}
+                <Link href={viewer.isOrganizer ? orgCtaHref : `/${locale}/become-an-organizer`} className="btn-primary mt-7 w-full">
+                  {viewer.isOrganizer ? tOrg('dashboard') : t('audience.organize.cta')}
                   <ArrowRight className="h-4 w-4" aria-hidden="true" />
                 </Link>
               </div>
@@ -379,10 +385,10 @@ export default async function HomePage({ params }: HomePageProps) {
               {t('cta.subtitle')}
             </p>
             <Link
-              href={`/${locale}/become-an-organizer`}
+              href={viewer.isOrganizer ? orgCtaHref : `/${locale}/become-an-organizer`}
               className="mt-8 inline-flex items-center gap-2 rounded-xl bg-brand-500 px-6 py-3.5 text-base sm:px-8 sm:py-4 font-bold text-white shadow-lg transition-colors hover:bg-brand-400"
             >
-              {t('cta.button')}
+              {viewer.isOrganizer ? tOrg('dashboard') : t('cta.button')}
               <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </Link>
           </div>

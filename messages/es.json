@@ -22,7 +22,9 @@
     "noCourse": {
       "title": "Aún no hay curso disponible",
       "description": "Tu curso de certificación aún no está listo. Vuelve pronto."
-    }
+    },
+    "goDashboard": "Ir al panel",
+    "reviewMaterials": "Revisar el material del curso"
   },
   "exam": {
     "backToAcademy": "Volver a la academia",
@@ -509,7 +511,7 @@
       "until": "Tu acceso incluido está activo hasta el {date}.",
       "description": "Cuando termine tu acceso incluido, necesitarás una suscripción activa a la Plataforma de Organizadores para seguir publicando, gestionando y aceptando reservas.",
       "goDashboard": "Ir al panel",
-      "subscribeCta": "Suscribirme ahora"
+      "subscribeCta": "Ampliar acceso"
     },
     "noSubscription": {
       "title": "Activa tu cuenta de organizador",
@@ -1218,7 +1220,8 @@
       "dashboard": "Panel",
       "reviews": "Reseñas",
       "bookings": "Reservas",
-      "organizers": "Organizadores"
+      "organizers": "Organizadores",
+      "experienced": "Experimentados"
     },
     "title": "Analíticas de la plataforma",
     "unavailable": "Analíticas no disponibles.",
@@ -1264,6 +1267,27 @@
       "suspended": "Suspendido",
       "suspend": "Suspender",
       "unsuspend": "Restaurar"
+    },
+    "experienced": {
+      "title": "Solicitudes de experimentados",
+      "subtitle": "Revisión opcional. Las solicitudes se activan automáticamente; actúa aquí solo si quieres aprobar antes, rechazar o redirigir a la Academia.",
+      "empty": "No hay solicitudes pendientes de revisión.",
+      "noLinks": "No se han proporcionado enlaces.",
+      "approve": "Aprobar",
+      "redirect": "Redirigir a la Academia",
+      "reject": "Rechazar",
+      "status": {
+        "under_review": "En revisión",
+        "approved": "Aprobada"
+      },
+      "links": {
+        "instagram": "Instagram",
+        "facebook": "Facebook",
+        "meetup": "Meetup",
+        "linkedin": "LinkedIn",
+        "website": "Sitio web",
+        "portfolio": "Portafolio"
+      }
     }
   },
   "account": {
@@ -2476,5 +2500,50 @@
       "unconfigured": "Los pagos no están disponibles ahora mismo.",
       "setup_error": "Algo salió mal. Inténtalo de nuevo."
     }
+  },
+  "experiencedReview": {
+    "metaTitle": "Solicitud de organizador experimentado",
+    "form": {
+      "title": "Solicita como organizador experimentado",
+      "subtitle": "Cuéntanos dónde podemos ver tu trabajo. Revisaremos tu solicitud antes de habilitar tu examen de certificación.",
+      "optionalNote": "Todos los enlaces son opcionales: nos ayudan, pero ninguno es obligatorio.",
+      "placeholder": "https://",
+      "submit": "Enviar solicitud",
+      "fields": {
+        "instagram": "Instagram",
+        "facebook": "Facebook",
+        "meetup": "Meetup",
+        "linkedin": "LinkedIn",
+        "website": "Sitio web",
+        "portfolio": "Portafolio"
+      }
+    },
+    "underReview": {
+      "title": "Tu solicitud está en revisión",
+      "body": "Gracias por tu solicitud. Te avisaremos aquí cuando tu examen de certificación esté listo."
+    },
+    "activated": {
+      "title": "Estás aprobado para continuar",
+      "body": "Tu examen de certificación está listo. Completa el pago para iniciar el curso Fast Track y el examen."
+    },
+    "rejected": {
+      "title": "No pudimos aprobar la vía para experimentados",
+      "body": "No pasa nada: puedes convertirte en organizador certificado por la vía estándar de la Academia.",
+      "academyCta": "Continuar con la Academia",
+      "browseCta": "Explorar el marketplace"
+    },
+    "redirected": {
+      "title": "Te hemos puesto en la vía de la Academia",
+      "body": "Continúa tu certificación con la Academia de Organizadores estándar.",
+      "cta": "Continuar"
+    }
+  },
+  "organizerCta": {
+    "dashboard": "Ir al panel",
+    "completed": "Completado",
+    "viewCertificate": "Ver certificado",
+    "manageSubscription": "Gestionar suscripción",
+    "extendAccess": "Ampliar acceso",
+    "startSubscription": "Iniciar suscripción"
   }
 }

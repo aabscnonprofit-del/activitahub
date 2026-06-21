@@ -22,7 +22,9 @@
     "noCourse": {
       "title": "Aucun cours disponible pour l'instant",
       "description": "Votre cours de certification n'est pas encore prêt. Revenez bientôt."
-    }
+    },
+    "goDashboard": "Aller au tableau de bord",
+    "reviewMaterials": "Revoir le matériel du cours"
   },
   "exam": {
     "backToAcademy": "Retour à l'académie",
@@ -509,7 +511,7 @@
       "until": "Votre accès inclus est actif jusqu’au {date}.",
       "description": "À la fin de votre accès inclus, un abonnement actif à la Plateforme Organisateur est requis pour continuer à publier, gérer et accepter des réservations.",
       "goDashboard": "Aller au tableau de bord",
-      "subscribeCta": "S’abonner maintenant"
+      "subscribeCta": "Prolonger l'accès"
     },
     "noSubscription": {
       "title": "Activez votre compte organisateur",
@@ -1218,7 +1220,8 @@
       "dashboard": "Tableau",
       "reviews": "Avis",
       "bookings": "Réservations",
-      "organizers": "Organisateurs"
+      "organizers": "Organisateurs",
+      "experienced": "Expérimentés"
     },
     "title": "Analyses de la plateforme",
     "unavailable": "Analyses indisponibles.",
@@ -1264,6 +1267,27 @@
       "suspended": "Suspendu",
       "suspend": "Suspendre",
       "unsuspend": "Restaurer"
+    },
+    "experienced": {
+      "title": "Candidatures expérimentées",
+      "subtitle": "Examen facultatif. Les candidatures s'activent automatiquement ; n'intervenez ici que pour approuver plus tôt, rejeter ou rediriger vers l'Académie.",
+      "empty": "Aucune candidature à examiner.",
+      "noLinks": "Aucun lien fourni.",
+      "approve": "Approuver",
+      "redirect": "Rediriger vers l'Académie",
+      "reject": "Rejeter",
+      "status": {
+        "under_review": "En cours d'examen",
+        "approved": "Approuvée"
+      },
+      "links": {
+        "instagram": "Instagram",
+        "facebook": "Facebook",
+        "meetup": "Meetup",
+        "linkedin": "LinkedIn",
+        "website": "Site web",
+        "portfolio": "Portfolio"
+      }
     }
   },
   "account": {
@@ -2476,5 +2500,50 @@
       "unconfigured": "Les paiements ne sont pas disponibles pour le moment.",
       "setup_error": "Une erreur s’est produite. Veuillez réessayer."
     }
+  },
+  "experiencedReview": {
+    "metaTitle": "Candidature d'organisateur expérimenté",
+    "form": {
+      "title": "Postuler en tant qu'organisateur expérimenté",
+      "subtitle": "Indiquez-nous où voir votre travail. Nous examinerons votre candidature avant l'ouverture de votre examen de certification.",
+      "optionalNote": "Tous les liens sont facultatifs : ils nous aident, mais aucun n'est obligatoire.",
+      "placeholder": "https://",
+      "submit": "Envoyer la candidature",
+      "fields": {
+        "instagram": "Instagram",
+        "facebook": "Facebook",
+        "meetup": "Meetup",
+        "linkedin": "LinkedIn",
+        "website": "Site web",
+        "portfolio": "Portfolio"
+      }
+    },
+    "underReview": {
+      "title": "Votre candidature est en cours d'examen",
+      "body": "Merci pour votre candidature. Nous vous préviendrons ici dès que votre examen de certification sera prêt."
+    },
+    "activated": {
+      "title": "Vous êtes autorisé à continuer",
+      "body": "Votre examen de certification est prêt. Effectuez le paiement pour commencer le cours Fast Track et l'examen."
+    },
+    "rejected": {
+      "title": "Nous n'avons pas pu approuver la voie expérimentée",
+      "body": "Pas de souci : vous pouvez devenir organisateur certifié par la voie standard de l'Académie.",
+      "academyCta": "Continuer avec l'Académie",
+      "browseCta": "Parcourir la place de marché"
+    },
+    "redirected": {
+      "title": "Nous vous avons orienté vers l'Académie",
+      "body": "Poursuivez votre certification avec l'Académie des organisateurs standard.",
+      "cta": "Continuer"
+    }
+  },
+  "organizerCta": {
+    "dashboard": "Aller au tableau de bord",
+    "completed": "Terminé",
+    "viewCertificate": "Voir le certificat",
+    "manageSubscription": "Gérer l'abonnement",
+    "extendAccess": "Prolonger l'accès",
+    "startSubscription": "Démarrer l'abonnement"
   }
 }

@@ -22,7 +22,9 @@
     "noCourse": {
       "title": "Ainda não há curso disponível",
       "description": "O seu curso de certificação ainda não está pronto. Volte em breve."
-    }
+    },
+    "goDashboard": "Ir para o painel",
+    "reviewMaterials": "Rever o material do curso"
   },
   "exam": {
     "backToAcademy": "Voltar à academia",
@@ -509,7 +511,7 @@
       "until": "O seu acesso incluído está ativo até {date}.",
       "description": "Após o fim do seu acesso incluído, é necessária uma subscrição ativa da Plataforma de Organizador para continuar a publicar, gerir e aceitar reservas.",
       "goDashboard": "Ir para o painel",
-      "subscribeCta": "Subscrever agora"
+      "subscribeCta": "Ampliar acesso"
     },
     "noSubscription": {
       "title": "Ative a sua conta de organizador",
@@ -1218,7 +1220,8 @@
       "dashboard": "Painel",
       "reviews": "Avaliações",
       "bookings": "Reservas",
-      "organizers": "Organizadores"
+      "organizers": "Organizadores",
+      "experienced": "Experientes"
     },
     "title": "Análises da plataforma",
     "unavailable": "Análises indisponíveis.",
@@ -1264,6 +1267,27 @@
       "suspended": "Suspenso",
       "suspend": "Suspender",
       "unsuspend": "Restaurar"
+    },
+    "experienced": {
+      "title": "Candidaturas de experientes",
+      "subtitle": "Análise opcional. As candidaturas são ativadas automaticamente; aja aqui apenas se quiser aprovar mais cedo, rejeitar ou redirecionar para a Academia.",
+      "empty": "Sem candidaturas para analisar.",
+      "noLinks": "Nenhum link fornecido.",
+      "approve": "Aprovar",
+      "redirect": "Redirecionar para a Academia",
+      "reject": "Rejeitar",
+      "status": {
+        "under_review": "Em análise",
+        "approved": "Aprovada"
+      },
+      "links": {
+        "instagram": "Instagram",
+        "facebook": "Facebook",
+        "meetup": "Meetup",
+        "linkedin": "LinkedIn",
+        "website": "Site",
+        "portfolio": "Portfólio"
+      }
     }
   },
   "account": {
@@ -2476,5 +2500,50 @@
       "unconfigured": "Os pagamentos não estão disponíveis no momento.",
       "setup_error": "Algo deu errado. Tente novamente."
     }
+  },
+  "experiencedReview": {
+    "metaTitle": "Candidatura de organizador experiente",
+    "form": {
+      "title": "Candidate-se como organizador experiente",
+      "subtitle": "Diga-nos onde podemos ver o seu trabalho. Vamos analisar a sua candidatura antes de abrir o seu exame de certificação.",
+      "optionalNote": "Todos os links são opcionais — ajudam-nos, mas nenhum é obrigatório.",
+      "placeholder": "https://",
+      "submit": "Enviar candidatura",
+      "fields": {
+        "instagram": "Instagram",
+        "facebook": "Facebook",
+        "meetup": "Meetup",
+        "linkedin": "LinkedIn",
+        "website": "Site",
+        "portfolio": "Portfólio"
+      }
+    },
+    "underReview": {
+      "title": "A sua candidatura está em análise",
+      "body": "Obrigado pela candidatura. Avisaremos aqui quando o seu exame de certificação estiver pronto."
+    },
+    "activated": {
+      "title": "Está aprovado para continuar",
+      "body": "O seu exame de certificação está pronto. Conclua o pagamento para iniciar o curso Fast Track e o exame."
+    },
+    "rejected": {
+      "title": "Não foi possível aprovar a via para experientes",
+      "body": "Sem problema — pode tornar-se organizador certificado pela via padrão da Academia.",
+      "academyCta": "Continuar com a Academia",
+      "browseCta": "Explorar o marketplace"
+    },
+    "redirected": {
+      "title": "Encaminhámos você para a Academia",
+      "body": "Continue a sua certificação com a Academia de Organizadores padrão.",
+      "cta": "Continuar"
+    }
+  },
+  "organizerCta": {
+    "dashboard": "Ir para o painel",
+    "completed": "Concluído",
+    "viewCertificate": "Ver certificado",
+    "manageSubscription": "Gerir subscrição",
+    "extendAccess": "Ampliar acesso",
+    "startSubscription": "Iniciar subscrição"
   }
 }

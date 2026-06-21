@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server'
 import { createClient } from '@/lib/supabase/server'
+import { getViewerCtaState } from '@/lib/auth/viewer'
 import Link from 'next/link'
 import PublicHeader from '@/components/layout/PublicHeader'
 import PublicFooter from '@/components/layout/PublicFooter'
@@ -16,6 +17,27 @@ export default async function PricingPage({ params }: Props) {
   const {
     data: { user },
   } = await supabase.auth.getUser()
+
+  // Certified organizers stay on pricing; CTAs adapt (no redirect, no logic change):
+  // certification/academy → View certificate; platform → Manage/Extend/Start by access state.
+  const viewer = await getViewerCtaState(supabase)
+  const tOrg = await getTranslations('organizerCta')
+  const orgCta = (key: string): { href: string; label: string } | null => {
+    if (!viewer.isOrganizer) return null
+    if (key === 'certification' || key === 'academy') {
+      return { href: `/${locale}/academy/certificate`, label: tOrg('viewCertificate') }
+    }
+    if (key === 'platform') {
+      const label =
+        viewer.accessKind === 'paid'
+          ? tOrg('manageSubscription')
+          : viewer.accessKind === 'included'
+            ? tOrg('extendAccess')
+            : tOrg('startSubscription')
+      return { href: `/${locale}/billing`, label }
+    }
+    return null
+  }
 
   // Carry the product choice into onboarding so the user isn't asked to pick a
   // path again. The path rides inside the (url-encoded) post-auth `next` target;
@@ -35,7 +57,7 @@ export default async function PricingPage({ params }: Props) {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <PublicHeader locale={locale} isAuthenticated={!!user} />
+      <PublicHeader locale={locale} isAuthenticated={!!user} isOrganizer={viewer.isOrganizer} />
 
       <main className="flex-1 bg-slate-50">
         <div className="container-page py-12 sm:py-16 lg:py-20">
@@ -117,13 +139,18 @@ export default async function PricingPage({ params }: Props) {
                       {t(`${base}.price` as 'products.planner.price')}
                     </span>
                   ) : (
-                    <Link
-                      href={p.ctaHref}
-                      className={`${p.highlight ? 'btn-primary' : 'btn-secondary'} w-full py-3 text-base`}
-                    >
-                      {t(`${base}.cta` as 'products.academy.cta')}
-                      <ArrowRight className="h-4 w-4" aria-hidden="true" />
-                    </Link>
+                    (() => {
+                      const o = orgCta(p.key)
+                      return (
+                        <Link
+                          href={o?.href ?? p.ctaHref}
+                          className={`${p.highlight ? 'btn-primary' : 'btn-secondary'} w-full py-3 text-base`}
+                        >
+                          {o?.label ?? t(`${base}.cta` as 'products.academy.cta')}
+                          <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                        </Link>
+                      )
+                    })()
                   )}
 
                   {p.requirement && (

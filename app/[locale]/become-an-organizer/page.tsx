@@ -1,6 +1,7 @@
 import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import { getViewerCtaState } from '@/lib/auth/viewer'
 import { PublicHeader } from '@/components/layout/PublicHeader'
 import { PublicFooter } from '@/components/layout/PublicFooter'
 import {
@@ -37,6 +38,10 @@ export default async function BecomeAnOrganizerPage({ params }: PageProps) {
 
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
+  // Certified organizers stay on the page; their "Get started" CTAs become "Go to dashboard".
+  const viewer = await getViewerCtaState(supabase)
+  const tOrg = await getTranslations('organizerCta')
+  const startHref = viewer.isOrganizer ? `/${locale}/dashboard` : `/${locale}/sign-up?next=/${locale}/onboarding`
 
   // Renders a capability grid for one section namespace (run / participants / …).
   function Grid({ base, icons }: { base: string; icons: readonly React.ElementType[] }) {
@@ -57,7 +62,7 @@ export default async function BecomeAnOrganizerPage({ params }: PageProps) {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <PublicHeader locale={locale} isAuthenticated={!!user} />
+      <PublicHeader locale={locale} isAuthenticated={!!user} isOrganizer={viewer.isOrganizer} />
 
       <main className="flex-1">
         {/* ── Hero ──────────────────────────────────────────────────────── */}
@@ -74,8 +79,8 @@ export default async function BecomeAnOrganizerPage({ params }: PageProps) {
               {t('hero.subtitle')}
             </p>
             <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-              <Link href={`/${locale}/sign-up?next=/${locale}/onboarding`} className="btn-primary w-full px-7 py-3.5 sm:w-auto">
-                {t('hero.cta')}
+              <Link href={startHref} className="btn-primary w-full px-7 py-3.5 sm:w-auto">
+                {viewer.isOrganizer ? tOrg('dashboard') : t('hero.cta')}
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
               <Link href={`/${locale}/pricing`} className="btn-secondary w-full px-7 py-3.5 sm:w-auto">
@@ -281,10 +286,10 @@ export default async function BecomeAnOrganizerPage({ params }: PageProps) {
             <h2 className="text-2xl font-extrabold text-white sm:text-3xl">{t('cta.headline')}</h2>
             <p className="mx-auto mt-4 max-w-xl text-base text-slate-400 sm:text-lg">{t('cta.body')}</p>
             <Link
-              href={`/${locale}/sign-up?next=/${locale}/onboarding`}
+              href={startHref}
               className="mt-8 inline-flex items-center gap-2 rounded-xl bg-brand-500 px-7 py-3.5 text-base font-bold text-white shadow-lg transition-colors hover:bg-brand-400"
             >
-              {t('cta.button')}
+              {viewer.isOrganizer ? tOrg('dashboard') : t('cta.button')}
               <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </Link>
           </div>
