@@ -8,7 +8,8 @@
 //   Run:  npx tsx scripts/ope-idea-flow-test.mts   (or: npm run test:idea)
 
 import { readFileSync } from 'node:fs'
-import { analyzeIdeaAction, generateFromIdeaAction } from '../lib/actions/planner'
+import { analyzeIdeaAction } from '../lib/actions/planner'
+import { planFromIdeaCore } from '../lib/ope/plan-from-idea'
 import { runConceptFunnelAI } from '../lib/ai/concept-generation'
 import { runConceptFunnel, deriveWhatShouldHappen } from '../lib/ope/concept-funnel'
 import type { PlannerLocation } from '../lib/ope/types'
@@ -44,7 +45,7 @@ console.log('\n2 — Antarctica: concepts first, then planning continues after s
   check('Antarctica analysis needs concept selection', analysis.ok && analysis.funnel.status === 'concept_selection_needed')
   if (analysis.ok) {
     const chosen = analysis.funnel.concept_options[0]
-    const planned = await generateFromIdeaAction({
+    const planned = await planFromIdeaCore({
       idea,
       selectedConcept: chosen,
       approvedWhatShouldHappen: deriveWhatShouldHappen(idea),

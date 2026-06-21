@@ -6,7 +6,7 @@
 
 import { draftWhatShouldHappen, deriveWhatShouldHappen, recognizeScenario } from '../lib/ope/concept-funnel'
 import { composeWhatShouldHappen } from '../lib/ai/concept-generation'
-import { generateFromIdeaAction } from '../lib/actions/planner'
+import { planFromIdeaCore } from '../lib/ope/plan-from-idea'
 import type { PlannerLocation } from '../lib/ope/types'
 
 const LOC: PlannerLocation = { city: 'Honolulu', state: 'HI', country: 'USA', postalCode: null }
@@ -61,12 +61,12 @@ console.log('\n3 — AI disabled: composeWhatShouldHappen falls back to the dete
 console.log('\n4 — planning gate still holds (a concept alone never substitutes)')
 {
   const idea = 'I want my daughter to feel like a princess.'
-  const blocked = await generateFromIdeaAction({ idea, selectedConcept: null, approvedWhatShouldHappen: null, details: { category: 'birthday', guestCount: 8, kids: 8 }, location: LOC })
+  const blocked = await planFromIdeaCore({ idea, selectedConcept: null, approvedWhatShouldHappen: null, details: { category: 'birthday', guestCount: 8, kids: 8 }, location: LOC })
   check('no "what should happen" → blocked', !blocked.ok && blocked.error === 'what_should_happen_required', JSON.stringify(blocked))
 
   const wsh = deriveWhatShouldHappen(idea)
   check('deriveWhatShouldHappen returns the request-specific draft (not a concept)', !!wsh && /royalty|admired|celebrated/i.test(wsh!))
-  const ok = await generateFromIdeaAction({ idea, selectedConcept: null, approvedWhatShouldHappen: wsh, details: { category: 'birthday', guestCount: 8, kids: 8 }, location: LOC })
+  const ok = await planFromIdeaCore({ idea, selectedConcept: null, approvedWhatShouldHappen: wsh, details: { category: 'birthday', guestCount: 8, kids: 8 }, location: LOC })
   check('approved "what should happen" → Event Plan generated', ok.ok === true, JSON.stringify(ok))
 }
 
@@ -75,11 +75,11 @@ console.log('\n5 — recognition still works (itinerary + operational BBQ)')
 {
   const itinerary = 'Airport pickup → hotel → dinner → paintball → sauna → airport transfer.'
   check('itinerary recognised as existing "what should happen"', recognizeScenario(itinerary).recognized === true)
-  const recOk = await generateFromIdeaAction({ idea: itinerary, selectedConcept: null, approvedWhatShouldHappen: deriveWhatShouldHappen(itinerary), details: { category: 'networking', guestCount: 6 }, location: LOC })
+  const recOk = await planFromIdeaCore({ idea: itinerary, selectedConcept: null, approvedWhatShouldHappen: deriveWhatShouldHappen(itinerary), details: { category: 'networking', guestCount: 6 }, location: LOC })
   check('itinerary → Event Plan generated', recOk.ok === true, JSON.stringify(recOk))
 
   const bbq = 'Plan a BBQ for 12 adults at Ala Moana Beach on Saturday from 2pm to 6pm with a $600 budget.'
-  const bbqOk = await generateFromIdeaAction({ idea: bbq, selectedConcept: null, approvedWhatShouldHappen: deriveWhatShouldHappen(bbq), details: { category: 'bbq', guestCount: 12 }, location: LOC })
+  const bbqOk = await planFromIdeaCore({ idea: bbq, selectedConcept: null, approvedWhatShouldHappen: deriveWhatShouldHappen(bbq), details: { category: 'bbq', guestCount: 12 }, location: LOC })
   check('operationally clear BBQ → Event Plan generated', bbqOk.ok === true, JSON.stringify(bbqOk))
 }
 

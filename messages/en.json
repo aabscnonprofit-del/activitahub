@@ -2564,6 +2564,13 @@
     },
     "error": {
       "body": "Something went wrong starting checkout. Please try again."
+    },
+    "gate": {
+      "signinTitle": "Sign in to generate your plan",
+      "signinBody": "A One-Event License is tied to your account. Sign in (or sign up) to continue.",
+      "signinCta": "Sign in",
+      "licenseTitle": "Unlock your plan",
+      "licenseBody": "Generating a full plan uses one One-Event License. Get one to continue."
     }
   }
 }

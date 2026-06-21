@@ -2564,6 +2564,13 @@
     },
     "error": {
       "body": "Beim Start der Bezahlung ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut."
+    },
+    "gate": {
+      "signinTitle": "Melden Sie sich an, um Ihren Plan zu erstellen",
+      "signinBody": "Eine Einzel-Event-Lizenz ist mit Ihrem Konto verknüpft. Melden Sie sich an (oder registrieren Sie sich), um fortzufahren.",
+      "signinCta": "Anmelden",
+      "licenseTitle": "Plan freischalten",
+      "licenseBody": "Das Erstellen eines vollständigen Plans verbraucht eine Einzel-Event-Lizenz. Holen Sie sich eine, um fortzufahren."
     }
   }
 }

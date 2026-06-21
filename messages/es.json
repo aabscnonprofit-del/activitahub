@@ -2564,6 +2564,13 @@
     },
     "error": {
       "body": "Algo salió mal al iniciar el pago. Inténtalo de nuevo."
+    },
+    "gate": {
+      "signinTitle": "Inicia sesión para generar tu plan",
+      "signinBody": "La licencia para un evento está vinculada a tu cuenta. Inicia sesión (o regístrate) para continuar.",
+      "signinCta": "Iniciar sesión",
+      "licenseTitle": "Desbloquea tu plan",
+      "licenseBody": "Generar un plan completo usa una licencia para un evento. Consigue una para continuar."
     }
   }
 }

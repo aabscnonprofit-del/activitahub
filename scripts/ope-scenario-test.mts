@@ -6,7 +6,8 @@
 //   Run:  npx tsx scripts/ope-scenario-test.mts   (or: npm run test:scenario)
 
 import { recognizeScenario, deriveWhatShouldHappen } from '../lib/ope/concept-funnel'
-import { analyzeIdeaAction, generateFromIdeaAction } from '../lib/actions/planner'
+import { analyzeIdeaAction } from '../lib/actions/planner'
+import { planFromIdeaCore } from '../lib/ope/plan-from-idea'
 import type { PlannerLocation } from '../lib/ope/types'
 
 const LOC: PlannerLocation = { city: 'Honolulu', state: 'HI', country: 'USA', postalCode: null }
@@ -68,7 +69,7 @@ console.log('\n5 — gate: no Event Plan before an approved "what should happen"
   const idea = 'I want a birthday for my son.'
 
   // (a) Nothing recorded → blocked.
-  const noWsh = await generateFromIdeaAction({
+  const noWsh = await planFromIdeaCore({
     idea, selectedConcept: null, approvedWhatShouldHappen: null,
     details: { category: 'birthday', guestCount: 10, kids: 10 }, location: LOC,
   })
@@ -78,7 +79,7 @@ console.log('\n5 — gate: no Event Plan before an approved "what should happen"
   //     should happen" is still blocked (requirement 5).
   const analysis = await analyzeIdeaAction(idea)
   const chosen = analysis.ok ? analysis.funnel.concept_options[0] : null
-  const conceptOnly = await generateFromIdeaAction({
+  const conceptOnly = await planFromIdeaCore({
     idea, selectedConcept: chosen, approvedWhatShouldHappen: null,
     details: { category: 'birthday', guestCount: 10, kids: 10 }, location: LOC,
   })
@@ -87,7 +88,7 @@ console.log('\n5 — gate: no Event Plan before an approved "what should happen"
   // (c) Concept turned into a recorded, approved "what should happen" → Event Plan generated.
   const wsh = deriveWhatShouldHappen(idea)
   check('a "what should happen" is produced from the concept', !!wsh && wsh.length > 0)
-  const created = await generateFromIdeaAction({
+  const created = await planFromIdeaCore({
     idea, selectedConcept: chosen, approvedWhatShouldHappen: wsh,
     details: { category: 'birthday', guestCount: 10, kids: 10 }, location: LOC,
   })
@@ -101,7 +102,7 @@ console.log('\n5 — gate: no Event Plan before an approved "what should happen"
   const itinerary = 'Airport pickup → hotel → dinner → paintball → sauna → airport transfer.'
   const recWsh = deriveWhatShouldHappen(itinerary)
   check('itinerary IS an existing "what should happen"', !!recWsh && recWsh.length > 0)
-  const recognized = await generateFromIdeaAction({
+  const recognized = await planFromIdeaCore({
     idea: itinerary, selectedConcept: null, approvedWhatShouldHappen: recWsh,
     details: { category: 'networking', guestCount: 6 }, location: LOC,
   })

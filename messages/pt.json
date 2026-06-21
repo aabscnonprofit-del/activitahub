@@ -2564,6 +2564,13 @@
     },
     "error": {
       "body": "Ocorreu um erro ao iniciar o pagamento. Tente novamente."
+    },
+    "gate": {
+      "signinTitle": "Inicie sessão para gerar o seu plano",
+      "signinBody": "A licença para um evento está associada à sua conta. Inicie sessão (ou registe-se) para continuar.",
+      "signinCta": "Iniciar sessão",
+      "licenseTitle": "Desbloqueie o seu plano",
+      "licenseBody": "Gerar um plano completo usa uma licença para um evento. Obtenha uma para continuar."
     }
   }
 }

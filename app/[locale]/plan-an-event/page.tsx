@@ -62,7 +62,7 @@ export default async function PlanAnEventPage({ params, searchParams }: PageProp
             <p className="mt-2 text-base text-slate-600">{t('subtitle')}</p>
           </div>
 
-          <PlannerClient />
+          <PlannerClient locale={locale} />
 
           {/* Purchase entry point — platform checkout for the One Event License. */}
           {purchase !== 'success' && (

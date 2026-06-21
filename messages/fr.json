@@ -2564,6 +2564,13 @@
     },
     "error": {
       "body": "Une erreur est survenue au démarrage du paiement. Veuillez réessayer."
+    },
+    "gate": {
+      "signinTitle": "Connectez-vous pour générer votre plan",
+      "signinBody": "Une licence pour un événement est liée à votre compte. Connectez-vous (ou inscrivez-vous) pour continuer.",
+      "signinCta": "Se connecter",
+      "licenseTitle": "Débloquez votre plan",
+      "licenseBody": "Générer un plan complet utilise une licence pour un événement. Obtenez-en une pour continuer."
     }
   }
 }

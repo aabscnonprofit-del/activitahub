@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import { useTranslations } from 'next-intl'
 import { Sparkles, Loader2, ArrowLeft, Wand2 } from 'lucide-react'
 import { analyzeIdeaAction, generateFromIdeaAction, type IdeaPrefill, type IdeaDetails } from '@/lib/actions/planner'
@@ -8,6 +9,7 @@ import type { PlanGenerationResult, RecurrenceFrequency } from '@/lib/ope'
 import PlanResult from './PlanResult'
 import PlanHandoff from './PlanHandoff'
 import PlanClarify from './PlanClarify'
+import { BuyEventLicenseButton } from './BuyEventLicenseButton'
 
 type Category =
   | 'birthday' | 'adult_birthday' | 'anniversary' | 'graduation' | 'family_reunion' | 'bbq' | 'networking'
@@ -27,9 +29,10 @@ const IDEA_EXAMPLES = [
   'I want a networking night for startup founders.',
 ]
 
-export default function PlannerClient() {
+export default function PlannerClient({ locale }: { locale: string }) {
   const t = useTranslations('planner')
   const tf = useTranslations('planner.form')
+  const tL = useTranslations('eventLicense')
 
   // Idea-first flow state.
   const [step, setStep] = useState<Step>('idea')
@@ -56,6 +59,8 @@ export default function PlannerClient() {
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(false)
+  // Entitlement gate (One Event License): 'license' = needs purchase, 'signin' = needs sign-in.
+  const [gate, setGate] = useState<'license' | 'signin' | null>(null)
   const [result, setResult] = useState<PlanGenerationResult | null>(null)
 
   function resetAll() {
@@ -63,7 +68,7 @@ export default function PlannerClient() {
     setCategory('birthday'); setTotal(''); setAdults(''); setKids(''); setVenue(''); setBudget('')
     setRequirements(''); setCity(''); setStateRegion(''); setCountry(''); setPostal('')
     setRepeats('one_time'); setSessions(''); setInstructor(''); setMaterials('')
-    setResult(null); setError(false)
+    setResult(null); setError(false); setGate(null)
   }
 
   function applyPrefill(p: IdeaPrefill) {
@@ -117,7 +122,7 @@ export default function PlannerClient() {
 
   // Step 2 — plan from the idea: AI understanding + chosen concept + confirmed details → engine.
   async function submitDetails(override?: Partial<IdeaDetails>) {
-    setLoading(true); setError(false)
+    setLoading(true); setError(false); setGate(null)
     const details = buildDetails(override)
     const location = {
       city: city.trim(),
@@ -132,6 +137,10 @@ export default function PlannerClient() {
       if (res.ok) {
         setResult(res.result)
         window.scrollTo({ top: 0, behavior: 'smooth' })
+      } else if (res.error === 'event_license_required') {
+        setGate('license')
+      } else if (res.error === 'sign_in_required') {
+        setGate('signin')
       } else setError(true)
     } catch {
       setError(true)
@@ -420,6 +429,29 @@ export default function PlannerClient() {
       </Section>
 
       {error && <p className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600">{tf('error')}</p>}
+
+      {gate === 'signin' && (
+        <div className="rounded-2xl border border-slate-200 bg-white p-5 text-center">
+          <p className="font-semibold text-slate-900">{tL('gate.signinTitle')}</p>
+          <p className="mt-1 text-sm text-slate-600">{tL('gate.signinBody')}</p>
+          <Link
+            href={`/${locale}/sign-in?next=${encodeURIComponent(`/${locale}/plan-an-event`)}`}
+            className="btn-primary mt-4 inline-flex w-full justify-center sm:w-auto"
+          >
+            {tL('gate.signinCta')}
+          </Link>
+        </div>
+      )}
+
+      {gate === 'license' && (
+        <div className="rounded-2xl border border-brand-200 bg-brand-50 p-5 text-center">
+          <p className="font-semibold text-slate-900">{tL('gate.licenseTitle')}</p>
+          <p className="mt-1 text-sm text-slate-600">{tL('gate.licenseBody')}</p>
+          <div className="mx-auto mt-4 max-w-xs">
+            <BuyEventLicenseButton locale={locale} buttonClassName="btn-primary w-full justify-center" />
+          </div>
+        </div>
+      )}
 
       <button type="submit" disabled={loading} className="btn-primary w-full px-7 py-3.5 text-base sm:w-auto">
         {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
