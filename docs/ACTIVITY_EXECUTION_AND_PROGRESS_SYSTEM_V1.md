@@ -200,8 +200,11 @@ The status badge is computed from milestone timeliness + active risks:
 - **Critical** — a critical milestone is missing/overdue with the date close, or multiple/high-severity
   risks are unresolved — the activity may fail without urgent action. *(Strong nudge + offer organizer
   escalation.)*
-- **Completed** — the user marked the activity done (or the date passed and it's confirmed). *(Switch to
-  wrap-up: thank-yous, feedback, "plan another / get help next time.")*
+- **Completed** — the scheduled time has passed, the activity was not cancelled, and it was explicitly
+  marked done (the date passing alone is not enough). *(Switch to wrap-up: thank-yous, feedback, "plan
+  another / get help next time.")* The platform-level **Completed Activity** unit (organizer experience,
+  statistics, Organizer Growth Program) is defined in `COMPLETED_ACTIVITY_SPEC_V1.md`; participant
+  confirmations, reviews, payments, tickets, photos, and Stripe status are not required for it.
 
 Status drives everything downstream: the badge, the urgency of reminders, which actions are surfaced,
 and whether escalation is offered. **Platform-level success** is simply: more activities reaching

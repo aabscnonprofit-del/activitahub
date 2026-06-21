@@ -65,12 +65,17 @@ The purpose is to reward **real organizer activity** on the platform.
 
 ## Part 3 — Activity Eligibility
 
-Only **completed** activities count toward rewards. An activity must:
+Only **completed** activities count toward rewards. To count toward rewards, an activity must:
 
 - be **created after** organizer registration;
-- reach **Completed** status;
-- **not be cancelled**;
-- satisfy **anti-fraud checks** (Part 4).
+- reach **Completed** status — as defined in `COMPLETED_ACTIVITY_SPEC_V1.md` (scheduled time occurred,
+  not cancelled, organizer marked it successfully completed). Participant confirmations, reviews, ratings,
+  payments, tickets, photos, and Stripe status are **not required** for Completed;
+- not be excluded by **anti-fraud checks** (Part 4).
+
+Anti-fraud (Part 4) determines which Completed activities **count toward rewards**; it does **not** change
+whether an activity is Completed. An anti-fraud-excluded activity is still Completed for organizer
+experience and platform statistics, but earns no reward credit.
 
 **Recurring activities are allowed.** Examples:
 

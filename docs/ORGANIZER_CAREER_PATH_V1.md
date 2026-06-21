@@ -101,6 +101,10 @@ Nine stages (`S1`–`S9`). Each line: what happens · what the person does · ho
 before it is investment; everything after is compounding. The platform must pour disproportionate
 support into getting the person *through their first paid event*.
 
+> **Note:** the **completed booking** in S7 is the agreement/payment milestone (a booking reaching
+> `completed`, tied to Stripe). It is **separate** from a **Completed Activity** (`COMPLETED_ACTIVITY_SPEC_V1.md`),
+> which is organizer-attested and payment-independent — neither implies the other.
+
 ---
 
 ## 4. Platform Support

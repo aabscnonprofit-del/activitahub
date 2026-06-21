@@ -30,7 +30,7 @@ lifecycle at Planning into a handoff. Only a `plan_ready` plan continues.
 | **Open for Registration** | participants can sign up / RSVP; capacity tracking begins. | Execution |
 | **Registration Closed** | registration ended; **final headcount known** — the key freeze trigger. | Execution |
 | **In Progress** | the event is happening (day-of); deviations and incidents are logged live. | Execution |
-| **Completed** | the event finished; awaiting post-event actuals. Not yet learned. | Execution→Learning |
+| **Completed** | scheduled time passed, not cancelled, and the organizer marked it completed; awaiting post-event actuals. Not yet learned. (See `COMPLETED_ACTIVITY_SPEC_V1.md`.) | Execution→Learning |
 | **Closed** | actuals captured + reconciled; record final; **learning signals emitted**. Terminal-success. | Learning |
 | **Cancelled** | terminated before completion; partial signals captured. Terminal-fail. | (branch) |
 
@@ -107,8 +107,12 @@ exists (attendance from check-in; no cost signal emitted) — honest partial dat
 
 ## 6. Completion vs Closed
 
-- **Completed** = the event physically happened and ended. Attendance may be known (live check-in), but
-  costs/incidents are not yet reconciled. **No regional/global learning yet.**
+- **Completed** = the scheduled time passed, the event was not cancelled, and the organizer marked it
+  completed. Attendance/costs/incidents may be unknown and are **not required** — reconciliation happens
+  at **Closed**, which is **not** a prerequisite for Completed. **No regional/global learning yet.**
+  *(The Completed Activity unit used for organizer experience / statistics / the Organizer Growth Program
+  is defined in `COMPLETED_ACTIVITY_SPEC_V1.md`; reviews, payments, Stripe status, and outcome quality do
+  not affect it.)*
 - **Closed** = actuals captured and reconciled; the record is final and immutable; **this is the moment
   learning signals are emitted** (§7). Closed is reached by organizer submission or, after a grace
   window, by an auto-Close with partial data.

@@ -45,7 +45,7 @@ This change plan is a **documentation migration** to close the gap between the a
 | C4 | **Timeline as execution backbone** | OPE_V1 §5.1/§3.2/§4; OPE_MASTER_SPEC §12 (PLANNED); MASTER §5/§10.3; Roadmap §2/§7 | High | Timeline is a **relative scaffold / proposal section**, not the spine; date is optional; the date-anchored schedule is specified but PLANNED/unbuilt. |
 | C5 | **Timed work items** | OPE_V1 §3.2; OPE_MASTER_SPEC §12/§13 (PLANNED); Roadmap §5/§3; Sourcing/Worker/Vendor (window, no duration) | High | Work items carry ~0/6 of the required time/owner/status fields; the timed-item schema exists only as PLANNED design. |
 | C6 | **Category as metadata only** | OPE_MASTER_SPEC §4; OPE_V1 §3.1/§3.2/§5.2/§8.1; MASTER §11.6; ERM factor #2; Roadmap §8/§9 | Med-High | Category is the **pivot/gate/template key** in the planning + matching layers, not mere metadata. |
-| C7 | **Request → result traceability** | OPE_EVENT_LIFECYCLE §6; OPE_V1 §3.2 / Roadmap §5; Learning §Capture; Roadmap C3 | Medium | Request→plan link exists (`source_request_id`), but the chain breaks at execution: no per-item status/owner, completion = "event happened" (not outcome), actuals not tied to the request. |
+| C7 | **Request → result traceability** | OPE_EVENT_LIFECYCLE §6; OPE_V1 §3.2 / Roadmap §5; Learning §Capture; Roadmap C3 | Medium | Request→plan link exists (`source_request_id`), but the chain breaks at execution: no per-item status/owner, and actuals are not tied back to the request. *(Completed Activity status itself is defined separately and is not outcome-based — see `COMPLETED_ACTIVITY_SPEC_V1.md`.)* |
 
 **Structural blockers (must lead the migration):** C3 (no approval gate), C2 (scenario meaning), C4+C5 (timeline/timed items).
 
@@ -130,7 +130,7 @@ The suite should encode **documentation-level conformance checks** (not new arch
 4. **Timed-work-item contract** — every work-item specification enumerates the six fields (what · start/dependency · end/duration · location · responsible role/person · status). (C5)
 5. **Timeline backbone** — date/time is required (not optional) and the timeline is the ordering axis, not a proposal section. (C4)
 6. **Category = metadata** — no doc uses category as a primary object, gate, or template key. (C6)
-7. **Traceability** — a request identifier threads request → scenario → timeline → resources → budget → execution → result; completion is defined against the requested outcome. (C7)
+7. **Traceability** — a request identifier threads request → scenario → timeline → resources → budget → execution → result, so actuals can be tied back to the request. *(Completed Activity status is separate and not outcome-defined — see `COMPLETED_ACTIVITY_SPEC_V1.md`.)* (C7)
 8. **Term consistency** — cross-document, "scenario" carries exactly one meaning (no C1/C2 split).
 
 These are assertions the suite *checks*; defining/implementing the suite is itself out of scope for this plan.
