@@ -920,7 +920,11 @@
       "bookCta": "Request this activity",
       "bookHint": "Send a request and the organizer will propose details.",
       "reviewsTitle": "Reviews",
-      "reviewsEmpty": "No reviews yet — be the first to experience this activity."
+      "reviewsEmpty": "No reviews yet — be the first to experience this activity.",
+      "expiredTitle": "This activity has ended",
+      "expiredBody": "It has no upcoming dates, so it can't be joined. Browse other activities in the marketplace.",
+      "endedCta": "Activity ended",
+      "endedHint": "This activity is no longer accepting requests."
     },
     "organizer": {
       "anonymous": "Organizer",

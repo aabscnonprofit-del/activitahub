@@ -920,7 +920,11 @@
       "bookCta": "Diese Aktivität anfragen",
       "bookHint": "Sende eine Anfrage und der Organisator schlägt Details vor.",
       "reviewsTitle": "Bewertungen",
-      "reviewsEmpty": "Noch keine Bewertungen – erlebe diese Aktivität als Erster."
+      "reviewsEmpty": "Noch keine Bewertungen – erlebe diese Aktivität als Erster.",
+      "expiredTitle": "Diese Aktivität ist beendet",
+      "expiredBody": "Es gibt keine kommenden Termine, daher ist keine Teilnahme möglich. Sehen Sie sich andere Aktivitäten im Marktplatz an.",
+      "endedCta": "Aktivität beendet",
+      "endedHint": "Diese Aktivität nimmt keine Anfragen mehr an."
     },
     "organizer": {
       "anonymous": "Organisator",

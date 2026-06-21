@@ -920,7 +920,11 @@
       "bookCta": "Pedir esta atividade",
       "bookHint": "Envie um pedido e o organizador proporá os detalhes.",
       "reviewsTitle": "Avaliações",
-      "reviewsEmpty": "Ainda não há avaliações — seja o primeiro a viver esta atividade."
+      "reviewsEmpty": "Ainda não há avaliações — seja o primeiro a viver esta atividade.",
+      "expiredTitle": "Esta atividade terminou",
+      "expiredBody": "Não tem datas futuras, por isso não é possível participar. Explore outras atividades no marketplace.",
+      "endedCta": "Atividade terminada",
+      "endedHint": "Esta atividade já não aceita pedidos."
     },
     "organizer": {
       "anonymous": "Organizador",

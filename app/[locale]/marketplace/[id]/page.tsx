@@ -32,6 +32,10 @@ export default async function ActivityDetailPage({ params }: DetailPageProps) {
   const reviews = await getActivityReviews(supabase, id)
   const detailArt = categoryArt(a.category)
 
+  // Expired = no future session (the detail RPC's `upcoming` is already filtered to
+  // date >= today). Direct URL stays accessible, but it is marked ended and not joinable.
+  const expired = a.upcoming.length === 0
+
   // Preserve the specific activity being requested. category/city are kept as a
   // fallback for the generic prefill path (when no activity is loaded).
   const requestHref = `/${locale}/requests/new?activityId=${id}&category=${a.category ?? ''}&city=${encodeURIComponent(a.city ?? '')}`
@@ -52,6 +56,16 @@ export default async function ActivityDetailPage({ params }: DetailPageProps) {
           <Link href={`/${locale}/marketplace`} className="text-sm text-slate-500 hover:text-slate-800">
             ← {t('backToMarketplace')}
           </Link>
+
+          {expired && (
+            <div className="mt-4 flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4">
+              <CalendarDays className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" aria-hidden="true" />
+              <div>
+                <p className="font-semibold text-amber-900">{t('detail.expiredTitle')}</p>
+                <p className="text-sm text-amber-800">{t('detail.expiredBody')}</p>
+              </div>
+            </div>
+          )}
 
           {/* Gallery */}
           <div className="mt-4 overflow-hidden rounded-2xl border border-slate-200 bg-white">
@@ -213,11 +227,27 @@ export default async function ActivityDetailPage({ params }: DetailPageProps) {
                 </div>
               </Link>
 
-              <Link href={ctaHref} className="btn-primary w-full justify-center">
-                {t('detail.bookCta')}
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-              <p className="text-center text-xs text-slate-400">{t('detail.bookHint')}</p>
+              {expired ? (
+                <>
+                  <button
+                    type="button"
+                    disabled
+                    aria-disabled="true"
+                    className="inline-flex w-full cursor-not-allowed items-center justify-center rounded-xl bg-slate-100 px-6 py-3 text-sm font-semibold text-slate-400"
+                  >
+                    {t('detail.endedCta')}
+                  </button>
+                  <p className="text-center text-xs text-slate-400">{t('detail.endedHint')}</p>
+                </>
+              ) : (
+                <>
+                  <Link href={ctaHref} className="btn-primary w-full justify-center">
+                    {t('detail.bookCta')}
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                  <p className="text-center text-xs text-slate-400">{t('detail.bookHint')}</p>
+                </>
+              )}
 
               {/* Booking reassurance — factual platform guarantees */}
               <ul className="space-y-2 border-t border-slate-100 pt-4 text-xs text-slate-600">

@@ -920,7 +920,11 @@
       "bookCta": "Demander cette activité",
       "bookHint": "Envoyez une demande et l'organisateur proposera les détails.",
       "reviewsTitle": "Avis",
-      "reviewsEmpty": "Pas encore d’avis — soyez le premier à vivre cette activité."
+      "reviewsEmpty": "Pas encore d’avis — soyez le premier à vivre cette activité.",
+      "expiredTitle": "Cette activité est terminée",
+      "expiredBody": "Elle n'a aucune date à venir, vous ne pouvez donc pas la rejoindre. Découvrez d'autres activités sur la place de marché.",
+      "endedCta": "Activité terminée",
+      "endedHint": "Cette activité n'accepte plus de demandes."
     },
     "organizer": {
       "anonymous": "Organisateur",

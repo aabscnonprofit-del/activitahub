@@ -86,6 +86,8 @@ export default async function NewRequestPage({ params, searchParams }: NewReques
 
           <form action={createRequest} className="mt-6 space-y-4 rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
             <input type="hidden" name="locale" value={locale} />
+            {/* Carry the activity reference so the server can block joins to expired activities. */}
+            <input type="hidden" name="activity_id" value={activityId} />
             <div>
               <label className="label-base">{t('form.eventType')} *</label>
               <select name="event_type" required defaultValue={prefillCategory} className="input-base">

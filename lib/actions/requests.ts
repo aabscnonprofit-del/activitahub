@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { userHasOrganizerAccess } from '@/lib/auth/organizer-access.server'
+import { getMarketplaceActivity } from '@/lib/marketplace/queries'
 
 const CATEGORIES = new Set([
   // legacy
@@ -47,6 +48,18 @@ export async function createRequest(formData: FormData): Promise<void> {
   const eventType = (formData.get('event_type') as string)?.trim()
   // Validate against the known category set — never trust the raw value.
   if (!eventType || !CATEGORIES.has(eventType)) redirect(`/${locale}/requests/new`)
+
+  // Expired-activity guard (deep-link defense): when this request targets a specific
+  // activity, it must still have a future session. `upcoming` comes from the same
+  // SECURITY DEFINER RPC the detail page uses (sessions with date >= today), so this
+  // is RLS-safe. No future session → bounce to the activity page (marked ended).
+  const activityId = (formData.get('activity_id') as string)?.trim()
+  if (activityId) {
+    const activity = await getMarketplaceActivity(supabase, activityId)
+    if (!activity || activity.upcoming.length === 0) {
+      redirect(`/${locale}/marketplace/${activityId}`)
+    }
+  }
 
   const { data: row, error } = await supabase
     .from('customer_requests')
