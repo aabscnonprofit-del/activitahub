@@ -5,7 +5,8 @@ import { generatePlan } from '@/lib/ope'
 import type { PlannerInput } from '@/lib/ope/types'
 import { plannerInputSchema as schema } from '@/lib/ope/validation'
 import { runConceptFunnelAI, composeWhatShouldHappen } from '@/lib/ai/concept-generation'
-import { recognizeScenario, assessConceptEntry, type ConceptFunnelResult, type ScenarioSource } from '@/lib/ope/concept-funnel'
+import { recognizeScenario, type ConceptFunnelResult, type ScenarioSource } from '@/lib/ope/concept-funnel'
+import { decideRequest } from '@/lib/ai/ope-agent'
 import { extractFromText } from '@/lib/ope/request-text'
 import { planFromIdeaCore } from '@/lib/ope/plan-from-idea'
 
@@ -75,6 +76,15 @@ export type AnalyzeIdeaResult =
 export async function analyzeIdeaAction(idea: string): Promise<AnalyzeIdeaResult> {
   const text = (idea ?? '').trim()
   if (!text) return { ok: false, error: 'empty_idea' }
+
+  // AI ORGANIZER FIRST — literally the first interpretation step. Every request goes to the AI
+  // Organizer before ANY deterministic logic runs. assessRequest is only the deterministic
+  // fallback (inside decideRequest) when AI is disabled / key-missing / invalid JSON / errors.
+  // No regex/anchor/category logic may decide clarity, vagueness, sufficiency or readiness here.
+  const verdict = await decideRequest({ rawText: text })
+
+  // Deterministic helpers run ONLY AFTER the verdict. Prefill extraction populates form hints for
+  // the UI — it never decides anything; it merely carries detected fields forward.
   const ext = extractFromText(text)
   const prefill: IdeaPrefill = {
     category: ext.category,
@@ -86,40 +96,41 @@ export async function analyzeIdeaAction(idea: string): Promise<AnalyzeIdeaResult
     timeframe: ext.timeframe,
   }
 
-  // A provided itinerary/narrative is recognised as an existing scenario — do NOT create one.
-  const rec = recognizeScenario(text)
-  if (rec.recognized && rec.source !== 'operational') {
-    const funnel: ConceptFunnelResult = {
-      original_request: text,
-      detected_event_category: ext.category,
-      concept_options: [],
-      selected_concept: null,
-      clarification_prompt: '',
-      status: 'bypass_concept_funnel',
-    }
-    return { ok: true, funnel, prefill, scenario: { status: 'scenario_recognized', whatShouldHappen: rec.story, source: rec.source } }
-  }
-
-  // No "what should happen" provided → CREATE a request-specific draft (AI-first, deterministic
-  // fallback) for the user to approve/edit. An operationally-clear brief is recognised and the
-  // brief itself is the usable "what should happen". The Concept Funnel options are returned only
-  // as optional inspiration — they do NOT define "what should happen".
-  const funnel = await runConceptFunnelAI(text)
-  if (funnel.status === 'bypass_concept_funnel') {
-    return { ok: true, funnel, prefill, scenario: { status: 'scenario_recognized', whatShouldHappen: text, source: 'operational' } }
-  }
-
-  // Discovery gate: a request with NO plannable anchor (no category AND no structured
-  // signals) is too vague/emotional to draft a "what should happen" from — doing so would
-  // INVENT the outcome. Stop here and require Discovery: return scenario_needed with a NULL
-  // WSH (no draft), which the downstream WSH gate keeps un-plannable until the user supplies
-  // real content. (Generators, request path, and engine are unchanged.)
-  const entry = assessConceptEntry(text)
-  if (entry.category == null && entry.anchors === 0) {
+  // Blocked verdicts (discovery_required / out_of_scope / infeasible): NO WSH, NO plan. Concept
+  // options may still accompany as optional inspiration; they never define a "what should happen".
+  if (!verdict.mayDraftWsh) {
+    const funnel = await runConceptFunnelAI(text)
     return { ok: true, funnel, prefill, scenario: { status: 'scenario_needed', whatShouldHappen: null, source: null } }
   }
 
-  const draft = await composeWhatShouldHappen(text)
+  // plan_ready: a usable scenario/WSH already exists. A provided itinerary/narrative bypasses the
+  // Concept Funnel with the recognised story; otherwise prefer the Agent's WSH/summary (falling
+  // back to the recognised story or the brief itself). recognizeScenario is used ONLY to source
+  // the story here — the Agent already decided readiness.
+  if (verdict.verdict === 'plan_ready') {
+    const rec = recognizeScenario(text)
+    if (rec.recognized && rec.source !== 'operational') {
+      const funnel: ConceptFunnelResult = {
+        original_request: text,
+        detected_event_category: ext.category,
+        concept_options: [],
+        selected_concept: null,
+        clarification_prompt: '',
+        status: 'bypass_concept_funnel',
+      }
+      const story = verdict.whatShouldHappenDraft ?? rec.story ?? text
+      return { ok: true, funnel, prefill, scenario: { status: 'scenario_recognized', whatShouldHappen: story, source: rec.source } }
+    }
+    const funnel = await runConceptFunnelAI(text)
+    const story = verdict.whatShouldHappenDraft ?? verdict.operationalSummary ?? rec.story ?? text
+    return { ok: true, funnel, prefill, scenario: { status: 'scenario_recognized', whatShouldHappen: story, source: rec.source ?? 'operational' } }
+  }
+
+  // interpretation_required / sufficient_data → draft a request-specific WSH for the user to
+  // approve/edit. Prefer the Agent's draft; fall back to the deterministic composer. Concept
+  // options accompany as optional inspiration; they do NOT define "what should happen".
+  const funnel = await runConceptFunnelAI(text)
+  const draft = verdict.whatShouldHappenDraft ?? (await composeWhatShouldHappen(text))
   return { ok: true, funnel, prefill, scenario: { status: 'scenario_needed', whatShouldHappen: draft, source: null } }
 }
 
