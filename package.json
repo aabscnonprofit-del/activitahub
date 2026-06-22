@@ -19,6 +19,7 @@
     "test:wsh-gate": "npx tsx scripts/ope-wsh-discovery-gate-test.mts",
     "test:agent": "npx tsx scripts/ope-agent-test.mts",
     "test:agent-ai": "npx tsx scripts/ope-ai-agent-test.mts",
+    "test:planner-discovery": "npx tsx scripts/planner-discovery-test.mts",
     "test:event-license": "npx tsx scripts/event-license-test.mts",
     "test:rental": "npx tsx scripts/rental-taxonomy-test.mts",
     "test:rental-search": "npx tsx scripts/rental-search-request-test.mts",

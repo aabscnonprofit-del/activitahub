@@ -61,6 +61,14 @@ export interface ScenarioState {
   /** The recognised story OR the draft "what should happen" to approve/edit. */
   whatShouldHappen: string | null
   source: ScenarioSource | null
+  /**
+   * Discovery: the AI Organizer judged the request too vague/emotional to plan yet
+   * (verdict mayDraftWsh === false). No WSH is drafted and planning must not proceed; the UI
+   * shows a clarification state instead of advancing. Set only when `whatShouldHappen` is null.
+   */
+  discoveryRequired?: boolean
+  /** Clarifying questions from the AI Organizer to show the user (may be empty). */
+  discoveryQuestions?: string[]
 }
 
 export type AnalyzeIdeaResult =
@@ -96,11 +104,23 @@ export async function analyzeIdeaAction(idea: string): Promise<AnalyzeIdeaResult
     timeframe: ext.timeframe,
   }
 
-  // Blocked verdicts (discovery_required / out_of_scope / infeasible): NO WSH, NO plan. Concept
-  // options may still accompany as optional inspiration; they never define a "what should happen".
+  // Blocked verdicts (discovery_required / out_of_scope / infeasible): NO WSH, NO plan. The UI must
+  // show a discovery/clarification state (with the Organizer's questions), not advance to planning.
+  // Concept options may still accompany as optional inspiration; they never define a WSH.
   if (!verdict.mayDraftWsh) {
     const funnel = await runConceptFunnelAI(text)
-    return { ok: true, funnel, prefill, scenario: { status: 'scenario_needed', whatShouldHappen: null, source: null } }
+    return {
+      ok: true,
+      funnel,
+      prefill,
+      scenario: {
+        status: 'scenario_needed',
+        whatShouldHappen: null,
+        source: null,
+        discoveryRequired: true,
+        discoveryQuestions: verdict.discoveryQuestions ?? [],
+      },
+    }
   }
 
   // plan_ready: a usable scenario/WSH already exists. A provided itinerary/narrative bypasses the

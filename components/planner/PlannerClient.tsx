@@ -59,6 +59,9 @@ export default function PlannerClient({ locale }: { locale: string }) {
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(false)
+  // Discovery (AI Organizer): non-null when the request is too vague to plan yet (WSH null).
+  // Holds the clarifying questions to show; the user refines the idea and resubmits. No plan.
+  const [discovery, setDiscovery] = useState<string[] | null>(null)
   // Entitlement gate (One Event License): 'license' = needs purchase, 'signin' = needs sign-in.
   const [gate, setGate] = useState<'license' | 'signin' | null>(null)
   const [result, setResult] = useState<PlanGenerationResult | null>(null)
@@ -68,7 +71,7 @@ export default function PlannerClient({ locale }: { locale: string }) {
     setCategory('birthday'); setTotal(''); setAdults(''); setKids(''); setVenue(''); setBudget('')
     setRequirements(''); setCity(''); setStateRegion(''); setCountry(''); setPostal('')
     setRepeats('one_time'); setSessions(''); setInstructor(''); setMaterials('')
-    setResult(null); setError(false); setGate(null)
+    setResult(null); setError(false); setGate(null); setDiscovery(null)
   }
 
   function applyPrefill(p: IdeaPrefill) {
@@ -84,11 +87,19 @@ export default function PlannerClient({ locale }: { locale: string }) {
   async function submitIdea(e: React.FormEvent) {
     e.preventDefault()
     if (!idea.trim()) return
-    setLoading(true); setError(false)
+    setLoading(true); setError(false); setDiscovery(null)
     try {
       const res = await analyzeIdeaAction(idea)
       if (!res.ok) { setError(true); return }
       applyPrefill(res.prefill)
+
+      // Discovery: the AI Organizer judged the idea too vague to plan (no WSH). Do NOT advance and
+      // do NOT show a generic error — keep the user here with clarifying questions to add detail.
+      if (res.scenario.status === 'scenario_needed' && res.scenario.whatShouldHappen === null) {
+        setDiscovery(res.scenario.discoveryQuestions ?? [])
+        return
+      }
+
       // "What should happen": the recognised story, or a request-specific draft to approve/edit.
       setWhatShouldHappen(res.scenario.whatShouldHappen ?? '')
       const needs = res.scenario.status === 'scenario_needed'
@@ -231,7 +242,7 @@ export default function PlannerClient({ locale }: { locale: string }) {
           </div>
           <textarea
             value={idea}
-            onChange={(e) => setIdea(e.target.value)}
+            onChange={(e) => { setIdea(e.target.value); if (discovery) setDiscovery(null) }}
             rows={4}
             required
             className="input-base w-full"
@@ -247,11 +258,26 @@ export default function PlannerClient({ locale }: { locale: string }) {
           </div>
         </div>
 
+        {/* Discovery / clarification — the request is meaningful but too vague to plan yet. */}
+        {discovery && (
+          <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
+            <p className="text-sm font-semibold text-amber-900">{tf('discovery.title')}</p>
+            <p className="mt-1 text-sm text-amber-800">{tf('discovery.body')}</p>
+            {discovery.length > 0 && (
+              <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-amber-800">
+                {discovery.map((q, i) => (
+                  <li key={i}>{q}</li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
+
         {error && <p className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600">{tf('error')}</p>}
 
         <button type="submit" disabled={loading || !idea.trim()} className="btn-primary w-full px-7 py-3.5 text-base sm:w-auto">
           {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
-          {loading ? 'Understanding your idea…' : 'Understand my idea'}
+          {loading ? 'Understanding your idea…' : discovery ? 'Add detail and try again' : 'Understand my idea'}
         </button>
       </form>
     )

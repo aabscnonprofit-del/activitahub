@@ -1938,7 +1938,11 @@
       "instructorNeed": "Necesito uno",
       "materialsQ": "¿Quién aporta los materiales?",
       "materialsProvided": "Yo los aporto",
-      "materialsByo": "Los traen los participantes"
+      "materialsByo": "Los traen los participantes",
+      "discovery": {
+        "title": "Un poco más de detalle, por favor",
+        "body": "Esto suena significativo, pero necesitamos un poco más para planificarlo. ¿Podrías decirnos:"
+      }
     },
     "result": {
       "whatYouToldUs": "Lo que nos contaste",
