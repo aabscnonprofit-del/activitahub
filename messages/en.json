@@ -1944,7 +1944,11 @@
         "body": "This sounds meaningful, but we need a bit more to plan it. Could you tell us:",
         "youMean": "You probably mean:",
         "directionsLabel": "A few directions we could take:",
-        "questionsLabel": "To point us the right way:"
+        "questionsLabel": "To point us the right way:",
+        "answerPlaceholder": "Type your answer…",
+        "send": "Send",
+        "thinking": "Thinking…",
+        "startOver": "Start over"
       }
     },
     "result": {

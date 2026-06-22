@@ -45,11 +45,29 @@ export interface OpeAgentFields {
   timeframe?: string | null
 }
 
+/** One turn of the ongoing discovery conversation (oldest → newest). */
+export interface OpeAgentTurn {
+  role: 'organizer' | 'user'
+  content: string
+}
+
 export interface OpeAgentInput {
-  /** The raw user text — the primary signal. */
+  /** The raw user text — the primary signal (the original idea). */
   rawText: string
   /** Optional structured fields if the flow already collected them. */
   fields?: OpeAgentFields | null
+  /** Discovery history — prior organizer/user turns. The Organizer must use ALL of it. */
+  conversation?: OpeAgentTurn[] | null
+}
+
+/**
+ * The effective request text the deterministic layer reasons over: the original idea plus every
+ * USER answer from the discovery conversation, joined. As answers accumulate, anchors/category
+ * grow — so multi-turn discovery converges (discovery_required → interpretation/plan) naturally.
+ */
+export function effectiveRequestText(rawText: string, conversation?: OpeAgentTurn[] | null): string {
+  const answers = (conversation ?? []).filter((t) => t.role === 'user').map((t) => t.content)
+  return [rawText, ...answers].map((s) => (s ?? '').trim()).filter(Boolean).join('. ')
 }
 
 /** The structured verdict. The AI returns the first 9 fields; `source` is attached by the caller. */
@@ -145,7 +163,8 @@ function discovery(text: string, reason: string, missing: string[]): OpeAgentRes
  * tests. Reuses the existing OPE signals; it is the safety net behind the AI, never ahead of it.
  */
 export function assessRequest(input: OpeAgentInput): OpeAgentResult {
-  const text = (input?.rawText ?? '').trim()
+  // Reason over the idea PLUS every discovery answer so multi-turn discovery converges.
+  const text = effectiveRequestText(input?.rawText ?? '', input?.conversation).trim()
 
   // No request text → nothing to plan; never invent an outcome from emptiness.
   if (!text) return discovery(text, 'no_request_text', ['what_should_happen', 'who', 'where'])

@@ -45,22 +45,49 @@ console.log('\nB. Control — a concrete request does NOT enter discovery')
   }
 }
 
-console.log('\nC. PlannerClient renders a discovery state and does not advance on null WSH (source guardrail)')
+console.log('\nC. Multi-turn discovery — the Organizer remembers prior answers and converges')
+{
+  const idea = 'I want to surprise my wife'
+  const first = await analyzeIdeaAction(idea)
+  check('turn 1 is discovery (WSH null)', first.ok === true && first.scenario.whatShouldHappen === null)
+
+  // The user answers; full history is sent back. The combined context must end discovery.
+  const conversation = [
+    { role: 'organizer' as const, content: first.ok ? (first.scenario.interpretation ?? '') : '' },
+    { role: 'user' as const, content: 'It is our 10th wedding anniversary — an intimate dinner for 2, budget 300 dollars, this Saturday evening.' },
+  ]
+  const second = await analyzeIdeaAction(idea, conversation)
+  check('turn 2 returns ok', second.ok === true)
+  if (second.ok) {
+    check('Organizer used the answer → discovery ended (WSH present)', second.scenario.whatShouldHappen !== null,
+      JSON.stringify({ status: second.scenario.status, discoveryRequired: second.scenario.discoveryRequired }))
+    check('no longer discoveryRequired', second.scenario.discoveryRequired !== true, String(second.scenario.discoveryRequired))
+  }
+}
+
+console.log('\nD. PlannerClient renders a chat discovery conversation, does not advance on null WSH (source guardrail)')
 {
   const src = readFileSync(new URL('../components/planner/PlannerClient.tsx', import.meta.url), 'utf8')
-  check('has a discovery state', src.includes('setDiscovery('))
-  check('intercepts null WSH before advancing', /whatShouldHappen === null/.test(src) && src.includes('setDiscovery({') && src.includes('res.scenario.directions'))
-  check('renders the discovery clarification copy', src.includes("tf('discovery.title')"))
+  check('has an append-only discovery conversation state', /DiscoveryMsg\[\] \| null/.test(src) && src.includes('setDiscovery('))
+  check('seeds the conversation from the discovery scenario', src.includes('setDiscovery([organizerTurn(res.scenario)])'))
+  check('has a multi-turn answer handler (submitAnswer) sending full history', src.includes('submitAnswer') && src.includes('toConversation(nextMsgs)'))
   check('renders interpretation + directions BEFORE questions', (() => {
     const dir = src.indexOf("tf('discovery.directionsLabel')")
     const q = src.indexOf("tf('discovery.questionsLabel')")
     return src.includes("tf('discovery.youMean')") && dir > -1 && q > -1 && dir < q
   })())
-  // The null-WSH branch must return early (no setStep to wsh/details on discovery).
+  // The null-WSH branch (in submitIdea) must NOT advance — it returns before setStep.
   const idx = src.indexOf('res.scenario.whatShouldHappen === null')
   const ret = src.indexOf('return', idx)
   const advance = src.indexOf('setStep(needs', idx)
-  check('discovery branch returns before advancing', idx > -1 && ret > -1 && (advance === -1 || ret < advance))
+  check('discovery branch returns before advancing', idx > -1 && ret > -1 && ret < advance)
+}
+
+console.log('\nE. License CTA removed from the planner page during discovery / before WSH / before plan')
+{
+  const page = readFileSync(new URL('../app/[locale]/plan-an-event/page.tsx', import.meta.url), 'utf8')
+  check('no BuyEventLicenseButton on the planner page', !page.includes('BuyEventLicenseButton'))
+  check('no early license panel (panel.body) on the page', !page.includes("tL('panel.body')"))
 }
 
 console.log(`\n${failures === 0 ? 'ALL PASS' : `${failures} FAILURE(S)`}`)

@@ -17,6 +17,7 @@ import { z } from 'zod'
 import {
   assessRequest,
   conceptHints,
+  effectiveRequestText,
   enforceVerdictRules,
   OPE_AGENT_VERDICTS,
   type OpeAgentInput,
@@ -78,6 +79,10 @@ const SYSTEM_PROMPT =
   'For discovery_required you MUST still provide an interpretation and at least 2 directions; ' +
   'missingFields and up to 3 discoveryQuestions guide the user; whatShouldHappenDraft MUST be null. ' +
   'For interpretation_required: also provide a concise whatShouldHappenDraft (what happens + what people experience) the user will approve. ' +
+  'DISCOVERY IS A CONVERSATION. When a conversation history is provided, use ALL prior user answers, ' +
+  'refine your interpretation and directions, and ask ONLY new follow-up questions — never repeat what was already answered. ' +
+  'Keep discovery going as long as needed; the moment you have enough to describe what should happen, leave discovery ' +
+  '(interpretation_required with a whatShouldHappenDraft, or sufficient_data/plan_ready). ' +
   'Return ONLY the structured JSON.'
 
 /** Whether the AI Agent is switched on AND has a key. Cheap; called per request. */
@@ -99,7 +104,7 @@ async function callOpenAi(input: OpeAgentInput): Promise<string | null> {
     model,
     messages: [
       { role: 'system', content: SYSTEM_PROMPT },
-      { role: 'user', content: JSON.stringify({ request: input.rawText, fields: input.fields ?? null }) },
+      { role: 'user', content: JSON.stringify({ request: input.rawText, fields: input.fields ?? null, conversation: input.conversation ?? [] }) },
     ],
     response_format: {
       type: 'json_schema',
@@ -186,7 +191,7 @@ export async function runOpeAgent(input: OpeAgentInput, opts: RunOpeAgentOptions
     (result.verdict === 'discovery_required' || result.verdict === 'interpretation_required') &&
     result.directions.length < 2
   ) {
-    const hints = conceptHints(input.rawText)
+    const hints = conceptHints(effectiveRequestText(input.rawText, input.conversation))
     const merged = [...result.directions, ...hints.directions]
       .map((s) => s.trim())
       .filter(Boolean)

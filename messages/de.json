@@ -1944,7 +1944,11 @@
         "body": "Das klingt bedeutungsvoll, aber wir brauchen noch etwas mehr, um es zu planen. Könnten Sie uns sagen:",
         "youMean": "Sie meinen wahrscheinlich:",
         "directionsLabel": "Ein paar mögliche Richtungen:",
-        "questionsLabel": "Damit wir die richtige Richtung finden:"
+        "questionsLabel": "Damit wir die richtige Richtung finden:",
+        "answerPlaceholder": "Ihre Antwort…",
+        "send": "Senden",
+        "thinking": "Denkt nach…",
+        "startOver": "Neu beginnen"
       }
     },
     "result": {

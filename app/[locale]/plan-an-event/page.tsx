@@ -4,7 +4,6 @@ import { createClient } from '@/lib/supabase/server'
 import { PublicHeader } from '@/components/layout/PublicHeader'
 import { PublicFooter } from '@/components/layout/PublicFooter'
 import PlannerClient from '@/components/planner/PlannerClient'
-import { BuyEventLicenseButton } from '@/components/planner/BuyEventLicenseButton'
 import type { Locale } from '@/lib/types'
 import type { Metadata } from 'next'
 
@@ -64,18 +63,9 @@ export default async function PlanAnEventPage({ params, searchParams }: PageProp
 
           <PlannerClient locale={locale} />
 
-          {/* Purchase entry point — platform checkout for the One Event License. */}
-          {purchase !== 'success' && (
-            <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-5 text-center">
-              <p className="text-sm text-slate-600">{tL('panel.body')}</p>
-              <div className="mx-auto mt-4 max-w-xs">
-                <BuyEventLicenseButton
-                  locale={locale}
-                  buttonClassName="btn-primary w-full justify-center"
-                />
-              </div>
-            </div>
-          )}
+          {/* No early license CTA here. The One Event License offer must NOT appear during
+              discovery, before the WSH, or before a plan exists — it surfaces only inside
+              PlannerClient's gate, after a plan is attempted (future: after the draft preview). */}
         </div>
       </main>
       <PublicFooter locale={locale} />

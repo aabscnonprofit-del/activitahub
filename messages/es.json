@@ -1944,7 +1944,11 @@
         "body": "Esto suena significativo, pero necesitamos un poco más para planificarlo. ¿Podrías decirnos:",
         "youMean": "Probablemente te refieres a:",
         "directionsLabel": "Algunas direcciones posibles:",
-        "questionsLabel": "Para orientarnos mejor:"
+        "questionsLabel": "Para orientarnos mejor:",
+        "answerPlaceholder": "Escribe tu respuesta…",
+        "send": "Enviar",
+        "thinking": "Pensando…",
+        "startOver": "Empezar de nuevo"
       }
     },
     "result": {

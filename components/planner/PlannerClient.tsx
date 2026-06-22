@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useTranslations } from 'next-intl'
 import { Sparkles, Loader2, ArrowLeft, Wand2 } from 'lucide-react'
-import { analyzeIdeaAction, generateFromIdeaAction, type IdeaPrefill, type IdeaDetails } from '@/lib/actions/planner'
+import { analyzeIdeaAction, generateFromIdeaAction, type IdeaPrefill, type IdeaDetails, type DiscoveryTurn } from '@/lib/actions/planner'
 import type { PlanGenerationResult, RecurrenceFrequency } from '@/lib/ope'
 import PlanResult from './PlanResult'
 import PlanHandoff from './PlanHandoff'
@@ -17,6 +17,10 @@ type Category =
 type Venue = 'backyard_home' | 'public_park' | ''
 type Repeats = 'one_time' | RecurrenceFrequency
 type Step = 'idea' | 'wsh' | 'details'
+
+// Discovery conversation: an append-only chat between the Organizer and the user.
+type OrganizerMsg = { role: 'organizer'; interpretation: string | null; directions: string[]; questions: string[] }
+type DiscoveryMsg = OrganizerMsg | { role: 'user'; text: string }
 
 const CLASS_CATEGORIES = new Set<Category>(['fitness_class', 'art_class', 'language_class', 'workshop'])
 const RECURRING_CAPABLE = new Set<Category>(['networking', ...CLASS_CATEGORIES])
@@ -59,10 +63,11 @@ export default function PlannerClient({ locale }: { locale: string }) {
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(false)
-  // Discovery (AI Organizer): non-null when the request is too vague to plan yet (WSH null).
-  // Holds the interpretation + concept directions (shown FIRST) and at most a few questions
-  // (shown AFTER). The user refines the idea and resubmits. No plan.
-  const [discovery, setDiscovery] = useState<{ interpretation: string | null; directions: string[]; questions: string[] } | null>(null)
+  // Discovery (AI Organizer): non-null once the request needs clarification (WSH null). An
+  // append-only conversation — organizer turns (interpretation + directions + questions) and the
+  // user's replies. Multi-turn; never cleared mid-conversation. No plan during discovery.
+  const [discovery, setDiscovery] = useState<DiscoveryMsg[] | null>(null)
+  const [answer, setAnswer] = useState('')
   // Entitlement gate (One Event License): 'license' = needs purchase, 'signin' = needs sign-in.
   const [gate, setGate] = useState<'license' | 'signin' | null>(null)
   const [result, setResult] = useState<PlanGenerationResult | null>(null)
@@ -72,7 +77,7 @@ export default function PlannerClient({ locale }: { locale: string }) {
     setCategory('birthday'); setTotal(''); setAdults(''); setKids(''); setVenue(''); setBudget('')
     setRequirements(''); setCity(''); setStateRegion(''); setCountry(''); setPostal('')
     setRepeats('one_time'); setSessions(''); setInstructor(''); setMaterials('')
-    setResult(null); setError(false); setGate(null); setDiscovery(null)
+    setResult(null); setError(false); setGate(null); setDiscovery(null); setAnswer('')
   }
 
   function applyPrefill(p: IdeaPrefill) {
@@ -84,28 +89,71 @@ export default function PlannerClient({ locale }: { locale: string }) {
     if (p.budget != null) setBudget(String(p.budget))
   }
 
+  // An organizer turn from a discovery scenario (interpretation + directions + questions).
+  function organizerTurn(s: { interpretation?: string | null; directions?: string[]; discoveryQuestions?: string[] }): OrganizerMsg {
+    return { role: 'organizer', interpretation: s.interpretation ?? null, directions: s.directions ?? [], questions: s.discoveryQuestions ?? [] }
+  }
+
+  // Serialise the visible conversation for the Organizer (it must receive the FULL history).
+  function toConversation(msgs: DiscoveryMsg[]): DiscoveryTurn[] {
+    return msgs.map((m) =>
+      m.role === 'user'
+        ? { role: 'user', content: m.text }
+        : { role: 'organizer', content: [m.interpretation, m.directions.join('; '), m.questions.join('; ')].filter(Boolean).join('\n') },
+    )
+  }
+
   // Step 1 — understand the dream: run the Concept Funnel (AI-first, deterministic fallback).
   async function submitIdea(e: React.FormEvent) {
     e.preventDefault()
     if (!idea.trim()) return
-    setLoading(true); setError(false); setDiscovery(null)
+    setLoading(true); setError(false); setDiscovery(null); setAnswer('')
     try {
       const res = await analyzeIdeaAction(idea)
       if (!res.ok) { setError(true); return }
       applyPrefill(res.prefill)
 
-      // Discovery: the AI Organizer judged the idea too vague to plan (no WSH). Do NOT advance and
-      // do NOT show a generic error — keep the user here with clarifying questions to add detail.
+      // Discovery: the AI Organizer judged the idea too vague to plan (no WSH). Open the discovery
+      // conversation with the Organizer's first turn — do NOT advance and do NOT show an error.
       if (res.scenario.status === 'scenario_needed' && res.scenario.whatShouldHappen === null) {
-        setDiscovery({
-          interpretation: res.scenario.interpretation ?? null,
-          directions: res.scenario.directions ?? [],
-          questions: res.scenario.discoveryQuestions ?? [],
-        })
+        setDiscovery([organizerTurn(res.scenario)])
         return
       }
 
       // "What should happen": the recognised story, or a request-specific draft to approve/edit.
+      setWhatShouldHappen(res.scenario.whatShouldHappen ?? '')
+      const needs = res.scenario.status === 'scenario_needed'
+      setNeedsWsh(needs)
+      setStep(needs ? 'wsh' : 'details')
+    } catch {
+      setError(true)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Discovery turn — the user answers; we append their reply, send the FULL history to the
+  // Organizer, and either continue discovery (append a refined organizer turn) or, once the
+  // Organizer has enough, leave discovery for the WSH/details step. History is never cleared.
+  async function submitAnswer(e: React.FormEvent) {
+    e.preventDefault()
+    if (!answer.trim() || !discovery) return
+    const nextMsgs: DiscoveryMsg[] = [...discovery, { role: 'user', text: answer.trim() }]
+    setDiscovery(nextMsgs)
+    setAnswer('')
+    setLoading(true); setError(false)
+    try {
+      const res = await analyzeIdeaAction(idea, toConversation(nextMsgs))
+      if (!res.ok) { setError(true); return }
+      applyPrefill(res.prefill)
+
+      if (res.scenario.status === 'scenario_needed' && res.scenario.whatShouldHappen === null) {
+        // Still in discovery — append the Organizer's refined turn (keeps all prior content).
+        setDiscovery([...nextMsgs, organizerTurn(res.scenario)])
+        return
+      }
+
+      // Discovery ended — the Organizer has enough to draft a WSH (or recognised a scenario).
       setWhatShouldHappen(res.scenario.whatShouldHappen ?? '')
       const needs = res.scenario.status === 'scenario_needed'
       setNeedsWsh(needs)
@@ -233,6 +281,79 @@ export default function PlannerClient({ locale }: { locale: string }) {
 
   // ── Step: raw idea (primary entry) ──────────────────────────────────────────────────
   if (step === 'idea') {
+    // Discovery conversation — an append-only chat. The plan is never offered here, and the
+    // One Event License CTA never appears during discovery. The user refines until the
+    // Organizer has enough to draft a "what should happen".
+    if (discovery) {
+      return (
+        <div className="space-y-3">
+          {/* Opening message — the user's original idea. */}
+          <div className="flex justify-end">
+            <div className="max-w-[85%] rounded-2xl rounded-br-sm bg-brand-600 px-4 py-2.5 text-sm text-white">{idea}</div>
+          </div>
+
+          {discovery.map((m, i) =>
+            m.role === 'user' ? (
+              <div key={i} className="flex justify-end">
+                <div className="max-w-[85%] rounded-2xl rounded-br-sm bg-brand-600 px-4 py-2.5 text-sm text-white">{m.text}</div>
+              </div>
+            ) : (
+              <div key={i} className="flex justify-start">
+                <div className="max-w-[90%] rounded-2xl rounded-bl-sm border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700">
+                  {m.interpretation && (
+                    <p>
+                      <span className="font-medium text-slate-900">{tf('discovery.youMean')}</span> {m.interpretation}
+                    </p>
+                  )}
+                  {m.directions.length > 0 && (
+                    <>
+                      <p className="mt-2 font-medium text-slate-900">{tf('discovery.directionsLabel')}</p>
+                      <ul className="mt-1 list-disc space-y-1 pl-5">
+                        {m.directions.map((d, j) => (
+                          <li key={j}>{d}</li>
+                        ))}
+                      </ul>
+                    </>
+                  )}
+                  {m.questions.length > 0 && (
+                    <>
+                      <p className="mt-2 font-medium text-slate-900">{tf('discovery.questionsLabel')}</p>
+                      <ul className="mt-1 list-disc space-y-1 pl-5">
+                        {m.questions.map((q, j) => (
+                          <li key={j}>{q}</li>
+                        ))}
+                      </ul>
+                    </>
+                  )}
+                </div>
+              </div>
+            ),
+          )}
+
+          {error && <p className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600">{tf('error')}</p>}
+
+          <form onSubmit={submitAnswer} className="space-y-3">
+            <textarea
+              value={answer}
+              onChange={(e) => setAnswer(e.target.value)}
+              rows={3}
+              className="input-base w-full"
+              placeholder={tf('discovery.answerPlaceholder')}
+            />
+            <div className="flex items-center gap-4">
+              <button type="submit" disabled={loading || !answer.trim()} className="btn-primary px-7 py-3.5 text-base">
+                {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+                {loading ? tf('discovery.thinking') : tf('discovery.send')}
+              </button>
+              <button type="button" onClick={resetAll} className="text-sm font-medium text-slate-500 hover:text-slate-800">
+                {tf('discovery.startOver')}
+              </button>
+            </div>
+          </form>
+        </div>
+      )
+    }
+
     return (
       <form onSubmit={submitIdea} className="space-y-4">
         <div className="card p-5">
@@ -247,7 +368,7 @@ export default function PlannerClient({ locale }: { locale: string }) {
           </div>
           <textarea
             value={idea}
-            onChange={(e) => { setIdea(e.target.value); if (discovery) setDiscovery(null) }}
+            onChange={(e) => setIdea(e.target.value)}
             rows={4}
             required
             className="input-base w-full"
@@ -263,44 +384,11 @@ export default function PlannerClient({ locale }: { locale: string }) {
           </div>
         </div>
 
-        {/* Discovery / clarification — the request is meaningful but too vague to plan yet.
-            Always leads with interpretation + concept directions, THEN a few questions. */}
-        {discovery && (
-          <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
-            <p className="text-sm font-semibold text-amber-900">{tf('discovery.title')}</p>
-            {discovery.interpretation && (
-              <p className="mt-1 text-sm text-amber-800">
-                <span className="font-medium">{tf('discovery.youMean')}</span> {discovery.interpretation}
-              </p>
-            )}
-            {discovery.directions.length > 0 && (
-              <>
-                <p className="mt-2 text-sm font-medium text-amber-900">{tf('discovery.directionsLabel')}</p>
-                <ul className="mt-1 list-disc space-y-1 pl-5 text-sm text-amber-800">
-                  {discovery.directions.map((d, i) => (
-                    <li key={i}>{d}</li>
-                  ))}
-                </ul>
-              </>
-            )}
-            {discovery.questions.length > 0 && (
-              <>
-                <p className="mt-2 text-sm font-medium text-amber-900">{tf('discovery.questionsLabel')}</p>
-                <ul className="mt-1 list-disc space-y-1 pl-5 text-sm text-amber-800">
-                  {discovery.questions.map((q, i) => (
-                    <li key={i}>{q}</li>
-                  ))}
-                </ul>
-              </>
-            )}
-          </div>
-        )}
-
         {error && <p className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600">{tf('error')}</p>}
 
         <button type="submit" disabled={loading || !idea.trim()} className="btn-primary w-full px-7 py-3.5 text-base sm:w-auto">
           {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
-          {loading ? 'Understanding your idea…' : discovery ? 'Add detail and try again' : 'Understand my idea'}
+          {loading ? 'Understanding your idea…' : 'Understand my idea'}
         </button>
       </form>
     )
