@@ -1941,7 +1941,10 @@
       "materialsByo": "Os participantes trazem os seus",
       "discovery": {
         "title": "Um pouco mais de detalhe, por favor",
-        "body": "Isto parece significativo, mas precisamos de um pouco mais para planear. Pode dizer-nos:"
+        "body": "Isto parece significativo, mas precisamos de um pouco mais para planear. Pode dizer-nos:",
+        "youMean": "Provavelmente quer dizer:",
+        "directionsLabel": "Algumas direções possíveis:",
+        "questionsLabel": "Para nos orientar:"
       }
     },
     "result": {

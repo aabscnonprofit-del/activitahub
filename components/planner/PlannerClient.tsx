@@ -60,8 +60,9 @@ export default function PlannerClient({ locale }: { locale: string }) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(false)
   // Discovery (AI Organizer): non-null when the request is too vague to plan yet (WSH null).
-  // Holds the clarifying questions to show; the user refines the idea and resubmits. No plan.
-  const [discovery, setDiscovery] = useState<string[] | null>(null)
+  // Holds the interpretation + concept directions (shown FIRST) and at most a few questions
+  // (shown AFTER). The user refines the idea and resubmits. No plan.
+  const [discovery, setDiscovery] = useState<{ interpretation: string | null; directions: string[]; questions: string[] } | null>(null)
   // Entitlement gate (One Event License): 'license' = needs purchase, 'signin' = needs sign-in.
   const [gate, setGate] = useState<'license' | 'signin' | null>(null)
   const [result, setResult] = useState<PlanGenerationResult | null>(null)
@@ -96,7 +97,11 @@ export default function PlannerClient({ locale }: { locale: string }) {
       // Discovery: the AI Organizer judged the idea too vague to plan (no WSH). Do NOT advance and
       // do NOT show a generic error — keep the user here with clarifying questions to add detail.
       if (res.scenario.status === 'scenario_needed' && res.scenario.whatShouldHappen === null) {
-        setDiscovery(res.scenario.discoveryQuestions ?? [])
+        setDiscovery({
+          interpretation: res.scenario.interpretation ?? null,
+          directions: res.scenario.directions ?? [],
+          questions: res.scenario.discoveryQuestions ?? [],
+        })
         return
       }
 
@@ -258,17 +263,35 @@ export default function PlannerClient({ locale }: { locale: string }) {
           </div>
         </div>
 
-        {/* Discovery / clarification — the request is meaningful but too vague to plan yet. */}
+        {/* Discovery / clarification — the request is meaningful but too vague to plan yet.
+            Always leads with interpretation + concept directions, THEN a few questions. */}
         {discovery && (
           <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
             <p className="text-sm font-semibold text-amber-900">{tf('discovery.title')}</p>
-            <p className="mt-1 text-sm text-amber-800">{tf('discovery.body')}</p>
-            {discovery.length > 0 && (
-              <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-amber-800">
-                {discovery.map((q, i) => (
-                  <li key={i}>{q}</li>
-                ))}
-              </ul>
+            {discovery.interpretation && (
+              <p className="mt-1 text-sm text-amber-800">
+                <span className="font-medium">{tf('discovery.youMean')}</span> {discovery.interpretation}
+              </p>
+            )}
+            {discovery.directions.length > 0 && (
+              <>
+                <p className="mt-2 text-sm font-medium text-amber-900">{tf('discovery.directionsLabel')}</p>
+                <ul className="mt-1 list-disc space-y-1 pl-5 text-sm text-amber-800">
+                  {discovery.directions.map((d, i) => (
+                    <li key={i}>{d}</li>
+                  ))}
+                </ul>
+              </>
+            )}
+            {discovery.questions.length > 0 && (
+              <>
+                <p className="mt-2 text-sm font-medium text-amber-900">{tf('discovery.questionsLabel')}</p>
+                <ul className="mt-1 list-disc space-y-1 pl-5 text-sm text-amber-800">
+                  {discovery.questions.map((q, i) => (
+                    <li key={i}>{q}</li>
+                  ))}
+                </ul>
+              </>
             )}
           </div>
         )}

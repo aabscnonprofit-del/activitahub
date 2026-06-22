@@ -1941,7 +1941,10 @@
       "materialsByo": "Les participants apportent le leur",
       "discovery": {
         "title": "Un peu plus de détails, s’il vous plaît",
-        "body": "Cela semble important, mais il nous faut un peu plus pour le planifier. Pourriez-vous nous dire :"
+        "body": "Cela semble important, mais il nous faut un peu plus pour le planifier. Pourriez-vous nous dire :",
+        "youMean": "Vous voulez probablement dire :",
+        "directionsLabel": "Quelques pistes possibles :",
+        "questionsLabel": "Pour nous orienter :"
       }
     },
     "result": {

@@ -19,8 +19,10 @@ function mockVerdict(v: OpeAgentVerdict, extra: Record<string, unknown> = {}): s
     verdict: v,
     confidence: 0.9,
     reason: `mock:${v}`,
+    interpretation: 'You probably want a romantic surprise for your wife',
+    directions: ['Intimate dinner for two', 'Sunset / scenic evening', 'Weekend getaway'],
     missingFields: [],
-    discoveryQuestions: v === 'discovery_required' ? ['What should actually happen?'] : [],
+    discoveryQuestions: v === 'discovery_required' ? ['What is the occasion?'] : [],
     operationalSummary: null,
     whatShouldHappenDraft: null,
     mayDraftWsh: true,   // deliberately permissive — rules must override for blocked verdicts
@@ -40,7 +42,7 @@ const RESPONSES: Record<string, string> = {
 
 const complete = async (input: { rawText: string }) => RESPONSES[input.rawText] ?? null
 
-console.log('A. heaven / best-day → discovery_required, WSH stripped, no plan')
+console.log('A. heaven / best-day → discovery_required, WSH stripped, but NEVER questions-only')
 for (const text of ['I want to visit heaven', 'I want the best day of my life']) {
   const v = await runOpeAgent({ rawText: text }, { complete })
   check(`"${text}" → verdict discovery_required`, v?.verdict === 'discovery_required', v?.verdict)
@@ -48,6 +50,11 @@ for (const text of ['I want to visit heaven', 'I want the best day of my life'])
   check(`"${text}" → mayRunPlanner false (rule enforced)`, v?.mayRunPlanner === false)
   check(`"${text}" → whatShouldHappenDraft stripped to null`, v?.whatShouldHappenDraft === null,
     JSON.stringify(v?.whatShouldHappenDraft))
+  // The fix: discovery must carry interpretation + directions, NOT survive on questions alone.
+  check(`"${text}" → interpretation present`, !!v?.interpretation && v.interpretation.length > 0)
+  check(`"${text}" → >= 2 directions (not questions-only)`, Array.isArray(v?.directions) && v.directions.length >= 2,
+    JSON.stringify(v?.directions))
+  check(`"${text}" → directions survive enforceVerdictRules (not stripped on discovery)`, (v?.directions?.length ?? 0) >= 2)
   check(`"${text}" → source ai`, v?.source === 'ai')
 }
 
@@ -85,6 +92,32 @@ console.log('\nE. decideRequest falls back to deterministic when AI returns null
   check('fallback verdict discovery_required', v.verdict === 'discovery_required', v.verdict)
   check('fallback source deterministic', v.source === 'deterministic', v.source)
   check('fallback never invents WSH', v.whatShouldHappenDraft === null && v.mayDraftWsh === false)
+}
+
+console.log('\nF. Backfill — AI discovery/interpretation with <2 directions is enriched from the Concept Funnel')
+for (const verdict of ['discovery_required', 'interpretation_required'] as const) {
+  const thin = JSON.stringify({
+    verdict, confidence: 0.8, reason: 'thin', interpretation: null, directions: [],
+    missingFields: [], discoveryQuestions: ['What is the occasion?'], operationalSummary: null,
+    whatShouldHappenDraft: null, mayDraftWsh: false, mayRunPlanner: false,
+  })
+  const v = await runOpeAgent({ rawText: 'I want to surprise my wife' }, { complete: async () => thin })
+  check(`${verdict}: verdict preserved`, v?.verdict === verdict, v?.verdict)
+  check(`${verdict}: directions backfilled to >= 2`, (v?.directions?.length ?? 0) >= 2, JSON.stringify(v?.directions))
+  check(`${verdict}: interpretation backfilled (was null)`, !!v?.interpretation && v.interpretation.length > 0)
+  check(`${verdict}: source still ai (not deterministic)`, v?.source === 'ai')
+  check(`${verdict}: never questions-only`, !((v?.directions?.length ?? 0) === 0 && !v?.interpretation))
+}
+
+console.log('\nG. Backfill does NOT touch verdicts that should stay thin (out_of_scope)')
+{
+  const oos = JSON.stringify({
+    verdict: 'out_of_scope', confidence: 0.9, reason: 'not an event', interpretation: null, directions: [],
+    missingFields: [], discoveryQuestions: [], operationalSummary: null,
+    whatShouldHappenDraft: null, mayDraftWsh: false, mayRunPlanner: false,
+  })
+  const v = await runOpeAgent({ rawText: 'what is the capital of France' }, { complete: async () => oos })
+  check('out_of_scope directions NOT backfilled', (v?.directions?.length ?? 0) === 0, JSON.stringify(v?.directions))
 }
 
 console.log(`\n${failures === 0 ? 'ALL PASS' : `${failures} FAILURE(S)`}`)

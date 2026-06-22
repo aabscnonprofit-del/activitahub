@@ -1941,7 +1941,10 @@
       "materialsByo": "Teilnehmer bringen eigene mit",
       "discovery": {
         "title": "Noch ein paar Details, bitte",
-        "body": "Das klingt bedeutungsvoll, aber wir brauchen noch etwas mehr, um es zu planen. Könnten Sie uns sagen:"
+        "body": "Das klingt bedeutungsvoll, aber wir brauchen noch etwas mehr, um es zu planen. Könnten Sie uns sagen:",
+        "youMean": "Sie meinen wahrscheinlich:",
+        "directionsLabel": "Ein paar mögliche Richtungen:",
+        "questionsLabel": "Damit wir die richtige Richtung finden:"
       }
     },
     "result": {

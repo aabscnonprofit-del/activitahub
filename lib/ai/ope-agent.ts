@@ -16,6 +16,7 @@ import OpenAI from 'openai'
 import { z } from 'zod'
 import {
   assessRequest,
+  conceptHints,
   enforceVerdictRules,
   OPE_AGENT_VERDICTS,
   type OpeAgentInput,
@@ -31,15 +32,17 @@ const VERDICT_SCHEMA = {
     verdict: { type: 'string', enum: [...OPE_AGENT_VERDICTS], description: 'The classification of the request.' },
     confidence: { type: 'number', description: 'Confidence 0..1 in the verdict.' },
     reason: { type: 'string', description: 'One short sentence explaining the verdict.' },
+    interpretation: { type: ['string', 'null'], description: 'What the user most likely means (a proposal, never asserted as fact), or null.' },
+    directions: { type: 'array', items: { type: 'string' }, description: '2-5 concrete directions/concepts to offer the user; REQUIRED (>=2) for discovery_required and interpretation_required.' },
     missingFields: { type: 'array', items: { type: 'string' }, description: 'What is missing before planning ([] if none).' },
-    discoveryQuestions: { type: 'array', items: { type: 'string' }, description: 'Questions for the user when discovery is required ([] otherwise).' },
+    discoveryQuestions: { type: 'array', items: { type: 'string' }, description: 'At most 3 clarifying questions, shown AFTER interpretation + directions. Never the only content.' },
     operationalSummary: { type: ['string', 'null'], description: 'Short operational summary of what is understood, or null.' },
     whatShouldHappenDraft: { type: ['string', 'null'], description: 'A WSH draft for interpretation_required; null when WSH must not be drafted.' },
     mayDraftWsh: { type: 'boolean', description: 'Whether a WSH may be drafted now.' },
     mayRunPlanner: { type: 'boolean', description: 'Whether the deterministic planner may run.' },
   },
   required: [
-    'verdict', 'confidence', 'reason', 'missingFields', 'discoveryQuestions',
+    'verdict', 'confidence', 'reason', 'interpretation', 'directions', 'missingFields', 'discoveryQuestions',
     'operationalSummary', 'whatShouldHappenDraft', 'mayDraftWsh', 'mayRunPlanner',
   ],
 } as const
@@ -49,8 +52,10 @@ const verdictZ = z.object({
   verdict: z.enum(OPE_AGENT_VERDICTS as unknown as [string, ...string[]]),
   confidence: z.number().min(0).max(1).catch(0.5),
   reason: z.string().min(1).max(400),
+  interpretation: z.string().max(400).nullable().catch(null),
+  directions: z.array(z.string().max(160)).max(5).catch([]),
   missingFields: z.array(z.string().max(80)).max(20).catch([]),
-  discoveryQuestions: z.array(z.string().max(240)).max(10).catch([]),
+  discoveryQuestions: z.array(z.string().max(240)).max(3).catch([]),
   operationalSummary: z.string().max(800).nullable().catch(null),
   whatShouldHappenDraft: z.string().max(2000).nullable().catch(null),
   mayDraftWsh: z.boolean(),
@@ -67,8 +72,12 @@ const SYSTEM_PROMPT =
   'plan_ready (a usable activity/scenario is already clearly described); ' +
   'infeasible (the request conflicts with reality or cannot be realised as an activity); ' +
   'out_of_scope (not an activity/event request). ' +
-  'For discovery_required: missingFields and discoveryQuestions must guide the user; whatShouldHappenDraft MUST be null. ' +
-  'For interpretation_required: provide a concise whatShouldHappenDraft (what happens + what people experience) the user will approve. ' +
+  'ALWAYS lead with understanding, never with questions. For EVERY request that is not out_of_scope/infeasible, ' +
+  'first set interpretation (what the user most likely means) and 2-5 directions (concrete concept ideas), ' +
+  'and ONLY THEN at most 3 discoveryQuestions. NEVER return questions as the only content. ' +
+  'For discovery_required you MUST still provide an interpretation and at least 2 directions; ' +
+  'missingFields and up to 3 discoveryQuestions guide the user; whatShouldHappenDraft MUST be null. ' +
+  'For interpretation_required: also provide a concise whatShouldHappenDraft (what happens + what people experience) the user will approve. ' +
   'Return ONLY the structured JSON.'
 
 /** Whether the AI Agent is switched on AND has a key. Cheap; called per request. */
@@ -113,7 +122,9 @@ function logAgentDecision(fields: {
   validation: 'success' | 'failure' | 'skipped'
   verdict?: OpeAgentVerdict
   reason?: string
+  directions?: string[]
   discoveryQuestions?: string[]
+  directionsBackfilled?: boolean
   fallbackReason?: string
 }): void {
   try {
@@ -165,7 +176,30 @@ export async function runOpeAgent(input: OpeAgentInput, opts: RunOpeAgentOptions
   }
 
   // The verdict is authoritative; re-derive permissions so the AI can never over-grant.
-  const result = enforceVerdictRules({ ...(parsed.data as OpeAgentResult), source: 'ai' })
+  let result = enforceVerdictRules({ ...(parsed.data as OpeAgentResult), source: 'ai' })
+
+  // Backfill: discovery/interpretation must NEVER be questions-only or thin. If the model returned
+  // fewer than 2 directions, enrich from the deterministic Concept Funnel before returning to the
+  // UI (merge AI + funnel, dedupe, cap 5). Also backfill a null interpretation. source stays 'ai'.
+  let directionsBackfilled = false
+  if (
+    (result.verdict === 'discovery_required' || result.verdict === 'interpretation_required') &&
+    result.directions.length < 2
+  ) {
+    const hints = conceptHints(input.rawText)
+    const merged = [...result.directions, ...hints.directions]
+      .map((s) => s.trim())
+      .filter(Boolean)
+    const deduped = [...new Set(merged)].slice(0, 5)
+    if (deduped.length >= 2) {
+      result = { ...result, directions: deduped }
+      directionsBackfilled = true
+    }
+    if (result.interpretation == null && hints.interpretation != null) {
+      result = { ...result, interpretation: hints.interpretation }
+    }
+  }
+
   logAgentDecision({
     source: 'ai',
     model,
@@ -173,7 +207,9 @@ export async function runOpeAgent(input: OpeAgentInput, opts: RunOpeAgentOptions
     validation: 'success',
     verdict: result.verdict,
     reason: result.reason,
+    directions: result.directions,
     discoveryQuestions: result.discoveryQuestions,
+    directionsBackfilled,
   })
   return result
 }
@@ -194,6 +230,7 @@ export async function decideRequest(input: OpeAgentInput, opts: RunOpeAgentOptio
     validation: 'skipped',
     verdict: det.verdict,
     reason: det.reason,
+    directions: det.directions,
     discoveryQuestions: det.discoveryQuestions,
     fallbackReason: 'using_deterministic_fallback',
   })

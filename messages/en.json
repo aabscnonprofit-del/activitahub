@@ -1941,7 +1941,10 @@
       "materialsByo": "Participants bring their own",
       "discovery": {
         "title": "A little more detail, please",
-        "body": "This sounds meaningful, but we need a bit more to plan it. Could you tell us:"
+        "body": "This sounds meaningful, but we need a bit more to plan it. Could you tell us:",
+        "youMean": "You probably mean:",
+        "directionsLabel": "A few directions we could take:",
+        "questionsLabel": "To point us the right way:"
       }
     },
     "result": {

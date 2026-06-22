@@ -6,7 +6,7 @@
 // unavailable or returns invalid JSON. It is LLM-free (no OpenAI import) so it stays safe to call
 // from anywhere, and it never decides ahead of the AI — it is the safety net behind it.
 
-import { recognizeScenario, assessConceptEntry } from '@/lib/ope/concept-funnel'
+import { recognizeScenario, assessConceptEntry, runConceptFunnel } from '@/lib/ope/concept-funnel'
 
 /**
  * The Agent's verdict on a request:
@@ -59,9 +59,13 @@ export interface OpeAgentResult {
   confidence: number
   /** Short reason for the verdict (machine/diagnostic, not user copy). */
   reason: string
+  /** What the user most likely means (proposed, never asserted as fact), or null. */
+  interpretation: string | null
+  /** 2-5 concrete directions/concepts to offer the user BEFORE any questions ([] only when truly N/A). */
+  directions: string[]
   /** What is missing before planning can proceed ([] when none). */
   missingFields: string[]
-  /** Questions to put to the user (only when discovery is required; [] otherwise). */
+  /** Clarifying questions — shown AFTER interpretation + directions, never on their own (max 3). */
   discoveryQuestions: string[]
   /** A short operational summary of what is understood, or null. */
   operationalSummary: string | null
@@ -107,13 +111,27 @@ function deterministic(partial: Omit<OpeAgentResult, 'source'>): OpeAgentResult 
   return enforceVerdictRules({ ...partial, source: 'deterministic' })
 }
 
-function discovery(reason: string, missing: string[]): OpeAgentResult {
+/** Concept directions + a likely interpretation, drawn from the existing deterministic Concept
+ * Funnel so discovery is NEVER questions-only. Returns up to 5 directions. Exported so the AI
+ * path can backfill thin/empty model directions with the same deterministic source. */
+export function conceptHints(text: string): { interpretation: string | null; directions: string[] } {
+  const funnel = runConceptFunnel(text)
+  return {
+    interpretation: funnel.concept_options[0]?.interpretation ?? null,
+    directions: funnel.concept_options.slice(0, 5).map((o) => o.title),
+  }
+}
+
+function discovery(text: string, reason: string, missing: string[]): OpeAgentResult {
+  const { interpretation, directions } = conceptHints(text)
   return deterministic({
     verdict: 'discovery_required',
     confidence: 0.5,
     reason,
+    interpretation,
+    directions, // offer concepts first…
     missingFields: missing,
-    discoveryQuestions: DISCOVERY_QUESTIONS,
+    discoveryQuestions: DISCOVERY_QUESTIONS.slice(0, 3), // …then at most 3 questions
     operationalSummary: null,
     whatShouldHappenDraft: null,
     mayDraftWsh: false,
@@ -130,7 +148,7 @@ export function assessRequest(input: OpeAgentInput): OpeAgentResult {
   const text = (input?.rawText ?? '').trim()
 
   // No request text → nothing to plan; never invent an outcome from emptiness.
-  if (!text) return discovery('no_request_text', ['what_should_happen', 'who', 'where'])
+  if (!text) return discovery(text, 'no_request_text', ['what_should_happen', 'who', 'where'])
 
   // A usable scenario already exists (itinerary / narrative / operationally-clear brief).
   const rec = recognizeScenario(text)
@@ -139,6 +157,8 @@ export function assessRequest(input: OpeAgentInput): OpeAgentResult {
       verdict: 'plan_ready',
       confidence: 0.7,
       reason: `scenario_recognized:${rec.source}`,
+      interpretation: rec.story ?? null,
+      directions: [],
       missingFields: [],
       discoveryQuestions: [],
       operationalSummary: rec.story ?? null,
@@ -155,6 +175,8 @@ export function assessRequest(input: OpeAgentInput): OpeAgentResult {
       verdict: 'sufficient_data',
       confidence: 0.6,
       reason: 'structured_fields_present',
+      interpretation: null,
+      directions: [],
       missingFields: [],
       discoveryQuestions: [],
       operationalSummary: null,
@@ -167,17 +189,20 @@ export function assessRequest(input: OpeAgentInput): OpeAgentResult {
   const a = assessConceptEntry(text)
 
   // No plannable anchor at all — too vague/emotional to draft from. Drafting would INVENT the
-  // outcome → Discovery required.
+  // outcome → Discovery required. Still offer interpretation + concept directions, never just questions.
   if (a.category == null && a.anchors === 0) {
-    return discovery('no_plannable_anchor', ['what_should_happen', 'who', 'where'])
+    return discovery(text, 'no_plannable_anchor', ['what_should_happen', 'who', 'where'])
   }
 
   // Real intent + at least one anchor/category but no usable scenario yet → must be interpreted
-  // into a "what should happen" (which the user approves) before any plan.
+  // into a "what should happen" (which the user approves) before any plan. Offer concept directions.
+  const { interpretation, directions } = conceptHints(text)
   return deterministic({
     verdict: 'interpretation_required',
     confidence: 0.5,
     reason: a.category != null ? 'category_without_scenario' : `anchors:${a.anchors}`,
+    interpretation,
+    directions,
     missingFields: ['what_should_happen'],
     discoveryQuestions: [],
     operationalSummary: null,

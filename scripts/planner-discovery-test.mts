@@ -27,6 +27,11 @@ console.log('A. "I want to surprise my wife" → discovery state, no WSH, no gen
       String(res.scenario.discoveryRequired))
     check('discoveryQuestions is a non-empty array', Array.isArray(res.scenario.discoveryQuestions) && res.scenario.discoveryQuestions.length > 0,
       JSON.stringify(res.scenario.discoveryQuestions))
+    // The fix: never questions-only — interpretation + concept directions must accompany.
+    check('interpretation present', !!res.scenario.interpretation && res.scenario.interpretation.length > 0,
+      JSON.stringify(res.scenario.interpretation))
+    check('>= 2 concept directions (not questions-only)', Array.isArray(res.scenario.directions) && res.scenario.directions.length >= 2,
+      JSON.stringify(res.scenario.directions))
   }
 }
 
@@ -44,8 +49,13 @@ console.log('\nC. PlannerClient renders a discovery state and does not advance o
 {
   const src = readFileSync(new URL('../components/planner/PlannerClient.tsx', import.meta.url), 'utf8')
   check('has a discovery state', src.includes('setDiscovery('))
-  check('intercepts null WSH before advancing', /whatShouldHappen === null/.test(src) && src.includes('setDiscovery(res.scenario.discoveryQuestions'))
-  check('renders the discovery clarification copy', src.includes("tf('discovery.title')") && src.includes("tf('discovery.body')"))
+  check('intercepts null WSH before advancing', /whatShouldHappen === null/.test(src) && src.includes('setDiscovery({') && src.includes('res.scenario.directions'))
+  check('renders the discovery clarification copy', src.includes("tf('discovery.title')"))
+  check('renders interpretation + directions BEFORE questions', (() => {
+    const dir = src.indexOf("tf('discovery.directionsLabel')")
+    const q = src.indexOf("tf('discovery.questionsLabel')")
+    return src.includes("tf('discovery.youMean')") && dir > -1 && q > -1 && dir < q
+  })())
   // The null-WSH branch must return early (no setStep to wsh/details on discovery).
   const idx = src.indexOf('res.scenario.whatShouldHappen === null')
   const ret = src.indexOf('return', idx)

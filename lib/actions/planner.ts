@@ -67,7 +67,11 @@ export interface ScenarioState {
    * shows a clarification state instead of advancing. Set only when `whatShouldHappen` is null.
    */
   discoveryRequired?: boolean
-  /** Clarifying questions from the AI Organizer to show the user (may be empty). */
+  /** What the user most likely means — shown FIRST in the discovery state (proposal, not fact). */
+  interpretation?: string | null
+  /** 2-5 concept directions to offer BEFORE any questions. */
+  directions?: string[]
+  /** Clarifying questions from the AI Organizer to show the user, AFTER directions (may be empty). */
   discoveryQuestions?: string[]
 }
 
@@ -118,6 +122,8 @@ export async function analyzeIdeaAction(idea: string): Promise<AnalyzeIdeaResult
         whatShouldHappen: null,
         source: null,
         discoveryRequired: true,
+        interpretation: verdict.interpretation ?? null,
+        directions: verdict.directions ?? [],
         discoveryQuestions: verdict.discoveryQuestions ?? [],
       },
     }
