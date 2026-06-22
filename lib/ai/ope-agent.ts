@@ -20,6 +20,7 @@ import {
   OPE_AGENT_VERDICTS,
   type OpeAgentInput,
   type OpeAgentResult,
+  type OpeAgentVerdict,
 } from '@/lib/ope/agent'
 
 /** Strict JSON-Schema the model MUST return. additionalProperties:false; all fields required. */
@@ -100,29 +101,101 @@ async function callOpenAi(input: OpeAgentInput): Promise<string | null> {
 }
 
 /**
- * Run the AI Agent. Returns a validated, rules-enforced verdict, or null on
- * disabled/missing-key/failure/invalid output (the caller falls back to assessRequest).
+ * TEMPORARY production-safe instrumentation. Emits ONE structured JSON line per Organizer
+ * decision, greppable by the `ope-agent` tag in Vercel Function Logs. It NEVER logs the API key,
+ * user id, email, or any secret — only the truncated request text (≤120 chars) and verdict
+ * metadata. Logging can never affect the request path (wrapped in try/catch).
  */
-export async function runOpeAgent(input: OpeAgentInput, opts: RunOpeAgentOptions = {}): Promise<OpeAgentResult | null> {
-  const enabled = opts.forceEnabled || opeAgentEnabled()
-  if (!enabled && !opts.complete) return null
+function logAgentDecision(fields: {
+  source: 'ai' | 'deterministic' | 'none'
+  model: string
+  text: string
+  validation: 'success' | 'failure' | 'skipped'
+  verdict?: OpeAgentVerdict
+  reason?: string
+  discoveryQuestions?: string[]
+  fallbackReason?: string
+}): void {
   try {
-    const raw = opts.complete ? await opts.complete(input) : await callOpenAi(input)
-    if (!raw) return null
-    const parsed = verdictZ.safeParse(JSON.parse(raw))
-    if (!parsed.success) return null
-    // The verdict is authoritative; re-derive permissions so the AI can never over-grant.
-    return enforceVerdictRules({ ...(parsed.data as OpeAgentResult), source: 'ai' })
+    const { text, ...rest } = fields
+    // text last so the 120-char cap always wins; no secrets/PII are ever included.
+    console.log(JSON.stringify({ tag: 'ope-agent', ...rest, text: (text ?? '').slice(0, 120) }))
   } catch {
-    return null
+    /* logging must never affect the request path */
   }
 }
 
 /**
+ * Run the AI Agent. Returns a validated, rules-enforced verdict, or null on
+ * disabled/missing-key/failure/invalid output (the caller falls back to assessRequest).
+ * Each outcome is logged with an attributed fallback reason (see logAgentDecision).
+ */
+export async function runOpeAgent(input: OpeAgentInput, opts: RunOpeAgentOptions = {}): Promise<OpeAgentResult | null> {
+  const model = process.env.OPENAI_MODEL || 'gpt-4o-mini'
+  const enabled = opts.forceEnabled || opeAgentEnabled()
+  if (!enabled && !opts.complete) {
+    logAgentDecision({ source: 'none', model, text: input.rawText, validation: 'skipped', fallbackReason: 'disabled_or_missing_key' })
+    return null
+  }
+
+  let raw: string | null
+  try {
+    raw = opts.complete ? await opts.complete(input) : await callOpenAi(input)
+  } catch (e) {
+    logAgentDecision({ source: 'none', model, text: input.rawText, validation: 'skipped', fallbackReason: `exception:${(e as Error)?.name || 'Error'}` })
+    return null
+  }
+  if (!raw) {
+    logAgentDecision({ source: 'none', model, text: input.rawText, validation: 'skipped', fallbackReason: 'empty_response' })
+    return null
+  }
+
+  let parsedJson: unknown
+  try {
+    parsedJson = JSON.parse(raw)
+  } catch {
+    logAgentDecision({ source: 'none', model, text: input.rawText, validation: 'failure', fallbackReason: 'invalid_json' })
+    return null
+  }
+
+  const parsed = verdictZ.safeParse(parsedJson)
+  if (!parsed.success) {
+    logAgentDecision({ source: 'none', model, text: input.rawText, validation: 'failure', fallbackReason: 'schema_validation_failed' })
+    return null
+  }
+
+  // The verdict is authoritative; re-derive permissions so the AI can never over-grant.
+  const result = enforceVerdictRules({ ...(parsed.data as OpeAgentResult), source: 'ai' })
+  logAgentDecision({
+    source: 'ai',
+    model,
+    text: input.rawText,
+    validation: 'success',
+    verdict: result.verdict,
+    reason: result.reason,
+    discoveryQuestions: result.discoveryQuestions,
+  })
+  return result
+}
+
+/**
  * The mandatory entry decision: AI Agent FIRST, deterministic assessRequest only as fallback.
- * Always returns a verdict (never null) so the caller always has a decision to act on.
+ * Always returns a verdict (never null) so the caller always has a decision to act on. When the
+ * deterministic fallback is used, its decision is logged too (source=deterministic).
  */
 export async function decideRequest(input: OpeAgentInput, opts: RunOpeAgentOptions = {}): Promise<OpeAgentResult> {
   const ai = await runOpeAgent(input, opts)
-  return ai ?? assessRequest(input)
+  if (ai) return ai
+  const det = assessRequest(input)
+  logAgentDecision({
+    source: 'deterministic',
+    model: process.env.OPENAI_MODEL || 'gpt-4o-mini',
+    text: input.rawText,
+    validation: 'skipped',
+    verdict: det.verdict,
+    reason: det.reason,
+    discoveryQuestions: det.discoveryQuestions,
+    fallbackReason: 'using_deterministic_fallback',
+  })
+  return det
 }
