@@ -446,6 +446,7 @@ export default function PlannerClient({ locale }: { locale: string }) {
   ]
 
   return (
+    <>
     <form onSubmit={onGenerate} className="space-y-4">
       <button type="button" onClick={() => setStep(needsWsh ? 'wsh' : 'idea')}
         className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-slate-800">
@@ -589,8 +590,18 @@ export default function PlannerClient({ locale }: { locale: string }) {
         <p className="mt-1 text-xs text-slate-400">{tf('requirementsHint')}</p>
       </Section>
 
+      <button type="submit" disabled={loading} className="btn-primary w-full px-7 py-3.5 text-base sm:w-auto">
+        {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+        {loading ? tf('generating') : tf('generate')}
+      </button>
+    </form>
+
+      {/* Gates/errors render OUTSIDE the Details <form>. BuyEventLicenseButton renders its
+          OWN <form action={createOneEventLicenseCheckout}>; nesting forms is invalid HTML, so
+          the browser drops the inner form and the license CTA never reaches Stripe. Keeping
+          this block a SIBLING of the Details form (not a child) makes the CTA submit correctly. */}
       {(error || gate) && (
-        <div ref={gateRef} className="space-y-4">
+        <div ref={gateRef} className="mt-4 space-y-4">
           {error && <p className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600">{tf('error')}</p>}
 
           {gate === 'signin' && (
@@ -617,11 +628,6 @@ export default function PlannerClient({ locale }: { locale: string }) {
           )}
         </div>
       )}
-
-      <button type="submit" disabled={loading} className="btn-primary w-full px-7 py-3.5 text-base sm:w-auto">
-        {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
-        {loading ? tf('generating') : tf('generate')}
-      </button>
-    </form>
+    </>
   )
 }

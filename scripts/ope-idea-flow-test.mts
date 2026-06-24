@@ -106,5 +106,23 @@ console.log('\n6 — /plan-an-event PlannerClient is idea-first (source guardrai
   check('structured form is rendered AFTER the idea step', ideaIdx > -1 && catsIdx > -1 && ideaIdx < catsIdx)
 }
 
+// ── 7. License CTA is NOT nested inside the Details <form> (nested forms are invalid HTML
+//      and silently break the Stripe checkout submit). BuyEventLicenseButton renders its own
+//      <form>, so it must be a SIBLING of the Details form, never a child. ─────────────────
+console.log('\n7 — BuyEventLicenseButton is not nested inside the Details <form>')
+{
+  const src = readFileSync(new URL('../components/planner/PlannerClient.tsx', import.meta.url), 'utf8')
+  const formOpenIdx = src.indexOf('onSubmit={onGenerate}')
+  const formCloseIdx = src.indexOf('</form>', formOpenIdx)
+  const ctaIdx = src.indexOf('<BuyEventLicenseButton')
+  check('Details form found (onSubmit={onGenerate} … </form>)', formOpenIdx > -1 && formCloseIdx > formOpenIdx)
+  check('BuyEventLicenseButton is rendered', ctaIdx > -1)
+  // The CTA must appear AFTER the Details form closes → it cannot be a descendant of it.
+  check('license CTA is OUTSIDE the Details form (sibling, not child)', ctaIdx > -1 && ctaIdx > formCloseIdx)
+  // And it must not appear anywhere within the Details form region.
+  const detailsFormRegion = formOpenIdx > -1 && formCloseIdx > -1 ? src.slice(formOpenIdx, formCloseIdx) : ''
+  check('no BuyEventLicenseButton inside the Details form region', !detailsFormRegion.includes('BuyEventLicenseButton'))
+}
+
 console.log(`\n${failures === 0 ? 'ALL PASS' : `${failures} FAILURE(S)`}`)
 process.exit(failures === 0 ? 0 : 1)
