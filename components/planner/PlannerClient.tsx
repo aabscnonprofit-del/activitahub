@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { useTranslations } from 'next-intl'
 import { Sparkles, Loader2, ArrowLeft, Wand2 } from 'lucide-react'
@@ -32,6 +32,19 @@ const IDEA_EXAMPLES = [
   'I want a yoga retreat for wealthy professionals.',
   'I want a networking night for startup founders.',
 ]
+
+// Stable card-section wrapper. MUST stay at module scope: when this was defined
+// inside PlannerClient, each render gave it a new function identity, so React
+// remounted its subtree on every keystroke and the nested <input> lost focus
+// (City/Country/Budget/Requirements/guest counts). Module scope keeps it stable.
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="card p-5">
+      <h2 className="mb-3 font-bold text-slate-900">{title}</h2>
+      {children}
+    </div>
+  )
+}
 
 export default function PlannerClient({ locale }: { locale: string }) {
   const t = useTranslations('planner')
@@ -71,6 +84,14 @@ export default function PlannerClient({ locale }: { locale: string }) {
   // Entitlement gate (One Event License): 'license' = needs purchase, 'signin' = needs sign-in.
   const [gate, setGate] = useState<'license' | 'signin' | null>(null)
   const [result, setResult] = useState<PlanGenerationResult | null>(null)
+
+  // When a gate (sign-in / license) or error appears after Generate — including after
+  // PlanClarify "Continue" — scroll it into view so it can never be silently off-screen
+  // at the bottom of the long details form.
+  const gateRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (gate || error) gateRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  }, [gate, error])
 
   function resetAll() {
     setStep('idea'); setIdea(''); setWhatShouldHappen(''); setNeedsWsh(false)
@@ -202,11 +223,21 @@ export default function PlannerClient({ locale }: { locale: string }) {
         setResult(res.result)
         window.scrollTo({ top: 0, behavior: 'smooth' })
       } else if (res.error === 'event_license_required') {
+        // Clear any clarification result so we leave the PlanClarify screen and the
+        // license gate (rendered in the details form) is actually visible. Without
+        // this, `if (result)` keeps PlanClarify mounted and the gate never shows.
+        // The gate is scrolled into view by the effect keyed on gate/error below.
+        setResult(null)
         setGate('license')
       } else if (res.error === 'sign_in_required') {
+        setResult(null)
         setGate('signin')
-      } else setError(true)
+      } else {
+        setResult(null)
+        setError(true)
+      }
     } catch {
+      setResult(null)
       setError(true)
     } finally {
       setLoading(false)
@@ -395,13 +426,6 @@ export default function PlannerClient({ locale }: { locale: string }) {
   }
 
   // ── Step: detail completion (secondary — prefilled, completed by the user) ───────────
-  const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
-    <div className="card p-5">
-      <h2 className="mb-3 font-bold text-slate-900">{title}</h2>
-      {children}
-    </div>
-  )
-
   const cats: { key: Category; label: string }[] = [
     { key: 'birthday', label: tf('birthday') },
     { key: 'adult_birthday', label: tf('adultBirthday') },
@@ -565,28 +589,32 @@ export default function PlannerClient({ locale }: { locale: string }) {
         <p className="mt-1 text-xs text-slate-400">{tf('requirementsHint')}</p>
       </Section>
 
-      {error && <p className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600">{tf('error')}</p>}
+      {(error || gate) && (
+        <div ref={gateRef} className="space-y-4">
+          {error && <p className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600">{tf('error')}</p>}
 
-      {gate === 'signin' && (
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 text-center">
-          <p className="font-semibold text-slate-900">{tL('gate.signinTitle')}</p>
-          <p className="mt-1 text-sm text-slate-600">{tL('gate.signinBody')}</p>
-          <Link
-            href={`/${locale}/sign-in?next=${encodeURIComponent(`/${locale}/plan-an-event`)}`}
-            className="btn-primary mt-4 inline-flex w-full justify-center sm:w-auto"
-          >
-            {tL('gate.signinCta')}
-          </Link>
-        </div>
-      )}
+          {gate === 'signin' && (
+            <div className="rounded-2xl border border-slate-200 bg-white p-5 text-center">
+              <p className="font-semibold text-slate-900">{tL('gate.signinTitle')}</p>
+              <p className="mt-1 text-sm text-slate-600">{tL('gate.signinBody')}</p>
+              <Link
+                href={`/${locale}/sign-in?next=${encodeURIComponent(`/${locale}/plan-an-event`)}`}
+                className="btn-primary mt-4 inline-flex w-full justify-center sm:w-auto"
+              >
+                {tL('gate.signinCta')}
+              </Link>
+            </div>
+          )}
 
-      {gate === 'license' && (
-        <div className="rounded-2xl border border-brand-200 bg-brand-50 p-5 text-center">
-          <p className="font-semibold text-slate-900">{tL('gate.licenseTitle')}</p>
-          <p className="mt-1 text-sm text-slate-600">{tL('gate.licenseBody')}</p>
-          <div className="mx-auto mt-4 max-w-xs">
-            <BuyEventLicenseButton locale={locale} buttonClassName="btn-primary w-full justify-center" />
-          </div>
+          {gate === 'license' && (
+            <div className="rounded-2xl border border-brand-200 bg-brand-50 p-5 text-center">
+              <p className="font-semibold text-slate-900">{tL('gate.licenseTitle')}</p>
+              <p className="mt-1 text-sm text-slate-600">{tL('gate.licenseBody')}</p>
+              <div className="mx-auto mt-4 max-w-xs">
+                <BuyEventLicenseButton locale={locale} buttonClassName="btn-primary w-full justify-center" />
+              </div>
+            </div>
+          )}
         </div>
       )}
 
