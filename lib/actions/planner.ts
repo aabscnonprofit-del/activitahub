@@ -10,6 +10,7 @@ import { decideRequest } from '@/lib/ai/ope-agent'
 import { effectiveRequestText, type OpeAgentTurn } from '@/lib/ope/agent'
 import { extractFromText } from '@/lib/ope/request-text'
 import { planFromIdeaCore } from '@/lib/ope/plan-from-idea'
+import { hasOrganizerAccess } from '@/lib/auth/organizer-access'
 
 // Idea-plan types + the pure planning core live in lib/ope/plan-from-idea.ts (no auth/billing).
 export type { IdeaDetails, IdeaPlanPayload, GeneratePlanResult } from '@/lib/ope/plan-from-idea'
@@ -184,17 +185,47 @@ export async function generateFromIdeaAction(payload: IdeaPlanPayload): Promise<
 
   const res = await planFromIdeaCore(payload)
 
-  // A ready plan is the paid deliverable: consume ONE active One Event License (atomic RPC;
+  // A ready plan is the paid deliverable. Active organizer access (active/trialing
+  // subscription OR a live organizer_access_until window — the SAME source the dashboard
+  // shows) includes planner generation, so those users plan without buying or burning a
+  // One Event License. Everyone else consumes ONE active One Event License (atomic RPC;
   // owner can't write the table directly). Only on plan_ready — clarification/handoff is free.
-  // Distinguish the two failure modes (NEVER deliver the plan in either):
-  //   * RPC error (function missing / permission / DB error) → TECHNICAL failure, not a
-  //     license verdict → 'generation_failed'. (Treating it as "no license" would wrongly
-  //     tell a paying user to buy again, e.g. if migration 040 isn't applied.)
-  //   * RPC ok but NULL → the user genuinely has no active license → 'event_license_required'.
   if (res.ok && res.result.status === 'plan_ready') {
-    const { data: licenseId, error } = await supabase.rpc('consume_event_license')
-    if (error) return { ok: false, error: 'generation_failed' }
-    if (!licenseId) return { ok: false, error: 'event_license_required' }
+    // Fail safe: if the access lookup throws, treat it as no access and fall back to the
+    // license flow (never grant a free plan on an entitlement-check error). Reads the SAME
+    // source the dashboard/middleware use (profiles.role + organizer_access_until,
+    // subscriptions.status) via the canonical hasOrganizerAccess() decision function.
+    let hasAccess = false
+    try {
+      const { data: prof } = await supabase
+        .from('profiles')
+        .select('role, organizer_access_until')
+        .eq('id', user.id)
+        .single()
+      const { data: sub } = await supabase
+        .from('subscriptions')
+        .select('status')
+        .eq('profile_id', user.id)
+        .maybeSingle()
+      hasAccess = hasOrganizerAccess({
+        role: (prof as { role?: string | null } | null)?.role,
+        organizerAccessUntil: (prof as { organizer_access_until?: string | null } | null)?.organizer_access_until,
+        subscriptionStatus: (sub as { status?: string | null } | null)?.status,
+      })
+    } catch {
+      hasAccess = false
+    }
+
+    if (!hasAccess) {
+      // Distinguish the two failure modes (NEVER deliver the plan in either):
+      //   * RPC error (function missing / permission / DB error) → TECHNICAL failure, not a
+      //     license verdict → 'generation_failed'. (Treating it as "no license" would wrongly
+      //     tell a paying user to buy again, e.g. if migration 040 isn't applied.)
+      //   * RPC ok but NULL → the user genuinely has no active license → 'event_license_required'.
+      const { data: licenseId, error } = await supabase.rpc('consume_event_license')
+      if (error) return { ok: false, error: 'generation_failed' }
+      if (!licenseId) return { ok: false, error: 'event_license_required' }
+    }
   }
   return res
 }
