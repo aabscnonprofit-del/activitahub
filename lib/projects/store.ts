@@ -1,0 +1,66 @@
+// Project store — the AGGREGATE ROOT of the event lifecycle.
+//
+// Per docs/OPE_MODULAR_PIPELINE_PRINCIPLE.md, Discovery / Future Event Description / OPE /
+// Marketplace / Execution are modules that operate ON a Project. This module owns ONLY the
+// minimal root (id, owner, status, current_step, timestamps) and does NOT contain any
+// module logic — it never plans, discovers, or sources. Future modules attach to a Project
+// via project_id; they import these helpers rather than becoming the system root.
+//
+// Plain server helpers over the RLS-owner-only `projects` table (migration 041). Callers
+// pass their own RLS-scoped supabase client so every read/write is owner-restricted.
+
+import type { createClient } from '@/lib/supabase/server'
+
+type ServerClient = Awaited<ReturnType<typeof createClient>>
+
+/** The minimal Project root. status/current_step are open TEXT (vocabulary may evolve). */
+export interface Project {
+  id: string
+  owner_id: string
+  status: string
+  current_step: string
+  created_at: string
+  updated_at: string
+}
+
+const COLS = 'id, owner_id, status, current_step, created_at, updated_at'
+
+/** Create a Project owned by `ownerId`. Returns null on any error (caller decides). */
+export async function createProject(
+  supabase: ServerClient,
+  ownerId: string,
+  init?: { status?: string; current_step?: string },
+): Promise<Project | null> {
+  const { data } = await supabase
+    .from('projects')
+    .insert({
+      owner_id: ownerId,
+      ...(init?.status ? { status: init.status } : {}),
+      ...(init?.current_step ? { current_step: init.current_step } : {}),
+    })
+    .select(COLS)
+    .single()
+  return (data as Project) ?? null
+}
+
+/** Load one Project (RLS restricts to the owner). */
+export async function getProject(supabase: ServerClient, id: string): Promise<Project | null> {
+  const { data } = await supabase.from('projects').select(COLS).eq('id', id).single()
+  return (data as Project) ?? null
+}
+
+/** List the caller's Projects, newest-edited first. */
+export async function listProjects(supabase: ServerClient): Promise<Project[]> {
+  const { data } = await supabase.from('projects').select(COLS).order('updated_at', { ascending: false })
+  return (data as Project[]) ?? []
+}
+
+/** Update a Project's status / current workflow step. Returns null on any error. */
+export async function updateProject(
+  supabase: ServerClient,
+  id: string,
+  patch: { status?: string; current_step?: string },
+): Promise<Project | null> {
+  const { data } = await supabase.from('projects').update(patch).eq('id', id).select(COLS).single()
+  return (data as Project) ?? null
+}

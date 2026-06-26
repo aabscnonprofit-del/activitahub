@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useTranslations } from 'next-intl'
 import { Sparkles, Loader2, ArrowLeft, Wand2 } from 'lucide-react'
 import { analyzeIdeaAction, generateFromIdeaAction, type IdeaPrefill, type IdeaDetails, type DiscoveryTurn } from '@/lib/actions/planner'
+import { buildFutureEventDescription } from '@/lib/ope/future-event-description'
 import type { PlanGenerationResult, RecurrenceFrequency } from '@/lib/ope'
 import PlanResult from './PlanResult'
 import PlanHandoff from './PlanHandoff'
@@ -84,6 +85,10 @@ export default function PlannerClient({ locale }: { locale: string }) {
   // Entitlement gate (One Event License): 'license' = needs purchase, 'signin' = needs sign-in.
   const [gate, setGate] = useState<'license' | 'signin' | null>(null)
   const [result, setResult] = useState<PlanGenerationResult | null>(null)
+  // The Project (aggregate root) this planner is working inside. Set once OPE creates/returns
+  // it, then reused on subsequent generations (e.g. clarification) so the user stays in the
+  // same Project. The Project row persists server-side (RLS owner-only).
+  const [projectId, setProjectId] = useState<string | undefined>(undefined)
 
   // When a gate (sign-in / license) or error appears after Generate — including after
   // PlanClarify "Continue" — scroll it into view so it can never be silently off-screen
@@ -99,6 +104,7 @@ export default function PlannerClient({ locale }: { locale: string }) {
     setRequirements(''); setCity(''); setStateRegion(''); setCountry(''); setPostal('')
     setRepeats('one_time'); setSessions(''); setInstructor(''); setMaterials('')
     setResult(null); setError(false); setGate(null); setDiscovery(null); setAnswer('')
+    setProjectId(undefined)
   }
 
   function applyPrefill(p: IdeaPrefill) {
@@ -217,8 +223,12 @@ export default function PlannerClient({ locale }: { locale: string }) {
     }
     try {
       // Planning is gated on the user-approved/edited "what should happen" (recorded above).
+      // Discovery produces the Future Event Description (the Discovery → OPE hand-off).
       const approvedWhatShouldHappen = whatShouldHappen.trim() || null
-      const res = await generateFromIdeaAction({ idea, selectedConcept: null, approvedWhatShouldHappen, details, location })
+      const fed = buildFutureEventDescription({ clientRequest: idea, description: approvedWhatShouldHappen ?? '', details, location })
+      const res = await generateFromIdeaAction(fed, projectId)
+      // Stay inside the same Project across re-generations (e.g. clarification).
+      if (res.projectId) setProjectId(res.projectId)
       if (res.ok) {
         setResult(res.result)
         window.scrollTo({ top: 0, behavior: 'smooth' })

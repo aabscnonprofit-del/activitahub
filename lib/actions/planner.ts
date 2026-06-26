@@ -11,10 +11,14 @@ import { effectiveRequestText, type OpeAgentTurn } from '@/lib/ope/agent'
 import { extractFromText } from '@/lib/ope/request-text'
 import { planFromIdeaCore } from '@/lib/ope/plan-from-idea'
 import { hasOrganizerAccess } from '@/lib/auth/organizer-access'
+import { createProject, updateProject } from '@/lib/projects/store'
 
 // Idea-plan types + the pure planning core live in lib/ope/plan-from-idea.ts (no auth/billing).
-export type { IdeaDetails, IdeaPlanPayload, GeneratePlanResult } from '@/lib/ope/plan-from-idea'
-import type { IdeaPlanPayload, GeneratePlanResult } from '@/lib/ope/plan-from-idea'
+// The Discovery → OPE hand-off is the Future Event Description (lib/ope/future-event-description.ts).
+export type { IdeaDetails, GeneratePlanResult } from '@/lib/ope/plan-from-idea'
+export type { FutureEventDescription } from '@/lib/ope/future-event-description'
+import type { GeneratePlanResult } from '@/lib/ope/plan-from-idea'
+import type { FutureEventDescription } from '@/lib/ope/future-event-description'
 
 /**
  * Public (no auth): validate the form input and run the OPE engine through the
@@ -172,9 +176,13 @@ export async function analyzeIdeaAction(idea: string, conversation?: DiscoveryTu
  * (lib/ope/plan-from-idea.ts): requires a signed-in user and consumes ONE active One Event
  * License on a delivered plan_ready plan. The planning itself is unchanged.
  */
-export async function generateFromIdeaAction(payload: IdeaPlanPayload): Promise<GeneratePlanResult> {
-  // Cheap WSH gate first (no auth needed): NO Event Plan before an approved "what should happen".
-  if (!(payload.approvedWhatShouldHappen ?? '').trim()) {
+export async function generateFromIdeaAction(
+  fed: FutureEventDescription,
+  projectId?: string,
+): Promise<GeneratePlanResult & { projectId?: string }> {
+  // OPE consumes the Future Event Description. Its `description` is the approved
+  // "what should happen". Cheap gate first (no auth needed): NO Event Plan without it.
+  if (!(fed.description ?? '').trim()) {
     return { ok: false, error: 'what_should_happen_required' }
   }
 
@@ -183,7 +191,32 @@ export async function generateFromIdeaAction(payload: IdeaPlanPayload): Promise<
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { ok: false, error: 'sign_in_required' }
 
-  const res = await planFromIdeaCore(payload)
+  // Project root: the planner works INSIDE a Project (the aggregate root). Reuse the one the
+  // client supplied, or create one for this user. BEST-EFFORT — a Project failure (e.g.
+  // migration 041 not yet applied) NEVER blocks plan generation; the Project is an additive
+  // owner, not a gate. OPE/Discovery logic is unchanged.
+  let activeProjectId = projectId
+  try {
+    if (activeProjectId) {
+      await updateProject(supabase, activeProjectId, { current_step: 'planning' })
+    } else {
+      const project = await createProject(supabase, user.id, { current_step: 'planning' })
+      activeProjectId = project?.id
+    }
+  } catch {
+    /* Project is an additive owner; never block OPE on it. */
+  }
+
+  // TEMPORARY compatibility layer (migration only): the OPE core still consumes the legacy
+  // idea payload, so convert the FED here. `approvedWhatShouldHappen` is internal-only — the
+  // authoritative interface is Discovery → FutureEventDescription → OPE.
+  const res = await planFromIdeaCore({
+    idea: fed.clientRequest,
+    selectedConcept: null,
+    approvedWhatShouldHappen: fed.description || null,
+    details: fed.details,
+    location: fed.location,
+  })
 
   // A ready plan is the paid deliverable. Active organizer access (active/trialing
   // subscription OR a live organizer_access_until window — the SAME source the dashboard
@@ -223,9 +256,19 @@ export async function generateFromIdeaAction(payload: IdeaPlanPayload): Promise<
       //     tell a paying user to buy again, e.g. if migration 040 isn't applied.)
       //   * RPC ok but NULL → the user genuinely has no active license → 'event_license_required'.
       const { data: licenseId, error } = await supabase.rpc('consume_event_license')
-      if (error) return { ok: false, error: 'generation_failed' }
-      if (!licenseId) return { ok: false, error: 'event_license_required' }
+      if (error) return { ok: false, error: 'generation_failed', projectId: activeProjectId }
+      if (!licenseId) return { ok: false, error: 'event_license_required', projectId: activeProjectId }
     }
   }
-  return res
+
+  // Reflect the reached step on the Project (best-effort; never block on it).
+  try {
+    if (activeProjectId && res.ok && res.result.status === 'plan_ready') {
+      await updateProject(supabase, activeProjectId, { current_step: 'plan_ready' })
+    }
+  } catch {
+    /* never block on the Project */
+  }
+
+  return { ...res, projectId: activeProjectId }
 }
