@@ -44,8 +44,7 @@ import type {
   SourceComponentRef,
   VendorQuote,
 } from '@/lib/budget/types'
-import type { QuoteStatus } from '@/lib/budget/types'
-import type { NeedBasis } from '@/lib/ope-engine/types'
+import type { QuoteBasis, QuoteStatus } from '@/lib/budget/types'
 
 // ── Result types ─────────────────────────────────────────────────────────────────────────────
 
@@ -267,7 +266,7 @@ export async function addVendorQuoteAction(input: {
   lineId: string
   source: 'marketplace' | 'manual'
   amount: number
-  basis: NeedBasis
+  basis: QuoteBasis
   quoteStatus: QuoteStatus
   vendorRef?: string | null
   vendorLabel?: string | null

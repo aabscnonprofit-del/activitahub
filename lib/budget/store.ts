@@ -26,8 +26,8 @@ import type {
   QuoteStatus,
   SourceComponentRef,
   SourceItemKind,
+  QuoteBasis,
 } from '@/lib/budget/types'
-import type { NeedBasis } from '@/lib/ope-engine/types'
 
 type ServerClient = Awaited<ReturnType<typeof createClient>>
 
@@ -68,7 +68,7 @@ export interface VendorQuoteRow {
   source: QuoteSource
   marketplace_result_ref: string | null
   amount: number
-  basis: NeedBasis
+  basis: QuoteBasis
   inclusions: string | null
   note: string | null
   valid_until: string | null
@@ -208,7 +208,7 @@ export async function addVendorQuote(
     lineId: string
     source: QuoteSource
     amount: number
-    basis: NeedBasis
+    basis: QuoteBasis
     quoteStatus: QuoteStatus
     vendorRef?: string | null
     vendorLabel?: string | null

@@ -15,8 +15,6 @@
 // `resource_need` | `role_need` ONLY — a WorkPackage is a planning container and is NEVER a budget
 // line / SourceComponentRef kind.
 
-import type { NeedBasis } from '@/lib/ope-engine/types'
-
 // ── Enums (fixed value sets; closed per the frozen design) ──────────────────────────────────
 
 /** DERIVED projection of a line's pricing state (design §5). NO `zero` state — zero is an amount. */
@@ -54,6 +52,14 @@ export type FeeModel = (typeof FEE_MODELS)[number]
  */
 export const SOURCE_ITEM_KINDS = ['resource_need', 'role_need'] as const
 export type SourceItemKind = (typeof SOURCE_ITEM_KINDS)[number]
+
+/**
+ * VendorQuote pricing basis (Budget-owned). Mirrors the OPE need-basis vocabulary but is defined HERE
+ * so the Budget backend has NO dependency on the separately-shipped OPE V2 modules (`lib/ope-engine`).
+ * Carried from the need's basis when a quote is sourced.
+ */
+export const QUOTE_BASES = ['per_guest', 'per_kid', 'flat', 'unspecified'] as const
+export type QuoteBasis = (typeof QUOTE_BASES)[number]
 
 // ── References ──────────────────────────────────────────────────────────────────────────────
 
@@ -112,7 +118,7 @@ interface VendorQuoteBase {
   id: string // col: id (quote_id)
   lineId: string // col: line_id (FK budget_lines)
   amount: number // col: amount — may be 0 (zero is an amount)
-  basis: NeedBasis // col: basis — carried from the need (per_guest/per_kid/flat/unspecified)
+  basis: QuoteBasis // col: basis — carried from the need (per_guest/per_kid/flat/unspecified)
   inclusions: string | null // col: inclusions (leveling context)
   note: string | null // col: note
   validUntil: string | null // col: valid_until (ISO timestamp | null)
