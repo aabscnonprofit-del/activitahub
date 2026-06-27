@@ -854,6 +854,7 @@ export type SavedPlan = {
   phase: OpePlanPhase
   lifecycle_log: OpePlanLogEntry[] // append-only transition history (WP8)
   version: number
+  project_id: string | null // owning Project (044); set on creation via the Project service (Commit 3)
   source_request_id: string | null // customer request this plan was generated from (026), else null
   assessment: OpeAssessment | null // deterministic preliminary assessment (026), set on request-derived plans
   created_at: string

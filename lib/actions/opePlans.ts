@@ -12,6 +12,7 @@ import { draftWhatShouldHappen } from '@/lib/ope/concept-funnel'
 import { enrichInputWithWsh } from '@/lib/ope/wsh-signals'
 import { buildProposal, type ProposalViewModel } from '@/lib/workspace/proposal'
 import { userHasOrganizerAccess } from '@/lib/auth/organizer-access.server'
+import { resolveProjectForPlan } from '@/lib/projects/store'
 import {
   canEditBudget, canEditInputs, canEditPrep, findTransition,
 } from '@/lib/workspace/lifecycle'
@@ -89,10 +90,15 @@ export async function createPlan(title: string | null, rawInput: unknown, whatSh
     ? [{ from: 'draft', to: 'planning', at: new Date().toISOString(), by: user.id, forced: false, auto: true }]
     : []
 
+  // Project service owns creation/resolution: a standalone plan gets one new Project.
+  const projectId = await resolveProjectForPlan(supabase, { organizerId: user.id })
+  if (!projectId) return { error: 'save_failed' }
+
   const { data, error } = await supabase
     .from(TABLE)
     .insert({
       organizer_id: user.id,
+      project_id: projectId,
       title: title?.trim() || null,
       input: finalInput,
       result,
@@ -207,10 +213,15 @@ export async function createPlanFromRequest(requestId: string): Promise<CreatePl
     { from: 'draft', to: 'planning', at: new Date().toISOString(), by: user.id, forced: false, auto: true },
   ]
 
+  // Project service: all plans for one request share one Project (get-or-create by request).
+  const projectId = await resolveProjectForPlan(supabase, { organizerId: user.id, requestId })
+  if (!projectId) return { ok: false, kind: 'error', error: 'save_failed' }
+
   const { data, error } = await supabase
     .from(TABLE)
     .insert({
       organizer_id: user.id,
+      project_id: projectId,
       title: null,
       input: finalInput,
       result,
@@ -316,6 +327,10 @@ export async function generateApproachesFromRequest(requestId: string): Promise<
   // always win; the narrative only fills blanks and adds typed requirements. Deterministic.
   const requestText = [request.notes, request.event_type].filter(Boolean).join('. ')
 
+  // Project service: every approach for this request belongs to ONE shared Project.
+  const projectId = await resolveProjectForPlan(supabase, { organizerId: user.id, requestId })
+  if (!projectId) return { ok: false, kind: 'error', error: 'save_failed' }
+
   // Each approach: validate, generate (auto-filling clarifications once), keep only
   // ready plans. Unsupported / unpriced approaches are silently skipped — the organizer
   // sees only the alternatives that actually produced a complete plan.
@@ -342,6 +357,7 @@ export async function generateApproachesFromRequest(requestId: string): Promise<
     // Alternatives are persisted as Draft (no lifecycle advance) — selection promotes one.
     return [{
       organizer_id: user.id,
+      project_id: projectId,
       title: null,
       input: finalInput,
       result,
