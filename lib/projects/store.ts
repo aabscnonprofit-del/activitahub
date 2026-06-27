@@ -162,3 +162,19 @@ export async function updateProject(
   const { data } = await supabase.from('projects').update(patch).eq('id', id).select(COLS).single()
   return (data as Project) ?? null
 }
+
+/** Whether a Project is currently published (visible in Public Space). Owner-scoped read (RLS). */
+export async function getProjectPublishState(supabase: ServerClient, id: string): Promise<boolean> {
+  const { data } = await supabase.from('projects').select('is_published').eq('id', id).maybeSingle()
+  return Boolean((data as { is_published?: boolean } | null)?.is_published)
+}
+
+/**
+ * Publish a Project — make it visible in Public Space by setting `is_published = true`. Owner-only
+ * (the owner RLS policy scopes the update; callers also verify ownership). Idempotent: setting it true
+ * when already true is a no-op. Returns true on success. Changes nothing else.
+ */
+export async function publishProject(supabase: ServerClient, id: string): Promise<boolean> {
+  const { error } = await supabase.from('projects').update({ is_published: true }).eq('id', id)
+  return !error
+}

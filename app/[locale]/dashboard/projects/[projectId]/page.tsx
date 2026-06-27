@@ -15,8 +15,9 @@ import {
   Paperclip,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
-import { getProject } from '@/lib/projects/store'
+import { getProject, getProjectPublishState } from '@/lib/projects/store'
 import { listBudgetsForProject } from '@/lib/budget/store'
+import { PublishPanel } from '@/components/projects/PublishPanel'
 import { formatDate, cn } from '@/lib/utils'
 import type { Locale } from '@/lib/types'
 
@@ -51,6 +52,7 @@ export default async function ProjectDetailsPage({ params }: Props) {
   const budgets = await listBudgetsForProject(supabase, projectId)
   const budget = budgets[0] ?? null
   const planLabel = PLAN_STAGE[project.current_step] ?? project.current_step
+  const isPublished = await getProjectPublishState(supabase, projectId)
 
   // Workspace modules. Only modules with a real Project relation get a live link; the rest are
   // "Project integration planned" (no project_id exists yet — no fake links).
@@ -94,6 +96,14 @@ export default async function ProjectDetailsPage({ params }: Props) {
         <Field label="Last update" value={formatDate(project.updated_at)} />
         <Field label="Related budget" value={budget ? `${budget.currency} · ${budget.status}` : 'None yet'} />
       </dl>
+
+      {/* Publish Flow — make the Project visible in Public Space (existing /p/[projectId] route). */}
+      <PublishPanel
+        projectId={projectId}
+        locale={locale}
+        initialPublished={isPublished}
+        publicPath={`/${locale}/p/${projectId}`}
+      />
 
       <div>
         <h2 className="mb-3 text-sm font-semibold text-slate-700">Manage this event</h2>
