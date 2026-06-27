@@ -23,7 +23,7 @@ import type { Locale } from '@/lib/types'
 // Project workspace hub — the central place to manage one event. Reuses lib/projects/store +
 // lib/budget/store (RLS owner-only). The "related plan" is surfaced via the existing `current_step`
 // signal (no FK to a plan). Only the Budget module has a real Project relation today; every other
-// module has no project_id yet, so it is shown as "Coming soon" rather than a fake link.
+// module has no project_id yet, so it is shown as "Project integration planned" rather than a fake link.
 interface Props {
   params: Promise<{ locale: string; projectId: string }>
 }
@@ -53,7 +53,7 @@ export default async function ProjectDetailsPage({ params }: Props) {
   const planLabel = PLAN_STAGE[project.current_step] ?? project.current_step
 
   // Workspace modules. Only modules with a real Project relation get a live link; the rest are
-  // "Coming soon" (no project_id exists yet — no fake links).
+  // "Project integration planned" (no project_id exists yet — no fake links).
   const modules: ModuleCard[] = [
     {
       key: 'budget',
@@ -132,7 +132,7 @@ function ModuleTile({ module: m }: { module: ModuleCard }) {
           </span>
         ) : (
           <span className="ml-auto rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-medium text-slate-400">
-            Coming soon
+            Project integration planned
           </span>
         )}
       </div>
