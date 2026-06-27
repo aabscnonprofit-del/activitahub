@@ -17,6 +17,7 @@ import {
   UserCircle,
   CreditCard,
   ShieldCheck,
+  FolderKanban,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { Locale, UserRole, OnboardingStatus } from '@/lib/types'
@@ -25,6 +26,8 @@ interface SidebarNavItem {
   key: string
   href: string
   icon: React.ElementType
+  /** Optional literal label; when set, used instead of the i18n message for `key`. */
+  label?: string
 }
 
 interface DashboardSidebarProps {
@@ -52,6 +55,7 @@ export async function DashboardSidebar({
     { key: 'home', href: base, icon: LayoutDashboard },
     { key: 'activities', href: `${base}/activities`, icon: Layers },
     { key: 'plans', href: `${base}/plans`, icon: ClipboardList },
+    { key: 'projects', href: `${base}/projects`, icon: FolderKanban, label: 'Projects' },
     { key: 'calendar', href: `${base}/calendar`, icon: CalendarDays },
     { key: 'bookings', href: `${base}/bookings`, icon: BookOpen },
     { key: 'requests', href: `${base}/requests`, icon: Inbox },
@@ -123,7 +127,7 @@ export async function DashboardSidebar({
                 )}
                 aria-hidden="true"
               />
-              {t(item.key as Parameters<typeof t>[0])}
+              {item.label ?? t(item.key as Parameters<typeof t>[0])}
             </Link>
           )
         })}
