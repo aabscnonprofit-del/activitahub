@@ -94,6 +94,59 @@ export async function getProject(supabase: ServerClient, id: string): Promise<Pr
   return (data as Project) ?? null
 }
 
+/** Public-safe projection of a Project for Public Space (no owner_id / no internal data). */
+export interface PublicProject {
+  id: string
+  status: string
+  created_at: string
+}
+
+/** Public-safe projection of an Occurrence for Public Space. */
+export interface PublicOccurrence {
+  id: string
+  title: string | null
+  starts_at: string
+  ends_at: string | null
+  location: string | null
+  status: string
+}
+
+/**
+ * Load a Project for PUBLIC display (Public Space — the read-only public projection of a Project).
+ * The Project Service owns the public-read policy: it returns ONLY public-safe existing fields, and ONLY
+ * when the Project is PUBLISHED (public-read RLS exposes only `is_published` rows via the regular client;
+ * the explicit filter is belt-and-suspenders). Returns null for missing or unpublished Projects — so
+ * non-public Projects are never reachable through Public Space. (Approved subset of Proposal 046: no
+ * title/subtitle/description/cover/location columns on Project.)
+ */
+export async function getPublicProject(supabase: ServerClient, id: string): Promise<PublicProject | null> {
+  const { data } = await supabase
+    .from('projects')
+    .select('id, status, created_at')
+    .eq('id', id)
+    .eq('is_published', true)
+    .maybeSingle()
+  return (data as PublicProject) ?? null
+}
+
+/**
+ * List a Project's FUTURE Occurrences for Public Space (public-read RLS exposes only Occurrences of a
+ * published Project). `nowIso` is supplied by the caller. Ordered soonest-first.
+ */
+export async function listPublicFutureOccurrences(
+  supabase: ServerClient,
+  projectId: string,
+  nowIso: string,
+): Promise<PublicOccurrence[]> {
+  const { data } = await supabase
+    .from('occurrences')
+    .select('id, title, starts_at, ends_at, location, status')
+    .eq('project_id', projectId)
+    .gte('starts_at', nowIso)
+    .order('starts_at', { ascending: true })
+  return (data as PublicOccurrence[]) ?? []
+}
+
 /** List the caller's Projects, newest-edited first. */
 export async function listProjects(supabase: ServerClient): Promise<Project[]> {
   const { data } = await supabase.from('projects').select(COLS).order('updated_at', { ascending: false })
