@@ -11,7 +11,7 @@ import { effectiveRequestText, type OpeAgentTurn } from '@/lib/ope/agent'
 import { extractFromText } from '@/lib/ope/request-text'
 import { planFromIdeaCore } from '@/lib/ope/plan-from-idea'
 import { hasOrganizerAccess } from '@/lib/auth/organizer-access'
-import { createProject, updateProject } from '@/lib/projects/store'
+import { resolveProjectForPlan, updateProject } from '@/lib/projects/store'
 
 // Idea-plan types + the pure planning core live in lib/ope/plan-from-idea.ts (no auth/billing).
 // The Discovery → OPE hand-off is the Future Event Description (lib/ope/future-event-description.ts).
@@ -200,8 +200,12 @@ export async function generateFromIdeaAction(
     if (activeProjectId) {
       await updateProject(supabase, activeProjectId, { current_step: 'planning' })
     } else {
-      const project = await createProject(supabase, user.id, { current_step: 'planning' })
-      activeProjectId = project?.id
+      // Project creation goes through the Project Service (the single canonical entry point).
+      activeProjectId =
+        (await resolveProjectForPlan(supabase, {
+          organizerId: user.id,
+          init: { current_step: 'planning' },
+        })) ?? undefined
     }
   } catch {
     /* Project is an additive owner; never block OPE on it. */

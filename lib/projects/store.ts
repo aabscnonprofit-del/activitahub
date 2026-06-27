@@ -55,9 +55,14 @@ export async function createProject(
  */
 export async function resolveProjectForPlan(
   supabase: ServerClient,
-  args: { organizerId: string; requestId?: string | null; projectId?: string | null },
+  args: {
+    organizerId: string
+    requestId?: string | null
+    projectId?: string | null
+    init?: { status?: string; current_step?: string } // applied only when a Project is created
+  },
 ): Promise<string | null> {
-  const { organizerId, requestId, projectId } = args
+  const { organizerId, requestId, projectId, init } = args
 
   // A. Explicit reuse — validate ownership (RLS scopes the read; owner_id match is belt-and-suspenders).
   if (projectId) {
@@ -79,7 +84,7 @@ export async function resolveProjectForPlan(
   }
 
   // B (none found) / C. Create a new Project owned by the organizer.
-  const created = await createProject(supabase, organizerId)
+  const created = await createProject(supabase, organizerId, init)
   return created ? created.id : null
 }
 
