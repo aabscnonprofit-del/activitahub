@@ -28,26 +28,32 @@ against the production database (§5). Treat anything beyond the last verified p
 
 Apply **in order**:
 
-1. **`044_ope_plan_project_link`** — required by the already-deployed plan→project code
+1. **`043_project_delivery_components`** — required by the Budget↔Plan mirroring (commit `d733af1`): the
+   planner persists, and the Budget reads, `project_delivery_components`. **If not applied, persisting
+   delivery components / opening a budget from a plan fails in production.**
+2. **`044_ope_plan_project_link`** — required by the already-deployed plan→project code
    (`opePlans.ts`/`resolveProjectForPlan` write/read `ope_plans.project_id`). **If not applied, plan
    creation fails in production.**
-2. **`045_backfill_ope_plan_projects`** — backfills existing plans (idempotent, atomic; safe to re-run).
-3. **`046_project_public_space`** — required by Public Space and the Publish Flow (`is_published`,
+3. **`045_backfill_ope_plan_projects`** — backfills existing plans (idempotent, atomic; safe to re-run).
+4. **`046_project_public_space`** — required by Public Space and the Publish Flow (`is_published`,
    `occurrences`, public-read RLS). Until applied, those features are non-functional in production.
 
 ## 4. Operational risks
 
-- **Code-ahead-of-schema:** the plan→project code (`044`/`045`) and Public Space + Publish (`046`) are
-  deployed on `origin/main`; if the migrations are not applied, those paths error at runtime.
+- **Code-ahead-of-schema:** the Budget↔Plan mirroring (`043`), the plan→project code (`044`/`045`), and
+  Public Space + Publish (`046`) are deployed on `origin/main`; if the migrations are not applied, those
+  paths error at runtime.
 - **`045` is a data migration:** it creates a Project per existing plan across all organizers (idempotent via
   `project_id IS NULL`; atomic single transaction). Organizers will see a backfilled Project per plan.
-- **Ordering is strict:** `044 → 045 → 046` (`045` needs the `044` column; `046` is independent but listed last).
+- **Ordering is strict:** `043 → 044 → 045 → 046` (`043` only needs `041`; `045` needs the `044` column;
+  `046` is independent but listed last).
 
 ## 5. Verification procedure
 
 1. Connect to the production database (Supabase).
-2. Confirm columns/tables exist: `ope_plans.project_id` (`044`), `projects.is_published` + `occurrences`
-   table + `projects_public_read`/`occurrences_public_read` policies (`046`).
+2. Confirm columns/tables exist: `project_delivery_components` table (`043`), `ope_plans.project_id`
+   (`044`), `projects.is_published` + `occurrences` table + `projects_public_read`/`occurrences_public_read`
+   policies (`046`).
 3. If missing, apply the pending migrations **in order** (§3).
 4. Confirm `045` backfill ran: `SELECT count(*) FROM ope_plans WHERE project_id IS NULL;` returns `0`.
 5. Smoke-test the pipeline: create a plan → confirm a Project exists → open the budget → publish → load

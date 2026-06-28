@@ -67,8 +67,9 @@ current (see `DOCUMENTATION_INDEX.md §12–13`).
 
 
 Migrations `041`–`046` are committed but applied to the database **separately** from code deploys. The
-deployed plan→project code requires `044`/`045`; Public Space + Publish require `046`. **Confirm production
-DB state and apply `044 → 045 → 046` in order.** Until then, the Project pipeline is non-functional in prod.
+the Budget↔Plan mirroring requires `043`; the deployed plan→project code requires `044`/`045`; Public Space
++ Publish require `046`. **Confirm production DB state and apply `043 → 044 → 045 → 046` in order.** Until
+then, the Project pipeline is non-functional in prod.
 
 ## 8. Current development phase
 
@@ -82,6 +83,6 @@ DB state and apply `044 → 045 → 046` in order.** Until then, the Project pip
 
 ## 10. Immediate next implementation task
 
-**Apply migrations `044 → 045 → 046` to production and verify the deployed Project pipeline** (plan→project,
+**Apply migrations `043 → 044 → 045 → 046` to production and verify the deployed Project pipeline** (plan→project,
 Public Space, Publish) works end-to-end against the live DB. This unblocks everything downstream and is the
 smallest action that closes the largest current gap.

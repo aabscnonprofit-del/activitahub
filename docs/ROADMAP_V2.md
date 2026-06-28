@@ -15,7 +15,7 @@ against the live database, and the dormant Budget↔Plan mirroring is committed.
 
 - **Documents:** `CURRENT_ARCHITECTURE.md`, `PROJECT_STATUS.md`, `BUDGET_INPUT_CONTRACT.md`.
 - **Implementation:**
-  - Apply migrations `044 → 045 → 046` to production (in order).
+  - Apply migrations `043 → 044 → 045 → 046` to production (in order; `043` backs the Budget↔Plan mirroring).
   - Commit the dormant Budget↔Plan mirroring (`lib/budget/mirror.ts` + the `budget.ts`/`planner.ts`/
     `projects/store.ts` deltas) so a Project's budget auto-fills from the plan.
   - Verify the deployed flow: idea → plan → Project → budget populated → publish → Public Space.
