@@ -7,7 +7,6 @@ import { PublicFooter } from '@/components/layout/PublicFooter'
 import { BuyEventLicenseButton } from '@/components/planner/BuyEventLicenseButton'
 import { ProgressionPath } from '@/components/marketing/ProgressionPath'
 import { HeroBackground } from '@/components/marketing/HeroBackground'
-import { GlobeVisual } from '@/components/marketing/GlobeVisual'
 import { CATEGORY_GROUPS, CATEGORIES_BY_GROUP, GROUP_ACCENT } from '@/lib/categories'
 import {
   Briefcase, Store, ArrowRight, Check,
@@ -177,79 +176,60 @@ export default async function HomePage({ params }: HomePageProps) {
           </div>
         </section>
 
-        {/* ── Become an Organizer (two-column: lifestyle photo + warm sunset CTA) ─────── */}
-        <section className="px-4 py-14 sm:py-20 lg:py-24">
-          <div className="mx-auto grid max-w-6xl grid-cols-1 overflow-hidden rounded-3xl shadow-xl ring-1 ring-amber-200/60 md:grid-cols-2">
-            {/*
-              Left — high-quality lifestyle PHOTOGRAPH (real people, warm event atmosphere).
-              Temporary royalty-free stock image via the Unsplash CDN (a CSS background so no remote-image
-              config / <img> lint is needed); the warm `bg-amber-300` base shows if the URL is unavailable.
-              Replace with a curated/self-hosted photo (e.g. public/marketing/become-organizer.jpg).
-            */}
-            <div
-              className="relative min-h-[300px] bg-amber-300 bg-cover bg-center md:min-h-[480px]"
-              style={{
-                backgroundImage:
-                  "url('https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=1200&q=80')",
-              }}
-              role="img"
-              aria-label="Two people hosting a warm gathering that brings people together"
-            >
-              <div className="absolute inset-0 bg-gradient-to-t from-orange-950/35 via-transparent to-transparent md:bg-gradient-to-r md:from-transparent md:to-orange-600/25" />
-            </div>
-
-            {/* Right — warm sunset / terracotta CTA panel */}
-            <div className="flex flex-col justify-center bg-gradient-to-br from-amber-500 via-orange-500 to-orange-700 px-7 py-11 text-white sm:px-10 sm:py-14 lg:px-14">
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-amber-100 sm:text-sm">
-                {t('mission.subheadline')}
-              </p>
-              <h2 className="mt-3 text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-5xl">
-                Become an Organizer
+        {/* ── Become an organizer (merged: mission · journey · OPE) ─────── */}
+        <section className="bg-slate-50 px-4 py-14 sm:py-20 lg:py-28">
+          <div className="mx-auto max-w-5xl">
+            {/* Mission statement */}
+            <div className="mx-auto max-w-3xl text-center">
+              <div className="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-50 text-brand-600">
+                <HeartHandshake className="h-6 w-6" aria-hidden="true" />
+              </div>
+              <h2 className="text-2xl font-extrabold text-slate-900 sm:text-3xl lg:text-4xl">
+                {t('mission.headline')}
               </h2>
-              <p className="mt-5 max-w-md text-base leading-relaxed text-white/90 sm:text-lg">
+              <p className="mt-3 text-lg font-semibold text-brand-600">{t('mission.subheadline')}</p>
+              <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-slate-600">
                 {t('mission.body')}
               </p>
-              <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                <Link
-                  href={viewer.isOrganizer ? orgCtaHref : `/${locale}/become-an-organizer`}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-7 py-3.5 font-bold text-orange-700 shadow-sm transition-colors hover:bg-amber-50"
-                >
-                  {viewer.isOrganizer ? tOrg('dashboard') : t('becomeOrganizer.cta')}
-                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
-                </Link>
-                <Link
-                  href={`/${locale}/plan-an-event`}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/45 bg-white/10 px-7 py-3.5 font-semibold text-white transition-colors hover:bg-white/20"
-                >
-                  {t('planner.cta')}
-                </Link>
-              </div>
             </div>
-          </div>
-        </section>
 
-        {/* ── Globe — worldwide reach (real stylized blue planet, not an icon) ── */}
-        <section className="relative overflow-hidden bg-gradient-to-b from-sky-50 to-white px-4 py-16 sm:py-24 lg:py-28">
-          <div className="mx-auto grid max-w-5xl grid-cols-1 items-center gap-10 md:grid-cols-2 md:gap-12">
-            {/* The planet */}
-            <div className="order-1 flex justify-center md:order-none">
-              <GlobeVisual className="h-64 w-64 sm:h-80 sm:w-80 lg:h-[26rem] lg:w-[26rem]" />
-            </div>
-            {/* Copy */}
-            <div className="text-center md:text-left">
-              <p className="text-sm font-bold uppercase tracking-wide text-sky-600">Worldwide</p>
-              <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">
-                Organizers activating life, everywhere
-              </h2>
-              <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-slate-600 sm:text-lg md:mx-0">
-                From a neighborhood gathering to a large-scale event, ActivLife Hub helps organizers bring
-                people together across cities and around the world.
+            {/* Organizer journey */}
+            <div className="mt-12 text-center sm:mt-16">
+              <h3 className="text-xl font-bold text-slate-900 sm:text-2xl">
+                {t('becomeOrganizer.headline')}
+              </h3>
+              <p className="mx-auto mt-3 max-w-2xl text-base text-slate-500 sm:text-lg">
+                {t('becomeOrganizer.subheadline')}
               </p>
-              <Link
-                href={`/${locale}/marketplace`}
-                className="mt-8 inline-flex items-center gap-2 rounded-xl bg-sky-600 px-7 py-3.5 font-bold text-white shadow-sm transition-colors hover:bg-sky-500"
-              >
-                {t('discover.cta')}
+              <ol className="mx-auto mt-8 grid max-w-4xl grid-cols-2 gap-3 sm:grid-cols-5 sm:gap-4">
+                {[0, 1, 2, 3, 4].map((i) => (
+                  <li key={i} className="card flex flex-col items-center gap-2 p-4 text-center">
+                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-100 text-sm font-bold text-brand-700">
+                      {i + 1}
+                    </span>
+                    <span className="text-sm font-semibold text-slate-800">
+                      {t(`becomeOrganizer.steps.${i}` as 'becomeOrganizer.steps.0')}
+                    </span>
+                  </li>
+                ))}
+              </ol>
+            </div>
+
+            {/* OPE explanation */}
+            <div className="mx-auto mt-12 flex max-w-3xl flex-col items-center gap-4 rounded-3xl bg-gradient-to-br from-brand-50 to-amber-50 px-5 py-8 text-center ring-1 ring-brand-100 sm:mt-16 sm:px-10 sm:py-10">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-brand-600 shadow-sm">
+                <CalendarCheck className="h-6 w-6" aria-hidden="true" />
+              </div>
+              <h3 className="text-xl font-bold text-slate-900 sm:text-2xl">{t('ope.headline')}</h3>
+              <p className="max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
+                {t('ope.subheadline')}
+              </p>
+            </div>
+
+            {/* Single CTA */}
+            <div className="mt-10 text-center">
+              <Link href={viewer.isOrganizer ? orgCtaHref : `/${locale}/become-an-organizer`} className="btn-primary px-7 py-3">
+                {viewer.isOrganizer ? tOrg('dashboard') : t('becomeOrganizer.cta')}
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
             </div>
