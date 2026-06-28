@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { useTranslations } from 'next-intl'
-import { Sparkles, Loader2, ArrowLeft, Wand2 } from 'lucide-react'
+import { Sparkles, Loader2, ArrowLeft, ArrowRight, Wand2 } from 'lucide-react'
 import { analyzeIdeaAction, generateFromIdeaAction, type IdeaPrefill, type IdeaDetails, type DiscoveryTurn } from '@/lib/actions/planner'
 import { buildFutureEventDescription } from '@/lib/ope/future-event-description'
 import type { PlanGenerationResult, RecurrenceFrequency } from '@/lib/ope'
@@ -282,6 +282,18 @@ export default function PlannerClient({ locale }: { locale: string }) {
           <PlanClarify questions={result.questions ?? []} loading={loading} onSubmit={onClarify} />
         ) : (
           <PlanHandoff coverage={result.coverage} />
+        )}
+        {/* Handoff to the Project pipeline — connects plan generation to the Project hub (Budget / Publish). */}
+        {projectId && result.status === 'plan_ready' && (
+          <div className="mt-6">
+            <Link
+              href={`/${locale}/dashboard/projects/${projectId}`}
+              className="btn-primary w-full px-7 py-3.5 text-base sm:w-auto"
+            >
+              Continue to Project
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </Link>
+          </div>
         )}
       </div>
     )
