@@ -178,3 +178,85 @@ export async function publishProject(supabase: ServerClient, id: string): Promis
   const { error } = await supabase.from('projects').update({ is_published: true }).eq('id', id)
   return !error
 }
+
+// ── Project delivery components (normalized child records — migration 043) ───────────────────────
+// The Project's cost-bearing delivery components (resource_need / role_need). The live source of
+// scope the Budget overlay mirrors into Budget Lines. WorkPackages are never components.
+
+/** A delivery component to persist (one row). */
+export interface ProjectDeliveryComponentInput {
+  itemKind: 'resource_need' | 'role_need'
+  itemId: string
+  label: string
+  basis?: string | null
+  quantity?: number | null
+  source?: string | null
+}
+
+/** A persisted delivery component row. */
+export interface ProjectDeliveryComponentRow {
+  id: string
+  project_id: string
+  project_version: number
+  item_kind: 'resource_need' | 'role_need'
+  item_id: string
+  label: string
+  basis: string | null
+  quantity: number | null
+  source: string | null
+  created_at: string
+  updated_at: string
+}
+
+const PDC_COLS =
+  'id, project_id, project_version, item_kind, item_id, label, basis, quantity, source, created_at, updated_at'
+
+/**
+ * Replace the full set of delivery components for a (project, version): delete the existing rows for
+ * that version, then insert the supplied set (idempotent; supports re-plan). Returns the persisted
+ * rows ([] on error or empty input).
+ */
+export async function replaceProjectDeliveryComponents(
+  supabase: ServerClient,
+  projectId: string,
+  projectVersion: number,
+  components: ProjectDeliveryComponentInput[],
+): Promise<ProjectDeliveryComponentRow[]> {
+  await supabase
+    .from('project_delivery_components')
+    .delete()
+    .eq('project_id', projectId)
+    .eq('project_version', projectVersion)
+  if (components.length === 0) return []
+  const { data } = await supabase
+    .from('project_delivery_components')
+    .insert(
+      components.map((c) => ({
+        project_id: projectId,
+        project_version: projectVersion,
+        item_kind: c.itemKind,
+        item_id: c.itemId,
+        label: c.label,
+        basis: c.basis ?? null,
+        quantity: c.quantity ?? null,
+        source: c.source ?? null,
+      })),
+    )
+    .select(PDC_COLS)
+  return (data as ProjectDeliveryComponentRow[]) ?? []
+}
+
+/** List the delivery components for a (project, version). */
+export async function listProjectDeliveryComponents(
+  supabase: ServerClient,
+  projectId: string,
+  projectVersion: number,
+): Promise<ProjectDeliveryComponentRow[]> {
+  const { data } = await supabase
+    .from('project_delivery_components')
+    .select(PDC_COLS)
+    .eq('project_id', projectId)
+    .eq('project_version', projectVersion)
+    .order('created_at', { ascending: true })
+  return (data as ProjectDeliveryComponentRow[]) ?? []
+}

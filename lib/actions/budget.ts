@@ -27,6 +27,8 @@ import {
   type VendorQuoteRow,
 } from '@/lib/budget/store'
 import { deriveCostState, deriveEffectiveAmount } from '@/lib/budget/cost-state'
+import { deliveryComponentLineSpecs, type ProjectDeliveryComponents } from '@/lib/budget/mirror'
+import { listProjectDeliveryComponents } from '@/lib/projects/store'
 import { calculateBudgetTotals } from '@/lib/budget/totals'
 import {
   validateBudgetLine,
@@ -194,6 +196,9 @@ export async function createBudgetForProjectAction(input: {
   projectId: string
   projectVersion: number
   currency: string
+  // Open-from-Project mirroring (design Phase 2): the Project's delivery components, mirrored 1:1 into
+  // Budget Lines on creation. Optional + backward-compatible — omitted/empty ⇒ a budget with no lines.
+  deliveryComponents?: ProjectDeliveryComponents
 }): Promise<BudgetActionResult<AssembledBudget>> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -208,6 +213,39 @@ export async function createBudgetForProjectAction(input: {
     currency: input.currency,
   })
   if (!row) return fail('persist_failed')
+
+  // Mirror the Project's delivery components (resource_need / role_need only) into Budget Lines.
+  // Components are loaded from the persisted Project delivery components (migration 043); the UI does
+  // NOT pass them manually. An explicit `deliveryComponents` override is honored when provided.
+  let components: ProjectDeliveryComponents
+  if (input.deliveryComponents) {
+    components = input.deliveryComponents
+  } else {
+    const rows = await listProjectDeliveryComponents(supabase, input.projectId, input.projectVersion)
+    components = {
+      resourceNeeds: rows
+        .filter((r) => r.item_kind === 'resource_need')
+        .map((r) => ({ id: r.item_id, kind: r.label })),
+      roleNeeds: rows
+        .filter((r) => r.item_kind === 'role_need')
+        .map((r) => ({ id: r.item_id, role: r.label })),
+    }
+  }
+  const specs = deliveryComponentLineSpecs(
+    { projectId: input.projectId, projectVersion: input.projectVersion },
+    components,
+  )
+  for (const spec of specs) {
+    const v = validateBudgetLine({ sourceComponentRef: spec.sourceComponentRef, label: spec.label, lineStatus: 'active' })
+    if (!v.valid) return fail('validation_failed', v.errors)
+    const lineRow = await createBudgetLine(supabase, {
+      budgetId: row.id,
+      sourceComponentRef: spec.sourceComponentRef,
+      label: spec.label,
+    })
+    if (!lineRow) return fail('persist_failed')
+  }
+
   return assembledResult(supabase, row.id)
 }
 

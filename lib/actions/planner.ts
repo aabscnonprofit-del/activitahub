@@ -11,7 +11,8 @@ import { effectiveRequestText, type OpeAgentTurn } from '@/lib/ope/agent'
 import { extractFromText } from '@/lib/ope/request-text'
 import { planFromIdeaCore } from '@/lib/ope/plan-from-idea'
 import { hasOrganizerAccess } from '@/lib/auth/organizer-access'
-import { resolveProjectForPlan, updateProject } from '@/lib/projects/store'
+import { resolveProjectForPlan, updateProject, replaceProjectDeliveryComponents, type ProjectDeliveryComponentInput } from '@/lib/projects/store'
+import { assembleOpeOutput } from '@/lib/ope/output-contract'
 
 // Idea-plan types + the pure planning core live in lib/ope/plan-from-idea.ts (no auth/billing).
 // The Discovery → OPE hand-off is the Future Event Description (lib/ope/future-event-description.ts).
@@ -265,10 +266,38 @@ export async function generateFromIdeaAction(
     }
   }
 
-  // Reflect the reached step on the Project (best-effort; never block on it).
+  // Reflect the reached step on the Project + persist its delivery components (best-effort; never
+  // block on it). The plan's resources → resource_need and staffing roles → role_need become the
+  // Project's normalized delivery components (migration 043), which the Budget overlay mirrors into
+  // Budget Lines. Only plan.resources / plan.staffing.roles are used — nothing is invented.
   try {
-    if (activeProjectId && res.ok && res.result.status === 'plan_ready') {
+    if (activeProjectId && res.ok && res.result.status === 'plan_ready' && res.result.plan) {
       await updateProject(supabase, activeProjectId, { current_step: 'plan_ready' })
+
+      const ope = assembleOpeOutput(res.result.plan)
+      const slug = (s: string): string =>
+        s.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'role'
+      const seenRole = new Set<string>()
+      const components: ProjectDeliveryComponentInput[] = [
+        ...ope.resources.map((r) => ({
+          itemKind: 'resource_need' as const,
+          itemId: r.id,
+          label: r.label,
+          quantity: r.quantity,
+          source: r.type,
+        })),
+        ...ope.staffing.roles
+          .map((role) => ({ id: slug(role.role), role }))
+          .filter(({ id }) => (seenRole.has(id) ? false : (seenRole.add(id), true)))
+          .map(({ id, role }) => ({
+            itemKind: 'role_need' as const,
+            itemId: id,
+            label: role.role,
+            quantity: role.headcount,
+            source: role.source,
+          })),
+      ]
+      await replaceProjectDeliveryComponents(supabase, activeProjectId, 1, components)
     }
   } catch {
     /* never block on the Project */
