@@ -1,0 +1,309 @@
+# OPE V2 — Phase 0 Contract Decisions (Architecture Freeze)
+
+> **Status:** **FROZEN.** This is the final architecture checkpoint before Module 4 implementation.
+> It resolves the six cross-module decisions the `WORKSPACE_EVOLUTION_PLAN.md` flagged as expensive
+> to change after implementation starts. After approval, Modules 4–8 can be built independently and
+> all remaining changes are additive, not structural.
+> **Non-goals:** no new architecture, no redesign, no new modules, **no new concepts beyond those
+> already accepted.** This freezes *contracts only* — no code, no schema, no implementation.
+> **Source of truth (unchanged):** `OPE_V2_MODULE_STATUS.md`, the approved
+> `OPE_V2_MODULE2/3/4_IMPLEMENTATION_SPEC.md`, `OPE_MODULAR_PIPELINE_PRINCIPLE.md`,
+> `ENTERPRISE_POSITIONING_PRINCIPLE.md`, and the research bridge `WORKSPACE_EVOLUTION_PLAN.md`.
+
+---
+
+## 0. What this freeze preserves (and must not disturb)
+
+These already-frozen properties are **invariant** and every decision below is shaped to keep them
+true — none requires editing a completed module's contract (M1–M3):
+- **M1–M3 are deterministic and immutable.** FED (locked/approved), IR (`status {current,
+  superseded}`), and Project (`version=1`, `status=assembled`) keep their existing contracts
+  verbatim. Decisions 1 and 2 attach *around* the immutable Project; they do not add fields to it.
+- **Abstract-not-real upstream.** FED/IR/Project contain **no real vendors, people, dates, or
+  payments.** Real entities and real dates appear only in the M4 overlay (by reference) and at
+  M5/M6, exactly as already specified.
+- **Verify-don't-trust at every seam; one responsibility per module; logical events** (in-memory,
+  append-only, exactly-once); pure transforms with no clock/randomness in the core.
+
+Where a capability is genuinely *additive-later* (e.g. an aggregated buffer field), this document
+freezes the **contract seam** for it and marks it explicitly deferred — so adding it later is a
+non-structural change.
+
+---
+
+## 1. Decision 1 — Re-plan Lineage
+
+**Frozen decisions.**
+1. **The baseline is the immutable Project.** There is no separate baseline object. An assembled
+   Project (M3 output) *is* the frozen baseline of one plan version. It is never mutated.
+2. **Lineage is an M4-owned overlay that references immutable Projects** — it does **not** modify
+   M3. Each plan version is recorded as an append-only `LineageEntry`; the Project's own `version`
+   stays `1` (M3 unchanged); the human-meaningful "plan v2" is the **`lineageVersion`** assigned by
+   M4.
+3. **A plan version is legitimate only if it derives from an approved (locked) FED version.** M4
+   re-verifies each incoming Project (assembled + valid via `validateProject`) and its `fedRef` must
+   resolve to a locked/approved FED. M4 cannot fabricate a plan version with no approved FED behind
+   it.
+4. **Two re-plan classes** (no new concepts — the established paths):
+   - **`ir_revised`** — same FED version, new IR (refinement / provider change) → new Project, same
+     `fedRef`.
+   - **`fed_revised`** — the client re-approved a new FED version (intent changed) → new locked FED →
+     new IR → new Project.
+   Plus **`organizer_requested`** (organizer initiated a re-plan) and **`rollback`** (re-activation).
+5. **Rollback philosophy: append-only re-activation; never destructive.** Because every Project
+   version is retained and immutable, "rollback" appends a **new `LineageEntry`** that supersedes the
+   current one and references the *older* Project. Nothing is deleted or mutated; only *which entry
+   is `current`* changes, forward, by append.
+6. **At most one `current` LineageEntry per Workspace** (aligns with M2's `validateCurrentInvariant`:
+   ≤1 current per (Project, FED version)). Status transitions are monotonic forward (`current →
+   superseded`); a Project may appear in more than one entry (original + a revert).
+7. **Overlay does not auto-migrate.** Each `LineageEntry` owns its overlay binding. On re-plan/
+   rollback, M4 **may copy forward compatible overlay items by reference** (notes, decisions,
+   confirmed results) but the immutable plan never changes and migration is an explicit M4 operation,
+   not an automatic mutation.
+
+**Contract — `ProjectLineage` (M4-owned, append-only):**
+| Field | Type | Notes |
+|---|---|---|
+| `lineageVersion` | Integer | M4-assigned, monotonic from 1. |
+| `projectRef` | `{ projectId }` | The immutable assembled Project for this version. |
+| `irRef` / `fedRef` | `{ id, version }` | Carried from the Project (traceability). |
+| `supersedes` | `lineageVersion \| null` | Prior version this replaces (null for v1). |
+| `trigger` | Enum `{ ir_revised, fed_revised, organizer_requested, rollback }` | Why a new version exists. |
+| `reason` | Text | Human/system explanation. |
+| `status` | Enum `{ current, superseded }` | ≤1 `current` per Workspace. |
+| `createdAt` | Timestamp | Deterministic (carried/supplied; no clock in core). |
+
+**Ownership:** M4. **Generated by:** M2/M3 (the Project) + M4 (the entry). **Lifecycle:** append on
+each re-plan/rollback; supersede the prior current; emit a lineage event. **Persistence:** durable
+(part of M4's state). **Relationship to FED:** FED is the root of trust; every entry traces
+`lineageVersion → Project → IR → FED(approved)`.
+
+---
+
+## 2. Decision 2 — Criticality Model
+
+**Frozen decisions.**
+1. **Criticality is a deterministic, read-only *derived annotation* over the immutable Project — NOT
+   a new field on the Project or IR.** This keeps M2/M3 contracts unchanged. The derivation is a pure
+   function `criticality(project) → CriticalityAnnotation`; same Project → identical annotation.
+2. **Where computed:** the **Project Assembly (M3) domain** owns the derivation algorithm (it is a
+   pure function of the dependency graph + risk severities). **Where consumed:** **M4** (attention
+   model, lenses) and **M6** (situation-awareness prioritization).
+3. **Critical Path** = the longest dependency chain in the work-package DAG (by node count — ALH has
+   **no durations**; the timeline is relative). **Float** = graph-depth slack before a node would
+   extend the longest chain (0 = on the path). Computed from `dependencyGraph` alone; deterministic,
+   tie-broken by id.
+4. **Criticality levels** (per work package): `core` · `high` · `normal` · `optional`.
+   - `core` — on the critical path, **or** tied to a `high`-severity / `never_drop` risk (where
+     derivable), **or** safety-tagged.
+   - `high` — on the critical path but not core, or near-zero float.
+   - `normal` — positive float, no high-consequence tie.
+   - `optional` — a leaf with no dependents and no high-consequence tie (a graceful-degradation
+     candidate).
+5. **Critical Core** = the set of work packages at level `core` (the few things that cannot fail).
+6. **Critical Chain (ALH form)** = the critical path **+** the outcome-level **aggregated buffer**.
+   The buffer is owned by **M2** but is an **additive-later (P2) optional IR field** — **not required
+   for Module 4** and explicitly deferred. ALH does **not** compute a resource-leveled CCPM chain
+   (no durations, no planning-time resource data — correctly deferred to M5/M6). Until the buffer
+   field exists, "Critical Chain" = the critical path.
+7. **Open question O1 resolved:** the model is **robust to sparse graphs.** Under M3 v1's
+   one-work-package-per-requirement rule a thin graph yields a short critical path and high float for
+   most nodes — that is *correct information* ("largely parallel"), not a defect. Richer many-WP
+   grouping (M3 §13, deferred) will enrich the annotation **additively**, without changing this
+   contract.
+
+**Contract — `CriticalityAnnotation` (derived; not persisted in the plan):**
+| Field | Type | Notes |
+|---|---|---|
+| `criticalPath` | List `<workPackageId>` | Longest DAG chain. |
+| `perWorkPackage` | Map `workPackageId → { level: {core,high,normal,optional}, float: Integer }` | Deterministic. |
+| `criticalCore` | List `<workPackageId>` | The `level=core` set. |
+| `computedFrom` | `{ projectId }` | The immutable Project it derives from. |
+
+**Ownership:** algorithm = M3/Project domain; consumption = M4 + M6. **Lifecycle:** computed on
+demand per lineage version; recomputed when a new Project version becomes current. **Persistence:**
+**none required** (pure function of an immutable Project); M4 **may cache** keyed by `projectId`
+(safe: immutable + deterministic).
+
+---
+
+## 3. Decision 3 — Replay / Idempotency Boundary
+
+**Frozen decisions.**
+1. **Two operation classes, divided by the deterministic-core boundary:**
+   - **Replayable (internal, pure, no outward effect):** all M1–M3 transforms, M4 `applyOperation`
+     overlay reductions, and the criticality derivation. Re-running them is safe; same input →
+     same state. **Replay reconstructs state.**
+   - **Non-replayable (outward, irreversible or externally visible):** launching a Marketplace
+     request to a real vendor; sending a notification/comm; committing spend / charging; booking;
+     day-of execution actions. These must be **idempotent** and must **never be re-performed on
+     replay.**
+2. **The boundary line:** an action becomes non-replayable the moment it **crosses a seam out of the
+   deterministic core** — M4→M5 (real sourcing), M4→external (comms), or anything in M6 (real
+   execution / settlement).
+3. **The single inviolable rule (R3):** **replay reconstructs state but NEVER re-performs an outward
+   effect.** Re-deriving state from the event log must not re-send, re-charge, or re-book.
+4. **Each outward action is recorded as two logical events:** an **intent event** (replayable — "the
+   decision to act") and an **effect-confirmation event** (non-replayable — recorded when the
+   external adapter confirms the effect happened). On replay, intent events rebuild state;
+   effect-confirmation events are **read, never re-emitted.**
+5. **Idempotency key** = a deterministic function of `(workspaceId, lineageVersion, operationId)` —
+   stable across retries of the *same* logical action. Receivers (M5/M6/external adapters) **dedupe
+   on the key**; re-issuing the same key produces no new effect.
+6. **Retry philosophy:** at-least-once delivery + idempotent receivers = **effectively-once.**
+   Transient failures retry with backoff; persistent failures go to a **dead-letter surfaced to a
+   human** — never silently dropped, never auto-compensated with a new outward effect.
+7. **Deterministic guarantees (frozen):** (a) the deterministic core is a pure function of inputs +
+   event log → replayable to identical state; (b) **no clock/randomness in the core** (preserved);
+   (c) replay never re-performs outward effects; (d) consequential/irreversible outward effects
+   additionally require human confirmation (Decisions 4 + 6, human-only rules).
+
+**Contract — outward action envelope:**
+| Field | Type | Notes |
+|---|---|---|
+| `idempotencyKey` | `hash(workspaceId, lineageVersion, operationId)` | Stable across retries. |
+| `intentEvent` | logical event | Replayable; rebuilds state. |
+| `effectConfirmation` | logical event \| pending | Non-replayable; recorded on external confirm. |
+| `retry` | `{ attempts, backoff, deadLetter→human }` | Effectively-once. |
+
+---
+
+## 4. Decision 4 — Spend Authorization Ownership
+
+**Frozen decisions.**
+1. **Financial authority is a property of (member × budget), owned by M4.** Each Workspace member
+   carries an **authority limit**; spend within it is authorized, beyond it must escalate.
+2. **The spend gate lives at M4's `accept_marketplace_result`.** Frozen seam: **M4 authorizes the
+   commitment → M5 records the commitment → M6 receipt → three-way match.** M5 sources and returns
+   costed results; M4 owns the decision to commit.
+3. **Approval is an immutable decision record** (ADR-shaped; lives on M4's append-only timeline):
+   `who approved · what amount · against which need/result · when · under what authority`.
+4. **Delegation** member→member is explicit and recorded: `SpendAuthorityGrant { fromMemberId,
+   toMemberId, limit, scope: {project | workPackageId}, at }`, revocable by an append-only revoke
+   event. **Delegated authority never exceeds the granter's own.**
+5. **Audit trail by construction:** every authorize / grant / revoke / accept / commit is an
+   append-only event with actor + amount + reference + authority basis. The event log + decision
+   records *are* the audit trail.
+6. **Interaction with Workspace:** the gate is an M4 **operation precondition** reusing the existing
+   closed-operation/total-result pattern — `accept_marketplace_result` is rejected
+   (`OperationRejection: insufficient_authority`, or `phase_locked` after Ready) unless the acting
+   member has sufficient authority for the result's cost. No new mechanism.
+7. **Authorization ≠ payment.** M4 authorizes a **commitment**; it **never executes a charge.** Real
+   payment/settlement is an outward, irreversible action (Decision 3) requiring explicit human
+   confirmation at the execution/settlement boundary (M6+). Phase 0 freezes: **M4 owns spend
+   *authorization*, not payment.**
+
+---
+
+## 5. Decision 5 — Stable Identity Layer
+
+**Frozen decisions.**
+1. **Identity is a thin, cross-cutting *reference* layer owned by no pipeline module.** It assigns
+   **stable, opaque IDs** to real-world entities; the pipeline **references them by ID only and never
+   embeds their data.** (Records — profiles, history, reputation — live in the future identity/
+   relationship layer; the pipeline does not hold them.)
+2. **Entity-kind set (frozen):** `PersonRef · VendorRef · WorkerRef · ResourceRef · OrganizationRef`
+   — each an opaque token (e.g. `vendor:…`), a *reference, not a record.*
+3. **The Phase 0 rule:** wherever the pipeline would name or embed a real entity, it carries a
+   **stable opaque ID reference** instead:
+   - M4 `WorkspaceMember.memberId` → `PersonRef`.
+   - M5 `MarketplaceResultRef` → `VendorRef`/`WorkerRef`/`ResourceRef` (the sourced real entity), **by
+     reference** — the Project stays abstract (no embedded vendor).
+   - M1 client → `PersonRef`/`OrganizationRef`.
+4. **The pipeline stays per-event and abstract.** Identity refs are opaque tokens; FED/IR/Project
+   still contain **no real entities** — only the M4 overlay and M5 results reference IDs, exactly as
+   already specified. This freeze only mandates that those references be **stable opaque IDs**, and
+   that **IDs flow through the logical event stream.**
+5. **How future Enterprise references them without touching the pipeline:** because every real entity
+   is referenced by a stable ID and every ID flows through the events, the future cross-project
+   identity/relationship layer (and the Enterprise edition) can **aggregate across events by joining
+   on those IDs** — "all events with this `VendorRef`", "this `OrganizationRef`'s portfolio" —
+   **subscribing to the existing event stream**, with **zero changes to any pipeline module.** The
+   pipeline never learns it is part of a portfolio (consistent with
+   `ENTERPRISE_POSITIONING_PRINCIPLE.md`: organizational complexity lives *above* the per-event
+   modules).
+6. **Explicitly deferred (not built now):** the identity store, the relationship graph, reputation,
+   cross-project views. Phase 0 freezes only **(a)** the entity-kind set, **(b)** reference-by-stable-
+   opaque-ID, **(c)** IDs flowing through the event stream.
+
+---
+
+## 6. Decision 6 — Learning Signal Schema
+
+**Frozen decisions.**
+1. **M7 (Completion Evidence / "Learning") produces a `LearningSignal`** per closed event — the
+   structured output of evidence + variance, **referencing plan nodes**, immutable once emitted.
+2. **M8 (Closure / "Intelligence") consumes `LearningSignal`s and produces `CandidatePattern`s** —
+   *candidates only*, gated by the **existing expert gate** before anything can influence future
+   events.
+3. **The learning loop is one-directional and gated: `M8 → expert gate → M1/M2`.** Only
+   `expert_approved` artifacts become **advisory seeds/priors** for Discovery/OPE. They **never
+   auto-modify** the deterministic engine, the FED, or any IR. (Automation/AI never decides intent;
+   humans gate doctrine.)
+4. **Confidence is descriptive metadata, not the gate.** `confidence {low,medium,high}` + `sampleSize`
+   inform the expert; the **expert approval is the gate.** Nothing below the gate influences future
+   events.
+5. **Artifacts are abstract** — no real entities, dates, or PII (the same abstract-not-real
+   discipline), so patterns generalize and stay safe. Real-entity learning ("this vendor is
+   reliable") belongs to the **identity layer (Decision 5)**, not the pattern library.
+
+**Contract — `LearningSignal` (M7):**
+| Field | Type | Notes |
+|---|---|---|
+| `eventRef` | `{ projectRef, lineageVersion, fedRef, irRef }` | Full traceability. |
+| `outcomes` | List `<Outcome>` | `Outcome { dimension: {moment,safety,budget,timing,resources,satisfaction}, result: {as_planned,degraded,failed,exceeded}, evidenceRef }`. |
+| `variances` | List `<Variance>` | `Variance { against: {cost_estimate,timeline,resource_need,risk}, planned, actual, reason, planNodeRef }`. |
+| `observations` | List `<Observation>` | `Observation { type: {what_worked,what_failed,surprise}, text, ref?, severity? }`. |
+| `createdAt` | Timestamp | Immutable once emitted. |
+
+**Contract — `CandidatePattern` (M8):**
+| Field | Type | Notes |
+|---|---|---|
+| `kind` | Enum `{ reusable_pattern, reusable_template, failure_pattern }` | — |
+| `derivedFrom` | List `<eventRef>` | Supporting closed events. |
+| `summary` / `body` | Text | **Abstract** (no real entities/dates/PII). |
+| `confidence` / `sampleSize` | Enum `{low,medium,high}` / Integer | Informs the expert. |
+| `proposedRoutingTarget` | Enum `{ discovery_M1, ope_M2 }` (failure patterns may also target `monitoring_M6`) | Where it would help. |
+| `status` | Enum `{ proposed, expert_approved, expert_rejected, retired }` | Only `expert_approved` reaches M1/M2. |
+| `createdAt` | Timestamp | — |
+
+**Routing (frozen):** `reusable_pattern` → M2 (strengthen generation); `reusable_template` → M1/M2
+(a *seed*, never an override of meaning); `failure_pattern` → M2 (risk generation) and/or M6
+(monitoring). All via the expert gate; all advisory.
+
+---
+
+## 7. Architecture Freeze Checklist
+
+After approval of this document, the following hold:
+
+- ☑ **Modules 4–8 can be implemented independently.** Each consumes a frozen upstream contract; the
+  six cross-module seams (lineage, criticality, replay/idempotency, spend authorization, identity
+  references, learning signal) are now defined, so no module needs to negotiate them at build time.
+- ☑ **No architectural uncertainty remains.** Every Phase 0 decision is *decided* (not "investigate"):
+  open question O1 is resolved (criticality robust to sparse graphs); R1–R5 are closed (lineage =
+  M4 overlay; identity = stable-opaque-ID references through events; idempotency/replay boundary
+  fixed; spend-auth = M4 gate / M5 commit; plan↔actual + learning-signal schemas fixed).
+- ☑ **No change to completed modules (M1–M3).** Criticality is *derived* (no Project/IR field);
+  lineage *references* immutable Projects; the aggregated buffer is explicitly additive-later.
+  Nothing here reopens a frozen contract.
+- ☑ **Remaining work is implementation only.** All six decisions are contract-level; building them is
+  engineering against fixed seams.
+- ☑ **Future changes are additive, not structural.** Deferred items — aggregated buffer (M2 field),
+  richer work-package grouping (M3 §13), the identity store/relationship layer, Enterprise portfolio/
+  reporting — attach to the seams frozen here **without** restructuring the pipeline.
+- ☑ **Invariants preserved.** Determinism, immutability of upstream artifacts, abstract-not-real,
+  verify-don't-trust, one-responsibility-per-module, logical events, and "humans own intent / final
+  approval / safety / irreversible commitments" all remain intact.
+
+**Conclusion.** The architecture is frozen. An engineer can begin implementing **Module 4** (Phase 1
+of `WORKSPACE_EVOLUTION_PLAN.md` §9) immediately, with no remaining architectural questions — the
+re-plan lineage, criticality consumption, replay/idempotency seam, spend-authorization gate, stable
+identity references, and the learning-signal schema are all decided. Subsequent modules (M5 → M6 →
+M7 → M8) build down the pipeline against these same frozen seams.
+
+---
+
+*Architecture freeze only. No code, no schema, no implementation, no new architecture. This document
+is the final checkpoint; implementation of Modules 4–8 proceeds from here against frozen contracts.*

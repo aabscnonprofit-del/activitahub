@@ -332,7 +332,26 @@ prices are set here**; the paid model and the principle are decided.
 
 ## Source-of-truth index
 
+- **Product Philosophy — the constitution (highest-priority doc; explains WHY ActivLife Hub exists; conversation-first, invisible architecture, AI works/human decides, organizer journey over entities; wins over any architecture/feature spec on conflict):** `docs/ALH_PRODUCT_PHILOSOPHY.md`
+- **Conversation First principle (conversation carries verbal decisions — intentions/preferences/judgement; Decision Screens carry visual decisions — maps/calendars/comparisons; not every unknown is a question; AI infers/prepares the rest; subordinate to the constitution):** `docs/CONVERSATION_FIRST_PRINCIPLE.md`
+- **Phase 1 recovery set (the navigational foundation — read these first):**
+  - **Global Product Specification (highest-level: what ALH is, who/problem/not-part, philosophy, entities, journey, architecture, business model, state):** `docs/GLOBAL_PRODUCT_SPECIFICATION.md`
+  - **Documentation Index (entry point to all ~170 docs, clustered by purpose/authority/status):** `docs/DOCUMENTATION_INDEX.md`
+  - **Current Architecture (the one canonical architecture — Project-centric pipeline; short historical section):** `docs/CURRENT_ARCHITECTURE.md`
+  - **Project Status (implemented / partial / not / deprecated / historical; current phase + next task):** `docs/PROJECT_STATUS.md`
+  - **Feature Matrix (feature × status × priority × dependencies):** `docs/FEATURE_MATRIX.md`
+  - **Roadmap V2 (current implementation roadmap; supersedes legacy roadmaps):** `docs/ROADMAP_V2.md`
 - **OPE & Event Request Marketplace:** `docs/OPE_V1_TECHNICAL_DESIGN.md`
+- **Creative Engine & Discovery Session axioms:** `docs/CREATIVE_ENGINE_AXIOMS.md`
+- **Modular pipeline principle (Client Request → Discovery → Future Event Description → OPE → Marketplace → Execution):** `docs/OPE_MODULAR_PIPELINE_PRINCIPLE.md`
+- **Multi-agent architecture principle (Discovery / OPE / PSA / Marketplace agents):** `docs/MULTI_AGENT_ARCHITECTURE_PRINCIPLE.md`
+- **Enterprise positioning principle (One Event vs Enterprise edition — boundary is organizational complexity, NOT event scale; future consideration):** `docs/ENTERPRISE_POSITIONING_PRINCIPLE.md`
+- **OPE V2 architecture freeze + closure (architecture phase complete; Modules 4–8 ready for implementation):** `docs/OPE_V2_ARCHITECTURE_CLOSURE_REPORT.md`, `docs/PHASE0_CONTRACT_DECISIONS.md`, `docs/WORKSPACE_EVOLUTION_PLAN.md`
+- **Budget Workspace V1.1 (pricing/cost/quote/proposal overlay on the canonical Project — NOT standalone finance; client buys the Event Organization Service):** `docs/BUDGET_WORKSPACE_V1_DESIGN.md`; costing-model alignment: `docs/BUDGET_COSTING_MODEL_ALIGNMENT.md`
+- **Ticket Seller operating model (a SEPARATE operating model, NOT a simplified Organizer — creates/publishes events directly and sells tickets; does NOT use Discovery/FED/IR/Project/Budget/Proposal/Marketplace; not being implemented now):** `docs/TICKET_SELLER_OPERATING_MODEL.md`
+- **Occurrence model (the concrete time-bound execution unit of a Project; Project 1→many Occurrences; registration/capacity/price/cancellation belong to Occurrence, payment to Registration; recurring activity = one Project with many Occurrences, not many Projects):** `docs/OCCURRENCE_SPEC.md`
+- **Public Space (the public, read-only projection of a Project — a capability of Project, not a separate product; publishes Projects not DB entities, displays future Occurrences, always starts registration from a selected Occurrence; presentation only, owns no Project data, no business logic):** `docs/PROJECT_PUBLIC_SPACE_SPEC.md`
+- **OPE request interpretation principle (OPE organizes experiences, not life outcomes; Reality Test before creating a Project — real-world status/qualification/profession/ownership = out of scope, organized experience/simulation/workshop/celebration = in scope; reinterpret aspirations as honest experiences, never promise real-world outcomes; behavioral only):** `docs/OPE_REQUEST_INTERPRETATION_PRINCIPLE.md`
 - **Stripe / payments status:** `STRIPE_CHECKOUT_QA.md`, `lib/stripe/*`,
   `lib/actions/billing.ts`, `app/api/stripe/webhook/route.ts`
 - **Schema:** `supabase/migrations/001`–`016`, `supabase/seed/*`
