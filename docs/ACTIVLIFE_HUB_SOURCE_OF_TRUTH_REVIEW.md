@@ -1,3 +1,5 @@
+> **STATUS: SUPERSEDED** — review of the V1 snapshot. Current source of truth: `GLOBAL_PRODUCT_SPECIFICATION.md`. Kept for record.
+
 # Source of Truth v1.0 — Review
 
 > Review of `ACTIVLIFE_HUB_SOURCE_OF_TRUTH_V1_0.md`. Findings only — the source

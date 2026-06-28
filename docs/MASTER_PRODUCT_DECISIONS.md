@@ -341,6 +341,8 @@ prices are set here**; the paid model and the principle are decided.
   - **Project Status (implemented / partial / not / deprecated / historical; current phase + next task):** `docs/PROJECT_STATUS.md`
   - **Feature Matrix (feature × status × priority × dependencies):** `docs/FEATURE_MATRIX.md`
   - **Roadmap V2 (current implementation roadmap; supersedes legacy roadmaps):** `docs/ROADMAP_V2.md`
+  - **ADR Index (every architecture decision record; 003–008 recover the Project-centric decisions — ownership, source of truth, lifecycle, transition authority, business operations, publish):** `docs/ADR_INDEX.md`
+  - **Migration Status (committed vs. applied migrations; pending production migrations + verification procedure):** `docs/MIGRATION_STATUS.md`
 - **OPE & Event Request Marketplace:** `docs/OPE_V1_TECHNICAL_DESIGN.md`
 - **Creative Engine & Discovery Session axioms:** `docs/CREATIVE_ENGINE_AXIOMS.md`
 - **Modular pipeline principle (Client Request → Discovery → Future Event Description → OPE → Marketplace → Execution):** `docs/OPE_MODULAR_PIPELINE_PRINCIPLE.md`

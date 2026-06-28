@@ -35,7 +35,27 @@ instead of "Dates coming soon."
 - **Definition of Done:** an organizer sets a first date in one decision + one review; the published page
   shows it; a recurring series shows multiple Occurrences.
 
-## Phase C — Registration (per Occurrence)
+## Phase C — Conversation-First Organizer Journey
+
+**Goal:** unify the organizer-side building blocks (idea → plan → budget → date → publish) into the
+**single-question → single-review** conversational experience the philosophy requires — replacing the
+current multi-step planner front-end as the primary way an organizer creates an event.
+
+- **Documents:** `CONVERSATION_FIRST_PRINCIPLE.md`, `ALH_PRODUCT_PHILOSOPHY.md`, `CURRENT_ARCHITECTURE.md`.
+- **Implementation:**
+  - A conversation that takes an organizer from "I have an idea" to a prepared event, asking only genuine
+    human decisions and preparing everything else (the smallest natural journey).
+  - One review/Decision Screen presenting OPE's prepared event (concept, plan, budget options, the date from
+    Phase B) for approval/adjustment, then publish (Phase A / `ADR_008`).
+  - Keep internal entities (Project, Occurrence, Budget, Public Space) invisible to the organizer.
+- **Definition of Done:** an organizer goes from idea to a published event with a first date through one
+  meaningful conversational decision and one review; no internal entity names are shown.
+
+> *Position rationale:* this phase depends on the pipeline (A) and Occurrence authoring (B) existing, so it
+> wraps them; it precedes the participant-side phases (Registration/Payment). It does **not** change their
+> priority — only inserts the organizer-journey experience the validation audit found missing.
+
+## Phase D — Registration (per Occurrence)
 
 **Goal:** a participant can register for a selected Occurrence via Public Space.
 
@@ -45,7 +65,7 @@ instead of "Dates coming soon."
     sign-up entry from a selected Occurrence.
 - **Definition of Done:** a guest registers for a specific Occurrence; the organizer sees the registrations.
 
-## Phase D — Payment on the pipeline (Registration → Payment)
+## Phase E — Payment on the pipeline (Registration → Payment)
 
 **Goal:** a registration can be paid through the canonical flow, reusing the existing Stripe stack.
 
@@ -55,7 +75,7 @@ instead of "Dates coming soon."
 - **Definition of Done:** a paid registration completes via Stripe and is recorded against the Registration;
   free/donation paths also work.
 
-## Phase E — Legacy reconciliation
+## Phase F — Legacy reconciliation
 
 **Goal:** resolve the two-architecture divergence so there is one public surface and one ownership model.
 
@@ -67,7 +87,7 @@ instead of "Dates coming soon."
 - **Definition of Done:** one public discovery surface; durable artifacts are Project-owned; no parallel
   competing architecture.
 
-## Phase F — Organizer journey polish & OS expansion
+## Phase G — Organizer journey polish & OS expansion
 
 **Goal:** strengthen the conversation-first organizer journey and connect more Project modules.
 

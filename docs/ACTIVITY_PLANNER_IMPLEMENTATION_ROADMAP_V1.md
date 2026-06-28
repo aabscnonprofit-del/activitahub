@@ -1,3 +1,5 @@
+> **STATUS: SUPERSEDED** — the current implementation roadmap is `ROADMAP_V2.md`. Kept for record.
+
 # Activity Planner — Implementation Roadmap v1
 
 > **Purpose:** turn the approved Activity Planner + Activity Execution System into a practical, buildable

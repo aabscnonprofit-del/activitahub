@@ -1,3 +1,5 @@
+> **STATUS: SUPERSEDED** — the current implementation roadmap is `ROADMAP_V2.md`. Kept for record.
+
 # OPE Implementation Roadmap
 
 > **Status:** Implementation planning. Architecture phase is **closed** — this document does **not** design new architecture or redesign OPE. It sequences the build of what the two source-of-truth documents already decided.

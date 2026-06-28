@@ -63,6 +63,9 @@ current (see `DOCUMENTATION_INDEX.md §12–13`).
 
 ## 7. Operational risk — migrations not auto-applied
 
+> Full detail + verification procedure in **`MIGRATION_STATUS.md`**.
+
+
 Migrations `041`–`046` are committed but applied to the database **separately** from code deploys. The
 deployed plan→project code requires `044`/`045`; Public Space + Publish require `046`. **Confirm production
 DB state and apply `044 → 045 → 046` in order.** Until then, the Project pipeline is non-functional in prod.

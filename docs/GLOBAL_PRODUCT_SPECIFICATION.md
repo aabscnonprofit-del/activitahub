@@ -71,7 +71,9 @@ Governed by the **Constitution** (`ALH_PRODUCT_PHILOSOPHY.md`) and the **Convers
 | **Registration / Payment** | per-Occurrence sign-up + payment (not yet built) | `PROJECT_PUBLIC_SPACE_SPEC.md` |
 
 Ownership rule: the **Project owns everything realized** (budget, vendors, payments, participants, history);
-the **Plan owns only scope+estimate**.
+the **Plan owns only scope+estimate** (`ADR_003_ENTITY_OWNERSHIP.md`, `ADR_004_SOURCE_OF_TRUTH.md`). The
+lifecycle, transition authority, operations, and publish rules are recorded in `ADR_005`–`ADR_008`
+(`ADR_INDEX.md`).
 
 ## 7. Complete user journey
 

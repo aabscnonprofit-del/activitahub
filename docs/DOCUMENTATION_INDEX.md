@@ -20,6 +20,8 @@
 | `PROJECT_STATUS.md` | What's built / partial / not / deprecated | **AUTHORITATIVE** |
 | `FEATURE_MATRIX.md` | Feature × status × priority × deps | **AUTHORITATIVE** |
 | `ROADMAP_V2.md` | Current implementation roadmap | **AUTHORITATIVE** |
+| `ADR_INDEX.md` | Every architecture decision record (003–008 = Project-centric) | **AUTHORITATIVE** |
+| `MIGRATION_STATUS.md` | Committed vs. applied migrations + verification | **AUTHORITATIVE (ops)** |
 | `MASTER_PRODUCT_DECISIONS.md` | Decisions log + source-of-truth index | **AUTHORITATIVE** |
 
 ## 1. Constitution & product philosophy
@@ -44,10 +46,10 @@
 ## 3. Project-centric architecture (current era)
 
 - `CURRENT_ARCHITECTURE.md`, `OCCURRENCE_SPEC.md`, `PROJECT_PUBLIC_SPACE_SPEC.md` — **AUTHORITATIVE**.
-- *Note:* several decisions of this era (Ownership, Source-of-Truth, Lifecycle, Transition Authority,
-  Business Operations, Publish Flow, Migration Audit) were produced in working sessions and are **not yet
-  on disk** — recovering them is a tracked task (`ROADMAP_V2.md` does not include doc tasks; see
-  `PROJECT_STATUS.md`).
+- **Architecture Decision Records (`ADR_INDEX.md`):** the foundational decisions of this era are now fully
+  on disk — `ADR_003_ENTITY_OWNERSHIP`, `ADR_004_SOURCE_OF_TRUTH`, `ADR_005_LIFECYCLE_STATE_MACHINE`,
+  `ADR_006_TRANSITION_AUTHORITY`, `ADR_007_BUSINESS_OPERATIONS`, `ADR_008_PUBLISH_FLOW` — **AUTHORITATIVE**.
+- **`MIGRATION_STATUS.md`** — committed vs. applied migrations + verification procedure — **AUTHORITATIVE (operational)**.
 
 ## 4. OPE V1 (deployed engine)
 

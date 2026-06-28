@@ -1,3 +1,5 @@
+> **STATUS: PARTIALLY SUPERSEDED** — OPE V2 is dormant/uncommitted and partially superseded by the Project-centric architecture (`CURRENT_ARCHITECTURE.md §8`). Not the current build; tracking value only.
+
 # OPE V2 — Module Status
 
 > **Purpose:** track the implementation status of all OPE V2 modules. This is a **project

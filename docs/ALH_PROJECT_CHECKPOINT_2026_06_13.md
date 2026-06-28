@@ -1,3 +1,5 @@
+> **STATUS: HISTORICAL** — point-in-time checkpoint (2026-06-13). For current state see `PROJECT_STATUS.md`.
+
 # ALH Project Checkpoint — 2026-06-13
 
 ## Purpose

@@ -27,7 +27,8 @@ The entity names below never appear in the organizer's experience (Constitution 
 ## 2. Root Entity — Project
 
 **Project is the single business root.** Everything *realized* (budget, vendor commitments, proposals,
-payments, participants, files, history, the execution record) belongs permanently to the Project. The
+payments, participants, files, history, the execution record) belongs permanently to the Project
+(`ADR_003_ENTITY_OWNERSHIP.md`). The
 **Project Service** (`lib/projects/store.ts`) is the **only** owner of Project creation, resolution, and
 public-read policy — no component writes the `projects` table directly (`resolveProjectForPlan`,
 `getPublicProject`, `publishProject`). *Schema:* migration `041`; RLS owner-only + public-read for published.
@@ -55,7 +56,8 @@ built — `PROJECT_STATUS.md §3`.)*
 
 ## 6. Publish → Public Space → Registration → Payment
 
-- **Publish:** an owner-only, idempotent action sets `projects.is_published = true` (`publishProject`).
+- **Publish:** an owner-only, idempotent action sets `projects.is_published = true` (`publishProject`) —
+  see `ADR_008_PUBLISH_FLOW.md`.
 - **Public Space:** the **read-only public projection** of a published Project at `/[locale]/p/[projectId]`
   — it owns no data and contains no business logic; it projects Project + Occurrence data via public-read
   RLS. *Spec:* `PROJECT_PUBLIC_SPACE_SPEC.md` (migration `046`).
@@ -64,12 +66,19 @@ built — `PROJECT_STATUS.md §3`.)*
 
 ## 7. Source-of-truth & ownership rules (cross-cutting)
 
-- **One writer per fact.** Each entity has one authoritative owner; everyone else references by id, derives
-  on read, or holds an immutable snapshot.
-- **Plan = scope/estimate; Project = everything realized.** Issued artifacts (proposals, contracts,
-  invoices, payments) are immutable.
-- *(These rules were decided in working sessions; recovering the full ADRs to disk is a tracked gap —
-  `PROJECT_STATUS.md`.)*
+These rules are recorded as Architecture Decision Records (`ADR_INDEX.md`):
+
+- **Entity ownership** — Plan = scope/estimate; Project = everything realized; durable artifacts persist
+  across re-planning. → `ADR_003_ENTITY_OWNERSHIP.md`.
+- **Source of truth** — one writer per fact; others reference / derive / hold immutable snapshots; issued
+  artifacts (proposals, contracts, invoices, payments) are immutable. → `ADR_004_SOURCE_OF_TRUTH.md`.
+- **Lifecycle** — the canonical state machine + plan-version layer + progressive freezing. →
+  `ADR_005_LIFECYCLE_STATE_MACHINE.md`.
+- **Transition authority** — who initiates vs. authorizes; AI never authorizes a commitment. →
+  `ADR_006_TRANSITION_AUTHORITY.md`.
+- **Business operations** — every command is one guarded, canonical operation. →
+  `ADR_007_BUSINESS_OPERATIONS.md`.
+- **Publish** — owner-only, idempotent publish to Public Space. → `ADR_008_PUBLISH_FLOW.md`.
 
 ## 8. Historical architectures (superseded — short record)
 

@@ -1,3 +1,5 @@
+> **STATUS: SUPERSEDED** — historical V1 product snapshot (2026-06-10). The current product source of truth is `GLOBAL_PRODUCT_SPECIFICATION.md` + `CURRENT_ARCHITECTURE.md`. Kept for record; do not treat as current.
+
 # ActivLife Hub — Source of Truth — v1.0
 
 > Reconstruction of the project from conversation history + verified codebase

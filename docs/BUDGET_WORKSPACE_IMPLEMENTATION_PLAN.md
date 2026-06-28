@@ -1,3 +1,5 @@
+> **STATUS: SUPERSEDED** — the current implementation roadmap is `ROADMAP_V2.md`. Kept for record.
+
 # Budget Workspace V1 — Implementation Plan (engineering execution)
 
 > **Status:** engineering planning, **not architecture.** Architecture is **complete and frozen.**

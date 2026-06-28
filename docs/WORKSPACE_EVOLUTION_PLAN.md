@@ -1,3 +1,5 @@
+> **STATUS: SUPERSEDED** — the current implementation roadmap is `ROADMAP_V2.md`. Kept for record.
+
 # OPE V2 — Workspace Evolution Plan (Research → Implementation Bridge)
 
 > **Purpose:** convert the Global Engineering Benchmark into an implementation roadmap for Modules

@@ -1,3 +1,5 @@
+> **STATUS: HISTORICAL** — point-in-time audit. For current state see `PROJECT_STATUS.md` / `FEATURE_MATRIX.md`.
+
 # Implementation Gap Audit — Launch-Critical Functionality
 
 > **Type:** audit only (code vs. docs). **No** new architecture, concepts, or file changes.
