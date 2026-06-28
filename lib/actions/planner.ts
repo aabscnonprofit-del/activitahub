@@ -277,15 +277,18 @@ export async function generateFromIdeaAction(
       const ope = assembleOpeOutput(res.result.plan)
       const slug = (s: string): string =>
         s.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'role'
+      const seenResource = new Set<string>()
       const seenRole = new Set<string>()
       const components: ProjectDeliveryComponentInput[] = [
-        ...ope.resources.map((r) => ({
-          itemKind: 'resource_need' as const,
-          itemId: r.id,
-          label: r.label,
-          quantity: r.quantity,
-          source: r.type,
-        })),
+        ...ope.resources
+          .filter((r) => (seenResource.has(r.id) ? false : (seenResource.add(r.id), true)))
+          .map((r) => ({
+            itemKind: 'resource_need' as const,
+            itemId: r.id,
+            label: r.label,
+            quantity: r.quantity,
+            source: r.type,
+          })),
         ...ope.staffing.roles
           .map((role) => ({ id: slug(role.role), role }))
           .filter(({ id }) => (seenRole.has(id) ? false : (seenRole.add(id), true)))
@@ -299,8 +302,10 @@ export async function generateFromIdeaAction(
       ]
       await replaceProjectDeliveryComponents(supabase, activeProjectId, 1, components)
     }
-  } catch {
-    /* never block on the Project */
+  } catch (err) {
+    // Persisting delivery components is best-effort (never block plan generation), but the failure must
+    // be visible — not swallowed — so an empty budget can be traced to its cause.
+    console.error('[planner] failed to persist project delivery components', err)
   }
 
   return { ...res, projectId: activeProjectId }

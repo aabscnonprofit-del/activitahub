@@ -214,7 +214,7 @@ const PDC_COLS =
 /**
  * Replace the full set of delivery components for a (project, version): delete the existing rows for
  * that version, then insert the supplied set (idempotent; supports re-plan). Returns the persisted
- * rows ([] on error or empty input).
+ * rows ([] on empty input). Throws on a Supabase error so a failed persistence cannot pass silently.
  */
 export async function replaceProjectDeliveryComponents(
   supabase: ServerClient,
@@ -222,13 +222,14 @@ export async function replaceProjectDeliveryComponents(
   projectVersion: number,
   components: ProjectDeliveryComponentInput[],
 ): Promise<ProjectDeliveryComponentRow[]> {
-  await supabase
+  const { error: deleteError } = await supabase
     .from('project_delivery_components')
     .delete()
     .eq('project_id', projectId)
     .eq('project_version', projectVersion)
+  if (deleteError) throw new Error(`replaceProjectDeliveryComponents delete failed: ${deleteError.message}`)
   if (components.length === 0) return []
-  const { data } = await supabase
+  const { data, error: insertError } = await supabase
     .from('project_delivery_components')
     .insert(
       components.map((c) => ({
@@ -243,6 +244,7 @@ export async function replaceProjectDeliveryComponents(
       })),
     )
     .select(PDC_COLS)
+  if (insertError) throw new Error(`replaceProjectDeliveryComponents insert failed: ${insertError.message}`)
   return (data as ProjectDeliveryComponentRow[]) ?? []
 }
 
