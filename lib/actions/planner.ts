@@ -20,6 +20,9 @@ export type { IdeaDetails, GeneratePlanResult } from '@/lib/ope/plan-from-idea'
 export type { FutureEventDescription } from '@/lib/ope/future-event-description'
 import type { GeneratePlanResult } from '@/lib/ope/plan-from-idea'
 import type { FutureEventDescription } from '@/lib/ope/future-event-description'
+import { planningEngineV2 } from '@/lib/planning/planning-engine-v2'
+import { persistEventPlanV2 } from '@/lib/planning/persistence'
+import type { EventPlanV2 } from '@/lib/planning/event-plan-v2'
 
 /**
  * Public (no auth): validate the form input and run the OPE engine through the
@@ -180,7 +183,7 @@ export async function analyzeIdeaAction(idea: string, conversation?: DiscoveryTu
 export async function generateFromIdeaAction(
   fed: FutureEventDescription,
   projectId?: string,
-): Promise<GeneratePlanResult & { projectId?: string }> {
+): Promise<GeneratePlanResult & { projectId?: string; eventPlanV2?: EventPlanV2 }> {
   // OPE consumes the Future Event Description. Its `description` is the approved
   // "what should happen". Cheap gate first (no auth needed): NO Event Plan without it.
   if (!(fed.description ?? '').trim()) {
@@ -308,5 +311,21 @@ export async function generateFromIdeaAction(
     console.error('[planner] failed to persist project delivery components', err)
   }
 
-  return { ...res, projectId: activeProjectId }
+  // ── Planning Layer Migration — produce EventPlanV2 from the approved FED ────────────────────────
+  // Planning Engine V2 runs ONCE on the SAME Future Event Description this action received. Stage 4:
+  // persist it in parallel (best-effort; legacy stays authoritative; NO PlannerInput derived). Stage 5b:
+  // also RETURN it so the Plan Review UI can render the prepared event directly from EventPlanV2.
+  // Best-effort: a V2 failure never affects the legacy result/return — but it is logged, not swallowed.
+  let eventPlanV2: EventPlanV2 | undefined
+  try {
+    if (res.ok && res.result.status === 'plan_ready') {
+      const plan = planningEngineV2.plan(fed)
+      eventPlanV2 = plan
+      if (activeProjectId) await persistEventPlanV2(supabase, activeProjectId, 1, plan)
+    }
+  } catch (err) {
+    console.error('[planner] EventPlanV2 (parallel, non-authoritative) failed', err)
+  }
+
+  return { ...res, projectId: activeProjectId, eventPlanV2 }
 }
