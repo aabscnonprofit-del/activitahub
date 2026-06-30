@@ -280,15 +280,17 @@ export default function PlannerClient({ locale }: { locale: string }) {
           <ArrowLeft className="h-4 w-4" />
           {t('result.newPlan')}
         </button>
-        {result.status === 'plan_ready' ? (
-          eventPlanV2 ? <EventPlanV2Review plan={eventPlanV2} /> : null
+        {eventPlanV2 && eventPlanV2.feasibility.verdict === 'planned' ? (
+          // Stage 5f: V2 feasibility is the Project-world plan-readiness gate (not legacy result.status).
+          <EventPlanV2Review plan={eventPlanV2} />
         ) : result.status === 'needs_clarification' ? (
           <PlanClarify questions={result.questions ?? []} loading={loading} onSubmit={onClarify} />
         ) : (
           <PlanHandoff coverage={result.coverage} />
         )}
         {/* Handoff to the Project pipeline — connects plan generation to the Project hub (Budget / Publish). */}
-        {projectId && result.status === 'plan_ready' && (
+        {/* Stage 5f: gated on V2 feasibility (the Project-world authority), consistent with the plan render. */}
+        {projectId && eventPlanV2 && eventPlanV2.feasibility.verdict === 'planned' && (
           <div className="mt-6">
             <Link
               href={`/${locale}/dashboard/projects/${projectId}`}

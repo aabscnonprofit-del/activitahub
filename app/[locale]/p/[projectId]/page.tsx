@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { getPublicProject, listPublicFutureOccurrences } from '@/lib/projects/store'
+import { getPublicEventPlan } from '@/lib/planning/load-public-event-plan'
 import { PublicHeader } from '@/components/layout/PublicHeader'
 import { formatDate } from '@/lib/utils'
 import { CalendarDays, MapPin } from 'lucide-react'
@@ -26,6 +27,10 @@ export default async function PublicProjectPage({ params }: Props) {
 
   const occurrences = await listPublicFutureOccurrences(supabase, projectId, new Date().toISOString())
 
+  // Stage 5d: render the prepared event from EventPlanV2 (public-safe subset). Null for projects without
+  // an EventPlanV2 (e.g. legacy structured-flow) → the existing bare projection is shown instead.
+  const publicPlan = await getPublicEventPlan(projectId)
+
   // Header auth state only (does not gate the page).
   const {
     data: { user },
@@ -36,13 +41,35 @@ export default async function PublicProjectPage({ params }: Props) {
       <PublicHeader locale={locale} isAuthenticated={!!user} />
       <main className="mx-auto max-w-3xl px-4 py-10">
         <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Public event</p>
-        <h1 className="mt-1 text-2xl font-extrabold text-slate-900">Project</h1>
-        <p className="mt-1 font-mono text-sm text-slate-500">{project.id}</p>
-
-        <dl className="mt-6 rounded-lg border border-slate-200 p-4">
-          <dt className="text-xs uppercase tracking-wide text-slate-400">Published</dt>
-          <dd className="mt-0.5 text-sm font-semibold text-slate-900">{formatDate(project.created_at)}</dd>
-        </dl>
+        {publicPlan ? (
+          <>
+            <h1 className="mt-1 text-2xl font-extrabold text-slate-900">{publicPlan.intendedExperience}</h1>
+            <p className="mt-3 text-sm leading-relaxed text-slate-600">{publicPlan.concept}</p>
+            <p className="mt-2 text-sm leading-relaxed text-slate-600">{publicPlan.experienceArc}</p>
+            {publicPlan.itinerary.length > 0 && (
+              <section className="mt-6">
+                <h2 className="text-sm font-bold uppercase tracking-wide text-slate-400">What happens</h2>
+                <ol className="mt-3 space-y-2">
+                  {publicPlan.itinerary.map((m, i) => (
+                    <li key={i} className="rounded-lg border border-slate-200 p-3">
+                      <p className="text-sm font-semibold text-slate-900">{m.name}</p>
+                      <p className="text-xs text-slate-500">{m.summary}</p>
+                    </li>
+                  ))}
+                </ol>
+              </section>
+            )}
+          </>
+        ) : (
+          <>
+            <h1 className="mt-1 text-2xl font-extrabold text-slate-900">Project</h1>
+            <p className="mt-1 font-mono text-sm text-slate-500">{project.id}</p>
+            <dl className="mt-6 rounded-lg border border-slate-200 p-4">
+              <dt className="text-xs uppercase tracking-wide text-slate-400">Published</dt>
+              <dd className="mt-0.5 text-sm font-semibold text-slate-900">{formatDate(project.created_at)}</dd>
+            </dl>
+          </>
+        )}
 
         {/* Future Occurrences */}
         <section className="mt-8">

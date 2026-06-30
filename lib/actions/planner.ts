@@ -22,6 +22,8 @@ import type { GeneratePlanResult } from '@/lib/ope/plan-from-idea'
 import type { FutureEventDescription } from '@/lib/ope/future-event-description'
 import { planningEngineV2 } from '@/lib/planning/planning-engine-v2'
 import { persistEventPlanV2 } from '@/lib/planning/persistence'
+import { persistPlanningDomain } from '@/lib/planning/planning-domain-store'
+import { planningDomainFromFed } from '@/lib/planning/planning-domain'
 import type { EventPlanV2 } from '@/lib/planning/event-plan-v2'
 
 /**
@@ -318,13 +320,19 @@ export async function generateFromIdeaAction(
   // Best-effort: a V2 failure never affects the legacy result/return — but it is logged, not swallowed.
   let eventPlanV2: EventPlanV2 | undefined
   try {
-    if (res.ok && res.result.status === 'plan_ready') {
-      const plan = planningEngineV2.plan(fed)
-      eventPlanV2 = plan
-      if (activeProjectId) await persistEventPlanV2(supabase, activeProjectId, 1, plan)
+    // Stage 5f: EventPlanV2 is the Project-world AUTHORITY. Planning Engine V2 runs on the approved FED
+    // independently of the legacy engine; its feasibility verdict (not the legacy result.status) gates
+    // plan-readiness in the UI. (The legacy result is retained only for the clarification/handoff fallback,
+    // a temporary compatibility layer retired in Stages 6-7.)
+    const plan = planningEngineV2.plan(fed)
+    eventPlanV2 = plan
+    if (activeProjectId) {
+      await persistEventPlanV2(supabase, activeProjectId, 1, plan)
+      // Stage 5e: the startup FED handoff seeds the durable Planning Domain (the recompute source of truth).
+      await persistPlanningDomain(supabase, activeProjectId, 1, planningDomainFromFed(fed))
     }
   } catch (err) {
-    console.error('[planner] EventPlanV2 (parallel, non-authoritative) failed', err)
+    console.error('[planner] EventPlanV2 (authoritative) failed', err)
   }
 
   return { ...res, projectId: activeProjectId, eventPlanV2 }
