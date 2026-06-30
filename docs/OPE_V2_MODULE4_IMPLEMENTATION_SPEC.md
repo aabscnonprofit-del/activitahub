@@ -1,5 +1,10 @@
 # OPE V2 — Module 4: Project Workspace (Organizer Workspace) — Production Specification
 
+> **STATUS: HISTORICAL (2026-06-29 Architecture Canon Cleanup).** OPE V2 is a dormant, partially superseded
+> lineage. Only the M4 *Foundation* subset exists in `lib/organizer-workspace` (dormant); the rest is unbuilt.
+> Kept for record; read as a parallel design, not current architecture. See `archive/README.md §1` and
+> `architecture/README.md §3`.
+
 > **Status:** production specification · approved-for-implementation candidate.
 > **Scope:** this document specifies *what* Module 4 is and *what it owns*. It contains **no code, no
 > implementation, and no architecture redesign.** It does not rename OPE, does not modify the frozen

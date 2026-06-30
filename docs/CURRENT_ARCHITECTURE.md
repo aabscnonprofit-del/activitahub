@@ -1,5 +1,22 @@
 # ActivLife Hub — Current Architecture
 
+---
+
+⚠️ Historical / Supporting Document
+
+The current product definition is:
+
+docs/ACTIVLIFE_HUB_PRODUCT_CANON.md
+
+This document remains for historical context,
+additional detail,
+or implementation guidance.
+
+If any statement conflicts with the Product Canon,
+the Product Canon is authoritative.
+
+---
+
 > **Status: Canonical architecture document.** Describes **only** the architecture considered current. A
 > short historical section (§7) records what it supersedes. Governed by the Constitution
 > (`ALH_PRODUCT_PHILOSOPHY.md`) — these entities are **invisible to the organizer**; they exist to serve the

@@ -1,5 +1,22 @@
 # ActivLife Hub — Global Product Specification
 
+---
+
+⚠️ Historical / Supporting Document
+
+The current product definition is:
+
+docs/ACTIVLIFE_HUB_PRODUCT_CANON.md
+
+This document remains for historical context,
+additional detail,
+or implementation guidance.
+
+If any statement conflicts with the Product Canon,
+the Product Canon is authoritative.
+
+---
+
 > **Status: Highest-level product description.** This is the single document that orients anyone to what
 > ActivLife Hub is. It **does not duplicate** existing documents — it summarizes and links them. When it
 > describes *philosophy*, the **Constitution** (`ALH_PRODUCT_PHILOSOPHY.md`) is the higher authority; when

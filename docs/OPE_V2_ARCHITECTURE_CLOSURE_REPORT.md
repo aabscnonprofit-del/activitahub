@@ -1,5 +1,9 @@
 # ActivLife Hub — Architecture Closure Report — OPE V2
 
+> **STATUS: HISTORICAL (2026-06-29 Architecture Canon Cleanup).** This "frozen/final" closure was overridden
+> by the subsequent Project-centric pivot + Planning Layer Migration. Kept for record. See
+> `archive/README.md §1` and `architecture/README.md`.
+
 > **Status:** **Final.** Formal completion of the OPE V2 architecture phase. This is a closure record,
 > not a redesign, new concept, or new architecture document. It marks the point at which architectural
 > exploration ended and implementation became the project's primary activity.

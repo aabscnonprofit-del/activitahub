@@ -1,5 +1,9 @@
 # OPE Modular Pipeline Principle
 
+> **STATUS: PARTIALLY OBSOLETE (2026-06-29 Architecture Canon Cleanup).** The modular/replaceable-module
+> principle still informs the design, but the literal OPE-V2 module pipeline it draws is dormant and
+> partially superseded by Planning Engine V2. See `archive/README.md §1` and `architecture/README.md §3`.
+
 > **Purpose:** record the architectural decision that ActivLife Hub event creation is a
 > **modular pipeline of replaceable modules**, not one monolithic OPE block.
 > **Status:** living document · principle / decision.

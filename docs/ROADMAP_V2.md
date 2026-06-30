@@ -1,5 +1,10 @@
 # ActivLife Hub — Implementation Roadmap (V2)
 
+> **STATUS: PARTIALLY OBSOLETE (2026-06-29 Architecture Canon Cleanup).** Phases A/B here have been
+> overtaken by the active **Planning Layer Migration** (`PLANNING_LAYER_MIGRATION_ROADMAP.md`), which this
+> roadmap does not list. Treat the migration roadmap as the current implementation sequence; the two should
+> be merged. See `architecture/ARCHITECTURE_CONSOLIDATION_AUDIT.md §G/§H`.
+
 > **Status: Current implementation roadmap.** Supersedes the legacy roadmaps (`OPE_IMPLEMENTATION_ROADMAP`,
 > `WORKSPACE_EVOLUTION_PLAN`, `BUDGET_WORKSPACE_IMPLEMENTATION_PLAN`, planner roadmaps — now HISTORICAL).
 > **Implementation work only** — no documentation tasks. Ordered by the Constitution's *Architecture Gap

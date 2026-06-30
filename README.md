@@ -1,3 +1,20 @@
+# Start Here
+
+The authoritative product definition is:
+
+docs/ACTIVLIFE_HUB_PRODUCT_CANON.md
+
+Everyone working on ActivLife Hub must read this document first.
+
+If any product document contradicts the Product Canon,
+the Product Canon is authoritative.
+
+Architecture documents explain HOW.
+
+The Product Canon explains WHAT and WHY.
+
+---
+
 # ActivitaHub — Phase 1
 
 Organizer platform: manage activities, venues, clients, and calendar.

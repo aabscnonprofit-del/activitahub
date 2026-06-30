@@ -8,6 +8,8 @@ It defines what ActivLife Hub is, what it exists to do, how people use it, what 
 
 This document has higher priority than older product, architecture, roadmap, migration, or implementation documents when they contradict the product model described here.
 
+This version also incorporates established product decisions already accepted elsewhere in the repository; it introduces no new product direction.
+
 ActivLife Hub is not a CRM, not an event planner, not a marketplace, not a booking tool, and not a document-management system.
 
 Those may exist inside it.
@@ -221,6 +223,16 @@ Permissions create views.
 
 They do not create separate systems.
 
+The internal vocabulary stays internal.
+
+The user never has to see the words the system uses inside itself — Project, Occurrence, Registration, Budget, Public Space.
+
+The user thinks in terms of their idea, their activity, their event, and the date.
+
+The Project is real, but its name is scaffolding.
+
+If an internal concept surfaces in the experience, that is a failure of the product, not of the user.
+
 ---
 
 # 5. Two equal user journeys
@@ -334,6 +346,8 @@ Activities Marketplace creates demand.
 
 Organizer Workspace and AI Project tools help supply meet that demand.
 
+The Activities Marketplace and the rest of the platform are presented in the platform's supported languages — English, Spanish, French, Russian, German, and Portuguese — maintained at parity on the surfaces that matter.
+
 ---
 
 # 7. Vendor / Resource Marketplace
@@ -411,6 +425,14 @@ Discovery must not create fake certainty.
 If the system does not know enough, it asks.
 
 If it knows enough, it proceeds.
+
+Screens follow the same rule.
+
+A screen exists only when the user must compare, choose, confirm, visualize, or pay.
+
+Everything else — especially gathering information — belongs to conversation, or to the AI.
+
+A screen that exists only to collect data is wrong.
 
 ---
 
@@ -490,6 +512,14 @@ FED is the user-approved description of the activity that should exist.
 Planning does not invent a different activity.
 
 Planning transforms the approved Future Event Description into a structured operational model.
+
+Planning is preceded by the creative work that gives the activity its meaning.
+
+The creative stage reasons from the client's material to a concept to a narrative, and conceives the concept from the desired experience — not from a catalog.
+
+It does not offer ready-made venues, packages, or templates as the concept, and it is not constrained by budget; budget is a later production concern, never a creative gate.
+
+Once the concept and the Future Event Description are approved, planning turns them into the operational model.
 
 The Planning Engine should produce EventPlanV2:
 
@@ -647,6 +677,20 @@ They need:
 If a decision is made in the Project, it is recorded in the Project.
 
 External calls and messages may happen, but commitments should be confirmed inside the Project so the Project remains the source of truth.
+
+Commitments require explicit human authorization.
+
+Anything that spends money, creates a legal obligation, or cannot be undone requires a human to authorize it.
+
+AI may prepare and propose, but AI never authorizes a commitment.
+
+A proposal becomes a commitment only when the client accepts it (and pays any required deposit) — the system never marks that gate as approved on its own.
+
+Issued artifacts are immutable.
+
+Once a proposal is sent, or an invoice or payment is issued, that artifact is a frozen record.
+
+The live Project keeps evolving, but issued documents do not change retroactively — they stand as the record of what was agreed.
 
 ---
 
@@ -858,6 +902,24 @@ They are not separate from the product.
 
 They feed the supply side of the Activities Marketplace.
 
+Certification gates organizer access.
+
+An organizer can plan, but the professional organizer platform — publishing and running activities as a business — is unlocked only after certification.
+
+Certification both protects participants and defines who may operate as an organizer.
+
+Two credentials exist, and they stack.
+
+Verified proves identity. Certified proves craft. An organizer may hold either or both.
+
+Trust and safety are the most protected principles.
+
+Organizers create trust, and that trust is shared across the platform — one organizer's conduct affects the standing of all.
+
+The organizer standard is built on prevention over recovery: organizers are taught to prevent problems, not only to react to them.
+
+When any decision conflicts with safety or trust, safety and trust win.
+
 ---
 
 # 24. Business Principles
@@ -881,6 +943,14 @@ The platform can earn through:
 ActivLife Hub should not become a tax on organizer-owned relationships.
 
 If the organizer creates value, the platform should help them keep and grow that value.
+
+The product boundary is complexity, not event size.
+
+A single organizer running one large activity stays inside the core product.
+
+The line where an Enterprise offering begins is the complexity of running an organization's entire event operation — many organizers, teams, and ongoing operations — not the headcount of any single event.
+
+The size of an individual activity is never artificially limited.
 
 ---
 

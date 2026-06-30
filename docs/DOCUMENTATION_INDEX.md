@@ -1,12 +1,20 @@
 # ActivLife Hub — Documentation Index
 
+> **▶ START HERE — the authoritative product definition is [`ACTIVLIFE_HUB_PRODUCT_CANON.md`](ACTIVLIFE_HUB_PRODUCT_CANON.md).**
+> Read it first. If any product document contradicts the Product Canon, the Product Canon is authoritative.
+> For the architecture (HOW) see [`architecture/SYSTEM_ARCHITECTURE.md`](architecture/SYSTEM_ARCHITECTURE.md);
+> for navigation see [`architecture/README.md`](architecture/README.md). HISTORICAL documents are classified
+> in [`archive/README.md`](archive/README.md) (kept in place — nothing deleted). This index below remains the
+> **full map** of every document by cluster.
+
 > **Status: The single entry point to all documentation.** ~170 documents exist across several eras.
 > This index groups them by cluster with **purpose**, **authority level**, and **current status** so a new
 > developer can navigate without reading everything. **Nothing is deleted.** Authority levels:
 > **CONSTITUTION** > **AUTHORITATIVE** > **SUPPORTING** > **HISTORICAL** (point-in-time, kept for record).
 >
-> **Read in this order to onboard:** `GLOBAL_PRODUCT_SPECIFICATION.md` → `ALH_PRODUCT_PHILOSOPHY.md` →
-> `CURRENT_ARCHITECTURE.md` → `PROJECT_STATUS.md` → `FEATURE_MATRIX.md` → `ROADMAP_V2.md`.
+> **Read in this order to onboard:** `ACTIVLIFE_HUB_PRODUCT_CANON.md` → `architecture/SYSTEM_ARCHITECTURE.md`
+> → `IMPLEMENTATION_CONTRACT.md`. Everything else below is **supporting documentation** (additional detail,
+> history, or implementation guidance).
 
 ---
 

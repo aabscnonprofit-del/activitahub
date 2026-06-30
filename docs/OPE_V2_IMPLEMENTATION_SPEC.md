@@ -1,5 +1,10 @@
 # OPE V2 — Implementation Specification
 
+> **STATUS: HISTORICAL (2026-06-29 Architecture Canon Cleanup).** OPE V2 is a dormant, partially superseded
+> lineage (M1–M3 built with zero production callers; M4 foundation only; M5–M8 unbuilt). The live planning
+> spine is **Planning Engine V2 / EventPlanV2** (`lib/planning`). Kept for record; read as a parallel design,
+> not current architecture. See `archive/README.md §1` and `architecture/README.md §3`.
+
 > **Status: Production Specification.**
 > This is **not** an architecture document. The architecture is complete (see
 > `MASTER_PRODUCT_DECISIONS.md`, `OPE_MASTER_SPEC.md`). This document describes modules in

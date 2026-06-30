@@ -1,5 +1,10 @@
 # OPE V2 — Module 3: Implementation Requirements (Project Assembly) — Production Specification
 
+> **STATUS: HISTORICAL (2026-06-29 Architecture Canon Cleanup).** OPE V2 is a dormant, partially superseded
+> lineage. This Module is fully implemented in `lib/project` **but has zero production callers**; the live
+> Project root is `lib/projects/store.ts` (DB migration 041). Kept for record; read as a parallel design,
+> not current architecture. See `archive/README.md §1` and `architecture/README.md §3`.
+
 > **Status:** production specification · approved-for-implementation candidate.
 > **Scope:** this document specifies *what* Module 3 is and *what it owns*. It contains **no code,
 > no implementation, and no architecture redesign.** It does not rename OPE, does not modify the

@@ -2,6 +2,23 @@
 
 # ActivLife Hub — Source of Truth — v1.0
 
+---
+
+⚠️ Historical / Supporting Document
+
+The current product definition is:
+
+docs/ACTIVLIFE_HUB_PRODUCT_CANON.md
+
+This document remains for historical context,
+additional detail,
+or implementation guidance.
+
+If any statement conflicts with the Product Canon,
+the Product Canon is authoritative.
+
+---
+
 > Reconstruction of the project from conversation history + verified codebase
 > state. **Only information that was actually discussed, approved, or implemented
 > is included.** Items that were never discussed are marked as such; nothing is
