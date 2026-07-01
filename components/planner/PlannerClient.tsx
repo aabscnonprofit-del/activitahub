@@ -4,13 +4,11 @@ import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { useTranslations } from 'next-intl'
 import { Sparkles, Loader2, ArrowLeft, ArrowRight, Wand2 } from 'lucide-react'
-import { analyzeIdeaAction, generateFromIdeaAction, type IdeaPrefill, type IdeaDetails, type DiscoveryTurn } from '@/lib/actions/planner'
-import { buildFutureEventDescription } from '@/lib/ope/future-event-description'
-import type { PlanGenerationResult, RecurrenceFrequency } from '@/lib/ope'
+import { analyzeIdeaAction, generateFromIdeaAction, type IdeaPrefill, type DiscoveryTurn } from '@/lib/actions/planner'
+import { buildFutureEventDescription, type EventDetails, type RecurrenceFrequency } from '@/lib/domain/future-event-description'
 import EventPlanV2Review from './EventPlanV2Review'
+import EventPlanV2Handoff from './EventPlanV2Handoff'
 import type { EventPlanV2 } from '@/lib/planning/event-plan-v2'
-import PlanHandoff from './PlanHandoff'
-import PlanClarify from './PlanClarify'
 import { BuyEventLicenseButton } from './BuyEventLicenseButton'
 
 type Category =
@@ -85,17 +83,15 @@ export default function PlannerClient({ locale }: { locale: string }) {
   const [answer, setAnswer] = useState('')
   // Entitlement gate (One Event License): 'license' = needs purchase, 'signin' = needs sign-in.
   const [gate, setGate] = useState<'license' | 'signin' | null>(null)
-  const [result, setResult] = useState<PlanGenerationResult | null>(null)
-  // Stage 5b: the Plan Review UI renders the prepared event from EventPlanV2 (returned by the action).
+  // EventPlanV2 (Planning Engine V2) is the authoritative result the planner renders.
   const [eventPlanV2, setEventPlanV2] = useState<EventPlanV2 | null>(null)
   // The Project (aggregate root) this planner is working inside. Set once OPE creates/returns
   // it, then reused on subsequent generations (e.g. clarification) so the user stays in the
   // same Project. The Project row persists server-side (RLS owner-only).
   const [projectId, setProjectId] = useState<string | undefined>(undefined)
 
-  // When a gate (sign-in / license) or error appears after Generate — including after
-  // PlanClarify "Continue" — scroll it into view so it can never be silently off-screen
-  // at the bottom of the long details form.
+  // When a gate (sign-in / license) or error appears after Generate, scroll it into view so it
+  // can never be silently off-screen at the bottom of the long details form.
   const gateRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
     if (gate || error) gateRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
@@ -106,7 +102,7 @@ export default function PlannerClient({ locale }: { locale: string }) {
     setCategory('birthday'); setTotal(''); setAdults(''); setKids(''); setVenue(''); setBudget('')
     setRequirements(''); setCity(''); setStateRegion(''); setCountry(''); setPostal('')
     setRepeats('one_time'); setSessions(''); setInstructor(''); setMaterials('')
-    setResult(null); setEventPlanV2(null); setError(false); setGate(null); setDiscovery(null); setAnswer('')
+    setEventPlanV2(null); setError(false); setGate(null); setDiscovery(null); setAnswer('')
     setProjectId(undefined)
   }
 
@@ -195,7 +191,7 @@ export default function PlannerClient({ locale }: { locale: string }) {
     }
   }
 
-  function buildDetails(override?: Partial<IdeaDetails>): IdeaDetails {
+  function buildDetails(): EventDetails {
     return {
       category,
       guestCount: Number(total),
@@ -210,14 +206,13 @@ export default function PlannerClient({ locale }: { locale: string }) {
         RECURRING_CAPABLE.has(category) && repeats !== 'one_time'
           ? { frequency: repeats, sessions: sessions ? Number(sessions) : null }
           : undefined,
-      ...override,
     }
   }
 
   // Step 2 — plan from the idea: AI understanding + chosen concept + confirmed details → engine.
-  async function submitDetails(override?: Partial<IdeaDetails>) {
+  async function submitDetails() {
     setLoading(true); setError(false); setGate(null)
-    const details = buildDetails(override)
+    const details = buildDetails()
     const location = {
       city: city.trim(),
       state: stateRegion.trim() || undefined,
@@ -226,32 +221,29 @@ export default function PlannerClient({ locale }: { locale: string }) {
     }
     try {
       // Planning is gated on the user-approved/edited "what should happen" (recorded above).
-      // Discovery produces the Future Event Description (the Discovery → OPE hand-off).
+      // Discovery produces the Future Event Description (the Discovery → Planning hand-off).
       const approvedWhatShouldHappen = whatShouldHappen.trim() || null
       const fed = buildFutureEventDescription({ clientRequest: idea, description: approvedWhatShouldHappen ?? '', details, location })
       const res = await generateFromIdeaAction(fed, projectId)
-      // Stay inside the same Project across re-generations (e.g. clarification).
+      // Stay inside the same Project across re-generations.
       if (res.projectId) setProjectId(res.projectId)
-      setEventPlanV2(res.eventPlanV2 ?? null)
       if (res.ok) {
-        setResult(res.result)
+        setEventPlanV2(res.eventPlanV2)
         window.scrollTo({ top: 0, behavior: 'smooth' })
       } else if (res.error === 'event_license_required') {
-        // Clear any clarification result so we leave the PlanClarify screen and the
-        // license gate (rendered in the details form) is actually visible. Without
-        // this, `if (result)` keeps PlanClarify mounted and the gate never shows.
-        // The gate is scrolled into view by the effect keyed on gate/error below.
-        setResult(null)
+        // Clear any plan so we leave the result view and the license gate (rendered in the
+        // details form) is actually visible; it's scrolled into view by the gate/error effect.
+        setEventPlanV2(null)
         setGate('license')
       } else if (res.error === 'sign_in_required') {
-        setResult(null)
+        setEventPlanV2(null)
         setGate('signin')
       } else {
-        setResult(null)
+        setEventPlanV2(null)
         setError(true)
       }
     } catch {
-      setResult(null)
+      setEventPlanV2(null)
       setError(true)
     } finally {
       setLoading(false)
@@ -263,30 +255,20 @@ export default function PlannerClient({ locale }: { locale: string }) {
     void submitDetails()
   }
 
-  // Operational clarification (UNKNOWN → ASK) — runs only after a concept direction is set.
-  function onClarify(answers: Record<string, string>) {
-    const override: Partial<IdeaDetails> = {}
-    if (answers.venueType) { setVenue(answers.venueType as Venue); override.venueType = answers.venueType as IdeaDetails['venueType'] }
-    if (answers.budget) { setBudget(answers.budget); override.budget = Number(answers.budget) }
-    if (answers.kids) { setKids(answers.kids); override.kids = Number(answers.kids) }
-    void submitDetails(override)
-  }
-
   // ── Result ────────────────────────────────────────────────────────────────────────
-  if (result) {
+  // EventPlanV2 is authoritative: a 'planned' verdict renders the prepared event; any other
+  // verdict renders the V2 feasibility handoff (what's confident, what's left to decide).
+  if (eventPlanV2) {
     return (
       <div>
         <button onClick={resetAll} className="mb-4 inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-slate-800">
           <ArrowLeft className="h-4 w-4" />
           {t('result.newPlan')}
         </button>
-        {eventPlanV2 && eventPlanV2.feasibility.verdict === 'planned' ? (
-          // Stage 5f: V2 feasibility is the Project-world plan-readiness gate (not legacy result.status).
+        {eventPlanV2.feasibility.verdict === 'planned' ? (
           <EventPlanV2Review plan={eventPlanV2} />
-        ) : result.status === 'needs_clarification' ? (
-          <PlanClarify questions={result.questions ?? []} loading={loading} onSubmit={onClarify} />
         ) : (
-          <PlanHandoff coverage={result.coverage} />
+          <EventPlanV2Handoff plan={eventPlanV2} />
         )}
         {/* Handoff to the Project pipeline — connects plan generation to the Project hub (Budget / Publish). */}
         {/* Stage 5f: gated on V2 feasibility (the Project-world authority), consistent with the plan render. */}

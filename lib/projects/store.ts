@@ -1,5 +1,10 @@
 // Project store — the AGGREGATE ROOT of the event lifecycle.
 //
+// CANONICAL (Phase 0.2 — Single Project Declaration): this module — the `projects` table (migration 041)
+// — is the SINGLE **Living Project root entity** (Product Canon §4; one of the two durable root entities).
+// The assembly-domain `Project` in lib/project/* is NOT a second root; it is Project Assembly support that
+// operates on this root. There is exactly one Project root, and it is here.
+//
 // Per docs/OPE_MODULAR_PIPELINE_PRINCIPLE.md, Discovery / Future Event Description / OPE /
 // Marketplace / Execution are modules that operate ON a Project. This module owns ONLY the
 // minimal root (id, owner, status, current_step, timestamps) and does NOT contain any
@@ -183,16 +188,6 @@ export async function publishProject(supabase: ServerClient, id: string): Promis
 // The Project's cost-bearing delivery components (resource_need / role_need). The live source of
 // scope the Budget overlay mirrors into Budget Lines. WorkPackages are never components.
 
-/** A delivery component to persist (one row). */
-export interface ProjectDeliveryComponentInput {
-  itemKind: 'resource_need' | 'role_need'
-  itemId: string
-  label: string
-  basis?: string | null
-  quantity?: number | null
-  source?: string | null
-}
-
 /** A persisted delivery component row. */
 export interface ProjectDeliveryComponentRow {
   id: string
@@ -210,43 +205,6 @@ export interface ProjectDeliveryComponentRow {
 
 const PDC_COLS =
   'id, project_id, project_version, item_kind, item_id, label, basis, quantity, source, created_at, updated_at'
-
-/**
- * Replace the full set of delivery components for a (project, version): delete the existing rows for
- * that version, then insert the supplied set (idempotent; supports re-plan). Returns the persisted
- * rows ([] on empty input). Throws on a Supabase error so a failed persistence cannot pass silently.
- */
-export async function replaceProjectDeliveryComponents(
-  supabase: ServerClient,
-  projectId: string,
-  projectVersion: number,
-  components: ProjectDeliveryComponentInput[],
-): Promise<ProjectDeliveryComponentRow[]> {
-  const { error: deleteError } = await supabase
-    .from('project_delivery_components')
-    .delete()
-    .eq('project_id', projectId)
-    .eq('project_version', projectVersion)
-  if (deleteError) throw new Error(`replaceProjectDeliveryComponents delete failed: ${deleteError.message}`)
-  if (components.length === 0) return []
-  const { data, error: insertError } = await supabase
-    .from('project_delivery_components')
-    .insert(
-      components.map((c) => ({
-        project_id: projectId,
-        project_version: projectVersion,
-        item_kind: c.itemKind,
-        item_id: c.itemId,
-        label: c.label,
-        basis: c.basis ?? null,
-        quantity: c.quantity ?? null,
-        source: c.source ?? null,
-      })),
-    )
-    .select(PDC_COLS)
-  if (insertError) throw new Error(`replaceProjectDeliveryComponents insert failed: ${insertError.message}`)
-  return (data as ProjectDeliveryComponentRow[]) ?? []
-}
 
 /** List the delivery components for a (project, version). */
 export async function listProjectDeliveryComponents(

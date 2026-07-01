@@ -10,7 +10,7 @@
 // NEVER invents stated facts: unknown headcount stays unknown; anything assumed is recorded in
 // `assumptions`. Every produced element carries traceability back to the intention.
 
-import type { FutureEventDescription } from '@/lib/ope/future-event-description'
+import type { FutureEventDescription } from '@/lib/domain/future-event-description'
 import type {
   Assumption, Contingency, CostEstimate, ElementOrigin, EventPlanV2, ExperienceDesign,
   FeasibilityStatement, IntentionTrace, ItineraryMoment, LogisticItem, ResourceNeed,

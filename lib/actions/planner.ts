@@ -1,46 +1,23 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
-import { generatePlan } from '@/lib/ope'
 import type { PlannerInput } from '@/lib/ope/types'
-import { plannerInputSchema as schema } from '@/lib/ope/validation'
 import { runConceptFunnelAI, composeWhatShouldHappen } from '@/lib/ai/concept-generation'
 import { recognizeScenario, type ConceptFunnelResult, type ScenarioSource } from '@/lib/ope/concept-funnel'
 import { decideRequest } from '@/lib/ai/ope-agent'
 import { effectiveRequestText, type OpeAgentTurn } from '@/lib/ope/agent'
 import { extractFromText } from '@/lib/ope/request-text'
-import { planFromIdeaCore } from '@/lib/ope/plan-from-idea'
 import { hasOrganizerAccess } from '@/lib/auth/organizer-access'
-import { resolveProjectForPlan, updateProject, replaceProjectDeliveryComponents, type ProjectDeliveryComponentInput } from '@/lib/projects/store'
-import { assembleOpeOutput } from '@/lib/ope/output-contract'
+import { resolveProjectForPlan, updateProject } from '@/lib/projects/store'
 
-// Idea-plan types + the pure planning core live in lib/ope/plan-from-idea.ts (no auth/billing).
-// The Discovery → OPE hand-off is the Future Event Description (lib/ope/future-event-description.ts).
-export type { IdeaDetails, GeneratePlanResult } from '@/lib/ope/plan-from-idea'
-export type { FutureEventDescription } from '@/lib/ope/future-event-description'
-import type { GeneratePlanResult } from '@/lib/ope/plan-from-idea'
-import type { FutureEventDescription } from '@/lib/ope/future-event-description'
+// The Discovery → Planning hand-off is the Future Event Description (lib/domain/future-event-description.ts).
+export type { FutureEventDescription } from '@/lib/domain/future-event-description'
+import type { FutureEventDescription } from '@/lib/domain/future-event-description'
 import { planningEngineV2 } from '@/lib/planning/planning-engine-v2'
 import { persistEventPlanV2 } from '@/lib/planning/persistence'
 import { persistPlanningDomain } from '@/lib/planning/planning-domain-store'
 import { planningDomainFromFed } from '@/lib/planning/planning-domain'
 import type { EventPlanV2 } from '@/lib/planning/event-plan-v2'
-
-/**
- * Public (no auth): validate the form input and run the OPE engine through the
- * Coverage / Complexity Gate. The result carries a `status` and `coverage`; a
- * `plan` is present only when `status === 'plan_ready'`.
- */
-export async function generatePlanAction(raw: unknown): Promise<GeneratePlanResult> {
-  const parsed = schema.safeParse(raw)
-  if (!parsed.success) return { ok: false, error: 'invalid_input' }
-  try {
-    const result = generatePlan(parsed.data as PlannerInput)
-    return { ok: true, result }
-  } catch {
-    return { ok: false, error: 'generation_failed' }
-  }
-}
 
 // ── Idea-first entry (the primary public planner flow) ───────────────────────────────
 // The user starts with a RAW IDEA, not a structured form. Step 1 (analyzeIdeaAction) runs
@@ -177,17 +154,27 @@ export async function analyzeIdeaAction(idea: string, conversation?: DiscoveryTu
   return { ok: true, funnel, prefill, scenario: { status: 'scenario_needed', whatShouldHappen: draft, source: null } }
 }
 
+/** The public planner result. EventPlanV2 (Planning Engine V2) is the authoritative output. */
+export type GenerateFromIdeaResult =
+  | { ok: true; eventPlanV2: EventPlanV2; projectId?: string }
+  | {
+      ok: false
+      error: 'what_should_happen_required' | 'sign_in_required' | 'event_license_required' | 'generation_failed'
+      projectId?: string
+    }
+
 /**
- * Step 2 — plan from the idea (server action). Thin gate over the pure planning core
- * (lib/ope/plan-from-idea.ts): requires a signed-in user and consumes ONE active One Event
- * License on a delivered plan_ready plan. The planning itself is unchanged.
+ * Step 2 — plan from the idea (server action). Planning Engine V2 is the AUTHORITY: it plans
+ * directly from the approved Future Event Description (intention-first, no legacy OPE core). Its
+ * feasibility verdict — not any legacy engine status — decides plan-readiness, billing, and the UI.
+ * Requires a signed-in user; consumes ONE active One Event License on a delivered ('planned') plan.
  */
 export async function generateFromIdeaAction(
   fed: FutureEventDescription,
   projectId?: string,
-): Promise<GeneratePlanResult & { projectId?: string; eventPlanV2?: EventPlanV2 }> {
-  // OPE consumes the Future Event Description. Its `description` is the approved
-  // "what should happen". Cheap gate first (no auth needed): NO Event Plan without it.
+): Promise<GenerateFromIdeaResult> {
+  // The FED's `description` is the approved "what should happen". Cheap gate first (no auth
+  // needed): NO Event Plan without it.
   if (!(fed.description ?? '').trim()) {
     return { ok: false, error: 'what_should_happen_required' }
   }
@@ -200,7 +187,7 @@ export async function generateFromIdeaAction(
   // Project root: the planner works INSIDE a Project (the aggregate root). Reuse the one the
   // client supplied, or create one for this user. BEST-EFFORT — a Project failure (e.g.
   // migration 041 not yet applied) NEVER blocks plan generation; the Project is an additive
-  // owner, not a gate. OPE/Discovery logic is unchanged.
+  // owner, not a gate.
   let activeProjectId = projectId
   try {
     if (activeProjectId) {
@@ -214,26 +201,26 @@ export async function generateFromIdeaAction(
         })) ?? undefined
     }
   } catch {
-    /* Project is an additive owner; never block OPE on it. */
+    /* Project is an additive owner; never block planning on it. */
   }
 
-  // TEMPORARY compatibility layer (migration only): the OPE core still consumes the legacy
-  // idea payload, so convert the FED here. `approvedWhatShouldHappen` is internal-only — the
-  // authoritative interface is Discovery → FutureEventDescription → OPE.
-  const res = await planFromIdeaCore({
-    idea: fed.clientRequest,
-    selectedConcept: null,
-    approvedWhatShouldHappen: fed.description || null,
-    details: fed.details,
-    location: fed.location,
-  })
+  // Planning Engine V2 is the authoritative producer: it plans directly from the approved FED.
+  // V2 IS the product now (no legacy fallback), so a failure here is a real failure — surface it
+  // as 'generation_failed' rather than silently returning an empty plan.
+  let plan: EventPlanV2
+  try {
+    plan = planningEngineV2.plan(fed)
+  } catch (err) {
+    console.error('[planner] EventPlanV2 (authoritative) failed', err)
+    return { ok: false, error: 'generation_failed', projectId: activeProjectId }
+  }
 
-  // A ready plan is the paid deliverable. Active organizer access (active/trialing
+  // A ready ('planned') plan is the paid deliverable. Active organizer access (active/trialing
   // subscription OR a live organizer_access_until window — the SAME source the dashboard
   // shows) includes planner generation, so those users plan without buying or burning a
   // One Event License. Everyone else consumes ONE active One Event License (atomic RPC;
-  // owner can't write the table directly). Only on plan_ready — clarification/handoff is free.
-  if (res.ok && res.result.status === 'plan_ready') {
+  // owner can't write the table directly). Only on 'planned' — a feasibility handoff is free.
+  if (plan.feasibility.verdict === 'planned') {
     // Fail safe: if the access lookup throws, treat it as no access and fall back to the
     // license flow (never grant a free plan on an entitlement-check error). Reads the SAME
     // source the dashboard/middleware use (profiles.role + organizer_access_until,
@@ -271,69 +258,20 @@ export async function generateFromIdeaAction(
     }
   }
 
-  // Reflect the reached step on the Project + persist its delivery components (best-effort; never
-  // block on it). The plan's resources → resource_need and staffing roles → role_need become the
-  // Project's normalized delivery components (migration 043), which the Budget overlay mirrors into
-  // Budget Lines. Only plan.resources / plan.staffing.roles are used — nothing is invented.
+  // Persist the authoritative plan + seed the durable Planning Domain (the recompute source of
+  // truth), and reflect the reached step on the Project. Best-effort: persistence/step failures are
+  // logged but never block returning the plan to the user.
   try {
-    if (activeProjectId && res.ok && res.result.status === 'plan_ready' && res.result.plan) {
-      await updateProject(supabase, activeProjectId, { current_step: 'plan_ready' })
-
-      const ope = assembleOpeOutput(res.result.plan)
-      const slug = (s: string): string =>
-        s.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'role'
-      const seenResource = new Set<string>()
-      const seenRole = new Set<string>()
-      const components: ProjectDeliveryComponentInput[] = [
-        ...ope.resources
-          .filter((r) => (seenResource.has(r.id) ? false : (seenResource.add(r.id), true)))
-          .map((r) => ({
-            itemKind: 'resource_need' as const,
-            itemId: r.id,
-            label: r.label,
-            quantity: r.quantity,
-            source: r.type,
-          })),
-        ...ope.staffing.roles
-          .map((role) => ({ id: slug(role.role), role }))
-          .filter(({ id }) => (seenRole.has(id) ? false : (seenRole.add(id), true)))
-          .map(({ id, role }) => ({
-            itemKind: 'role_need' as const,
-            itemId: id,
-            label: role.role,
-            quantity: role.headcount,
-            source: role.source,
-          })),
-      ]
-      await replaceProjectDeliveryComponents(supabase, activeProjectId, 1, components)
-    }
-  } catch (err) {
-    // Persisting delivery components is best-effort (never block plan generation), but the failure must
-    // be visible — not swallowed — so an empty budget can be traced to its cause.
-    console.error('[planner] failed to persist project delivery components', err)
-  }
-
-  // ── Planning Layer Migration — produce EventPlanV2 from the approved FED ────────────────────────
-  // Planning Engine V2 runs ONCE on the SAME Future Event Description this action received. Stage 4:
-  // persist it in parallel (best-effort; legacy stays authoritative; NO PlannerInput derived). Stage 5b:
-  // also RETURN it so the Plan Review UI can render the prepared event directly from EventPlanV2.
-  // Best-effort: a V2 failure never affects the legacy result/return — but it is logged, not swallowed.
-  let eventPlanV2: EventPlanV2 | undefined
-  try {
-    // Stage 5f: EventPlanV2 is the Project-world AUTHORITY. Planning Engine V2 runs on the approved FED
-    // independently of the legacy engine; its feasibility verdict (not the legacy result.status) gates
-    // plan-readiness in the UI. (The legacy result is retained only for the clarification/handoff fallback,
-    // a temporary compatibility layer retired in Stages 6-7.)
-    const plan = planningEngineV2.plan(fed)
-    eventPlanV2 = plan
     if (activeProjectId) {
       await persistEventPlanV2(supabase, activeProjectId, 1, plan)
-      // Stage 5e: the startup FED handoff seeds the durable Planning Domain (the recompute source of truth).
       await persistPlanningDomain(supabase, activeProjectId, 1, planningDomainFromFed(fed))
+      if (plan.feasibility.verdict === 'planned') {
+        await updateProject(supabase, activeProjectId, { current_step: 'plan_ready' })
+      }
     }
   } catch (err) {
-    console.error('[planner] EventPlanV2 (authoritative) failed', err)
+    console.error('[planner] failed to persist/reflect EventPlanV2', err)
   }
 
-  return { ...res, projectId: activeProjectId, eventPlanV2 }
+  return { ok: true, eventPlanV2: plan, projectId: activeProjectId }
 }
