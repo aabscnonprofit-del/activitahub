@@ -223,6 +223,24 @@ Permissions create views.
 
 They do not create separate systems.
 
+The Project is the center of the product. But it is not the only durable entity.
+
+ActivLife Hub has exactly two durable root entities:
+
+* the Organizer Business — the organizer's business itself, which exists between and across all of their activities;
+* the Project — one activity.
+
+Nothing else is a root entity.
+
+The Organizer Business owns a portfolio of Projects. Each Project remains the root entity of one activity; the Organizer Business is the durable parent that holds them all.
+
+Each root entity is seen through a workspace. A workspace is a user-facing projection of an entity — never the entity itself:
+
+* the Organizer Business is seen through the Organizer Business Workspace;
+* the Project is seen through the Project Workspace.
+
+The Project stays the center of event execution. The Organizer Business is where the organizer's business lives between events.
+
 The internal vocabulary stays internal.
 
 The user never has to see the words the system uses inside itself — Project, Occurrence, Registration, Budget, Public Space.
@@ -426,6 +444,8 @@ If the system does not know enough, it asks.
 
 If it knows enough, it proceeds.
 
+The AI Organizer makes this decision — whether Discovery is needed at all, or whether enough is already known to go straight to planning.
+
 Screens follow the same rule.
 
 A screen exists only when the user must compare, choose, confirm, visualize, or pay.
@@ -439,6 +459,12 @@ A screen that exists only to collect data is wrong.
 # 9. AI Organizer
 
 The AI Organizer is the first intelligence layer.
+
+The AI Organizer is the primary interface of ActivLife Hub.
+
+The organizer primarily works with the AI Organizer — not with internal modules. Discovery, Planning, Assembly, Runtime, Budget, Marketplace, Communication, and Workspace are services the AI Organizer coordinates on the organizer's behalf; they are not independent systems the organizer must operate one by one.
+
+The AI Organizer's role does not end at the first request. It orchestrates the specialized AI agents throughout the entire life of the Project, and brings their results back to the organizer as decisions to make.
 
 Its job is to understand the person before deterministic systems act.
 
@@ -464,6 +490,8 @@ The AI Organizer decides:
 * whether the request is infeasible;
 * whether the request is out of scope.
 
+In particular, the AI Organizer decides whether Discovery is needed at all, or whether enough is already known to proceed directly to planning. The organizer is never sent through Discovery unnecessarily.
+
 The AI Organizer does not price, schedule, source vendors, charge money, or make commitments.
 
 It understands and routes.
@@ -473,6 +501,8 @@ The deterministic systems execute only after the AI Organizer has produced a ver
 The AI Organizer may propose “what should happen,” but the user must approve it before planning begins.
 
 No plan before approved intent.
+
+Across the whole lifecycle, the AI Organizer coordinates the work but never owns the outcome: the human remains responsible for every commitment and every irreversible decision.
 
 ---
 
@@ -619,6 +649,10 @@ The organizer should not hunt across screens.
 The system should bring the next important thing to them.
 
 The Workspace exists to reduce organizer load.
+
+This is the Project Workspace — the organizer's view of one Project. It is a projection of the Project, not the Project itself.
+
+The organizer's business has its own workspace: the Organizer Business Workspace — the organizer's view of the Organizer Business, holding the leads, clients, templates, calendar, and the money across all their Projects. The same principle holds: a workspace is a projection of an entity, never the entity itself. Both are used through the one AI Organizer.
 
 ---
 
@@ -842,7 +876,13 @@ Examples:
 * Execution Agent — helps during the live activity;
 * Review / Memory Agent — helps after completion.
 
+These agents are not independent products the organizer operates. The AI Organizer orchestrates them across the entire life of the Project. Discovery, Planning, Assembly, Runtime, Budget, Marketplace, Communication, and Workspace are services the AI Organizer coordinates on the organizer's behalf — not independent, user-facing systems. The organizer works with one intelligence, the AI Organizer, and it directs the rest.
+
+This one AI Organizer operates across both root entities — the Organizer Business and the Project — surfacing what needs attention in each. There is no second, separate "Business AI."
+
 AI agents must not override human authority.
+
+The human remains responsible for every commitment and every irreversible decision. The AI Organizer prepares and coordinates; it never authorizes them.
 
 AI works.
 
@@ -876,6 +916,24 @@ HoneyBook-like functionality exists only because it supports the organizer journ
 The goal is not to become a generic CRM.
 
 The goal is that an organizer should not need to leave ActivLife Hub to run their event business.
+
+The Organizer Business is the root entity that owns these business-level assets:
+
+* CRM;
+* leads;
+* clients;
+* templates;
+* the business calendar;
+* the subscription;
+* certification;
+* the Academy;
+* AI business guidance;
+* Stripe Connect (optional — see below);
+* the portfolio of Projects.
+
+The Project owns what belongs to one activity: its Runtime, timeline, budget, participants, tasks, registration, Public Space, event history, and the Completed Project. The Organizer Business never re-owns these; it holds the portfolio and the cross-Project assets.
+
+Stripe Connect is optional. It is required only for organizers who want to accept payments through ActivLife Hub. Free activities do not require Stripe Connect.
 
 ---
 
