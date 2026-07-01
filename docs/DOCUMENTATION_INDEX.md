@@ -31,6 +31,7 @@
 | `ADR_INDEX.md` | Every architecture decision record (003–008 = Project-centric) | **AUTHORITATIVE** |
 | `MIGRATION_STATUS.md` | Committed vs. applied migrations + verification | **AUTHORITATIVE (ops)** |
 | `MASTER_PRODUCT_DECISIONS.md` | Decisions log + source-of-truth index | **AUTHORITATIVE** |
+| `ENGINEERING_PROCESS.md` | Mandatory engineering process rules (context review, docs-win, decisions) | **MANDATORY (process)** |
 
 ## 1. Constitution & product philosophy
 
