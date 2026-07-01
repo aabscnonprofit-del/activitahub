@@ -123,3 +123,38 @@ Learning Loop
 ```
 
 Each stage must satisfy the Product Acceptance Audit before implementation continues.
+
+---
+
+## Post-Launch Research
+
+**Status:** Deferred until after initial public launch.
+
+The following ideas are intentionally postponed. They are considered product evolution, not launch blockers.
+
+**Research topics:**
+
+- Client world models
+- Experience-based Discovery
+- High-experience clients
+- Adaptive Discovery
+- Discovery conversation evolution
+- Library of Discovery cases
+- Client perception models
+- Experience-gap hypothesis
+
+**Guiding principle:**
+
+Do not delay the launch for hypotheses that can be validated using real organizer/client conversations after release.
+
+The launch priority remains:
+
+```
+Discovery
+  → Future Event Description
+  → Planning
+  → Project Workspace
+  → Execution
+```
+
+Only after this implementation path is complete should Discovery evolution research become an active development track.
