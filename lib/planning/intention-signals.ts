@@ -12,7 +12,7 @@
 //
 // It contains NO legacy PlannerInput concept and imports only the FED type (the approved input).
 
-import type { FutureEventDescription } from '@/lib/ope/future-event-description'
+import type { FutureEventDescription } from '@/lib/domain/future-event-description'
 
 /** Experience qualities the client expressed. Fixed vocabulary — intention, not category. */
 export type Quality =

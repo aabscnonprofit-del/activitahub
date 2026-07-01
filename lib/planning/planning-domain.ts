@@ -8,7 +8,7 @@
 //
 // PURE module. The FED produced here is a TRANSIENT engine input built from the durable Planning Domain.
 
-import type { FutureEventDescription } from '@/lib/ope/future-event-description'
+import type { FutureEventDescription } from '@/lib/domain/future-event-description'
 
 /** The durable, editable planning inputs of a Project — a domain of Project State. */
 export interface PlanningDomain {

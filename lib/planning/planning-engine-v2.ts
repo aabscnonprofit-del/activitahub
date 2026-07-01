@@ -16,7 +16,7 @@
 //   * Stage 3 — temporary Adapter A1 (EventPlanV2 -> legacy projection) is introduced THERE, not here.
 // This file introduces NO adapter (Stages 1–2 require none).
 
-import type { FutureEventDescription } from '@/lib/ope/future-event-description'
+import type { FutureEventDescription } from '@/lib/domain/future-event-description'
 import type { EventPlanV2 } from './event-plan-v2'
 import { reasonEventPlan } from './reasoning'
 
