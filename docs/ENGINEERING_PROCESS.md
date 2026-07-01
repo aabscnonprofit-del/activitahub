@@ -90,9 +90,25 @@ No audit may end with "80% complete", "mostly ready", "almost there", or any sim
 **Implementation may continue only if the decision explicitly allows it** (**ACCEPT** or **READY FOR
 IMPLEMENTATION**). **BLOCKED** and **REQUIRES PRODUCT DECISION** halt implementation until resolved.
 
+## Rule 8 — AI Product Acceptance Audit
+
+Every **AI-facing module** must pass a **Product Acceptance Audit before merge.**
+
+**Unit tests and typecheck are not enough.** For AI modules, acceptance means **realistic user scenarios
+must be tested against product behavior** — not just that the code compiles and unit assertions pass.
+
+The Product Acceptance Audit must report:
+
+- **scenarios tested;**
+- **failures found;**
+- **whether the module behaves according to the Product Canon / Product Principles;**
+- **final decision** (per Rule 7): **ACCEPT / READY FOR IMPLEMENTATION / BLOCKED / REQUIRES PRODUCT DECISION.**
+
+**If the Product Acceptance Audit finds BLOCKER failures, the module cannot be merged.**
+
 ---
 
 *These are mandatory Engineering Process rules. A task that skips the Mandatory Product Context Review,
 proceeds past an unresolved documentation gap or an unsupported assumption, leaves a long-lived rule
-uncaptured, or ends an audit without one explicit decision, is out of process regardless of the quality of
-the resulting code.*
+uncaptured, ends an audit without one explicit decision, or merges an AI-facing module without a passing
+Product Acceptance Audit, is out of process regardless of the quality of the resulting code.*
