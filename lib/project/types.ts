@@ -1,5 +1,10 @@
 // OPE V2 — Module 3: Project Assembly — Project domain model (Step 1).
 //
+// NOT A ROOT (Phase 0.2 — Single Project Declaration): the `Project` defined here is the ASSEMBLY-DOMAIN
+// structure (Project Assembly / OPE V2 Module 3 output), NOT the Living Project root entity. The single
+// Living Project root is lib/projects/store.ts (the `projects` table, Product Canon §4). This module is
+// assembly-domain support and does not define a second Project root.
+//
 // Logical entities + enums for the operational Project structure, per
 // docs/OPE_V2_MODULE3_IMPLEMENTATION_SPEC.md (§9). TYPES and allowed ENUMS only — no assembly, no
 // dependency lifting, no timeline computation, no grouping, no workflow, no events, no persistence.

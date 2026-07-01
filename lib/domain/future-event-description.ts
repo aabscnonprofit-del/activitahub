@@ -7,6 +7,10 @@
 //
 // It belongs to the DOMAIN, not the legacy planner: it has ZERO dependency on lib/ope, PlannerInput,
 // generatePlan, plan-from-idea, or any legacy OPE type/structure. All types below are self-contained.
+//
+// CANONICAL (Phase 0.2 — Single FED Declaration): this is the SINGLE canonical Future Event Description —
+// the Discovery → Planning hand-off the product uses. The FED-like types in lib/discovery/types.ts are
+// dormant OPE-V2 compatibility types to be reconciled later; this domain FED is the one in force.
 
 /** Recurring cadence for a recurring event. */
 export type RecurrenceFrequency = 'weekly' | 'biweekly' | 'monthly'

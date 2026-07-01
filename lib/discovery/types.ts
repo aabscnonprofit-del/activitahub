@@ -122,7 +122,13 @@ export interface ApprovalRecord {
   at: string
 }
 
-/** The Future Event Description (FED) — Discovery's single output. See §5 FED Data Contract. */
+/**
+ * The Future Event Description (FED) — Discovery's single output. See §5 FED Data Contract.
+ *
+ * DORMANT OPE-V2 COMPATIBILITY TYPE (Phase 0.2 — Single FED Declaration): this FED belongs to the dormant
+ * OPE V2 lineage and is to be reconciled later. The SINGLE canonical FED the product uses is
+ * lib/domain/future-event-description.ts — do not treat this type as the canonical FED.
+ */
 export interface FutureEventDescription {
   fedId: string
   version: number

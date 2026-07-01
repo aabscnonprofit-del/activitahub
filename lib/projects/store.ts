@@ -1,5 +1,10 @@
 // Project store — the AGGREGATE ROOT of the event lifecycle.
 //
+// CANONICAL (Phase 0.2 — Single Project Declaration): this module — the `projects` table (migration 041)
+// — is the SINGLE **Living Project root entity** (Product Canon §4; one of the two durable root entities).
+// The assembly-domain `Project` in lib/project/* is NOT a second root; it is Project Assembly support that
+// operates on this root. There is exactly one Project root, and it is here.
+//
 // Per docs/OPE_MODULAR_PIPELINE_PRINCIPLE.md, Discovery / Future Event Description / OPE /
 // Marketplace / Execution are modules that operate ON a Project. This module owns ONLY the
 // minimal root (id, owner, status, current_step, timestamps) and does NOT contain any
