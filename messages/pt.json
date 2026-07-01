@@ -823,7 +823,8 @@
       "contact": "Contacto",
       "becomeOrganizer": "Torne-se organizador",
       "academy": "Academia",
-      "philosophy": "Filosofia do Organizador"
+      "philosophy": "Filosofia do Organizador",
+      "why": "Por que o ActivLife Hub"
     },
     "copyright": "© {year} ActivLife Hub. Todos os direitos reservados.",
     "positioning": "Plataforma para organizadores de atividades."
@@ -2582,6 +2583,118 @@
       "signinCta": "Iniciar sessão",
       "licenseTitle": "Desbloqueie o seu plano",
       "licenseBody": "Gerar um plano completo usa uma licença para um evento. Obtenha uma para continuar."
+    }
+  },
+  "why": {
+    "meta": {
+      "title": "Por que o ActivLife Hub existe",
+      "description": "A maioria dos sistemas é construída para o consumo. O ActivLife Hub é construído para a criação — um sistema operacional para uma vida humana ativa."
+    },
+    "hero": {
+      "eyebrow": "Diretriz de missão",
+      "headline": "O mundo precisa de mais organizadores.",
+      "supportingA": "A maioria dos sistemas é construída para o consumo.",
+      "supportingB": "O ActivLife Hub é construído para a criação."
+    },
+    "origin": {
+      "label": "Origem",
+      "title": "Começou no terreno, não no papel.",
+      "body": [
+        "O ActivLife Hub não começou como uma teoria. Começou como uma tentativa real de ajudar um pequeno grupo local de organizadores — as pessoas que de facto conduzem as aulas, as saídas e os encontros — a tirar as suas atividades do papel.",
+        "Trabalhar ao lado deles tornou a fricção impossível de ignorar: boas ideias que estagnavam por falta de um plano, custos e logística que engoliam o ofício, e pessoas capazes que recuavam porque o peso operacional era demasiado para carregar sozinhas.",
+        "A plataforma é a resposta a uma fricção que vimos acontecer — não a um problema que imaginámos."
+      ]
+    },
+    "system": {
+      "label": "Sistema central",
+      "title": "Um único fluxo, de ponta a ponta.",
+      "lead": "Tudo o que a plataforma faz serve uma única cadeia de transformação.",
+      "pipeline": [
+        "Ideia",
+        "Plano",
+        "Organizador",
+        "Atividade",
+        "Pessoas",
+        "Comunidade"
+      ]
+    },
+    "fight": {
+      "label": "Contra o que lutamos",
+      "title": "Os modos de falha de um mundo passivo.",
+      "items": [
+        {
+          "term": "Passividade",
+          "detail": "Vidas reduzidas ao consumo, onde não fazer nada é o caminho de menor resistência."
+        },
+        {
+          "term": "Isolamento",
+          "detail": "Não uma falta de pessoas por perto, mas uma falta de razões para estar juntos."
+        },
+        {
+          "term": "Falta de ocasiões",
+          "detail": "Sem aula às 18h, sem corrida no sábado — proximidade sem estrutura não produz nada."
+        },
+        {
+          "term": "Ideias que morrem",
+          "detail": "A enorme distância entre \"devíamos fazer isto\" e uma atividade que realmente acontece."
+        }
+      ]
+    },
+    "build": {
+      "label": "O que construímos",
+      "title": "Infraestrutura para quem faz as coisas acontecer.",
+      "items": [
+        {
+          "term": "Organizadores",
+          "detail": "Uma porta de entrada na profissão para os novos, e amplificação para quem já faz o trabalho."
+        },
+        {
+          "term": "Ferramentas profissionais",
+          "detail": "Ferramentas operacionais que removem o trabalho árduo para que o ofício receba o tempo, não a logística."
+        },
+        {
+          "term": "OPE",
+          "detail": "O Organized Planning Engine — transforma um resultado pretendido num plano operacional real e executável."
+        },
+        {
+          "term": "Trabalhadores",
+          "detail": "Mãos extra e pessoal qualificado, conseguidos para conduzir uma atividade em escala."
+        },
+        {
+          "term": "Fornecedores",
+          "detail": "Bens e serviços ligados diretamente às atividades que deles precisam."
+        },
+        {
+          "term": "Aluguéis",
+          "detail": "Espaços e equipamentos, disponíveis quando o plano os exige."
+        },
+        {
+          "term": "Recursos",
+          "detail": "O fornecimento mais amplo que uma atividade consome, reunido num só sistema."
+        },
+        {
+          "term": "Infraestrutura de pagamentos",
+          "detail": "Dinheiro gerido de forma limpa, para que os organizadores cobrem, paguem e liquidem sem reconstruir tudo a cada vez."
+        }
+      ]
+    },
+    "economics": {
+      "label": "Economia",
+      "title": "O placar é deliberado.",
+      "statementA": "Não medimos o sucesso pelas taxas cobradas.",
+      "statementB": "Medimos o sucesso pelas atividades criadas.",
+      "note": "O valor criado por um organizador deve voltar para esse organizador. Quando as regras do programa permitem, a plataforma devolve custos da plataforma aos organizadores que criam valor de forma ativa — apoiando quem produz, sem nunca os taxar por fazer o trabalho da comunidade.",
+      "fineprint": "As devoluções de custos da plataforma são regidas pelas regras do programa e pela elegibilidade."
+    },
+    "final": {
+      "label": "Encerramento",
+      "statementA": "O ActivLife Hub não é um site de eventos.",
+      "statementB": "É um sistema operacional para uma vida humana ativa.",
+      "ctaPrimary": "Torne-se um organizador",
+      "ctaSecondary": "Planeie uma atividade"
+    },
+    "ui": {
+      "section": "Secção"
     }
   }
 }

@@ -47,6 +47,12 @@ export async function PublicFooter({ locale }: PublicFooterProps) {
               {t('links.academy')}
             </Link>
             <Link
+              href={`/${locale}/why`}
+              className="text-sm text-slate-500 hover:text-slate-900 transition-colors"
+            >
+              {t('links.why')}
+            </Link>
+            <Link
               href={`/${locale}/organizer-philosophy`}
               className="text-sm text-slate-500 hover:text-slate-900 transition-colors"
             >

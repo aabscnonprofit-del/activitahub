@@ -823,7 +823,8 @@
       "contact": "Contact",
       "becomeOrganizer": "Become an Organizer",
       "academy": "Academy",
-      "philosophy": "Organizer Philosophy"
+      "philosophy": "Organizer Philosophy",
+      "why": "Why ActivLife Hub"
     },
     "copyright": "© {year} ActivLife Hub. All rights reserved.",
     "positioning": "Platform for activity organizers."
@@ -2582,6 +2583,118 @@
       "signinCta": "Sign in",
       "licenseTitle": "Unlock your plan",
       "licenseBody": "Generating a full plan uses one One-Event License. Get one to continue."
+    }
+  },
+  "why": {
+    "meta": {
+      "title": "Why ActivLife Hub Exists",
+      "description": "Most systems are built for consumption. ActivLife Hub is built for creation — an operating system for active human life."
+    },
+    "hero": {
+      "eyebrow": "Mission directive",
+      "headline": "The world needs more organizers.",
+      "supportingA": "Most systems are built for consumption.",
+      "supportingB": "ActivLife Hub is built for creation."
+    },
+    "origin": {
+      "label": "Origin",
+      "title": "It began on the ground, not on paper.",
+      "body": [
+        "ActivLife Hub did not start as a theory. It started as a real attempt to help a small local group of organizers — the people who actually run the classes, trips, and gatherings — get their activities off the ground.",
+        "Working alongside them made the friction impossible to miss: good ideas stalling for want of a plan, costs and logistics swallowing the craft, and capable people stepping back because the operational weight was too much to carry alone.",
+        "The platform is the answer to friction we watched happen — not a problem we imagined."
+      ]
+    },
+    "system": {
+      "label": "Core system",
+      "title": "One pipeline, end to end.",
+      "lead": "Everything the platform does serves a single chain of transformation.",
+      "pipeline": [
+        "Idea",
+        "Plan",
+        "Organizer",
+        "Activity",
+        "People",
+        "Community"
+      ]
+    },
+    "fight": {
+      "label": "What we fight",
+      "title": "The failure modes of a passive world.",
+      "items": [
+        {
+          "term": "Passivity",
+          "detail": "Lives narrowed to consumption, where doing nothing is the path of least resistance."
+        },
+        {
+          "term": "Isolation",
+          "detail": "Not a shortage of people nearby, but a shortage of reasons to be together."
+        },
+        {
+          "term": "Lack of occasions",
+          "detail": "No class at 6pm, no run on Saturday — proximity without structure produces nothing."
+        },
+        {
+          "term": "Ideas that die",
+          "detail": "The vast distance between \"we should do this\" and an activity that actually happens."
+        }
+      ]
+    },
+    "build": {
+      "label": "What we build",
+      "title": "Infrastructure for the people who make things happen.",
+      "items": [
+        {
+          "term": "Organizers",
+          "detail": "An on-ramp into the profession for newcomers, and amplification for those already doing the work."
+        },
+        {
+          "term": "Professional tools",
+          "detail": "Operations tooling that removes drudgery so the craft gets the time, not the logistics."
+        },
+        {
+          "term": "OPE",
+          "detail": "The Organized Planning Engine — turns an intended outcome into a real, runnable operational plan."
+        },
+        {
+          "term": "Workers",
+          "detail": "Extra hands and qualified staff, sourced to run an activity at scale."
+        },
+        {
+          "term": "Vendors",
+          "detail": "Goods and services connected directly to the activities that need them."
+        },
+        {
+          "term": "Rentals",
+          "detail": "Venues and equipment, available when the plan calls for them."
+        },
+        {
+          "term": "Resources",
+          "detail": "The broader supply an activity consumes, assembled in one system."
+        },
+        {
+          "term": "Payment infrastructure",
+          "detail": "Money handled cleanly, so organizers can charge, pay, and settle without rebuilding it each time."
+        }
+      ]
+    },
+    "economics": {
+      "label": "Economics",
+      "title": "The scoreboard is deliberate.",
+      "statementA": "We do not measure success by fees collected.",
+      "statementB": "We measure success by activities created.",
+      "note": "Value created by an organizer should flow back to that organizer. Where program rules allow, the platform returns platform costs to organizers who actively create value — supporting the producers, never taxing them for doing the community’s work.",
+      "fineprint": "Returns of platform costs are governed by program rules and eligibility."
+    },
+    "final": {
+      "label": "Closing",
+      "statementA": "ActivLife Hub is not an event website.",
+      "statementB": "It is an operating system for active human life.",
+      "ctaPrimary": "Become an organizer",
+      "ctaSecondary": "Plan an activity"
+    },
+    "ui": {
+      "section": "Section"
     }
   }
 }
