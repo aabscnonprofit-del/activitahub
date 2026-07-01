@@ -15,24 +15,18 @@ import {
   Paperclip,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
-import { getProject, getProjectPublishState } from '@/lib/projects/store'
-import { listBudgetsForProject } from '@/lib/budget/store'
+import { getLivingProject } from '@/lib/projects/living-project'
 import { PublishPanel } from '@/components/projects/PublishPanel'
 import { formatDate, cn } from '@/lib/utils'
 import type { Locale } from '@/lib/types'
 
-// Project workspace hub — the central place to manage one event. Reuses lib/projects/store +
-// lib/budget/store (RLS owner-only). The "related plan" is surfaced via the existing `current_step`
-// signal (no FK to a plan). Only the Budget module has a real Project relation today; every other
-// module has no project_id yet, so it is shown as "Project integration planned" rather than a fake link.
+// Project workspace hub — the central place to manage one event. Reads the Living Project (Phase 1.1):
+// getLivingProject composes the Project root + its EventPlanV2, budget, commercial proposal, and publish
+// state (RLS owner-only) into one operational view, so this page shows the Project's real assembled model.
+// Only the Budget module has a live sub-route today; the other modules have no project_id yet, so they are
+// shown as "Project integration planned" rather than a fake link.
 interface Props {
   params: Promise<{ locale: string; projectId: string }>
-}
-
-const PLAN_STAGE: Record<string, string> = {
-  discovery: 'Discovery',
-  planning: 'In planning',
-  plan_ready: 'Plan ready',
 }
 
 export default async function ProjectDetailsPage({ params }: Props) {
@@ -44,15 +38,11 @@ export default async function ProjectDetailsPage({ params }: Props) {
   } = await supabase.auth.getUser()
   if (!user) redirect(`/${locale}/sign-in`)
 
-  const project = await getProject(supabase, projectId)
-  if (!project) {
+  const living = await getLivingProject(supabase, projectId)
+  if (!living) {
     return <div className="p-6 text-sm text-slate-600">Project not found.</div>
   }
-
-  const budgets = await listBudgetsForProject(supabase, projectId)
-  const budget = budgets[0] ?? null
-  const planLabel = PLAN_STAGE[project.current_step] ?? project.current_step
-  const isPublished = await getProjectPublishState(supabase, projectId)
+  const { project, plan, budget, commercialProposal, isPublished } = living
 
   // Workspace modules. Only modules with a real Project relation get a live link; the rest are
   // "Project integration planned" (no project_id exists yet — no fake links).
@@ -91,10 +81,12 @@ export default async function ProjectDetailsPage({ params }: Props) {
       <dl className="grid grid-cols-2 gap-4 rounded-lg border border-slate-200 p-4 sm:grid-cols-3">
         <Field label="Status" value={project.status} />
         <Field label="Current step" value={project.current_step} />
-        <Field label="Related plan" value={planLabel} />
+        <Field label="Plan" value={plan ? `Ready · ${plan.itinerary.length} moments · ${plan.feasibility.verdict}` : 'Not yet'} />
+        <Field label="Budget" value={budget ? `${budget.currency} · ${budget.status}` : 'None yet'} />
+        <Field label="Commercial proposal" value={commercialProposal ? 'Ready' : 'None yet'} />
+        <Field label="Published" value={isPublished ? 'Yes' : 'No'} />
         <Field label="Created" value={formatDate(project.created_at)} />
         <Field label="Last update" value={formatDate(project.updated_at)} />
-        <Field label="Related budget" value={budget ? `${budget.currency} · ${budget.status}` : 'None yet'} />
       </dl>
 
       {/* Publish Flow — make the Project visible in Public Space (existing /p/[projectId] route). */}
