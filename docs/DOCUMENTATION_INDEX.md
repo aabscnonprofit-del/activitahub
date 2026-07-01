@@ -28,6 +28,7 @@
 | `PROJECT_STATUS.md` | What's built / partial / not / deprecated | **AUTHORITATIVE** |
 | `FEATURE_MATRIX.md` | Feature × status × priority × deps | **AUTHORITATIVE** |
 | `ROADMAP_V2.md` | Current implementation roadmap | **AUTHORITATIVE** |
+| `IMPLEMENTATION_ROADMAP.md` | Living implementation progress tracker (Discovery → FED → Planning → …) | **LIVING (progress)** |
 | `ADR_INDEX.md` | Every architecture decision record (003–008 = Project-centric) | **AUTHORITATIVE** |
 | `MIGRATION_STATUS.md` | Committed vs. applied migrations + verification | **AUTHORITATIVE (ops)** |
 | `MASTER_PRODUCT_DECISIONS.md` | Decisions log + source-of-truth index | **AUTHORITATIVE** |
