@@ -1,19 +1,81 @@
-# Start Here — ActivLife Hub
+# START HERE
 
-Welcome. Before writing any code, read these three documents **in order**:
+## Purpose
 
-1. **docs/ACTIVLIFE_HUB_PRODUCT_CANON.md** — the authoritative product definition (WHAT and WHY).
-2. **docs/architecture/SYSTEM_ARCHITECTURE.md** — how ActivLife Hub is implemented (HOW).
-3. **docs/IMPLEMENTATION_CONTRACT.md** — the rules every implementation task must follow.
+This document is the mandatory starting point for every engineer, AI agent, architect, or contributor working on ActivLife Hub.
 
-Then begin implementation.
+Before beginning any implementation, the documents below must be read.
 
 ---
 
-Authority:
+## Mandatory Reading Order
 
-- The Product Canon explains WHAT and WHY. Architecture documents explain HOW.
-- If any document contradicts the Product Canon, the Product Canon is authoritative.
+1. `ALH_PRODUCT_PHILOSOPHY.md`
+2. `ACTIVLIFE_HUB_PRODUCT_CANON.md`
+3. `DISCOVERY_PRODUCT_BEHAVIOR_SPEC.md`
+4. `OPE_DISCOVERY_ENGINE_PRINCIPLES_V1.md`
+5. `AI_PROJECT_MODELING_PRINCIPLE.md`
+6. `ENGINEERING_PROCESS.md`
+7. `IMPLEMENTATION_ROADMAP.md`
+8. `DOCUMENTATION_INDEX.md`
 
-Everything else in `docs/` is supporting documentation — additional detail, history, or implementation
-guidance. See `docs/DOCUMENTATION_INDEX.md` for the full map.
+---
+
+## Why the Roadmap Matters
+
+`IMPLEMENTATION_ROADMAP.md` is mandatory because it records:
+
+- what has already been implemented;
+- what is currently being implemented;
+- what has been intentionally postponed;
+- which research ideas are deferred until after launch.
+
+Do not begin new work without checking the roadmap.
+
+---
+
+## Current Development Priority
+
+The current implementation sequence is:
+
+```
+Discovery
+  → Future Event Description
+  → Planning
+  → Project Workspace
+  → Execution
+```
+
+Do not skip stages.
+
+---
+
+## Product Principle
+
+ActivLife Hub is an operating system for organizers.
+
+Every implementation decision should increase the organizer's ability to successfully organize larger, better, and more complex events.
+
+---
+
+## Engineering Principle
+
+Do not redesign completed stages while implementing the next stage.
+
+Complete one stage.
+
+Pass Product Acceptance.
+
+Then continue.
+
+---
+
+## Final Rule
+
+If you think a new idea is valuable but it is not required for the current implementation stage:
+
+Do not interrupt the implementation.
+
+Record the idea in the appropriate research or roadmap section.
+
+Continue implementing the current milestone.

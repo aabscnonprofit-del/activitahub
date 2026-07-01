@@ -22,6 +22,7 @@
 
 | Document | Purpose | Authority |
 |---|---|---|
+| `START_HERE.md` | **Mandatory entry point** — required reading order before any work | **AUTHORITATIVE** |
 | `GLOBAL_PRODUCT_SPECIFICATION.md` | What ALH is, end to end | **AUTHORITATIVE** |
 | `DOCUMENTATION_INDEX.md` (this) | Map of all docs | **AUTHORITATIVE** |
 | `CURRENT_ARCHITECTURE.md` | The one current architecture | **AUTHORITATIVE** |
