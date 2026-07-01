@@ -38,11 +38,22 @@
 
 - `ALH_PRODUCT_PHILOSOPHY.md` — **CONSTITUTION** (supreme; wins on conflict).
 - `CONVERSATION_FIRST_PRINCIPLE.md` — **AUTHORITATIVE** (conversation vs. screens).
+- `AI_PROJECT_MODELING_PRINCIPLE.md` — **AUTHORITATIVE** (ALH builds an executable project model, not text/checklists).
 - `OPE_REQUEST_INTERPRETATION_PRINCIPLE.md`, `ENTERPRISE_POSITIONING_PRINCIPLE.md`,
   `ORGANIZER_OPERATING_SYSTEM_PRINCIPLE.md` — **AUTHORITATIVE** principles.
 - `ACTIVLIFE_HUB_CORE_MISSION.md` — **AUTHORITATIVE** (precursor; sits under the Constitution).
 - `WHY_ACTIVLIFE_HUB_EXISTS.md`, `ACTIVLIFEHUB_ORGANIZER_PHILOSOPHY_V1.md`,
   `MISSION_PHILOSOPHY_INTEGRATION_PROPOSAL.md` — **SUPPORTING** (older mission framing; partly superseded).
+
+## 1b. Product Principles
+
+*Purpose:* long-lived product requirements (not architecture, not implementation) that guide future
+development. *Status:* current. Home: `PRODUCT_PRINCIPLES_INDEX.md`.
+
+- `PRODUCT_PRINCIPLES_INDEX.md` — **AUTHORITATIVE** (index of Product Principles).
+- `AI_PROJECT_MODELING_PRINCIPLE.md` — **AUTHORITATIVE** (ALH builds an executable project model, not text/checklists).
+- `PROFESSIONAL_BASELINE_PRINCIPLE.md` — **AUTHORITATIVE** (complete professional operational baseline; AI on top of it, not instead).
+- `FUTURE_PRODUCT_CAPABILITIES.md` — **LIVING** (accepted-but-deferred product capabilities; not a roadmap/backlog).
 
 ## 2. Source-of-truth / master decisions
 
