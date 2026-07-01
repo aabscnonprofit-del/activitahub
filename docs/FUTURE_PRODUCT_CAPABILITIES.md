@@ -47,6 +47,30 @@ Capabilities accepted as strategically valuable and intentionally deferred (illu
   proposals, or principles but deferred (e.g. the business-layer capabilities in the Organizer Business
   proposal, and later-stage Project Runtime capabilities) are considered part of this record by reference.
 
+### Photo Collection via Event QR
+
+**Status:** Planned after initial launch.
+
+**Purpose:** Allow event participants to upload photos directly into the event project using a QR code.
+
+**Initial version:**
+
+- Up to 50 photos
+- 14-day storage
+- Organizer selects photos to keep in project history
+- Remaining photos downloadable before expiration
+
+**Future paid option ($5/month):**
+
+- More photos
+- One-year storage
+- ZIP archive download
+- AI-assisted photo selection
+
+Video uploads are intentionally excluded from the initial design.
+
+---
+
 *New accepted-but-deferred capabilities are added here as they are agreed.*
 
 ---
