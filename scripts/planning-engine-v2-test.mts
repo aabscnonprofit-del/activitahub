@@ -10,7 +10,7 @@
 
 import { planningEngineV2 } from '../lib/planning/planning-engine-v2'
 import { extractSignals } from '../lib/planning/intention-signals'
-import type { FutureEventDescription } from '../lib/ope/future-event-description'
+import type { FutureEventDescription } from '../lib/domain/future-event-description'
 
 let failures = 0
 function check(name: string, cond: boolean, detail?: string) {

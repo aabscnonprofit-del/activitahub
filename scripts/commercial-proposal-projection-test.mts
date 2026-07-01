@@ -8,7 +8,7 @@
 
 import { planningEngineV2 } from '../lib/planning/planning-engine-v2'
 import { buildCommercialProposalProjection } from '../lib/budget/commercial-proposal-projection'
-import type { FutureEventDescription } from '../lib/ope/future-event-description'
+import type { FutureEventDescription } from '../lib/domain/future-event-description'
 import type { BudgetLine, BudgetTotals } from '../lib/budget/types'
 
 let failures = 0
