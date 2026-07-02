@@ -40,13 +40,21 @@ The current implementation sequence is:
 
 ```
 Discovery
+  → Statement of Understanding
+  → Client confirms understanding
   → Future Event Description
+  → Client approves the Future Event Description
   → Planning
   → Project Workspace
   → Execution
 ```
 
-Do not skip stages.
+Do not skip stages. The pipeline advances only through explicit client approval gates: the client confirms
+the Statement of Understanding before a Future Event Description is created, and approves the Future Event
+Description before Planning begins.
+
+**Revision principle:** if a stage is rejected, the workflow returns to the most recent approved stage.
+Previously approved stages remain valid unless the client explicitly changes the underlying intent.
 
 ---
 

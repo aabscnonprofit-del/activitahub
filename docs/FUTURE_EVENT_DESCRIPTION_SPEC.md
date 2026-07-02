@@ -35,7 +35,11 @@ Discovery
   ↓
 Statement of Understanding
   ↓
+✓ Client confirms understanding
+  ↓
 Future Event Description
+  ↓
+✓ Client approves the Future Event Description
   ↓
 Planning
   ↓
@@ -43,6 +47,13 @@ Project Workspace
   ↓
 Execution
 ```
+
+The pipeline advances only through **explicit client approval gates**: the client must **confirm the
+Statement of Understanding** before a Future Event Description is created, and must **approve the Future
+Event Description** before Planning begins. No stage proceeds on an unconfirmed prior stage.
+
+**Revision principle.** If a stage is rejected, the workflow returns to the **most recent approved stage**.
+Previously approved stages remain valid unless the client explicitly changes the underlying intent.
 
 **Why FED sits between Discovery and Planning.** Discovery *understands the intent* — the desired result,
 feeling, and who it is for — and ends with an approved Statement of Understanding. That is the client's
