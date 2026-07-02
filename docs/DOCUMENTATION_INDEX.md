@@ -58,6 +58,7 @@ development. *Status:* current. Home: `PRODUCT_PRINCIPLES_INDEX.md`.
 - `PROFESSIONAL_BASELINE_PRINCIPLE.md` — **AUTHORITATIVE** (complete professional operational baseline; AI on top of it, not instead).
 - `FUTURE_PRODUCT_CAPABILITIES.md` — **LIVING** (accepted-but-deferred product capabilities; not a roadmap/backlog).
 - `DISCOVERY_PRODUCT_BEHAVIOR_SPEC.md` — **AUTHORITATIVE** (canonical Discovery behavior spec; observable behavior only, per Engineering Process Rule 9).
+- `FUTURE_EVENT_DESCRIPTION_SPEC.md` — **AUTHORITATIVE** (product spec for the stage between Discovery and Planning; behavior only).
 
 ## 2. Source-of-truth / master decisions
 
