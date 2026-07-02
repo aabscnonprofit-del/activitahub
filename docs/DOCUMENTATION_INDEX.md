@@ -34,6 +34,7 @@
 | `MIGRATION_STATUS.md` | Committed vs. applied migrations + verification | **AUTHORITATIVE (ops)** |
 | `MASTER_PRODUCT_DECISIONS.md` | Decisions log + source-of-truth index | **AUTHORITATIVE** |
 | `ENGINEERING_PROCESS.md` | Mandatory engineering process rules (context review, docs-win, decisions) | **MANDATORY (process)** |
+| `PRODUCT_TRIAL_RULES.md` | Rules for evidence-based Product Trials (outcomes; Evidence/Verdict/Confidence) | **MANDATORY (process)** |
 
 ## 1. Constitution & product philosophy
 
