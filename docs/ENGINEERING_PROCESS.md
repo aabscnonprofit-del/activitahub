@@ -106,9 +106,31 @@ The Product Acceptance Audit must report:
 
 **If the Product Acceptance Audit finds BLOCKER failures, the module cannot be merged.**
 
+## Rule 9 — Product Behavior Specification
+
+If implementation reveals that the expected product behavior **cannot be derived unambiguously** from the
+Constitution, the Product Canon, the Product Principles, and existing feature specifications,
+**implementation must stop.**
+
+Before implementation continues, a **Product Behavior Specification must be created and approved.**
+
+A Product Behavior Specification describes **how the product behaves from the user's perspective.** It does
+**not** describe:
+
+- architecture,
+- implementation,
+- data model,
+- UI,
+- code.
+
+It describes **only observable product behavior.**
+
+**After approval, implementation may continue.**
+
 ---
 
 *These are mandatory Engineering Process rules. A task that skips the Mandatory Product Context Review,
 proceeds past an unresolved documentation gap or an unsupported assumption, leaves a long-lived rule
-uncaptured, ends an audit without one explicit decision, or merges an AI-facing module without a passing
-Product Acceptance Audit, is out of process regardless of the quality of the resulting code.*
+uncaptured, ends an audit without one explicit decision, merges an AI-facing module without a passing
+Product Acceptance Audit, or continues implementation past ambiguous product behavior without an approved
+Product Behavior Specification, is out of process regardless of the quality of the resulting code.*
