@@ -515,7 +515,21 @@ export default function PlannerClient({ locale }: { locale: string }) {
         <div className="rounded-2xl border border-slate-200 bg-white p-4">
           <p className="text-xs uppercase tracking-wide text-slate-400">Future Event Description (preview)</p>
           {seamFed.status === 'awaiting_approval' || seamFed.status === 'approved' ? (
-            <p className="mt-1 whitespace-pre-wrap text-sm text-slate-600">{seamFed.futureEventDescription}</p>
+            <>
+              <p className="mt-1 whitespace-pre-wrap text-sm text-slate-600">{seamFed.futureEventDescription}</p>
+              {seamFed.futureEventDescription.trim() && (
+                // Optional: adopt this preview as the planning description. It only fills the existing
+                // whatShouldHappen and lands on the details step — it never calls Planning, bypasses the
+                // details, or replaces the WSH / legacy flow.
+                <button
+                  type="button"
+                  onClick={() => { setWhatShouldHappen(seamFed.futureEventDescription); setStep('details') }}
+                  className="mt-3 rounded-full border border-brand-300 bg-brand-50 px-4 py-2 text-sm font-medium text-brand-700 hover:bg-brand-100"
+                >
+                  Use this preview for planning
+                </button>
+              )}
+            </>
           ) : (
             <p className="mt-1 text-sm text-slate-400">Not available yet.</p>
           )}
