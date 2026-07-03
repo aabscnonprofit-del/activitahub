@@ -60,6 +60,8 @@ development. *Status:* current. Home: `PRODUCT_PRINCIPLES_INDEX.md`.
 - `FUTURE_PRODUCT_CAPABILITIES.md` — **LIVING** (accepted-but-deferred product capabilities; not a roadmap/backlog).
 - `DISCOVERY_PRODUCT_BEHAVIOR_SPEC.md` — **AUTHORITATIVE** (canonical Discovery behavior spec; observable behavior only, per Engineering Process Rule 9).
 - `FUTURE_EVENT_DESCRIPTION_SPEC.md` — **AUTHORITATIVE** (product spec for the stage between Discovery and Planning; behavior only).
+- `PLANNING_AXIOMS.md` — **AUTHORITATIVE** (foundational architectural axioms of Planning).
+- `PLANNING_PRODUCT_BEHAVIOR_SPEC.md` — **AUTHORITATIVE** (product behavior of the Planning stage; behavior only, per Engineering Process Rule 9).
 - `AI_ARTIFACT_OWNERSHIP_PRINCIPLE.md` — **AUTHORITATIVE** (each major artifact has one authoritative AI owner; extends the multi-agent principle).
 
 ## 2. Source-of-truth / master decisions
