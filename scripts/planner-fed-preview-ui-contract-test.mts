@@ -63,7 +63,13 @@ check('legacy WSH path keeps generateFromIdeaAction (ternary false branch)',
 check('adapter call passes approvedFutureEventDescription from the selected FED',
   src.includes('approvedFutureEventDescription: fedPlanningDescription'))
 
-// 8. The legacy WSH path is still present.
+// 8. Planning source indicator — shown in the result area only for the opt-in FED path.
+check('result area has the Planning source indicator text',
+  src.includes('Built from your approved Future Event Description'))
+check('Planning source indicator is gated by fedPlanningDescription.trim()',
+  /\{fedPlanningDescription\.trim\(\) &&[\s\S]{0,240}Built from your approved Future Event Description/.test(src))
+
+// 9. The legacy WSH path is still present (and shows no such indicator).
 check("legacy WSH path still present (step 'wsh')", src.includes("step === 'wsh'"))
 
 console.log(`\n${failures === 0 ? 'ALL PASS' : `${failures} FAILURE(S)`}`)
