@@ -43,7 +43,12 @@ check('onClick does NOT call analyzeIdeaAction', !handler.includes('analyzeIdeaA
 check('onClick does NOT bypass details (no submitDetails / onGenerate)',
   !handler.includes('submitDetails') && !handler.includes('onGenerate'))
 
-// 6. The legacy WSH path is still present.
+// 6. Coherence: the action marks the planning description as FED-sourced, and the details step labels it.
+check('onClick marks the description as FED-sourced', handler.includes('setFedForPlanning(true)'))
+check('details step shows a FED-source label', src.includes('From your Future Event Description'))
+check('FED-source label is gated on fedForPlanning', /\{fedForPlanning &&/.test(src))
+
+// 7. The legacy WSH path is still present.
 check("legacy WSH path still present (step 'wsh')", src.includes("step === 'wsh'"))
 
 console.log(`\n${failures === 0 ? 'ALL PASS' : `${failures} FAILURE(S)`}`)
