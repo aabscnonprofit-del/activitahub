@@ -96,6 +96,8 @@ export default function PlannerClient({ locale }: { locale: string }) {
   // Non-blocking preview of the AUTHORITATIVE FED seam, fed ONLY from the Discovery preview's Statement of
   // Understanding (additive; never gates the flow, replaces WSH/Planning, or becomes the default).
   const [seamFed, setSeamFed] = useState<Awaited<ReturnType<typeof describeFutureEventAction>> | null>(null)
+  // True once the user opts to use the FED preview as the planning description (labels the details step).
+  const [fedForPlanning, setFedForPlanning] = useState(false)
 
   // When a gate (sign-in / license) or error appears after Generate, scroll it into view so it
   // can never be silently off-screen at the bottom of the long details form.
@@ -121,7 +123,7 @@ export default function PlannerClient({ locale }: { locale: string }) {
     setRequirements(''); setCity(''); setStateRegion(''); setCountry(''); setPostal('')
     setRepeats('one_time'); setSessions(''); setInstructor(''); setMaterials('')
     setEventPlanV2(null); setError(false); setGate(null); setDiscovery(null); setAnswer('')
-    setProjectId(undefined); setSeamDiscovery(null); setSeamFed(null)
+    setProjectId(undefined); setSeamDiscovery(null); setSeamFed(null); setFedForPlanning(false)
   }
 
   function applyPrefill(p: IdeaPrefill) {
@@ -151,7 +153,7 @@ export default function PlannerClient({ locale }: { locale: string }) {
   async function submitIdea(e: React.FormEvent) {
     e.preventDefault()
     if (!idea.trim()) return
-    setLoading(true); setError(false); setDiscovery(null); setAnswer(''); setSeamDiscovery(null)
+    setLoading(true); setError(false); setDiscovery(null); setAnswer(''); setSeamDiscovery(null); setFedForPlanning(false)
     // Non-blocking: also call the AUTHORITATIVE Discovery seam for a small preview. It runs in parallel,
     // never blocks or alters the existing planner flow below, and never gates planning.
     void discoverAction(idea).then(setSeamDiscovery).catch(() => setSeamDiscovery(null))
@@ -489,9 +491,12 @@ export default function PlannerClient({ locale }: { locale: string }) {
         <p className="text-xs uppercase tracking-wide text-brand-500">Your idea</p>
         <p className="mt-0.5 text-sm text-slate-700">&ldquo;{idea}&rdquo;</p>
         {whatShouldHappen.trim() && (
-          <p className="mt-2 rounded-lg bg-white px-3 py-2 text-xs text-slate-600">
-            <span className="font-semibold text-brand-700">What should happen: </span>{whatShouldHappen}
-          </p>
+          <div className="mt-2 rounded-lg bg-white px-3 py-2 text-xs text-slate-600">
+            {fedForPlanning && (
+              <p className="mb-1 font-semibold uppercase tracking-wide text-brand-500">From your Future Event Description</p>
+            )}
+            <p><span className="font-semibold text-brand-700">What should happen: </span>{whatShouldHappen}</p>
+          </div>
         )}
         <p className="mt-2 text-xs text-slate-500">Just a few details left so we can plan it.</p>
       </div>
@@ -523,7 +528,7 @@ export default function PlannerClient({ locale }: { locale: string }) {
                 // details, or replaces the WSH / legacy flow.
                 <button
                   type="button"
-                  onClick={() => { setWhatShouldHappen(seamFed.futureEventDescription); setStep('details') }}
+                  onClick={() => { setWhatShouldHappen(seamFed.futureEventDescription); setFedForPlanning(true); setStep('details') }}
                   className="mt-3 rounded-full border border-brand-300 bg-brand-50 px-4 py-2 text-sm font-medium text-brand-700 hover:bg-brand-100"
                 >
                   Use this preview for planning
