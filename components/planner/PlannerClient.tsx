@@ -300,6 +300,14 @@ export default function PlannerClient({ locale }: { locale: string }) {
           <ArrowLeft className="h-4 w-4" />
           {t('result.newPlan')}
         </button>
+        {/* Planning source indicator — shown only when this plan came from the opt-in FED path.
+            The legacy WSH path (fedPlanningDescription empty) shows nothing here. */}
+        {fedPlanningDescription.trim() && (
+          <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-brand-200 bg-brand-50 px-3 py-1.5 text-xs font-medium text-brand-700">
+            <Sparkles className="h-3.5 w-3.5" />
+            Built from your approved Future Event Description
+          </p>
+        )}
         {eventPlanV2.feasibility.verdict === 'planned' ? (
           <EventPlanV2Review plan={eventPlanV2} />
         ) : (
