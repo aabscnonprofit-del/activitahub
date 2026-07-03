@@ -57,10 +57,10 @@ itself).
 
 - **Responsibility:** the humans in the system and where decision authority rests — the "human decides" half of authority.
 - **Boundary:** the human role labels and their decision/approval points across stages.
-- **Belongs here (as the documents state them):** the **client** — confirms the Statement of Understanding and approves the Future Event Description; the **organizer** — approves Planning and decides consequential matters in the Project Workspace; the general rule that the AI works and the human decides (approval gates and consequential decisions).
-- **Does not belong here:** AI responsibilities (Layer 3); the artifacts themselves (Layer 2).
-- **Grounded in:** the Future Event Description specification (client approves the FED); the Planning axioms/specification (organizer approves); the Project Workspace axioms/specification (organizer decides).
-- **Status: INTENTIONALLY INCOMPLETE.** The authoritative documents name a **client** upstream (Future Event Description) and an **organizer** downstream (Planning, Project Workspace), and the Discovery specification names neither explicitly. The **relationship between client and organizer** — whether they are the same person, whether the organizer acts on the client's behalf, or whether they are distinct roles — is **not established** by any accepted document. Defining it is a genuine architectural decision, deliberately left open here rather than inferred.
+- **Belongs here:** two architectural roles, per `ADR_010` — the **Client** (requesting authority: confirms the Statement of Understanding, approves the Future Event Description) and the **Organizer** (execution authority: owns Planning and Project Workspace / Execution decisions). Client and Organizer are **architectural roles, not durable business entities**; they may be the **same** actor (self‑organized events) or **different** actors (service events). Authority follows the pipeline gates defined by `ADR_010`, with the approved FED as the Client → Organizer handoff.
+- **Does not belong here:** AI responsibilities (Layer 3); the artifacts themselves (Layer 2); any durable business entity (Client/Organizer are roles, not roots).
+- **Grounded in:** `ADR_010_HUMAN_ROLES_AND_PIPELINE_AUTHORITY.md` (authoritative), with the gate‑level references in the Future Event Description specification (Client approves the FED) and the Planning / Project Workspace axioms & specifications (Organizer decides).
+- **Status: ESTABLISHED** (per `ADR_010`). The Client↔Organizer relationship is resolved: they are roles that may be held by the same or by different actors, with authority bound to the pipeline gates and the approved FED as the handoff.
 
 ### 5. Infrastructure
 
