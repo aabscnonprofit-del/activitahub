@@ -7,6 +7,7 @@ import { Sparkles, Loader2, ArrowLeft, ArrowRight, Wand2 } from 'lucide-react'
 import { analyzeIdeaAction, generateFromIdeaAction, type IdeaPrefill, type DiscoveryTurn } from '@/lib/actions/planner'
 import { discoverAction } from '@/lib/actions/discovery'
 import { describeFutureEventAction } from '@/lib/actions/future-event-description'
+import { planFromApprovedFedAction } from '@/lib/actions/planning-from-fed'
 import { buildFutureEventDescription, type EventDetails, type RecurrenceFrequency } from '@/lib/domain/future-event-description'
 import EventPlanV2Review from './EventPlanV2Review'
 import EventPlanV2Handoff from './EventPlanV2Handoff'
@@ -244,12 +245,21 @@ export default function PlannerClient({ locale }: { locale: string }) {
       postalCode: postal.trim() || undefined,
     }
     try {
-      // Planning description source: the OPT-IN FED path uses the selected Future Event Description; the
-      // legacy path uses the legacy "what should happen". The FED takes precedence only when explicitly
-      // selected, so the two paths coexist and the opt-in path does not depend on legacy WSH.
-      const planningDescription = fedPlanningDescription.trim() || whatShouldHappen.trim() || ''
-      const fed = buildFutureEventDescription({ clientRequest: idea, description: planningDescription, details, location })
-      const res = await generateFromIdeaAction(fed, projectId)
+      // Branch ONLY on the FED opt-in state. The opt-in FED path starts Planning through the published
+      // approved-FED → legacy Planning adapter; the legacy WSH path keeps the existing generateFromIdeaAction
+      // call unchanged. Both return the same GenerateFromIdeaResult, so the handling below is shared.
+      const res = fedPlanningDescription.trim()
+        ? await planFromApprovedFedAction({
+            approvedFutureEventDescription: fedPlanningDescription,
+            clientRequest: idea,
+            details,
+            location,
+            projectId,
+          })
+        : await generateFromIdeaAction(
+            buildFutureEventDescription({ clientRequest: idea, description: whatShouldHappen.trim() || '', details, location }),
+            projectId,
+          )
       // Stay inside the same Project across re-generations.
       if (res.projectId) setProjectId(res.projectId)
       if (res.ok) {
