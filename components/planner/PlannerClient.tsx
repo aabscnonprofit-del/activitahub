@@ -6,6 +6,7 @@ import { useTranslations } from 'next-intl'
 import { Sparkles, Loader2, ArrowLeft, ArrowRight, Wand2 } from 'lucide-react'
 import { analyzeIdeaAction, generateFromIdeaAction, type IdeaPrefill, type DiscoveryTurn } from '@/lib/actions/planner'
 import { discoverAction } from '@/lib/actions/discovery'
+import { describeFutureEventAction } from '@/lib/actions/future-event-description'
 import { buildFutureEventDescription, type EventDetails, type RecurrenceFrequency } from '@/lib/domain/future-event-description'
 import EventPlanV2Review from './EventPlanV2Review'
 import EventPlanV2Handoff from './EventPlanV2Handoff'
@@ -92,6 +93,9 @@ export default function PlannerClient({ locale }: { locale: string }) {
   const [projectId, setProjectId] = useState<string | undefined>(undefined)
   // Non-blocking preview of the AUTHORITATIVE Discovery seam (additive; never gates the existing flow).
   const [seamDiscovery, setSeamDiscovery] = useState<Awaited<ReturnType<typeof discoverAction>> | null>(null)
+  // Non-blocking preview of the AUTHORITATIVE FED seam, fed ONLY from the Discovery preview's Statement of
+  // Understanding (additive; never gates the flow, replaces WSH/Planning, or becomes the default).
+  const [seamFed, setSeamFed] = useState<Awaited<ReturnType<typeof describeFutureEventAction>> | null>(null)
 
   // When a gate (sign-in / license) or error appears after Generate, scroll it into view so it
   // can never be silently off-screen at the bottom of the long details form.
@@ -100,13 +104,24 @@ export default function PlannerClient({ locale }: { locale: string }) {
     if (gate || error) gateRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
   }, [gate, error])
 
+  // Fire-and-forget FED-seam preview: only once the Discovery preview has produced a Statement of
+  // Understanding, describe the future event from it. It never runs without a Statement of Understanding,
+  // never blocks the flow, and never gates planning.
+  useEffect(() => {
+    if (seamDiscovery?.status === 'understood') {
+      void describeFutureEventAction(seamDiscovery.statementOfUnderstanding).then(setSeamFed).catch(() => setSeamFed(null))
+    } else {
+      setSeamFed(null)
+    }
+  }, [seamDiscovery])
+
   function resetAll() {
     setStep('idea'); setIdea(''); setWhatShouldHappen(''); setNeedsWsh(false)
     setCategory('birthday'); setTotal(''); setAdults(''); setKids(''); setVenue(''); setBudget('')
     setRequirements(''); setCity(''); setStateRegion(''); setCountry(''); setPostal('')
     setRepeats('one_time'); setSessions(''); setInstructor(''); setMaterials('')
     setEventPlanV2(null); setError(false); setGate(null); setDiscovery(null); setAnswer('')
-    setProjectId(undefined); setSeamDiscovery(null)
+    setProjectId(undefined); setSeamDiscovery(null); setSeamFed(null)
   }
 
   function applyPrefill(p: IdeaPrefill) {
@@ -490,6 +505,19 @@ export default function PlannerClient({ locale }: { locale: string }) {
             <p className="mt-1 whitespace-pre-wrap text-sm text-slate-600">{seamDiscovery.statementOfUnderstanding}</p>
           ) : (
             <p className="mt-1 text-sm text-slate-600">{seamDiscovery.question}</p>
+          )}
+        </div>
+      )}
+
+      {/* Non-blocking preview of the AUTHORITATIVE FED seam. Informational only — no approval, no revision,
+          no gate; it does not drive the flow, replace WSH/Planning, or become the default. */}
+      {seamFed && (
+        <div className="rounded-2xl border border-slate-200 bg-white p-4">
+          <p className="text-xs uppercase tracking-wide text-slate-400">Future Event Description (preview)</p>
+          {seamFed.status === 'awaiting_approval' || seamFed.status === 'approved' ? (
+            <p className="mt-1 whitespace-pre-wrap text-sm text-slate-600">{seamFed.futureEventDescription}</p>
+          ) : (
+            <p className="mt-1 text-sm text-slate-400">Not available yet.</p>
           )}
         </div>
       )}
