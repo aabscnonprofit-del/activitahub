@@ -15,6 +15,7 @@
 | `ADR_006_TRANSITION_AUTHORITY.md` | Who initiates vs. authorizes each transition; AI never authorizes commitments | **Accepted** | `ADR_005`, `ADR_007`, `PHASE0_CONTRACT_DECISIONS.md` |
 | `ADR_007_BUSINESS_OPERATIONS.md` | Guarded-operation / closed-command model; one canonical operation per command | **Accepted** | `ADR_006`, `ADR_008` |
 | `ADR_008_PUBLISH_FLOW.md` | Owner-only, idempotent publish → Public Space | **Accepted & Implemented** | `PROJECT_PUBLIC_SPACE_SPEC.md`, `MIGRATION_STATUS.md` |
+| `ADR_009_EXECUTION_IS_A_WORKSPACE_PHASE.md` | Execution is a lifecycle phase of Project Workspace, not an independent module | **Accepted** | `PLANNING_AXIOMS.md`, `CURRENT_ARCHITECTURE.md` |
 
 **Reading order for the Project-centric architecture:** 003 (ownership) → 004 (source of truth) → 005
 (lifecycle) → 006 (transition authority) → 007 (operations) → 008 (publish). Together with

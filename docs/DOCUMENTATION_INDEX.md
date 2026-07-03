@@ -77,7 +77,7 @@ development. *Status:* current. Home: `PRODUCT_PRINCIPLES_INDEX.md`.
 - **Architecture Decision Records (`ADR_INDEX.md`):** the foundational decisions of this era are now fully
   on disk — `ADR_003_ENTITY_OWNERSHIP`, `ADR_004_SOURCE_OF_TRUTH`, `ADR_005_LIFECYCLE_STATE_MACHINE`,
   `ADR_006_TRANSITION_AUTHORITY`, `ADR_007_BUSINESS_OPERATIONS`, `ADR_008_PUBLISH_FLOW` — **AUTHORITATIVE**.
-- **`ADR_EXECUTION_IS_A_WORKSPACE_PHASE.md`** — Execution is a lifecycle phase of Project Workspace, not an independent module (pipeline‑boundary decision) — **AUTHORITATIVE**.
+- **`ADR_009_EXECUTION_IS_A_WORKSPACE_PHASE.md`** — Execution is a lifecycle phase of Project Workspace, not an independent module (pipeline‑boundary decision) — **AUTHORITATIVE**.
 - **`MIGRATION_STATUS.md`** — committed vs. applied migrations + verification procedure — **AUTHORITATIVE (operational)**.
 
 ## 4. OPE V1 (deployed engine)
