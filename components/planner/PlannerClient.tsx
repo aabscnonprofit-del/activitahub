@@ -537,8 +537,8 @@ export default function PlannerClient({ locale }: { locale: string }) {
       {/* Non-blocking preview of the AUTHORITATIVE FED seam. Informational only — no approval, no revision,
           no gate; it does not drive the flow, replace WSH/Planning, or become the default. */}
       {seamFed && (
-        <div className="rounded-2xl border border-slate-200 bg-white p-4">
-          <p className="text-xs uppercase tracking-wide text-slate-400">Future Event Description (preview)</p>
+        <div className="rounded-2xl border border-brand-200 bg-brand-50/40 p-4">
+          <p className="text-xs uppercase tracking-wide text-brand-500">Future Event Description (preview)</p>
           {seamFed.status === 'awaiting_approval' || seamFed.status === 'approved' ? (
             <>
               <p className="mt-1 whitespace-pre-wrap text-sm text-slate-600">{seamFed.futureEventDescription}</p>
@@ -549,9 +549,9 @@ export default function PlannerClient({ locale }: { locale: string }) {
                 <button
                   type="button"
                   onClick={() => { setFedPlanningDescription(seamFed.futureEventDescription); setStep('details') }}
-                  className="mt-3 rounded-full border border-brand-300 bg-brand-50 px-4 py-2 text-sm font-medium text-brand-700 hover:bg-brand-100"
+                  className="btn-primary mt-3 w-full px-6 py-3 text-sm sm:w-auto"
                 >
-                  Use this preview for planning
+                  Continue to Planning
                 </button>
               )}
             </>

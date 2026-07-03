@@ -21,9 +21,9 @@ function check(name: string, cond: boolean) {
 check('imports describeFutureEventAction from the FED seam',
   /import\s*\{[^}]*\bdescribeFutureEventAction\b[^}]*\}\s*from\s*['"]@\/lib\/actions\/future-event-description['"]/.test(src))
 
-// 2. The action exists.
-const labelIdx = src.indexOf('Use this preview for planning')
-check('contains the "Use this preview for planning" action', labelIdx !== -1)
+// 2. The action exists, as the primary "Continue to Planning" CTA.
+const labelIdx = src.indexOf('Continue to Planning')
+check('contains the "Continue to Planning" CTA', labelIdx !== -1)
 
 // 3. Shown only when seamFed exists, status is awaiting_approval/approved, and the description is non-empty.
 check('gated on seamFed existing', src.includes('{seamFed && ('))
@@ -42,6 +42,7 @@ check('onClick does NOT call planFromApprovedFedAction', !handler.includes('plan
 check('onClick does NOT call analyzeIdeaAction', !handler.includes('analyzeIdeaAction'))
 check('onClick does NOT bypass details (no submitDetails / onGenerate)',
   !handler.includes('submitDetails') && !handler.includes('onGenerate'))
+check('CTA is styled as the primary action (btn-primary)', handler.includes('btn-primary'))
 
 // 6. Opt-in path drops the legacy WSH dependency: the button does NOT write the legacy whatShouldHappen, and
 //    the plan description prefers the FED when selected, else the legacy whatShouldHappen (paths coexist).
