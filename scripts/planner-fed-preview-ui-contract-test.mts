@@ -1,0 +1,50 @@
+// PlannerClient — "Use this preview for planning" UI contract test.
+//
+// Static, deterministic source analysis of components/planner/PlannerClient.tsx (no browser execution,
+// no rendering). It verifies the opt-in FED-preview action's contract: how it is gated, exactly what it
+// does on click, what it must NOT do, and that the legacy WSH path is still present. It reads the source
+// only — it changes nothing.
+//
+//   Run:  npx tsx scripts/planner-fed-preview-ui-contract-test.mts
+
+import { readFileSync } from 'node:fs'
+
+const src = readFileSync(new URL('../components/planner/PlannerClient.tsx', import.meta.url), 'utf8')
+
+let failures = 0
+function check(name: string, cond: boolean) {
+  if (cond) console.log(`  ok  ${name}`)
+  else { failures++; console.log(`  FAIL ${name}`) }
+}
+
+// 1. PlannerClient imports describeFutureEventAction from the published FED seam.
+check('imports describeFutureEventAction from the FED seam',
+  /import\s*\{[^}]*\bdescribeFutureEventAction\b[^}]*\}\s*from\s*['"]@\/lib\/actions\/future-event-description['"]/.test(src))
+
+// 2. The action exists.
+const labelIdx = src.indexOf('Use this preview for planning')
+check('contains the "Use this preview for planning" action', labelIdx !== -1)
+
+// 3. Shown only when seamFed exists, status is awaiting_approval/approved, and the description is non-empty.
+check('gated on seamFed existing', src.includes('{seamFed && ('))
+check('gated on status awaiting_approval or approved',
+  src.includes("seamFed.status === 'awaiting_approval' || seamFed.status === 'approved'"))
+check('gated on non-empty futureEventDescription', src.includes('seamFed.futureEventDescription.trim()'))
+
+// 4–5. Extract the button's opening tag (onClick + attributes, up to the label) and assert exactly what it does.
+const onClickIdx = labelIdx !== -1 ? src.lastIndexOf('onClick=', labelIdx) : -1
+const handler = onClickIdx !== -1 ? src.slice(onClickIdx, labelIdx) : ''
+check('onClick copies the FED preview into whatShouldHappen',
+  handler.includes('setWhatShouldHappen(seamFed.futureEventDescription)'))
+check("onClick moves to the existing details step", handler.includes("setStep('details')"))
+check('onClick does NOT call generateFromIdeaAction', !handler.includes('generateFromIdeaAction'))
+check('onClick does NOT call planFromApprovedFedAction', !handler.includes('planFromApprovedFedAction'))
+check('onClick does NOT call analyzeIdeaAction', !handler.includes('analyzeIdeaAction'))
+check('onClick does NOT bypass details (no submitDetails / onGenerate)',
+  !handler.includes('submitDetails') && !handler.includes('onGenerate'))
+
+// 6. The legacy WSH path is still present.
+check("legacy WSH path still present (step 'wsh')", src.includes("step === 'wsh'"))
+
+console.log(`\n${failures === 0 ? 'ALL PASS' : `${failures} FAILURE(S)`}`)
+process.exit(failures === 0 ? 0 : 1)
