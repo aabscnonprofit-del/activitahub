@@ -34,8 +34,8 @@ check('gated on non-empty futureEventDescription', src.includes('seamFed.futureE
 // 4–5. Extract the button's opening tag (onClick + attributes, up to the label) and assert exactly what it does.
 const onClickIdx = labelIdx !== -1 ? src.lastIndexOf('onClick=', labelIdx) : -1
 const handler = onClickIdx !== -1 ? src.slice(onClickIdx, labelIdx) : ''
-check('onClick copies the FED preview into whatShouldHappen',
-  handler.includes('setWhatShouldHappen(seamFed.futureEventDescription)'))
+check('onClick stores the FED as the opt-in planning description',
+  handler.includes('setFedPlanningDescription(seamFed.futureEventDescription)'))
 check("onClick moves to the existing details step", handler.includes("setStep('details')"))
 check('onClick does NOT call generateFromIdeaAction', !handler.includes('generateFromIdeaAction'))
 check('onClick does NOT call planFromApprovedFedAction', !handler.includes('planFromApprovedFedAction'))
@@ -43,10 +43,13 @@ check('onClick does NOT call analyzeIdeaAction', !handler.includes('analyzeIdeaA
 check('onClick does NOT bypass details (no submitDetails / onGenerate)',
   !handler.includes('submitDetails') && !handler.includes('onGenerate'))
 
-// 6. Coherence: the action marks the planning description as FED-sourced, and the details step labels it.
-check('onClick marks the description as FED-sourced', handler.includes('setFedForPlanning(true)'))
+// 6. Opt-in path drops the legacy WSH dependency: the button does NOT write the legacy whatShouldHappen, and
+//    the plan description prefers the FED when selected, else the legacy whatShouldHappen (paths coexist).
+check('onClick does NOT touch the legacy whatShouldHappen', !handler.includes('setWhatShouldHappen'))
+check('planning description prefers the selected FED, else legacy whatShouldHappen',
+  src.includes('fedPlanningDescription.trim() || whatShouldHappen.trim()'))
 check('details step shows a FED-source label', src.includes('From your Future Event Description'))
-check('FED-source label is gated on fedForPlanning', /\{fedForPlanning &&/.test(src))
+check('FED-source label is gated on the selected FED', /\{fedPlanningDescription\.trim\(\) &&/.test(src))
 
 // 7. The legacy WSH path is still present.
 check("legacy WSH path still present (step 'wsh')", src.includes("step === 'wsh'"))
