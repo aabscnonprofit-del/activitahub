@@ -51,7 +51,19 @@ check('planning description prefers the selected FED, else legacy whatShouldHapp
 check('details step shows a FED-source label', src.includes('From your Future Event Description'))
 check('FED-source label is gated on the selected FED', /\{fedPlanningDescription\.trim\(\) &&/.test(src))
 
-// 7. The legacy WSH path is still present.
+// 7. Planning routing: the opt-in FED path starts Planning through the published adapter seam; the legacy
+//    path keeps generateFromIdeaAction. Both are existing published entry points — no backend contract change.
+check('imports planFromApprovedFedAction from the planning adapter seam',
+  /import\s*\{[^}]*\bplanFromApprovedFedAction\b[^}]*\}\s*from\s*['"]@\/lib\/actions\/planning-from-fed['"]/.test(src))
+check('Planning is branched by the FED opt-in state', src.includes('fedPlanningDescription.trim()'))
+check('opt-in FED path calls planFromApprovedFedAction (ternary true branch)',
+  src.includes('? await planFromApprovedFedAction'))
+check('legacy WSH path keeps generateFromIdeaAction (ternary false branch)',
+  src.includes(': await generateFromIdeaAction'))
+check('adapter call passes approvedFutureEventDescription from the selected FED',
+  src.includes('approvedFutureEventDescription: fedPlanningDescription'))
+
+// 8. The legacy WSH path is still present.
 check("legacy WSH path still present (step 'wsh')", src.includes("step === 'wsh'"))
 
 console.log(`\n${failures === 0 ? 'ALL PASS' : `${failures} FAILURE(S)`}`)
