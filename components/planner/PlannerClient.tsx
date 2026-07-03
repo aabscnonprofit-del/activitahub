@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useTranslations } from 'next-intl'
 import { Sparkles, Loader2, ArrowLeft, ArrowRight, Wand2 } from 'lucide-react'
 import { analyzeIdeaAction, generateFromIdeaAction, type IdeaPrefill, type DiscoveryTurn } from '@/lib/actions/planner'
+import { discoverAction } from '@/lib/actions/discovery'
 import { buildFutureEventDescription, type EventDetails, type RecurrenceFrequency } from '@/lib/domain/future-event-description'
 import EventPlanV2Review from './EventPlanV2Review'
 import EventPlanV2Handoff from './EventPlanV2Handoff'
@@ -89,6 +90,8 @@ export default function PlannerClient({ locale }: { locale: string }) {
   // it, then reused on subsequent generations (e.g. clarification) so the user stays in the
   // same Project. The Project row persists server-side (RLS owner-only).
   const [projectId, setProjectId] = useState<string | undefined>(undefined)
+  // Non-blocking preview of the AUTHORITATIVE Discovery seam (additive; never gates the existing flow).
+  const [seamDiscovery, setSeamDiscovery] = useState<Awaited<ReturnType<typeof discoverAction>> | null>(null)
 
   // When a gate (sign-in / license) or error appears after Generate, scroll it into view so it
   // can never be silently off-screen at the bottom of the long details form.
@@ -103,7 +106,7 @@ export default function PlannerClient({ locale }: { locale: string }) {
     setRequirements(''); setCity(''); setStateRegion(''); setCountry(''); setPostal('')
     setRepeats('one_time'); setSessions(''); setInstructor(''); setMaterials('')
     setEventPlanV2(null); setError(false); setGate(null); setDiscovery(null); setAnswer('')
-    setProjectId(undefined)
+    setProjectId(undefined); setSeamDiscovery(null)
   }
 
   function applyPrefill(p: IdeaPrefill) {
@@ -133,7 +136,10 @@ export default function PlannerClient({ locale }: { locale: string }) {
   async function submitIdea(e: React.FormEvent) {
     e.preventDefault()
     if (!idea.trim()) return
-    setLoading(true); setError(false); setDiscovery(null); setAnswer('')
+    setLoading(true); setError(false); setDiscovery(null); setAnswer(''); setSeamDiscovery(null)
+    // Non-blocking: also call the AUTHORITATIVE Discovery seam for a small preview. It runs in parallel,
+    // never blocks or alters the existing planner flow below, and never gates planning.
+    void discoverAction(idea).then(setSeamDiscovery).catch(() => setSeamDiscovery(null))
     try {
       const res = await analyzeIdeaAction(idea)
       if (!res.ok) { setError(true); return }
@@ -474,6 +480,19 @@ export default function PlannerClient({ locale }: { locale: string }) {
         )}
         <p className="mt-2 text-xs text-slate-500">Just a few details left so we can plan it.</p>
       </div>
+
+      {/* Non-blocking preview of the AUTHORITATIVE Discovery seam. Informational only — it does not
+          drive the flow, replace anything above, or gate planning. */}
+      {seamDiscovery && (
+        <div className="rounded-2xl border border-slate-200 bg-white p-4">
+          <p className="text-xs uppercase tracking-wide text-slate-400">Discovery (preview)</p>
+          {seamDiscovery.status === 'understood' ? (
+            <p className="mt-1 whitespace-pre-wrap text-sm text-slate-600">{seamDiscovery.statementOfUnderstanding}</p>
+          ) : (
+            <p className="mt-1 text-sm text-slate-600">{seamDiscovery.question}</p>
+          )}
+        </div>
+      )}
 
       <Section title={tf('sectionActivity')}>
         <div className="flex flex-wrap gap-2">
