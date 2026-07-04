@@ -109,6 +109,21 @@ export default async function ProjectDetailsPage({ params }: Props) {
         </dl>
       </section>
 
+      {/* Review Checklist (read-only) — what the organizer must review/refine before the Project is approved. */}
+      <section>
+        <h2 className="mb-1 text-sm font-semibold text-slate-700">Review Checklist</h2>
+        <p className="mb-3 max-w-2xl text-xs text-slate-500">
+          Review and complete these before approving the Project — nothing here is approved yet.
+        </p>
+        <ul className="list-disc space-y-2 rounded-lg border border-slate-200 p-4 pl-8 text-sm text-slate-600">
+          <li>Review the draft project details above.</li>
+          <li>Check the related plan.</li>
+          <li>Check the budget status.</li>
+          <li>Review the workspace modules — vendors, participants and timeline — when available.</li>
+          <li>Fix any missing or incorrect information before approval.</li>
+        </ul>
+      </section>
+
       {/* Publish Flow — make the Project visible in Public Space (existing /p/[projectId] route). */}
       <PublishPanel
         projectId={projectId}
