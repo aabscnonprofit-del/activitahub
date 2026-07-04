@@ -24,11 +24,15 @@ export interface Project {
   owner_id: string
   status: string
   current_step: string
+  /** Approval STATE (migration 049); null until approved. The approved Operational Configuration is NOT
+   *  stored here — it is a separate immutable artifact (project_approved_snapshots). */
+  approved_at: string | null
+  approved_by: string | null
   created_at: string
   updated_at: string
 }
 
-const COLS = 'id, owner_id, status, current_step, created_at, updated_at'
+const COLS = 'id, owner_id, status, current_step, approved_at, approved_by, created_at, updated_at'
 
 /** Create a Project owned by `ownerId`. Returns null on any error (caller decides). */
 export async function createProject(
@@ -158,14 +162,38 @@ export async function listProjects(supabase: ServerClient): Promise<Project[]> {
   return (data as Project[]) ?? []
 }
 
-/** Update a Project's status / current workflow step. Returns null on any error. */
+/** Update a Project's status / current workflow step / approval STATE. Returns null on any error. */
 export async function updateProject(
   supabase: ServerClient,
   id: string,
-  patch: { status?: string; current_step?: string },
+  patch: { status?: string; current_step?: string; approved_at?: string; approved_by?: string },
 ): Promise<Project | null> {
   const { data } = await supabase.from('projects').update(patch).eq('id', id).select(COLS).single()
   return (data as Project) ?? null
+}
+
+/**
+ * Insert the Approved Project Snapshot — the SEPARATE IMMUTABLE ARTIFACT capturing the Operational
+ * Configuration (the EventPlanV2) at approval (docs/PROJECT_LIFECYCLE.md). Insert-only: on conflict
+ * (project_id, project_version) it is left unchanged (never overwritten), so the artifact preserves
+ * historical truth and the operation is idempotent. `snapshot` is opaque JSONB (typed `unknown` so the root
+ * store stays free of module/planning types). Returns true on success.
+ */
+export async function insertApprovedProjectSnapshot(
+  supabase: ServerClient,
+  args: { projectId: string; projectVersion: number; approvedBy: string; approvedAt: string; snapshot: unknown },
+): Promise<boolean> {
+  const { error } = await supabase.from('project_approved_snapshots').upsert(
+    {
+      project_id: args.projectId,
+      project_version: args.projectVersion,
+      approved_by: args.approvedBy,
+      approved_at: args.approvedAt,
+      snapshot: args.snapshot,
+    },
+    { onConflict: 'project_id,project_version', ignoreDuplicates: true },
+  )
+  return !error
 }
 
 /** Whether a Project is currently published (visible in Public Space). Owner-scoped read (RLS). */
