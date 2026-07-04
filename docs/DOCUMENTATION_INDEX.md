@@ -76,6 +76,7 @@ development. *Status:* current. Home: `PRODUCT_PRINCIPLES_INDEX.md`.
 ## 3. Project-centric architecture (current era)
 
 - `CURRENT_ARCHITECTURE.md`, `OCCURRENCE_SPEC.md`, `PROJECT_PUBLIC_SPACE_SPEC.md` — **AUTHORITATIVE**.
+- **`PROJECT_LIFECYCLE.md`** — canonical Project Lifecycle spine (Idea → Discovery → FED → Planning → Draft Project → Project Workspace → Approve Project → Approved Project → Execution), official term definitions, lifecycle axioms, and the Publish/Approval‑independence conclusion; consolidates terminology owned in detail by the phase specs/ADRs (Revision reserved as a future concept only) — **AUTHORITATIVE**.
 - `SYSTEM_ARCHITECTURE_LAYERS.md` — **LIVING** (independent architectural layers of the system; intentionally incomplete until the core product architecture is finished).
 - **Architecture Decision Records (`ADR_INDEX.md`):** the foundational decisions of this era are now fully
   on disk — `ADR_003_ENTITY_OWNERSHIP`, `ADR_004_SOURCE_OF_TRUTH`, `ADR_005_LIFECYCLE_STATE_MACHINE`,
