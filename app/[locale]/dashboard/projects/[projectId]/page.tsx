@@ -84,8 +84,13 @@ export default async function ProjectDetailsPage({ params }: Props) {
         <Link href={`/${locale}/dashboard/projects`} className="text-xs text-slate-500 hover:underline">
           ← Projects
         </Link>
-        <h1 className="mt-1 text-2xl font-extrabold text-slate-900">Project workspace</h1>
+        <h1 className="mt-1 text-2xl font-extrabold text-slate-900">Project Workspace</h1>
         <p className="mt-0.5 font-mono text-sm text-slate-500">{projectId}</p>
+        {/* Workspace entry (Stage 2) — orient the organizer as they arrive from Planning. */}
+        <p className="mt-3 max-w-2xl text-sm text-slate-600">
+          Planning is complete. This is your Project Workspace — the working area where you manage this project.
+          Review and refine the draft here before approval.
+        </p>
       </div>
 
       <dl className="grid grid-cols-2 gap-4 rounded-lg border border-slate-200 p-4 sm:grid-cols-3">
