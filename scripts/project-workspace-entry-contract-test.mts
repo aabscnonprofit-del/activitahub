@@ -97,5 +97,17 @@ check('no approval action/mutation/control introduced',
   !page.includes('<button') && !page.includes('<form') && !page.includes('onClick=') &&
   !page.includes('approveProject') && !page.includes('setProjectStatus') && !page.includes('current_step ='))
 
+// 11. Approval Readiness (read-only summary) — what should be ready before the future Approve Project.
+check('"Approval Readiness" section exists', page.includes('Approval Readiness'))
+check('readiness copy: confirm the Draft Project is ready to become the Approved Project',
+  norm.includes('confirm the Draft Project is ready to become the Approved Project'))
+check('readiness summary lists all readiness items',
+  norm.includes('Project details reviewed') && norm.includes('Related plan checked') &&
+  norm.includes('Budget reviewed') && norm.includes('Workspace preparation areas checked') &&
+  norm.includes('Missing or incorrect information fixed'))
+check('no readiness validation/computation introduced (no readiness-state logic)',
+  !page.includes('isReady') && !page.includes('computeReadiness') && !page.includes('canApprove') &&
+  !page.includes('readinessState'))
+
 console.log(`\n${failures === 0 ? 'ALL PASS' : `${failures} FAILURE(S)`}`)
 process.exit(failures === 0 ? 0 : 1)
