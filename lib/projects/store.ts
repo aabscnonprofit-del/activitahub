@@ -196,6 +196,36 @@ export async function insertApprovedProjectSnapshot(
   return !error
 }
 
+/** Read-only projection of the Approved Project Snapshot artifact — METADATA ONLY (the frozen EventPlanV2
+ *  JSONB is intentionally NOT selected here). */
+export interface ApprovedProjectSnapshotRow {
+  id: string
+  project_id: string
+  project_version: number
+  approved_by: string
+  approved_at: string
+  created_at: string
+}
+
+/**
+ * Read the Approved Project Snapshot artifact for a (project, version) — READ-ONLY (owner RLS). Returns the
+ * artifact's metadata (never the frozen snapshot JSONB), or null when the Project has no snapshot yet. This
+ * is a plain SELECT: it never inserts, updates, deletes, or upserts.
+ */
+export async function getApprovedProjectSnapshot(
+  supabase: ServerClient,
+  projectId: string,
+  projectVersion = 1,
+): Promise<ApprovedProjectSnapshotRow | null> {
+  const { data } = await supabase
+    .from('project_approved_snapshots')
+    .select('id, project_id, project_version, approved_by, approved_at, created_at')
+    .eq('project_id', projectId)
+    .eq('project_version', projectVersion)
+    .maybeSingle()
+  return (data as ApprovedProjectSnapshotRow) ?? null
+}
+
 /** Whether a Project is currently published (visible in Public Space). Owner-scoped read (RLS). */
 export async function getProjectPublishState(supabase: ServerClient, id: string): Promise<boolean> {
   const { data } = await supabase.from('projects').select('is_published').eq('id', id).maybeSingle()
