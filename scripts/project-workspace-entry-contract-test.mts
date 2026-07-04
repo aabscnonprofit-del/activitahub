@@ -47,5 +47,17 @@ check('overview reuses existing project summary fields', page.includes('Related 
 check('overview is read-only — no editing/approval/execution control introduced on the page',
   !page.includes('<form') && !page.includes('onClick='))
 
+// 7. Review Checklist (read-only) — what must be reviewed/refined before Project approval.
+check('"Review Checklist" section exists', page.includes('Review Checklist'))
+check('checklist covers reviewing the draft project details', page.includes('Review the draft project details'))
+check('checklist covers checking the related plan', page.includes('Check the related plan'))
+check('checklist covers checking the budget status', page.includes('Check the budget status'))
+check('checklist covers modules/vendors/participants/timeline when available',
+  page.includes('vendors') && page.includes('participants') && page.includes('timeline') && page.includes('when available'))
+check('checklist covers fixing missing/incorrect info before approval',
+  page.includes('missing or incorrect information') && page.includes('before approval'))
+check('checklist is read-only — no button/input/form control introduced (copy may mention approval)',
+  !page.includes('<button') && !page.includes('<input') && !page.includes('<form'))
+
 console.log(`\n${failures === 0 ? 'ALL PASS' : `${failures} FAILURE(S)`}`)
 process.exit(failures === 0 ? 0 : 1)
