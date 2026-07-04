@@ -85,17 +85,17 @@ check('budget entry CTA is "Budget Workspace available" when none exists', page.
 check('budget entry does not create a budget (no createBudget/insert on the page)',
   !page.includes('createBudget') && !page.includes('.insert('))
 
-// 10. Approve Project (read-only placeholder) — introduces the next lifecycle step; no approval action.
+// 10. Approve Project — records approval via the owner-only ApproveProjectPanel (records approval only).
 check('"Approve Project" section exists', page.includes('Approve Project'))
-check('approve copy: commits this Draft Project as the Approved Project',
-  norm.includes('commit this Draft Project as the Approved Project'))
-check('approve copy: Approved Project is the operational source of truth for Execution',
-  norm.includes('Approved Project becomes the operational source of truth for Execution'))
-check('approve section notes approval is unavailable in this slice',
-  norm.includes('Approval action is not available in this slice'))
-check('no approval action/mutation/control introduced',
-  !page.includes('<button') && !page.includes('<form') && !page.includes('onClick=') &&
-  !page.includes('approveProject') && !page.includes('setProjectStatus') && !page.includes('current_step ='))
+check('approve copy: records this Draft Project as the Approved Project',
+  norm.includes('records this Draft Project as the Approved Project'))
+check('approve copy: approval does not change Publish or start Execution',
+  norm.includes('Approval does not change Publish or start Execution'))
+check('approve section renders the ApproveProjectPanel', page.includes('<ApproveProjectPanel'))
+check('approve panel receives the project approval timestamp',
+  page.includes('initialApprovedAt={project.approved_at}'))
+check('page itself does not mutate status/current_step for approval',
+  !page.includes('setProjectStatus') && !page.includes('current_step =') && !page.includes('.status ='))
 
 // 11. Approval Readiness (read-only summary) — what should be ready before the future Approve Project.
 check('"Approval Readiness" section exists', page.includes('Approval Readiness'))

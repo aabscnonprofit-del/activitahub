@@ -18,6 +18,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getProject, getProjectPublishState } from '@/lib/projects/store'
 import { listBudgetsForProject } from '@/lib/budget/store'
 import { PublishPanel } from '@/components/projects/PublishPanel'
+import { ApproveProjectPanel } from '@/components/projects/ApproveProjectPanel'
 import { formatDate, cn } from '@/lib/utils'
 import type { Locale } from '@/lib/types'
 
@@ -174,15 +175,16 @@ export default async function ProjectDetailsPage({ params }: Props) {
         </ul>
       </section>
 
-      {/* Approve Project (read-only placeholder, Stage 2) — introduces the next lifecycle step after
-          preparation. No approval action, mutation, or control here (see docs/PROJECT_LIFECYCLE.md). */}
+      {/* Approve Project — records a truthful approval: the approval state on the Project plus a separate
+          immutable Approved Project Snapshot artifact. Records approval only: no Publish change, no Execution,
+          no freeze of other modules (see docs/PROJECT_LIFECYCLE.md). */}
       <section>
         <h2 className="mb-1 text-sm font-semibold text-slate-700">Approve Project</h2>
-        <p className="mb-2 max-w-2xl text-xs text-slate-500">
-          After review, Approve Project will commit this Draft Project as the Approved Project. The Approved
-          Project becomes the operational source of truth for Execution.
+        <p className="mb-3 max-w-2xl text-xs text-slate-500">
+          After review, Approve Project records this Draft Project as the Approved Project. Approval does not
+          change Publish or start Execution.
         </p>
-        <p className="text-xs font-medium text-slate-400">Approval action is not available in this slice.</p>
+        <ApproveProjectPanel projectId={projectId} locale={locale} initialApprovedAt={project.approved_at} />
       </section>
 
       {/* Publish Flow — make the Project visible in Public Space (existing /p/[projectId] route). */}
