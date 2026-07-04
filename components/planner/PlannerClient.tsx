@@ -510,6 +510,9 @@ export default function PlannerClient({ locale }: { locale: string }) {
       <div className="rounded-2xl border border-brand-100 bg-brand-50/60 p-4">
         <p className="text-xs uppercase tracking-wide text-brand-500">Your idea</p>
         <p className="mt-0.5 text-sm text-slate-700">&ldquo;{idea}&rdquo;</p>
+        {fedPlanningDescription.trim() && (
+          <p className="mt-1 text-xs font-medium text-brand-600">Using your approved Future Event Description</p>
+        )}
         {(fedPlanningDescription.trim() || whatShouldHappen.trim()) && (
           <div className="mt-2 rounded-lg bg-white px-3 py-2 text-xs text-slate-600">
             {fedPlanningDescription.trim() && (
@@ -518,7 +521,11 @@ export default function PlannerClient({ locale }: { locale: string }) {
             <p><span className="font-semibold text-brand-700">What should happen: </span>{fedPlanningDescription.trim() || whatShouldHappen}</p>
           </div>
         )}
-        <p className="mt-2 text-xs text-slate-500">Just a few details left so we can plan it.</p>
+        <p className="mt-2 text-xs text-slate-500">
+          {fedPlanningDescription.trim()
+            ? 'Confirm the details below — Planning is created from your approved Future Event Description.'
+            : 'Just a few details left so we can plan it.'}
+        </p>
       </div>
 
       {/* Non-blocking preview of the AUTHORITATIVE Discovery seam. Informational only — it does not
