@@ -37,5 +37,15 @@ check('publish panel + module grid still rendered', page.includes('PublishPanel'
 check('planner handoff still offers "Continue to Project Workspace"', planner.includes('Continue to Project Workspace'))
 check('planner handoff still targets the project route', planner.includes('/dashboard/projects/'))
 
+// 6. Draft Project Overview (read-only) — labeled draft summary the organizer reviews before approval.
+check('"Draft Project Overview" section exists', page.includes('Draft Project Overview'))
+check('draft overview explains it is the draft created from Planning',
+  page.includes('draft project created from Planning'))
+check('draft overview states it is not yet approved / to review before approval',
+  page.includes('not yet approved') && page.includes('before approval'))
+check('overview reuses existing project summary fields', page.includes('Related plan') && page.includes('Related budget'))
+check('overview is read-only — no editing/approval/execution control introduced on the page',
+  !page.includes('<form') && !page.includes('onClick='))
+
 console.log(`\n${failures === 0 ? 'ALL PASS' : `${failures} FAILURE(S)`}`)
 process.exit(failures === 0 ? 0 : 1)
