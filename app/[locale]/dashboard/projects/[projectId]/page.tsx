@@ -141,6 +141,23 @@ export default async function ProjectDetailsPage({ params }: Props) {
         </dl>
       </section>
 
+      {/* Budget Workspace entry — Budget is the one module already connected to the Project; link into its
+          existing Workspace (reuses the existing /budget route; never creates a budget). */}
+      <section>
+        <h2 className="mb-1 text-sm font-semibold text-slate-700">Budget Workspace</h2>
+        <p className="mb-3 max-w-2xl text-xs text-slate-500">
+          Budget preparation is part of reviewing the Draft Project before approval. This budget belongs to
+          this Draft Project.
+        </p>
+        <Link
+          href={`/${locale}/dashboard/projects/${projectId}/budget`}
+          className="inline-flex items-center gap-2 rounded-lg border border-brand-200 bg-brand-50 px-4 py-2.5 text-sm font-medium text-brand-700 hover:bg-brand-100"
+        >
+          <Wallet className="h-4 w-4" aria-hidden="true" />
+          {budget ? 'Open Budget Workspace' : 'Budget Workspace available'}
+        </Link>
+      </section>
+
       {/* Publish Flow — make the Project visible in Public Space (existing /p/[projectId] route). */}
       <PublishPanel
         projectId={projectId}

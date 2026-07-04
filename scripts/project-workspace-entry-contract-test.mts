@@ -73,5 +73,15 @@ check('module status frames preparing the Draft Project before approval',
 check('module status reuses the existing "Project integration planned" label',
   page.includes('Project integration planned'))
 
+// 9. Budget Workspace entry — navigate into the existing Budget Workspace for this Draft Project.
+check('"Budget Workspace" entry section exists', page.includes('Budget Workspace'))
+check('budget entry copy explains it is part of reviewing the Draft Project before approval',
+  page.includes('Budget preparation is part of reviewing the Draft Project before approval'))
+check('budget entry links to the existing budget route', page.includes('/budget`'))
+check('budget entry CTA is "Open Budget Workspace" when a budget exists', page.includes('Open Budget Workspace'))
+check('budget entry CTA is "Budget Workspace available" when none exists', page.includes('Budget Workspace available'))
+check('budget entry does not create a budget (no createBudget/insert on the page)',
+  !page.includes('createBudget') && !page.includes('.insert('))
+
 console.log(`\n${failures === 0 ? 'ALL PASS' : `${failures} FAILURE(S)`}`)
 process.exit(failures === 0 ? 0 : 1)
