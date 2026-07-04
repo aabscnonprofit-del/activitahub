@@ -83,7 +83,16 @@ check('details step copy is FED-aware when a FED is selected',
 check('legacy details step copy is preserved for the non-FED path',
   src.includes('Just a few details left so we can plan it.'))
 
-// 10. The legacy WSH path is still present (and shows no such indicator).
+// 10. Planning → Project Workspace handoff — shown only after a successful plan (reuses existing navigation).
+const wsIdx = src.indexOf('Continue to Project Workspace')
+check('Continue to Project Workspace CTA exists', wsIdx !== -1)
+check('Workspace CTA is shown only after a successful plan (planned verdict gate)',
+  /verdict === 'planned' &&[\s\S]{0,600}Continue to Project Workspace/.test(src))
+check('Workspace handoff has the ready/explanation copy', src.includes('Your Planning is ready'))
+check('Planning result still renders the eventPlanV2 review/handoff',
+  src.includes('EventPlanV2Review') && src.includes('EventPlanV2Handoff'))
+
+// 11. The legacy WSH path is still present (and shows no such indicator).
 check("legacy WSH path still present (step 'wsh')", src.includes("step === 'wsh'"))
 
 console.log(`\n${failures === 0 ? 'ALL PASS' : `${failures} FAILURE(S)`}`)

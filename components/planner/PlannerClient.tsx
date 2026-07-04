@@ -317,11 +317,14 @@ export default function PlannerClient({ locale }: { locale: string }) {
         {/* Stage 5f: gated on V2 feasibility (the Project-world authority), consistent with the plan render. */}
         {projectId && eventPlanV2 && eventPlanV2.feasibility.verdict === 'planned' && (
           <div className="mt-6">
+            <p className="mb-2 text-sm text-slate-600">
+              Your Planning is ready. Continue to the Project Workspace to begin organizing your event.
+            </p>
             <Link
               href={`/${locale}/dashboard/projects/${projectId}`}
               className="btn-primary w-full px-7 py-3.5 text-base sm:w-auto"
             >
-              Continue to Project
+              Continue to Project Workspace
               <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </Link>
           </div>
