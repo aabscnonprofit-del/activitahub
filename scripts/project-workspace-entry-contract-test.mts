@@ -59,5 +59,19 @@ check('checklist covers fixing missing/incorrect info before approval',
 check('checklist is read-only — no button/input/form control introduced (copy may mention approval)',
   !page.includes('<button') && !page.includes('<input') && !page.includes('<form'))
 
+// 8. Module Status Overview (read-only) — which Workspace preparation areas exist / are not connected yet.
+check('"Module Status Overview" section exists', page.includes('Module Status Overview'))
+check('module status covers Vendors, Participants, Budget and Timeline',
+  page.includes('name="Vendors"') && page.includes('name="Participants"') &&
+  page.includes('name="Budget"') && page.includes('name="Timeline"'))
+check('module status explains these are Workspace preparation areas',
+  page.includes('preparation areas inside the Workspace'))
+check('module status notes some are planned / not connected yet',
+  page.includes('planned and not connected yet'))
+check('module status frames preparing the Draft Project before approval',
+  page.includes('prepare the Draft Project before approval'))
+check('module status reuses the existing "Project integration planned" label',
+  page.includes('Project integration planned'))
+
 console.log(`\n${failures === 0 ? 'ALL PASS' : `${failures} FAILURE(S)`}`)
 process.exit(failures === 0 ? 0 : 1)
