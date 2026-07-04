@@ -13,6 +13,7 @@ import {
   Users,
   BarChart2,
   Paperclip,
+  CheckCircle2,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { getProject, getProjectPublishState } from '@/lib/projects/store'
@@ -54,6 +55,9 @@ export default async function ProjectDetailsPage({ params }: Props) {
   const budget = budgets[0] ?? null
   const planLabel = PLAN_STAGE[project.current_step] ?? project.current_step
   const isPublished = await getProjectPublishState(supabase, projectId)
+  // Approval state (reused; no new query). Once approved, the Draft-only sections are replaced by the
+  // Approved presentation — presentation only, no business/approval/snapshot/Publish logic changes.
+  const approvedAt = project.approved_at
 
   // Workspace modules. Only modules with a real Project relation get a live link; the rest are
   // "Project integration planned" (no project_id exists yet — no fake links).
@@ -87,13 +91,34 @@ export default async function ProjectDetailsPage({ params }: Props) {
         </Link>
         <h1 className="mt-1 text-2xl font-extrabold text-slate-900">Project Workspace</h1>
         <p className="mt-0.5 font-mono text-sm text-slate-500">{projectId}</p>
-        {/* Workspace entry (Stage 2) — orient the organizer as they arrive from Planning. */}
-        <p className="mt-3 max-w-2xl text-sm text-slate-600">
-          Planning is complete. This is your Project Workspace — the working area where you manage this project.
-          Review and refine the draft here before approval.
-        </p>
+        {/* Workspace entry (Stage 2) — draft-only orientation; hidden once the Project is approved. */}
+        {!approvedAt && (
+          <p className="mt-3 max-w-2xl text-sm text-slate-600">
+            Planning is complete. This is your Project Workspace — the working area where you manage this project.
+            Review and refine the draft here before approval.
+          </p>
+        )}
       </div>
 
+      {/* Approved presentation — shown once approved; replaces the Draft-only sections. Records approval
+          state only (see docs/PROJECT_LIFECYCLE.md). */}
+      {approvedAt && (
+        <section className="rounded-lg border border-emerald-200 bg-emerald-50/60 p-4">
+          <div className="flex items-center gap-2 text-emerald-700">
+            <CheckCircle2 className="h-5 w-5" aria-hidden="true" />
+            <h2 className="text-base font-bold">Project Approved</h2>
+          </div>
+          <p className="mt-1 text-xs text-emerald-800/80">Approved on: {formatDate(approvedAt)}</p>
+          <p className="mt-2 max-w-2xl text-sm text-slate-700">
+            This Project now has an Approved Project Snapshot. The Approved Project is the operational source
+            of truth for future Execution.
+          </p>
+        </section>
+      )}
+
+      {/* Draft-only preparation sections — hidden once the Project is approved (Approved block above). */}
+      {!approvedAt && (
+      <>
       {/* Draft Project Overview (read-only) — the draft summary the organizer reviews before approval. */}
       <section>
         <h2 className="mb-1 text-sm font-semibold text-slate-700">Draft Project Overview</h2>
@@ -141,14 +166,17 @@ export default async function ProjectDetailsPage({ params }: Props) {
           <ModuleStatusRow name="Timeline" status="Project integration planned" />
         </dl>
       </section>
+      </>
+      )}
 
       {/* Budget Workspace entry — Budget is the one module already connected to the Project; link into its
           existing Workspace (reuses the existing /budget route; never creates a budget). */}
       <section>
         <h2 className="mb-1 text-sm font-semibold text-slate-700">Budget Workspace</h2>
         <p className="mb-3 max-w-2xl text-xs text-slate-500">
-          Budget preparation is part of reviewing the Draft Project before approval. This budget belongs to
-          this Draft Project.
+          {approvedAt
+            ? 'The budget for this Project.'
+            : 'Budget preparation is part of reviewing the Draft Project before approval. This budget belongs to this Draft Project.'}
         </p>
         <Link
           href={`/${locale}/dashboard/projects/${projectId}/budget`}
@@ -159,6 +187,9 @@ export default async function ProjectDetailsPage({ params }: Props) {
         </Link>
       </section>
 
+      {/* Draft-only approval-prep sections — hidden once the Project is approved (Approved block above). */}
+      {!approvedAt && (
+      <>
       {/* Approval Readiness (read-only summary, Stage 2) — what the Draft Project should have ready before
           the future Approve Project action. Static summary only — no readiness validation or computation. */}
       <section>
@@ -186,6 +217,8 @@ export default async function ProjectDetailsPage({ params }: Props) {
         </p>
         <ApproveProjectPanel projectId={projectId} locale={locale} initialApprovedAt={project.approved_at} />
       </section>
+      </>
+      )}
 
       {/* Publish Flow — make the Project visible in Public Space (existing /p/[projectId] route). */}
       <PublishPanel
