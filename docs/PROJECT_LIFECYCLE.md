@@ -104,6 +104,38 @@ by `ADR_005_LIFECYCLE_STATE_MACHINE.md`. **Execution** is a phase *within* Proje
 - **Revision remains a reserved future concept only.** Industry practice supports an eventual
   approved‑artifact revision loop, but it is **not** adopted or designed here.
 
+## Approval state vs the Approved Project Snapshot (accepted)
+
+Approving a Project produces **two architecturally distinct things** that must not be conflated:
+
+1. **Project approval — a state of the Project.** The Project **owns the approval state**. Project approval
+   consists of **`approved_at`** (when) and **`approved_by`** (the approving authority, per `ADR_010`). This
+   is a state the Project *records*, alongside its other lifecycle state.
+2. **The Approved Project Snapshot — a separate immutable artifact.** The approved operational configuration
+   is captured, at **Approve Project**, as an **Approved Project Snapshot**. It is a **separate immutable
+   artifact** — **it is not the Project itself**, and it is not a state field of the Project. It preserves the
+   operational configuration as it was at approval, independently of the still‑mutable Draft Project.
+
+**Consequences (recorded, not designed here):**
+
+- **Execution** will eventually consume the **Approved Project Snapshot**, never the mutable Draft Project.
+- **Revision** (reserved — not designed) will create a **new** Approved Project Snapshot rather than modifying
+  an existing one. Snapshots are never mutated in place.
+
+This applies the source‑of‑truth principle (`ADR_004`: issued artifacts are immutable snapshots that become
+their own source of truth) and the snapshot‑at‑transition model (`ADR_005`: immutable snapshots are created at
+the Approved gate) to Project approval specifically.
+
+### Principle — Project state and immutable artifacts are different architectural concepts
+
+**The Project records state. Artifacts preserve historical truth.** Project state (e.g. `status`,
+`current_step`, `approved_at`, `approved_by`) is mutable, current, and singular — it says *where the Project is
+now*. An immutable artifact (e.g. the Approved Project Snapshot, and the already‑existing Commercial Proposal /
+contract / invoice snapshots) is frozen at the moment it is issued and preserves *what was true then*. These
+are different kinds of thing and are modeled differently: **state lives on the Project; immutable artifacts are
+separate records.** This document defines the ownership only — no schema, table names, JSON structure, Revision
+design, or Execution design are implied here.
+
 ## Relationship to existing AUTHORITATIVE documents
 
 This document is the terminology/definitions spine; the following documents own the detailed behavior and
