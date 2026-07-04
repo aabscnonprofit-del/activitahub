@@ -2,7 +2,6 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import {
   Wallet,
-  ClipboardList,
   Inbox,
   FileText,
   BookOpen,
@@ -72,7 +71,6 @@ export default async function ProjectDetailsPage({ params }: Props) {
   // single live Budget entry), so it is not repeated here; the rest are "Project integration planned"
   // (no project_id relation yet — no fake links). A module may still carry a live link once integrated.
   const modules: ModuleCard[] = [
-    { key: 'plans', name: 'Plans', desc: 'The event plan', icon: ClipboardList },
     { key: 'requests', name: 'Requests', desc: 'Client requests', icon: Inbox },
     { key: 'proposals', name: 'Proposals', desc: 'Client proposals', icon: FileText },
     { key: 'bookings', name: 'Bookings', desc: 'Bookings & payments', icon: BookOpen },

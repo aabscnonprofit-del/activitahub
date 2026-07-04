@@ -32,9 +32,11 @@ check('Budget Workspace entry still links to the budget route', page.includes('/
 
 // 4. Module grid itself is intact (only the Budget tile removed).
 check('"Manage this event" module grid kept', page.includes('Manage this event') && page.includes('modules.map('))
-check('other module tiles kept (Plans, Vendors, Participants, Files)',
-  page.includes("name: 'Plans'") && page.includes("name: 'Vendors'") &&
-  page.includes("name: 'Participants'") && page.includes("name: 'Files'"))
+check('other module tiles kept (Vendors, Participants, Files)',
+  page.includes("name: 'Vendors'") && page.includes("name: 'Participants'") && page.includes("name: 'Files'"))
+// "Plans" tile removed (Plans module role cleanup) — the plan (EventPlanV2) is not a future integration;
+// it is surfaced via "Related plan" + the Approved Project Snapshot, not a placeholder grid tile.
+check('"Plans" grid tile removed', !page.includes("name: 'Plans'") && !page.includes('ClipboardList'))
 
 // 5. Presentation only — no logic/mutation/action/state change.
 check('presentation only — no mutation / action / client state introduced',
