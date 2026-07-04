@@ -45,6 +45,17 @@ export default async function BudgetWorkspacePage({ params }: Props) {
           Pricing overlay for project <span className="font-mono">{projectId}</span>.
         </p>
       </div>
+
+      {/* Draft Project context (read-only) — orients the organizer: this budget is part of preparing the
+          Draft Project before approval. It does not change any existing Budget Workspace behavior. */}
+      <section className="rounded-lg border border-brand-100 bg-brand-50/60 p-4">
+        <h2 className="text-sm font-semibold text-slate-800">Draft Project Budget</h2>
+        <p className="mt-1 max-w-2xl text-xs text-slate-600">
+          This budget belongs to the current Draft Project. Review and refine this budget before approving the
+          Project. After Project approval, the Approved Project Budget becomes the source of truth for Execution.
+        </p>
+      </section>
+
       <BudgetWorkspaceClient projectId={projectId} initialBudget={initialBudget} />
     </div>
   )
