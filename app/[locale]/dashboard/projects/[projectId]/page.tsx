@@ -158,6 +158,17 @@ export default async function ProjectDetailsPage({ params }: Props) {
         </Link>
       </section>
 
+      {/* Approve Project (read-only placeholder, Stage 2) — introduces the next lifecycle step after
+          preparation. No approval action, mutation, or control here (see docs/PROJECT_LIFECYCLE.md). */}
+      <section>
+        <h2 className="mb-1 text-sm font-semibold text-slate-700">Approve Project</h2>
+        <p className="mb-2 max-w-2xl text-xs text-slate-500">
+          After review, Approve Project will commit this Draft Project as the Approved Project. The Approved
+          Project becomes the operational source of truth for Execution.
+        </p>
+        <p className="text-xs font-medium text-slate-400">Approval action is not available in this slice.</p>
+      </section>
+
       {/* Publish Flow — make the Project visible in Public Space (existing /p/[projectId] route). */}
       <PublishPanel
         projectId={projectId}

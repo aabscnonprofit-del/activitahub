@@ -11,6 +11,8 @@ import { readFileSync } from 'node:fs'
 
 const page = readFileSync(new URL('../app/[locale]/dashboard/projects/[projectId]/page.tsx', import.meta.url), 'utf8')
 const planner = readFileSync(new URL('../components/planner/PlannerClient.tsx', import.meta.url), 'utf8')
+// Prose wraps across lines in JSX; normalize whitespace for multi-line copy checks (structural checks use `page`).
+const norm = page.replace(/\s+/g, ' ')
 
 let failures = 0
 function check(name: string, cond: boolean) {
@@ -82,6 +84,18 @@ check('budget entry CTA is "Open Budget Workspace" when a budget exists', page.i
 check('budget entry CTA is "Budget Workspace available" when none exists', page.includes('Budget Workspace available'))
 check('budget entry does not create a budget (no createBudget/insert on the page)',
   !page.includes('createBudget') && !page.includes('.insert('))
+
+// 10. Approve Project (read-only placeholder) — introduces the next lifecycle step; no approval action.
+check('"Approve Project" section exists', page.includes('Approve Project'))
+check('approve copy: commits this Draft Project as the Approved Project',
+  norm.includes('commit this Draft Project as the Approved Project'))
+check('approve copy: Approved Project is the operational source of truth for Execution',
+  norm.includes('Approved Project becomes the operational source of truth for Execution'))
+check('approve section notes approval is unavailable in this slice',
+  norm.includes('Approval action is not available in this slice'))
+check('no approval action/mutation/control introduced',
+  !page.includes('<button') && !page.includes('<form') && !page.includes('onClick=') &&
+  !page.includes('approveProject') && !page.includes('setProjectStatus') && !page.includes('current_step ='))
 
 console.log(`\n${failures === 0 ? 'ALL PASS' : `${failures} FAILURE(S)`}`)
 process.exit(failures === 0 ? 0 : 1)
