@@ -16,7 +16,7 @@ import {
   CheckCircle2,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
-import { getProject, getProjectPublishState } from '@/lib/projects/store'
+import { getProject, getProjectPublishState, getApprovedProjectSnapshot } from '@/lib/projects/store'
 import { listBudgetsForProject } from '@/lib/budget/store'
 import { PublishPanel } from '@/components/projects/PublishPanel'
 import { ApproveProjectPanel } from '@/components/projects/ApproveProjectPanel'
@@ -71,6 +71,8 @@ export default async function ProjectDetailsPage({ params }: Props) {
   // Human-friendly, non-technical labels for the Draft summary (approved → Approved Project).
   const statusLabel = approvedAt ? 'Approved Project' : STATUS_LABEL[project.status] ?? project.status
   const stepLabel = STEP_LABEL[project.current_step] ?? project.current_step
+  // Read-only: the Approved Project Snapshot artifact metadata (loaded only once approved). No mutation.
+  const approvedSnapshot = approvedAt ? await getApprovedProjectSnapshot(supabase, projectId) : null
 
   // Workspace modules. Only modules with a real Project relation get a live link; the rest are
   // "Project integration planned" (no project_id exists yet — no fake links).
@@ -126,6 +128,15 @@ export default async function ProjectDetailsPage({ params }: Props) {
             This Project now has an Approved Project Snapshot. The Approved Project is the operational source
             of truth for future Execution.
           </p>
+          {/* Read-only Approved Project Snapshot metadata — confirms the artifact exists (no edit controls). */}
+          {approvedSnapshot && (
+            <dl className="mt-3 grid grid-cols-1 gap-3 rounded-lg border border-emerald-200 bg-white/60 p-3 sm:grid-cols-2">
+              <Field label="Approved Project Snapshot" value="Captured" />
+              <Field label="Approved by" value={approvedSnapshot.approved_by === user.id ? 'You (owner)' : 'Project owner'} />
+              <Field label="Snapshot approved" value={formatDate(approvedSnapshot.approved_at)} />
+              <Field label="Snapshot recorded" value={formatDate(approvedSnapshot.created_at)} />
+            </dl>
+          )}
         </section>
       )}
 
