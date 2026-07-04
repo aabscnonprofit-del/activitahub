@@ -74,17 +74,10 @@ export default async function ProjectDetailsPage({ params }: Props) {
   // Read-only: the Approved Project Snapshot artifact metadata (loaded only once approved). No mutation.
   const approvedSnapshot = approvedAt ? await getApprovedProjectSnapshot(supabase, projectId) : null
 
-  // Workspace modules. Only modules with a real Project relation get a live link; the rest are
-  // "Project integration planned" (no project_id exists yet — no fake links).
+  // Workspace modules (future integrations). Budget has its own dedicated Budget Workspace entry above (the
+  // single live Budget entry), so it is not repeated here; the rest are "Project integration planned"
+  // (no project_id relation yet — no fake links). A module may still carry a live link once integrated.
   const modules: ModuleCard[] = [
-    {
-      key: 'budget',
-      name: 'Budget',
-      desc: budget ? 'Cost lines, quotes, fee & totals' : 'Create the budget for this project',
-      icon: Wallet,
-      href: `/${locale}/dashboard/projects/${projectId}/budget`,
-      cta: budget ? 'Open' : 'Create',
-    },
     { key: 'plans', name: 'Plans', desc: 'The event plan', icon: ClipboardList },
     { key: 'requests', name: 'Requests', desc: 'Client requests', icon: Inbox },
     { key: 'proposals', name: 'Proposals', desc: 'Client proposals', icon: FileText },
