@@ -158,6 +158,22 @@ export default async function ProjectDetailsPage({ params }: Props) {
         </Link>
       </section>
 
+      {/* Approval Readiness (read-only summary, Stage 2) — what the Draft Project should have ready before
+          the future Approve Project action. Static summary only — no readiness validation or computation. */}
+      <section>
+        <h2 className="mb-1 text-sm font-semibold text-slate-700">Approval Readiness</h2>
+        <p className="mb-3 max-w-2xl text-xs text-slate-500">
+          Before Approve Project, confirm the Draft Project is ready to become the Approved Project.
+        </p>
+        <ul className="list-disc space-y-2 rounded-lg border border-slate-200 p-4 pl-8 text-sm text-slate-600">
+          <li>Project details reviewed.</li>
+          <li>Related plan checked.</li>
+          <li>Budget reviewed.</li>
+          <li>Workspace preparation areas checked.</li>
+          <li>Missing or incorrect information fixed.</li>
+        </ul>
+      </section>
+
       {/* Approve Project (read-only placeholder, Stage 2) — introduces the next lifecycle step after
           preparation. No approval action, mutation, or control here (see docs/PROJECT_LIFECYCLE.md). */}
       <section>
