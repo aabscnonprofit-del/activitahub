@@ -515,10 +515,12 @@ export default function PlannerClient({ locale }: { locale: string }) {
         )}
         {(fedPlanningDescription.trim() || whatShouldHappen.trim()) && (
           <div className="mt-2 rounded-lg bg-white px-3 py-2 text-xs text-slate-600">
-            {fedPlanningDescription.trim() && (
-              <p className="mb-1 font-semibold uppercase tracking-wide text-brand-500">From your Future Event Description</p>
-            )}
-            <p><span className="font-semibold text-brand-700">What should happen: </span>{fedPlanningDescription.trim() || whatShouldHappen}</p>
+            <p>
+              <span className="font-semibold text-brand-700">
+                {fedPlanningDescription.trim() ? 'Approved Future Event Description: ' : 'What should happen: '}
+              </span>
+              {fedPlanningDescription.trim() || whatShouldHappen}
+            </p>
           </div>
         )}
         <p className="mt-2 text-xs text-slate-500">

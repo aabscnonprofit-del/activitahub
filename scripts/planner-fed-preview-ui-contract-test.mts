@@ -49,8 +49,12 @@ check('CTA is styled as the primary action (btn-primary)', handler.includes('btn
 check('onClick does NOT touch the legacy whatShouldHappen', !handler.includes('setWhatShouldHappen'))
 check('planning description prefers the selected FED, else legacy whatShouldHappen',
   src.includes('fedPlanningDescription.trim() || whatShouldHappen.trim()'))
-check('details step shows a FED-source label', src.includes('From your Future Event Description'))
-check('FED-source label is gated on the selected FED', /\{fedPlanningDescription\.trim\(\) &&/.test(src))
+check('details summary uses the FED "Approved Future Event Description" label',
+  src.includes("'Approved Future Event Description: '"))
+check('FED summary label is gated by fedPlanningDescription.trim()',
+  /fedPlanningDescription\.trim\(\) \? 'Approved Future Event Description: '/.test(src))
+check('legacy "What should happen" label still present for the non-FED path',
+  src.includes("'What should happen: '"))
 
 // 7. Planning routing: the opt-in FED path starts Planning through the published adapter seam; the legacy
 //    path keeps generateFromIdeaAction. Both are existing published entry points — no backend contract change.
