@@ -70,7 +70,16 @@ check('result area has the Planning source indicator text',
 check('Planning source indicator is gated by fedPlanningDescription.trim()',
   /\{fedPlanningDescription\.trim\(\) &&[\s\S]{0,240}Built from your approved Future Event Description/.test(src))
 
-// 9. The legacy WSH path is still present (and shows no such indicator).
+// 9. FED-native details step: a source note + FED-aware confirmation copy, gated on the selected FED.
+check('details step shows the FED source note', src.includes('Using your approved Future Event Description'))
+check('FED source note is gated by fedPlanningDescription.trim()',
+  /\{fedPlanningDescription\.trim\(\) &&[\s\S]{0,160}Using your approved Future Event Description/.test(src))
+check('details step copy is FED-aware when a FED is selected',
+  src.includes('Planning is created from your approved Future Event Description'))
+check('legacy details step copy is preserved for the non-FED path',
+  src.includes('Just a few details left so we can plan it.'))
+
+// 10. The legacy WSH path is still present (and shows no such indicator).
 check("legacy WSH path still present (step 'wsh')", src.includes("step === 'wsh'"))
 
 console.log(`\n${failures === 0 ? 'ALL PASS' : `${failures} FAILURE(S)`}`)
