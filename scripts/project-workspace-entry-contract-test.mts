@@ -97,15 +97,10 @@ check('approve panel receives the project approval timestamp',
 check('page itself does not mutate status/current_step for approval',
   !page.includes('setProjectStatus') && !page.includes('current_step =') && !page.includes('.status ='))
 
-// 11. Approval Readiness (read-only summary) — what should be ready before the future Approve Project.
-check('"Approval Readiness" section exists', page.includes('Approval Readiness'))
-check('readiness copy: confirm the Draft Project is ready to become the Approved Project',
-  norm.includes('confirm the Draft Project is ready to become the Approved Project'))
-check('readiness summary lists all readiness items',
-  norm.includes('Project details reviewed') && norm.includes('Related plan checked') &&
-  norm.includes('Budget reviewed') && norm.includes('Workspace preparation areas checked') &&
-  norm.includes('Missing or incorrect information fixed'))
-check('no readiness validation/computation introduced (no readiness-state logic)',
+// 11. Single pre-approval review block — Review Checklist kept; duplicate Approval Readiness merged/removed.
+check('single pre-approval review block: Review Checklist kept', page.includes('Review Checklist'))
+check('duplicate "Approval Readiness" block removed', !page.includes('Approval Readiness'))
+check('no readiness-state logic introduced',
   !page.includes('isReady') && !page.includes('computeReadiness') && !page.includes('canApprove') &&
   !page.includes('readinessState'))
 
