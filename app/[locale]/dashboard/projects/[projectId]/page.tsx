@@ -205,36 +205,19 @@ export default async function ProjectDetailsPage({ params }: Props) {
       </section>
 
       {/* Draft-only approval-prep sections — hidden once the Project is approved (Approved block above). */}
+      {/* Approve Project (draft-only; hidden once approved). Pre-approval review items live in the single
+          Review Checklist above. Records a truthful approval: the approval state on the Project plus a
+          separate immutable Approved Project Snapshot artifact. Records approval only: no Publish change, no
+          Execution, no freeze of other modules (see docs/PROJECT_LIFECYCLE.md). */}
       {!approvedAt && (
-      <>
-      {/* Approval Readiness (read-only summary, Stage 2) — what the Draft Project should have ready before
-          the future Approve Project action. Static summary only — no readiness validation or computation. */}
-      <section>
-        <h2 className="mb-1 text-sm font-semibold text-slate-700">Approval Readiness</h2>
-        <p className="mb-3 max-w-2xl text-xs text-slate-500">
-          Before Approve Project, confirm the Draft Project is ready to become the Approved Project.
-        </p>
-        <ul className="list-disc space-y-2 rounded-lg border border-slate-200 p-4 pl-8 text-sm text-slate-600">
-          <li>Project details reviewed.</li>
-          <li>Related plan checked.</li>
-          <li>Budget reviewed.</li>
-          <li>Workspace preparation areas checked.</li>
-          <li>Missing or incorrect information fixed.</li>
-        </ul>
-      </section>
-
-      {/* Approve Project — records a truthful approval: the approval state on the Project plus a separate
-          immutable Approved Project Snapshot artifact. Records approval only: no Publish change, no Execution,
-          no freeze of other modules (see docs/PROJECT_LIFECYCLE.md). */}
-      <section>
-        <h2 className="mb-1 text-sm font-semibold text-slate-700">Approve Project</h2>
-        <p className="mb-3 max-w-2xl text-xs text-slate-500">
-          After review, Approve Project records this Draft Project as the Approved Project. Approval does not
-          change Publish or start Execution.
-        </p>
-        <ApproveProjectPanel projectId={projectId} locale={locale} initialApprovedAt={project.approved_at} />
-      </section>
-      </>
+        <section>
+          <h2 className="mb-1 text-sm font-semibold text-slate-700">Approve Project</h2>
+          <p className="mb-3 max-w-2xl text-xs text-slate-500">
+            After review, Approve Project records this Draft Project as the Approved Project. Approval does not
+            change Publish or start Execution.
+          </p>
+          <ApproveProjectPanel projectId={projectId} locale={locale} initialApprovedAt={project.approved_at} />
+        </section>
       )}
 
       {/* Publish Flow — make the Project visible in Public Space (existing /p/[projectId] route). */}
