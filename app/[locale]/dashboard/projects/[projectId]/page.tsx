@@ -93,14 +93,21 @@ export default async function ProjectDetailsPage({ params }: Props) {
         </p>
       </div>
 
-      <dl className="grid grid-cols-2 gap-4 rounded-lg border border-slate-200 p-4 sm:grid-cols-3">
-        <Field label="Status" value={project.status} />
-        <Field label="Current step" value={project.current_step} />
-        <Field label="Related plan" value={planLabel} />
-        <Field label="Created" value={formatDate(project.created_at)} />
-        <Field label="Last update" value={formatDate(project.updated_at)} />
-        <Field label="Related budget" value={budget ? `${budget.currency} · ${budget.status}` : 'None yet'} />
-      </dl>
+      {/* Draft Project Overview (read-only) — the draft summary the organizer reviews before approval. */}
+      <section>
+        <h2 className="mb-1 text-sm font-semibold text-slate-700">Draft Project Overview</h2>
+        <p className="mb-3 max-w-2xl text-xs text-slate-500">
+          This is the draft project created from Planning — not yet approved. Review and refine it before approval.
+        </p>
+        <dl className="grid grid-cols-2 gap-4 rounded-lg border border-slate-200 p-4 sm:grid-cols-3">
+          <Field label="Status" value={project.status} />
+          <Field label="Current step" value={project.current_step} />
+          <Field label="Related plan" value={planLabel} />
+          <Field label="Created" value={formatDate(project.created_at)} />
+          <Field label="Last update" value={formatDate(project.updated_at)} />
+          <Field label="Related budget" value={budget ? `${budget.currency} · ${budget.status}` : 'None yet'} />
+        </dl>
+      </section>
 
       {/* Publish Flow — make the Project visible in Public Space (existing /p/[projectId] route). */}
       <PublishPanel
