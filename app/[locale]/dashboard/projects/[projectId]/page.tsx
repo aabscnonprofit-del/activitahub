@@ -159,23 +159,6 @@ export default async function ProjectDetailsPage({ params }: Props) {
           <li>Fix any missing or incorrect information before approval.</li>
         </ul>
       </section>
-
-      {/* Module Status Overview (read-only) — which Workspace preparation areas exist and which are not
-          connected yet. Reflects the current state (only Budget has a real Project relation); no
-          Project↔module relations are wired here. */}
-      <section>
-        <h2 className="mb-1 text-sm font-semibold text-slate-700">Module Status Overview</h2>
-        <p className="mb-3 max-w-2xl text-xs text-slate-500">
-          These are preparation areas inside the Workspace. Some are planned and not connected yet. Use them
-          to prepare the Draft Project before approval.
-        </p>
-        <dl className="grid grid-cols-1 gap-3 rounded-lg border border-slate-200 p-4 sm:grid-cols-2">
-          <ModuleStatusRow name="Budget" status="Connected" connected />
-          <ModuleStatusRow name="Vendors" status="Project integration planned" />
-          <ModuleStatusRow name="Participants" status="Project integration planned" />
-          <ModuleStatusRow name="Timeline" status="Project integration planned" />
-        </dl>
-      </section>
       </>
       )}
 
@@ -279,22 +262,6 @@ function ModuleTile({ module: m }: { module: ModuleCard }) {
   return (
     <div className="cursor-not-allowed rounded-lg border border-dashed border-slate-200 bg-slate-50/50 p-4" aria-disabled="true">
       {inner}
-    </div>
-  )
-}
-
-function ModuleStatusRow({ name, status, connected }: { name: string; status: string; connected?: boolean }) {
-  return (
-    <div className="flex items-center justify-between gap-2">
-      <dt className="text-sm font-medium text-slate-700">{name}</dt>
-      <dd
-        className={cn(
-          'rounded px-1.5 py-0.5 text-[10px] font-semibold',
-          connected ? 'bg-brand-50 text-brand-700' : 'bg-slate-100 text-slate-400',
-        )}
-      >
-        {status}
-      </dd>
     </div>
   )
 }

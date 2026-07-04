@@ -61,19 +61,12 @@ check('checklist covers fixing missing/incorrect info before approval',
 check('checklist is read-only — no button/input/form control introduced (copy may mention approval)',
   !page.includes('<button') && !page.includes('<input') && !page.includes('<form'))
 
-// 8. Module Status Overview (read-only) — which Workspace preparation areas exist / are not connected yet.
-check('"Module Status Overview" section exists', page.includes('Module Status Overview'))
-check('module status covers Vendors, Participants, Budget and Timeline',
-  page.includes('name="Vendors"') && page.includes('name="Participants"') &&
-  page.includes('name="Budget"') && page.includes('name="Timeline"'))
-check('module status explains these are Workspace preparation areas',
-  page.includes('preparation areas inside the Workspace'))
-check('module status notes some are planned / not connected yet',
-  page.includes('planned and not connected yet'))
-check('module status frames preparing the Draft Project before approval',
-  page.includes('prepare the Draft Project before approval'))
-check('module status reuses the existing "Project integration planned" label',
-  page.includes('Project integration planned'))
+// 8. Module status — the "Manage this event" module grid is the single source (Module Status Overview
+//    removed in IA cleanup #4; its ModuleStatusRow helper is gone).
+check('duplicate "Module Status Overview" section removed', !page.includes('Module Status Overview'))
+check('ModuleStatusRow helper removed', !page.includes('ModuleStatusRow'))
+check('module grid remains the single module/integration-status surface',
+  page.includes('Manage this event') && page.includes('modules.map(') && page.includes('Project integration planned'))
 
 // 9. Budget Workspace entry — navigate into the existing Budget Workspace for this Draft Project.
 check('"Budget Workspace" entry section exists', page.includes('Budget Workspace'))
