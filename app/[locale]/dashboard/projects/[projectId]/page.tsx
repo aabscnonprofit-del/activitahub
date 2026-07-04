@@ -41,11 +41,6 @@ const PLAN_STAGE: Record<string, string> = {
 const STATUS_LABEL: Record<string, string> = {
   active: 'Active Project',
 }
-const STEP_LABEL: Record<string, string> = {
-  discovery: 'Discovery',
-  planning: 'Planning',
-  plan_ready: 'Planning Complete',
-}
 
 export default async function ProjectDetailsPage({ params }: Props) {
   const { locale, projectId } = (await params) as { locale: Locale; projectId: string }
@@ -70,7 +65,6 @@ export default async function ProjectDetailsPage({ params }: Props) {
   const approvedAt = project.approved_at
   // Human-friendly, non-technical labels for the Draft summary (approved → Approved Project).
   const statusLabel = approvedAt ? 'Approved Project' : STATUS_LABEL[project.status] ?? project.status
-  const stepLabel = STEP_LABEL[project.current_step] ?? project.current_step
   // Read-only: the Approved Project Snapshot artifact metadata (loaded only once approved). No mutation.
   const approvedSnapshot = approvedAt ? await getApprovedProjectSnapshot(supabase, projectId) : null
 
@@ -144,7 +138,6 @@ export default async function ProjectDetailsPage({ params }: Props) {
         </p>
         <dl className="grid grid-cols-2 gap-4 rounded-lg border border-slate-200 p-4 sm:grid-cols-3">
           <Field label="Status" value={statusLabel} />
-          <Field label="Current step" value={stepLabel} />
           <Field label="Related plan" value={planLabel} />
           <Field label="Created" value={formatDate(project.created_at)} />
           <Field label="Last update" value={formatDate(project.updated_at)} />

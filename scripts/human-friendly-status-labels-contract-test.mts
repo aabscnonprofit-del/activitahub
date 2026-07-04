@@ -18,15 +18,15 @@ function check(name: string, cond: boolean) {
 
 // 1. No raw internal state rendered as a Field value.
 check('Status field no longer renders raw project.status', !page.includes('value={project.status}'))
-check('Current step field no longer renders raw project.current_step', !page.includes('value={project.current_step}'))
-check('Fields render mapped labels (statusLabel / stepLabel)',
-  page.includes('value={statusLabel}') && page.includes('value={stepLabel}'))
+check('no raw project.current_step rendered as a Field value', !page.includes('value={project.current_step}'))
+check('Status field renders the mapped statusLabel', page.includes('value={statusLabel}'))
+
+// 1b. Duplicate "Current step" field removed (IA cleanup #3) — Planning shown once via "Related plan".
+check('"Current step" Field removed from the Project Workspace page', !page.includes('label="Current step"'))
+check('duplicate stepLabel / STEP_LABEL removed', !page.includes('stepLabel') && !page.includes('STEP_LABEL'))
 
 // 2. Human-friendly mappings.
 check('status mapping: active → Active Project', page.includes("active: 'Active Project'"))
-check('step mapping: discovery → Discovery', page.includes("discovery: 'Discovery'"))
-check('step mapping: planning → Planning', /STEP_LABEL[\s\S]*planning: 'Planning'/.test(page))
-check('step mapping: plan_ready → Planning Complete', page.includes("plan_ready: 'Planning Complete'"))
 check('approved → "Approved Project" label (no raw internal state)',
   page.includes("approvedAt ? 'Approved Project'"))
 
