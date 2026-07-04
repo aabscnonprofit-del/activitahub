@@ -37,6 +37,16 @@ const PLAN_STAGE: Record<string, string> = {
   plan_ready: 'Plan ready',
 }
 
+// Human-friendly labels for the raw stored values (presentation only — does not change stored values).
+const STATUS_LABEL: Record<string, string> = {
+  active: 'Active Project',
+}
+const STEP_LABEL: Record<string, string> = {
+  discovery: 'Discovery',
+  planning: 'Planning',
+  plan_ready: 'Planning Complete',
+}
+
 export default async function ProjectDetailsPage({ params }: Props) {
   const { locale, projectId } = (await params) as { locale: Locale; projectId: string }
 
@@ -58,6 +68,9 @@ export default async function ProjectDetailsPage({ params }: Props) {
   // Approval state (reused; no new query). Once approved, the Draft-only sections are replaced by the
   // Approved presentation — presentation only, no business/approval/snapshot/Publish logic changes.
   const approvedAt = project.approved_at
+  // Human-friendly, non-technical labels for the Draft summary (approved → Approved Project).
+  const statusLabel = approvedAt ? 'Approved Project' : STATUS_LABEL[project.status] ?? project.status
+  const stepLabel = STEP_LABEL[project.current_step] ?? project.current_step
 
   // Workspace modules. Only modules with a real Project relation get a live link; the rest are
   // "Project integration planned" (no project_id exists yet — no fake links).
@@ -126,8 +139,8 @@ export default async function ProjectDetailsPage({ params }: Props) {
           This is the draft project created from Planning — not yet approved. Review and refine it before approval.
         </p>
         <dl className="grid grid-cols-2 gap-4 rounded-lg border border-slate-200 p-4 sm:grid-cols-3">
-          <Field label="Status" value={project.status} />
-          <Field label="Current step" value={project.current_step} />
+          <Field label="Status" value={statusLabel} />
+          <Field label="Current step" value={stepLabel} />
           <Field label="Related plan" value={planLabel} />
           <Field label="Created" value={formatDate(project.created_at)} />
           <Field label="Last update" value={formatDate(project.updated_at)} />
