@@ -17,6 +17,7 @@ import {
 import { createClient } from '@/lib/supabase/server'
 import { getProject, getProjectPublishState, getApprovedProjectSnapshot } from '@/lib/projects/store'
 import { loadOrganizerExecutionWorkspace } from '@/lib/organizer-workspace/load-execution-workspace'
+import { ExecutionChecklist } from '@/components/workspace/ExecutionChecklist'
 import { listBudgetsForProject } from '@/lib/budget/store'
 import { PublishPanel } from '@/components/projects/PublishPanel'
 import { ApproveProjectPanel } from '@/components/projects/ApproveProjectPanel'
@@ -148,16 +149,8 @@ export default async function ProjectDetailsPage({ params }: Props) {
           </dl>
 
           <h3 className="mb-1 mt-4 text-xs font-semibold uppercase tracking-wide text-slate-400">Checklist</h3>
-          <ul className="space-y-1 rounded-lg border border-slate-200 p-3 text-sm text-slate-700">
-            {executionWorkspace.checklist.map((item) => (
-              <li key={item.id} className="flex items-center justify-between gap-2">
-                <span>{item.label}</span>
-                <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase text-slate-500">
-                  {item.status}
-                </span>
-              </li>
-            ))}
-          </ul>
+          {/* Interactive: status changes go through the runtime-validated server action (client island). */}
+          <ExecutionChecklist items={executionWorkspace.checklist} projectId={projectId} locale={locale} />
 
           {executionWorkspace.timeline.length > 0 && (
             <>
