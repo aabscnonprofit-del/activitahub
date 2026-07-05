@@ -52,6 +52,27 @@ export interface EventStructure {
   trace: IntentionTrace
 }
 
+/**
+ * How an operational plan item becomes due during execution — the Planning-owned ACTIVATION concept
+ * (decomposed, deliberately NOT a single "condition" blob). v1 producers default to `manual` (the organizer
+ * confirms it during execution, with no scheduled time); the other kinds are for authored / future plans.
+ * Absolute scheduling is the Occurrence's responsibility, never Planning's.
+ */
+export interface OperationalTrigger {
+  kind: 'manual' | 'relative_time' | 'after_item' | 'external_event'
+}
+
+/**
+ * RELATIVE timing for an operational item — offsets from the event start and/or a duration, NEVER absolute
+ * clock times (the Occurrence binds a concrete instance to absolute times). All fields optional; present only
+ * when the plan expresses timing.
+ */
+export interface RelativeTiming {
+  offsetFromStartMinutes?: number
+  expectedDurationMinutes?: number
+  deadlineOffsetMinutes?: number
+}
+
 /** A single moment/activity in the itinerary, with humane timing and pacing (Spec §3.3/§3.4). */
 export interface ItineraryMoment {
   /** Stable executable identity — a language-independent internal key (Planning Enrichment Phase 1). Optional
@@ -63,6 +84,13 @@ export interface ItineraryMoment {
   /** When/sequence and how long, expressed for the participants — not a fixed schema. */
   timing?: string
   pacing?: string
+  /** Operational activation for execution monitoring — the decomposed ACTIVATION concept (Planning-owned).
+   *  New plans default to `manual`; absent on legacy plans (resolve via operationalTrigger()). */
+  trigger?: OperationalTrigger
+  /** RELATIVE timing (offsets/durations, never absolute — the Occurrence binds absolute times). Optional. */
+  temporal?: RelativeTiming
+  /** Ids of items that must precede this one — the PREREQUISITE / eligibility concept. Optional. */
+  prerequisiteIds?: string[]
   origin: ElementOrigin
   trace: IntentionTrace
 }
@@ -73,7 +101,14 @@ export interface LogisticItem {
    *  for backward compatibility (see ItineraryMoment.id). Not user-facing and not localized. */
   id?: string
   description: string
+  /** Human-readable name of the moment this logistic serves (kept for display). */
   forMoment?: string
+  /** Stable id of the moment this logistic serves — the machine-readable companion to `forMoment`
+   *  (Increment 1). Optional; present only when a matching moment exists. */
+  forMomentId?: string
+  /** Operational activation for execution monitoring (Planning-owned). New plans default to `manual`;
+   *  absent on legacy plans (resolve via operationalTrigger()). */
+  trigger?: OperationalTrigger
   origin: ElementOrigin
   trace: IntentionTrace
 }

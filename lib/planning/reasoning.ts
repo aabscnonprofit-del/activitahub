@@ -107,6 +107,8 @@ export function composeEventPlan(fed: FutureEventDescription, signals: Intention
       name,
       purpose: `Delivers the "${el}" the client asked for, as ${seq} of the experience`,
       timing: seq,
+      // Operational activation — v1 default: confirmed by the organizer during execution (no scheduled time).
+      trigger: { kind: 'manual' },
       origin: 'client_intention' as ElementOrigin,
       trace: trace(`The client asked for ${el}`, signals.matched[`element:${el}`]),
     }
@@ -125,10 +127,16 @@ export function composeEventPlan(fed: FutureEventDescription, signals: Intention
       // Stable executable identity — deterministic, derived from the internal Element key (Enrichment Phase 1).
       id: `logistic:${el}`,
       description: elementLogistic(el) as string,
+      // Operational activation — v1 default: confirmed by the organizer during execution (no scheduled time).
+      trigger: { kind: 'manual' },
       origin: 'client_intention',
       trace: trace(`Makes the "${el}" moment real`, signals.matched[`element:${el}`]),
     }
-    if (momentNames.has(name)) item.forMoment = name
+    if (momentNames.has(name)) {
+      item.forMoment = name
+      // Stable machine-readable link to the moment this logistic serves (companion to forMoment).
+      item.forMomentId = `itinerary:${el}`
+    }
     return item
   })
   const resources: ResourceNeed[] = presentElements.map((el) => {
