@@ -55,7 +55,7 @@ for (const load of ['loadOrganizerExecutionWorkspace', 'loadDeliveryWorkspace', 
 const panel = read('../components/projects/CapacityGatePanel.tsx')
 check('page loads the gate for drafts and renders the panel when blocked (in place of Approve)',
   page.includes('loadCapacityGate(supabase, projectId, user.id)') &&
-  page.includes('!approvedAt && capacityBlocked && capacityGate && <CapacityGatePanel gate={capacityGate} />') &&
+  page.includes('!approvedAt && capacityBlocked && capacityGate && <CapacityGatePanel gate={capacityGate} projectId={projectId} locale={locale} />') &&
   page.includes('!approvedAt && !capacityBlocked && ('))
 check('panel presents the two resolution paths (upgrade qualification + assign a qualified Lead Organizer)',
   /Upgrade your qualification/i.test(panel) && /assign a qualified Lead Organizer/i.test(panel))

@@ -338,7 +338,7 @@ export default async function ProjectDetailsPage({ params }: Props) {
           Execution, no freeze of other modules (see docs/PROJECT_LIFECYCLE.md). */}
       {/* Organizer Capacity Gate: when the organizer exceeds their capacity for this project's size, the gate
           panel (with the two resolution paths) replaces the Approve action. The project stays valid. */}
-      {!approvedAt && capacityBlocked && capacityGate && <CapacityGatePanel gate={capacityGate} />}
+      {!approvedAt && capacityBlocked && capacityGate && <CapacityGatePanel gate={capacityGate} projectId={projectId} locale={locale} />}
       {!approvedAt && !capacityBlocked && (
         <section>
           <h2 className="mb-1 text-sm font-semibold text-slate-700">Approve Project</h2>
@@ -346,6 +346,12 @@ export default async function ProjectDetailsPage({ params }: Props) {
             After review, Approve Project records this Draft Project as the Approved Project. Approval does not
             change Publish or start Execution.
           </p>
+          {/* Current Lead Organizer + eligibility — the effective lead whose capacity cleared the gate. */}
+          {capacityGate && (
+            <p className="mb-3 text-xs text-emerald-700">
+              Lead Organizer: {capacityGate.leadOrganizerId ? capacityGate.leadOrganizerId : 'you (owner)'} — eligible to lead this project.
+            </p>
+          )}
           <ApproveProjectPanel projectId={projectId} locale={locale} initialApprovedAt={project.approved_at} />
         </section>
       )}
