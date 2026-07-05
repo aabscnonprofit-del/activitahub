@@ -28,8 +28,8 @@ check('workspace section gated on executionWorkspace (null → nothing new)', pa
 check('renders readiness counts (pending/active/blocked/completed)',
   page.includes('executionWorkspace.readiness.pending') && page.includes('executionWorkspace.readiness.active') &&
   page.includes('executionWorkspace.readiness.blocked') && page.includes('executionWorkspace.readiness.completed'))
-check('renders the checklist (item label + status)',
-  page.includes('executionWorkspace.checklist.map(') && page.includes('{item.label}') && page.includes('{item.status}'))
+check('renders the interactive execution checklist component from the workspace checklist',
+  page.includes('<ExecutionChecklist') && page.includes('items={executionWorkspace.checklist}'))
 check('renders the occurrence timeline when present (entries with absoluteStart)',
   page.includes('executionWorkspace.timeline.length > 0') && page.includes('executionWorkspace.timeline.map(') && page.includes('entry.absoluteStart'))
 check('renders unbound items when present',
