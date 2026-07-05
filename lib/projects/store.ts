@@ -173,6 +173,27 @@ export async function updateProject(
 }
 
 /**
+ * The assigned Lead Organizer id of a project, or null (owner is the lead). Read via a dedicated query — NOT
+ * the core column list — and degrades to null on error (e.g. before migration 055 is applied), so getProject
+ * and every core read keep working until the column exists.
+ */
+export async function getProjectLeadOrganizerId(supabase: ServerClient, projectId: string): Promise<string | null> {
+  try {
+    const { data, error } = await supabase.from('projects').select('lead_organizer_id').eq('id', projectId).maybeSingle()
+    if (error || !data) return null
+    return (data as { lead_organizer_id?: string | null }).lead_organizer_id ?? null
+  } catch {
+    return null
+  }
+}
+
+/** Set (or clear, with null) a project's assigned Lead Organizer. Returns true on success (owner RLS scopes it). */
+export async function setProjectLeadOrganizer(supabase: ServerClient, projectId: string, leadOrganizerId: string | null): Promise<boolean> {
+  const { error } = await supabase.from('projects').update({ lead_organizer_id: leadOrganizerId }).eq('id', projectId)
+  return !error
+}
+
+/**
  * Insert the Approved Project Snapshot — the SEPARATE IMMUTABLE ARTIFACT capturing the Operational
  * Configuration (the EventPlanV2) at approval (docs/PROJECT_LIFECYCLE.md). Insert-only: on conflict
  * (project_id, project_version) it is left unchanged (never overwritten), so the artifact preserves
