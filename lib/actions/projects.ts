@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { getProject, publishProject, updateProject, insertApprovedProjectSnapshot } from '@/lib/projects/store'
 import { getEventPlanV2 } from '@/lib/planning/persistence'
+import { createOrGetOccurrence } from '@/lib/occurrence/store'
 
 // Project actions — thin server-action surface over the Project Service (lib/projects/store).
 // Business logic / ownership stays in the service + RLS; actions only authenticate, delegate, revalidate.
@@ -55,6 +56,24 @@ export interface ApproveResult {
  * snapshot. It does NOT write snapshot JSON into projects, change status / current_step, touch Publish,
  * freeze other modules, or start Execution. Approval is refused when no EventPlanV2 exists to snapshot.
  */
+/**
+ * Best-effort: ensure an approved project has its first live Occurrence (create-or-get), keyed by the stable
+ * approval timestamp so repeated approvals reuse the same occurrence (never duplicate). This mints the real
+ * occurrence_id the execution pipeline needs. It NEVER blocks approval — any failure here is swallowed, since
+ * approval has already been (or will be) recorded. Not user-facing; no route/UI change.
+ */
+async function ensureFirstOccurrence(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  projectId: string,
+  approvedAtIso: string,
+): Promise<void> {
+  try {
+    await createOrGetOccurrence(supabase, { projectId, startsAt: approvedAtIso })
+  } catch {
+    // best-effort: occurrence creation must never fail an approval
+  }
+}
+
 export async function approveProjectAction(projectId: string, locale: string): Promise<ApproveResult> {
   const supabase = await createClient()
   const {
@@ -66,8 +85,11 @@ export async function approveProjectAction(projectId: string, locale: string): P
   const project = await getProject(supabase, projectId)
   if (!project) return { ok: false, error: 'not_authorized' }
 
-  // Idempotent: already approved → no-op success.
-  if (project.approved_at) return { ok: true, approvedAt: project.approved_at }
+  // Idempotent: already approved → no-op success. Still ensures the first live Occurrence exists (reused).
+  if (project.approved_at) {
+    await ensureFirstOccurrence(supabase, projectId, project.approved_at)
+    return { ok: true, approvedAt: project.approved_at }
+  }
 
   // Load the current Operational Configuration (EventPlanV2, version 1 — the planner's convention).
   // Approval is only truthful if an operational configuration exists to snapshot.
@@ -94,6 +116,10 @@ export async function approveProjectAction(projectId: string, locale: string): P
   // 2. Only after the snapshot exists, record the approval STATE on the Project (approved_at / approved_by).
   const updated = await updateProject(supabase, projectId, { approved_at: approvedAt, approved_by: user.id })
   if (!updated) return { ok: false, error: 'approve_failed' }
+
+  // 3. Best-effort: mint the project's first live Occurrence (create-or-get) now that it is approved — the
+  //    execution pipeline needs a real occurrence_id + starts_at. Never fails the approval.
+  await ensureFirstOccurrence(supabase, projectId, updated.approved_at ?? approvedAt)
 
   revalidatePath(`/${locale}/dashboard/projects/${projectId}`)
   return { ok: true, approvedAt: updated.approved_at ?? approvedAt }
