@@ -17,6 +17,7 @@
 | `ADR_008_PUBLISH_FLOW.md` | Owner-only, idempotent publish → Public Space | **Accepted & Implemented** | `PROJECT_PUBLIC_SPACE_SPEC.md`, `MIGRATION_STATUS.md` |
 | `ADR_009_EXECUTION_IS_A_WORKSPACE_PHASE.md` | Execution is a lifecycle phase of Project Workspace, not an independent module | **Accepted** | `PLANNING_AXIOMS.md`, `CURRENT_ARCHITECTURE.md` |
 | `ADR_010_HUMAN_ROLES_AND_PIPELINE_AUTHORITY.md` | Client (requesting authority) vs Organizer (execution authority) across the pipeline; approved FED is the authority handoff; may be same or different actor | **Accepted** | `FUTURE_EVENT_DESCRIPTION_SPEC.md`, `PLANNING_AXIOMS.md`, `PROJECT_WORKSPACE_AXIOMS.md`, `SYSTEM_ARCHITECTURE_LAYERS.md` |
+| `ADR_011_PROJECT_VIEW_ARCHITECTURE.md` | One Project, many role-based Views (projections): Public / Participant / Organizer / Client / Worker / Emergency‑Safety. Views are filtered projections of the same Project — no duplicated Project models or business logic; roles are evaluated per Project, not per user | **Accepted** | `ADR_010`, `ADR_003_ENTITY_OWNERSHIP.md`, `PROJECT_PUBLIC_SPACE_SPEC.md`, `CURRENT_ARCHITECTURE.md` |
 
 **Reading order for the Project-centric architecture:** 003 (ownership) → 004 (source of truth) → 005
 (lifecycle) → 006 (transition authority) → 007 (operations) → 008 (publish). Together with
