@@ -62,6 +62,12 @@ check('readiness tallies mixed statuses correctly',
   wsMixed.readiness.active === 1 && wsMixed.readiness.completed === 1 && wsMixed.readiness.blocked === 1 && wsMixed.readiness.pending === 1)
 check('readiness counts sum to the checklist length', Object.values(wsMixed.readiness).reduce((a, b) => a + b, 0) === wsMixed.checklist.length)
 
+// 3c. Progress + per-item readiness (completion surface).
+check('progress: total = checklist length, completed count matches, not complete when items remain',
+  ws.progress.total === 4 && ws.progress.completed === 0 && ws.progress.isComplete === false &&
+  wsMixed.progress.completed === 1 && wsMixed.progress.isComplete === false)
+check('itemReadiness present for every checklist item', ws.checklist.every((i) => ws.itemReadiness[i.id] !== undefined))
+
 // 4. Legacy compatibility — all unbound, all pending, empty timeline.
 const legacy = { itinerary: [{ name: 'Old' }], logistics: [{ description: 'Old logistic' }] } as unknown as EventPlanV2
 const lsnap = buildExecutionSnapshot(legacy)
