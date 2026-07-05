@@ -23,8 +23,8 @@ function check(name: string, cond: boolean) {
 check('page derives the approval state from project.approved_at', page.includes('const approvedAt = project.approved_at'))
 
 // 2. Draft-only sections are gated off when approved.
-const draftGates = (page.match(/\{!approvedAt && \(/g) || []).length
-check('draft-only sections are gated on !approvedAt (intro + two prep groups)', draftGates >= 3)
+const draftGates = (page.match(/\{!approvedAt &&/g) || []).length
+check('draft-only sections are gated on !approvedAt (intro + two prep groups; capacity gate is also draft-only)', draftGates >= 3)
 check('header draft intro gated on !approvedAt', /\{!approvedAt && \([\s\S]{0,120}Planning is complete/.test(page))
 check('Draft Project Overview / Review Checklist still authored (gated, not deleted)',
   page.includes('Draft Project Overview') && page.includes('Review Checklist'))

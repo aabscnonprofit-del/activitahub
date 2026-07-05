@@ -27,6 +27,8 @@ import { TeamWorkspacePanel } from '@/components/workspace/TeamWorkspacePanel'
 import { listBudgetsForProject } from '@/lib/budget/store'
 import { PublishPanel } from '@/components/projects/PublishPanel'
 import { ApproveProjectPanel } from '@/components/projects/ApproveProjectPanel'
+import { CapacityGatePanel } from '@/components/projects/CapacityGatePanel'
+import { loadCapacityGate } from '@/lib/capacity/gate'
 import { formatDate, cn } from '@/lib/utils'
 import type { Locale } from '@/lib/types'
 
@@ -74,6 +76,9 @@ export default async function ProjectDetailsPage({ params }: Props) {
   const statusLabel = approvedAt ? 'Approved Project' : STATUS_LABEL[project.status] ?? project.status
   // Read-only: the Approved Project Snapshot artifact metadata (loaded only once approved). No mutation.
   const approvedSnapshot = approvedAt ? await getApprovedProjectSnapshot(supabase, projectId) : null
+  // Organizer Capacity Gate (draft-only) — may this organizer independently lead a project of this size?
+  const capacityGate = !approvedAt ? await loadCapacityGate(supabase, projectId, user.id) : null
+  const capacityBlocked = !!capacityGate && !capacityGate.allowed
   // Live Organizer Execution Workspace (approved projects only). Null → render nothing new (preserve behavior).
   const executionWorkspace = approvedAt ? await loadOrganizerExecutionWorkspace(supabase, projectId) : null
   const workspaceLabelById: Record<string, string> = executionWorkspace
@@ -331,7 +336,10 @@ export default async function ProjectDetailsPage({ params }: Props) {
           Review Checklist above. Records a truthful approval: the approval state on the Project plus a
           separate immutable Approved Project Snapshot artifact. Records approval only: no Publish change, no
           Execution, no freeze of other modules (see docs/PROJECT_LIFECYCLE.md). */}
-      {!approvedAt && (
+      {/* Organizer Capacity Gate: when the organizer exceeds their capacity for this project's size, the gate
+          panel (with the two resolution paths) replaces the Approve action. The project stays valid. */}
+      {!approvedAt && capacityBlocked && capacityGate && <CapacityGatePanel gate={capacityGate} />}
+      {!approvedAt && !capacityBlocked && (
         <section>
           <h2 className="mb-1 text-sm font-semibold text-slate-700">Approve Project</h2>
           <p className="mb-3 max-w-2xl text-xs text-slate-500">
