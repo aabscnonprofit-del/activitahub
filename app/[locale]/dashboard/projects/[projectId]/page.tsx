@@ -142,7 +142,7 @@ export default async function ProjectDetailsPage({ params }: Props) {
         <section className="rounded-lg border border-slate-200 p-4">
           <h2 className="mb-1 text-sm font-semibold text-slate-700">Execution Workspace</h2>
           <p className="mb-3 max-w-2xl text-xs text-slate-500">
-            Live execution state for this approved project, from its first occurrence.
+            Live execution state for this approved project&rsquo;s current occurrence.
           </p>
 
           {/* Set/update the real event start time for the current occurrence (replaces the placeholder). */}
@@ -153,7 +153,19 @@ export default async function ProjectDetailsPage({ params }: Props) {
             currentStartIso={currentOccurrence?.starts_at}
           />
 
-          <dl className="mt-4 grid grid-cols-2 gap-3 rounded-lg border border-slate-200 p-3 sm:grid-cols-4">
+          {/* Occurrence-level progress / completion. */}
+          <div className="mt-4 flex items-center justify-between rounded-lg border border-slate-200 p-3">
+            <span className="text-sm text-slate-700">
+              Progress: {executionWorkspace.progress.completed} / {executionWorkspace.progress.total} completed
+            </span>
+            {executionWorkspace.progress.isComplete && (
+              <span className="rounded bg-emerald-100 px-2 py-0.5 text-xs font-semibold text-emerald-700">
+                Execution complete
+              </span>
+            )}
+          </div>
+
+          <dl className="mt-3 grid grid-cols-2 gap-3 rounded-lg border border-slate-200 p-3 sm:grid-cols-4">
             <Field label="Pending" value={String(executionWorkspace.readiness.pending)} />
             <Field label="Active" value={String(executionWorkspace.readiness.active)} />
             <Field label="Blocked" value={String(executionWorkspace.readiness.blocked)} />
@@ -162,7 +174,12 @@ export default async function ProjectDetailsPage({ params }: Props) {
 
           <h3 className="mb-1 mt-4 text-xs font-semibold uppercase tracking-wide text-slate-400">Checklist</h3>
           {/* Interactive: status changes go through the runtime-validated server action (client island). */}
-          <ExecutionChecklist items={executionWorkspace.checklist} projectId={projectId} locale={locale} />
+          <ExecutionChecklist
+            items={executionWorkspace.checklist}
+            readiness={executionWorkspace.itemReadiness}
+            projectId={projectId}
+            locale={locale}
+          />
 
           {executionWorkspace.timeline.length > 0 && (
             <>

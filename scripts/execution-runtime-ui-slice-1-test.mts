@@ -87,7 +87,7 @@ check('checklist component calls the server action and refreshes on success',
 check('checklist offers only base-allowed transitions (ALLOWED_TRANSITIONS)', comp.includes('ALLOWED_TRANSITIONS[item.status]'))
 const page = read('../app/[locale]/dashboard/projects/[projectId]/page.tsx')
 check('page renders the interactive checklist and stays read-only itself (no button/onClick in the page)',
-  page.includes('<ExecutionChecklist items={executionWorkspace.checklist}') && !page.includes('<button') && !page.includes('onClick='))
+  page.includes('<ExecutionChecklist') && page.includes('items={executionWorkspace.checklist}') && !page.includes('<button') && !page.includes('onClick='))
 
 // 9. Boundaries — no Execution/Occurrence/Planning MODEL file touched (action-layer glue only).
 const policy = read('../lib/actions/execution-transition.ts')
