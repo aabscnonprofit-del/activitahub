@@ -10,7 +10,7 @@ import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { getProject } from '@/lib/projects/store'
 import { getEventPlanV2 } from '@/lib/planning/persistence'
-import { createOrGetOccurrence } from '@/lib/occurrence/store'
+import { resolveCurrentOccurrence } from '@/lib/occurrence/store'
 import { getExecutionStatus, persistExecutionStatus } from '@/lib/execution/persistence'
 import { buildExecutionMonitoringModel } from '@/lib/execution/monitoring'
 import { initialExecutionStatus, isMonitoringStatus } from '@/lib/execution/status'
@@ -57,9 +57,8 @@ export async function updateExecutionStatusAction(
   const plan = await getEventPlanV2(supabase, projectId, 1)
   if (!plan) return { ok: false, reason: 'no_plan' }
 
-  const occRes = await createOrGetOccurrence(supabase, { projectId, startsAt: project.approved_at })
-  if (!occRes.ok) return { ok: false, reason: 'no_occurrence' }
-  const occurrence = occRes.occurrence
+  const occurrence = (await resolveCurrentOccurrence(supabase, projectId, { createAtIfMissing: project.approved_at })).occurrence
+  if (!occurrence) return { ok: false, reason: 'no_occurrence' }
 
   const monitoring = buildExecutionMonitoringModel(plan)
   const status = (await getExecutionStatus(supabase, projectId, occurrence.id)) ?? initialExecutionStatus(monitoring)

@@ -17,7 +17,9 @@ import {
 import { createClient } from '@/lib/supabase/server'
 import { getProject, getProjectPublishState, getApprovedProjectSnapshot } from '@/lib/projects/store'
 import { loadOrganizerExecutionWorkspace } from '@/lib/organizer-workspace/load-execution-workspace'
+import { resolveCurrentOccurrence } from '@/lib/occurrence/store'
 import { ExecutionChecklist } from '@/components/workspace/ExecutionChecklist'
+import { OccurrenceScheduler } from '@/components/workspace/OccurrenceScheduler'
 import { listBudgetsForProject } from '@/lib/budget/store'
 import { PublishPanel } from '@/components/projects/PublishPanel'
 import { ApproveProjectPanel } from '@/components/projects/ApproveProjectPanel'
@@ -73,6 +75,8 @@ export default async function ProjectDetailsPage({ params }: Props) {
   const workspaceLabelById: Record<string, string> = executionWorkspace
     ? Object.fromEntries(executionWorkspace.checklist.map((i) => [i.id, i.label]))
     : {}
+  // The current occurrence (for the scheduler); resolved explicitly after the workspace load ensured it exists.
+  const currentOccurrence = executionWorkspace ? (await resolveCurrentOccurrence(supabase, projectId)).occurrence : null
 
   // Workspace modules (future integrations). Budget has its own dedicated Budget Workspace entry above (the
   // single live Budget entry), so it is not repeated here; the rest are "Project integration planned"
@@ -141,7 +145,15 @@ export default async function ProjectDetailsPage({ params }: Props) {
             Live execution state for this approved project, from its first occurrence.
           </p>
 
-          <dl className="grid grid-cols-2 gap-3 rounded-lg border border-slate-200 p-3 sm:grid-cols-4">
+          {/* Set/update the real event start time for the current occurrence (replaces the placeholder). */}
+          <OccurrenceScheduler
+            projectId={projectId}
+            locale={locale}
+            occurrenceId={currentOccurrence?.id}
+            currentStartIso={currentOccurrence?.starts_at}
+          />
+
+          <dl className="mt-4 grid grid-cols-2 gap-3 rounded-lg border border-slate-200 p-3 sm:grid-cols-4">
             <Field label="Pending" value={String(executionWorkspace.readiness.pending)} />
             <Field label="Active" value={String(executionWorkspace.readiness.active)} />
             <Field label="Blocked" value={String(executionWorkspace.readiness.blocked)} />

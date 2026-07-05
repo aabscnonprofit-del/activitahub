@@ -15,7 +15,7 @@
 import type { createClient } from '@/lib/supabase/server'
 import { getProject } from '@/lib/projects/store'
 import { getEventPlanV2 } from '@/lib/planning/persistence'
-import { createOrGetOccurrence } from '@/lib/occurrence/store'
+import { resolveCurrentOccurrence } from '@/lib/occurrence/store'
 import { getExecutionStatus, snapshotFromPersistedStatus } from '@/lib/execution/persistence'
 import { bindOccurrence } from '@/lib/occurrence/binding'
 import { buildOccurrenceTimeline, type OccurrenceTimeline } from '@/lib/occurrence/timeline'
@@ -42,10 +42,10 @@ export async function loadOrganizerExecutionWorkspace(
   const plan = await getEventPlanV2(supabase, projectId, 1)
   if (!plan) return null // no frozen operational contract → no workspace
 
-  // The project's live Occurrence — minted at approval; reused here (idempotent create-or-get keyed by the
-  // stable approval timestamp; lazily backfills a legacy approved project that predates occurrence creation).
-  const occRes = await createOrGetOccurrence(supabase, { projectId, startsAt: project.approved_at })
-  const occurrence = occRes.ok ? occRes.occurrence : null
+  // The project's current execution Occurrence — resolved explicitly (sole occurrence, or lazily created at
+  // the approval timestamp for a legacy approved project). Multiple occurrences without a selection resolve to
+  // null (ambiguous) rather than guessing → no implicit "first occurrence" anchor.
+  const occurrence = (await resolveCurrentOccurrence(supabase, projectId, { createAtIfMissing: project.approved_at })).occurrence
 
   // Persisted execution status (keyed by occurrence) → the snapshot consumes it; null → pending default.
   const persisted = occurrence ? await getExecutionStatus(supabase, projectId, occurrence.id) : null

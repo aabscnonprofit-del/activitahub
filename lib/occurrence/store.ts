@@ -77,3 +77,99 @@ export async function createOrGetOccurrence(
   if (error || !data) return { ok: false, reason: 'error' }
   return { ok: true, occurrence: data as Occurrence, created: true }
 }
+
+/** All of a project's occurrences, in created order — the explicit basis for resolution (private). */
+async function listOccurrences(supabase: ServerClient, projectId: string): Promise<Occurrence[]> {
+  const { data } = await supabase
+    .from('occurrences')
+    .select(OCC_COLS)
+    .eq('project_id', projectId)
+    .order('created_at', { ascending: true })
+  return (data as Occurrence[]) ?? []
+}
+
+/**
+ * Outcome of resolving a project's CURRENT execution occurrence.
+ *   - `resolved`  — a specific occurrence is the current one (by explicit id, or the project's sole occurrence);
+ *   - `created`   — none existed and one was created (create-or-get) as the current occurrence;
+ *   - `none`      — no occurrence and none requested/allowed to create, or the given id was not found;
+ *   - `ambiguous` — the project has MULTIPLE occurrences and no explicit selection was given. Resolution
+ *                   deliberately refuses to guess (there is NO implicit "first occurrence" anchor); the caller
+ *                   must pass an explicit `occurrenceId`.
+ */
+export interface OccurrenceResolution {
+  occurrence: Occurrence | null
+  reason: 'resolved' | 'created' | 'none' | 'ambiguous'
+}
+
+/**
+ * Resolve the project's CURRENT execution occurrence — the single explicit anchor for the execution pipeline.
+ * Selection order:
+ *   1. `occurrenceId` given → that occurrence (verified to belong to the project), else `none`.
+ *   2. exactly ONE occurrence → that one (unambiguous current occurrence).
+ *   3. NONE → create one at `createAtIfMissing` (create-or-get) if provided, else `none`.
+ *   4. MULTIPLE without an id → `ambiguous` (never implicitly picks the first — safe for multi-occurrence
+ *      projects; a future occurrence selector supplies the id).
+ * This replaces the implicit "first occurrence" model. Execution status stays keyed by the resolved
+ * occurrence id.
+ */
+export async function resolveCurrentOccurrence(
+  supabase: ServerClient,
+  projectId: string,
+  opts: { occurrenceId?: string; createAtIfMissing?: string } = {},
+): Promise<OccurrenceResolution> {
+  const occurrences = await listOccurrences(supabase, projectId)
+
+  if (opts.occurrenceId) {
+    const selected = occurrences.find((o) => o.id === opts.occurrenceId) ?? null
+    return { occurrence: selected, reason: selected ? 'resolved' : 'none' }
+  }
+  if (occurrences.length === 1) return { occurrence: occurrences[0], reason: 'resolved' }
+  if (occurrences.length === 0) {
+    if (!opts.createAtIfMissing) return { occurrence: null, reason: 'none' }
+    const res = await createOrGetOccurrence(supabase, { projectId, startsAt: opts.createAtIfMissing })
+    return res.ok ? { occurrence: res.occurrence, reason: 'created' } : { occurrence: null, reason: 'none' }
+  }
+  return { occurrence: null, reason: 'ambiguous' }
+}
+
+/** Result of setting a current/selected occurrence's start time. */
+export type SetOccurrenceStartResult =
+  | { ok: true; occurrence: Occurrence }
+  | { ok: false; reason: 'project_not_found' | 'project_not_approved' | 'ambiguous_occurrence' | 'occurrence_not_found' | 'duplicate_start' | 'error' }
+
+/**
+ * Set/update the start time of the project's CURRENT (or explicitly selected) occurrence for an APPROVED
+ * project — the real scheduling write. Resolves the occurrence via resolveCurrentOccurrence (explicit id, or
+ * the sole occurrence, or lazily created when none), then updates its `starts_at`. The occurrence id is
+ * PRESERVED (in-place update), so persisted execution status (keyed by occurrence) survives rescheduling.
+ * Refuses when the project has multiple occurrences and no id was selected (`ambiguous_occurrence`).
+ */
+export async function setCurrentOccurrenceStart(
+  supabase: ServerClient,
+  projectId: string,
+  startsAt: string,
+  opts: { occurrenceId?: string } = {},
+): Promise<SetOccurrenceStartResult> {
+  const project = await getProject(supabase, projectId)
+  if (!project) return { ok: false, reason: 'project_not_found' }
+  if (!project.approved_at) return { ok: false, reason: 'project_not_approved' }
+
+  const resolution = await resolveCurrentOccurrence(supabase, projectId, {
+    occurrenceId: opts.occurrenceId,
+    createAtIfMissing: project.approved_at,
+  })
+  if (!resolution.occurrence) {
+    return { ok: false, reason: resolution.reason === 'ambiguous' ? 'ambiguous_occurrence' : 'occurrence_not_found' }
+  }
+
+  const { data, error } = await supabase
+    .from('occurrences')
+    .update({ starts_at: startsAt })
+    .eq('id', resolution.occurrence.id)
+    .select(OCC_COLS)
+    .single()
+  if (error) return { ok: false, reason: error.code === '23505' ? 'duplicate_start' : 'error' }
+  if (!data) return { ok: false, reason: 'error' }
+  return { ok: true, occurrence: data as Occurrence }
+}
