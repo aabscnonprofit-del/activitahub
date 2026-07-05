@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getProject, publishProject, updateProject, insertApprovedProjectSnapshot } from '@/lib/projects/store'
 import { getEventPlanV2 } from '@/lib/planning/persistence'
 import { createOrGetOccurrence } from '@/lib/occurrence/store'
+import { loadCapacityGate } from '@/lib/capacity/gate'
 
 // Project actions — thin server-action surface over the Project Service (lib/projects/store).
 // Business logic / ownership stays in the service + RLS; actions only authenticate, delegate, revalidate.
@@ -42,7 +43,7 @@ export async function publishProjectAction(projectId: string, locale: string): P
 export interface ApproveResult {
   ok: boolean
   approvedAt?: string
-  error?: 'not_authenticated' | 'not_authorized' | 'no_operational_configuration' | 'approve_failed'
+  error?: 'not_authenticated' | 'not_authorized' | 'no_operational_configuration' | 'capacity_exceeded' | 'approve_failed'
 }
 
 /**
@@ -100,6 +101,13 @@ export async function approveProjectAction(projectId: string, locale: string): P
     return { ok: false, error: 'approve_failed' }
   }
   if (!plan) return { ok: false, error: 'no_operational_configuration' }
+
+  // Organizer Capacity Gate — an organizer may only INDEPENDENTLY lead a project within their capacity level.
+  // If the project's participant count exceeds the organizer's maximum, approval (becoming lead) is refused
+  // BEFORE any state is written: the project itself stays fully valid; the organizer must upgrade or assign a
+  // qualified Lead Organizer. The restriction is on the organizer, never on the event.
+  const gate = await loadCapacityGate(supabase, projectId, user.id)
+  if (!gate.allowed) return { ok: false, error: 'capacity_exceeded' }
 
   const approvedAt = new Date().toISOString()
 
