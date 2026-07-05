@@ -54,8 +54,8 @@ check('reuses existing EventPlan reader (getEventPlanV2)',
 check('owner-gated (auth + getProject ownership)',
   body.includes("error: 'not_authenticated'") && body.includes('getProject(supabase, projectId)') &&
   body.includes("error: 'not_authorized'"))
-check('idempotent: already-approved → success no-op',
-  body.includes('if (project.approved_at) return { ok: true'))
+check('idempotent: already-approved → success no-op (returns ok:true approvedAt)',
+  /if \(project\.approved_at\) \{[\s\S]{0,160}return \{ ok: true, approvedAt: project\.approved_at \}/.test(body))
 check('approval without a snapshot is impossible: fails when no EventPlanV2 exists',
   body.includes("if (!plan) return { ok: false, error: 'no_operational_configuration' }"))
 check('ORDERING: snapshot inserted BEFORE approval state is recorded',
