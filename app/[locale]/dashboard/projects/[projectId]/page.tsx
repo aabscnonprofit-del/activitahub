@@ -16,6 +16,7 @@ import {
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { getProject, getProjectPublishState, getApprovedProjectSnapshot } from '@/lib/projects/store'
+import { loadOrganizerExecutionWorkspace } from '@/lib/organizer-workspace/load-execution-workspace'
 import { listBudgetsForProject } from '@/lib/budget/store'
 import { PublishPanel } from '@/components/projects/PublishPanel'
 import { ApproveProjectPanel } from '@/components/projects/ApproveProjectPanel'
@@ -66,6 +67,11 @@ export default async function ProjectDetailsPage({ params }: Props) {
   const statusLabel = approvedAt ? 'Approved Project' : STATUS_LABEL[project.status] ?? project.status
   // Read-only: the Approved Project Snapshot artifact metadata (loaded only once approved). No mutation.
   const approvedSnapshot = approvedAt ? await getApprovedProjectSnapshot(supabase, projectId) : null
+  // Live Organizer Execution Workspace (approved projects only). Null → render nothing new (preserve behavior).
+  const executionWorkspace = approvedAt ? await loadOrganizerExecutionWorkspace(supabase, projectId) : null
+  const workspaceLabelById: Record<string, string> = executionWorkspace
+    ? Object.fromEntries(executionWorkspace.checklist.map((i) => [i.id, i.label]))
+    : {}
 
   // Workspace modules (future integrations). Budget has its own dedicated Budget Workspace entry above (the
   // single live Budget entry), so it is not repeated here; the rest are "Project integration planned"
@@ -121,6 +127,61 @@ export default async function ProjectDetailsPage({ params }: Props) {
               <Field label="Snapshot approved" value={formatDate(approvedSnapshot.approved_at)} />
               <Field label="Snapshot recorded" value={formatDate(approvedSnapshot.created_at)} />
             </dl>
+          )}
+        </section>
+      )}
+
+      {/* Live Execution Workspace (read-only) — rendered only for an approved project that has a workspace
+          (loader returns null otherwise → nothing new is shown, page behavior preserved). */}
+      {executionWorkspace && (
+        <section className="rounded-lg border border-slate-200 p-4">
+          <h2 className="mb-1 text-sm font-semibold text-slate-700">Execution Workspace</h2>
+          <p className="mb-3 max-w-2xl text-xs text-slate-500">
+            Live execution state for this approved project, from its first occurrence.
+          </p>
+
+          <dl className="grid grid-cols-2 gap-3 rounded-lg border border-slate-200 p-3 sm:grid-cols-4">
+            <Field label="Pending" value={String(executionWorkspace.readiness.pending)} />
+            <Field label="Active" value={String(executionWorkspace.readiness.active)} />
+            <Field label="Blocked" value={String(executionWorkspace.readiness.blocked)} />
+            <Field label="Completed" value={String(executionWorkspace.readiness.completed)} />
+          </dl>
+
+          <h3 className="mb-1 mt-4 text-xs font-semibold uppercase tracking-wide text-slate-400">Checklist</h3>
+          <ul className="space-y-1 rounded-lg border border-slate-200 p-3 text-sm text-slate-700">
+            {executionWorkspace.checklist.map((item) => (
+              <li key={item.id} className="flex items-center justify-between gap-2">
+                <span>{item.label}</span>
+                <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase text-slate-500">
+                  {item.status}
+                </span>
+              </li>
+            ))}
+          </ul>
+
+          {executionWorkspace.timeline.length > 0 && (
+            <>
+              <h3 className="mb-1 mt-4 text-xs font-semibold uppercase tracking-wide text-slate-400">Timeline</h3>
+              <ul className="space-y-1 rounded-lg border border-slate-200 p-3 text-sm text-slate-700">
+                {executionWorkspace.timeline.map((entry) => (
+                  <li key={entry.monitoringItemId} className="flex items-center justify-between gap-2">
+                    <span>{workspaceLabelById[entry.monitoringItemId] ?? entry.monitoringItemId}</span>
+                    <span className="text-xs text-slate-500">{entry.absoluteStart.replace('T', ' ').slice(0, 16)} UTC</span>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+
+          {executionWorkspace.unbound.length > 0 && (
+            <>
+              <h3 className="mb-1 mt-4 text-xs font-semibold uppercase tracking-wide text-slate-400">Not scheduled</h3>
+              <ul className="space-y-1 rounded-lg border border-slate-200 p-3 text-sm text-slate-600">
+                {executionWorkspace.unbound.map((u) => (
+                  <li key={u.monitoringItemId}>{workspaceLabelById[u.monitoringItemId] ?? u.monitoringItemId}</li>
+                ))}
+              </ul>
+            </>
           )}
         </section>
       )}
