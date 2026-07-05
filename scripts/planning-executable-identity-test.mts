@@ -35,10 +35,10 @@ check('reasoning assigns logistic id from the internal element key', reasoning.i
 check('id derivation is deterministic (no Math.random / Date in reasoning)',
   !reasoning.includes('Math.random') && !reasoning.includes('Date.now') && !/\bnew Date\b/.test(reasoning))
 
-// 3. Additive only — Phase 1 is identity, not the (Phase 2) condition model.
-check('no execution condition / trigger / prerequisite / timing-structure added to the elements (Phase 1 = identity only)',
-  !/executionCondition|\btrigger\b|prerequisite|temporalExpectation/.test(itin) &&
-  !/executionCondition|\btrigger\b|prerequisite|temporalExpectation/.test(logi))
+// 3. Identity stays additive: never a single opaque "executionCondition" blob (the operational structure is
+//    decomposed — see planning-executable-structure-test). Identity itself remains optional (backward compat).
+check('no single opaque "executionCondition" blob on the elements (structure stays decomposed)',
+  !itin.includes('executionCondition') && !logi.includes('executionCondition'))
 
 // 4. Consumers remain agnostic — none is made to require the new id.
 check('public projection does not depend on the moment id', !publicProj.includes('m.id'))
