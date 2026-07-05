@@ -54,6 +54,10 @@ export interface EventStructure {
 
 /** A single moment/activity in the itinerary, with humane timing and pacing (Spec §3.3/§3.4). */
 export interface ItineraryMoment {
+  /** Stable executable identity — a language-independent internal key (Planning Enrichment Phase 1). Optional
+   *  for backward compatibility: plans produced before enrichment (and their frozen Approved Snapshots) have
+   *  none; new plans always set it. Not user-facing and not localized. */
+  id?: string
   name: string
   purpose: string
   /** When/sequence and how long, expressed for the participants — not a fixed schema. */
@@ -65,6 +69,9 @@ export interface ItineraryMoment {
 
 /** Something that must physically happen for a moment to become real (Spec §3.5 — logistics). */
 export interface LogisticItem {
+  /** Stable executable identity — a language-independent internal key (Planning Enrichment Phase 1). Optional
+   *  for backward compatibility (see ItineraryMoment.id). Not user-facing and not localized. */
+  id?: string
   description: string
   forMoment?: string
   origin: ElementOrigin

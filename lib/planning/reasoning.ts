@@ -102,6 +102,8 @@ export function composeEventPlan(fed: FutureEventDescription, signals: Intention
     const seq = presentElements.length === 1 ? 'the focus of the event'
       : i === 0 ? 'first' : i === presentElements.length - 1 ? 'finally' : 'then'
     const moment: ItineraryMoment = {
+      // Stable executable identity — deterministic, derived from the internal Element key (Enrichment Phase 1).
+      id: `itinerary:${el}`,
       name,
       purpose: `Delivers the "${el}" the client asked for, as ${seq} of the experience`,
       timing: seq,
@@ -120,6 +122,8 @@ export function composeEventPlan(fed: FutureEventDescription, signals: Intention
   const logistics: LogisticItem[] = presentElements.map((el) => {
     const name = momentName(el, somber, relaxing)
     const item: LogisticItem = {
+      // Stable executable identity — deterministic, derived from the internal Element key (Enrichment Phase 1).
+      id: `logistic:${el}`,
       description: elementLogistic(el) as string,
       origin: 'client_intention',
       trace: trace(`Makes the "${el}" moment real`, signals.matched[`element:${el}`]),
