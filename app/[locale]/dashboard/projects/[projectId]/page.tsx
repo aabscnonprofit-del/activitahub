@@ -17,9 +17,11 @@ import {
 import { createClient } from '@/lib/supabase/server'
 import { getProject, getProjectPublishState, getApprovedProjectSnapshot } from '@/lib/projects/store'
 import { loadOrganizerExecutionWorkspace } from '@/lib/organizer-workspace/load-execution-workspace'
+import { loadDeliveryWorkspace } from '@/lib/organizer-workspace/load-delivery-workspace'
 import { resolveCurrentOccurrence } from '@/lib/occurrence/store'
 import { ExecutionChecklist } from '@/components/workspace/ExecutionChecklist'
 import { OccurrenceScheduler } from '@/components/workspace/OccurrenceScheduler'
+import { DeliveryChecklist } from '@/components/workspace/DeliveryChecklist'
 import { listBudgetsForProject } from '@/lib/budget/store'
 import { PublishPanel } from '@/components/projects/PublishPanel'
 import { ApproveProjectPanel } from '@/components/projects/ApproveProjectPanel'
@@ -77,6 +79,8 @@ export default async function ProjectDetailsPage({ params }: Props) {
     : {}
   // The current occurrence (for the scheduler); resolved explicitly after the workspace load ensured it exists.
   const currentOccurrence = executionWorkspace ? (await resolveCurrentOccurrence(supabase, projectId)).occurrence : null
+  // Delivery Workspace (approved projects only) — delivery components projected from the plan + per-occurrence state.
+  const deliveryWorkspace = approvedAt ? await loadDeliveryWorkspace(supabase, projectId) : null
 
   // Workspace modules (future integrations). Budget has its own dedicated Budget Workspace entry above (the
   // single live Budget entry), so it is not repeated here; the rest are "Project integration planned"
@@ -205,6 +209,32 @@ export default async function ProjectDetailsPage({ params }: Props) {
               </ul>
             </>
           )}
+        </section>
+      )}
+
+      {/* Delivery Workspace (read + interactive) — the plan's delivery components (resources + staffing) and
+          their delivery state for the current occurrence. Shown only when the plan has delivery components. */}
+      {deliveryWorkspace && deliveryWorkspace.components.length > 0 && (
+        <section className="rounded-lg border border-slate-200 p-4">
+          <h2 className="mb-1 text-sm font-semibold text-slate-700">Delivery Workspace</h2>
+          <p className="mb-3 max-w-2xl text-xs text-slate-500">
+            Resources and staffing to deliver this approved project&rsquo;s current occurrence.
+          </p>
+
+          {/* Occurrence-level delivery progress / completion. */}
+          <div className="mb-3 flex items-center justify-between rounded-lg border border-slate-200 p-3">
+            <span className="text-sm text-slate-700">
+              Delivered: {deliveryWorkspace.progress.delivered} / {deliveryWorkspace.progress.total}
+            </span>
+            {deliveryWorkspace.progress.isComplete && (
+              <span className="rounded bg-emerald-100 px-2 py-0.5 text-xs font-semibold text-emerald-700">
+                Delivery complete
+              </span>
+            )}
+          </div>
+
+          {/* Interactive: status + assignment go through the runtime-validated server actions (client island). */}
+          <DeliveryChecklist items={deliveryWorkspace.components} projectId={projectId} locale={locale} />
         </section>
       )}
 
