@@ -84,6 +84,7 @@ development. *Status:* current. Home: `PRODUCT_PRINCIPLES_INDEX.md`.
 - **`ADR_009_EXECUTION_IS_A_WORKSPACE_PHASE.md`** — Execution is a lifecycle phase of Project Workspace, not an independent module (pipeline‑boundary decision) — **AUTHORITATIVE**.
 - **`ADR_010_HUMAN_ROLES_AND_PIPELINE_AUTHORITY.md`** — Client (requesting authority) vs Organizer (execution authority); approved FED is the authority handoff; roles may be the same or different actor — **AUTHORITATIVE**.
 - **`ADR_011_PROJECT_VIEW_ARCHITECTURE.md`** — one Project, many role‑based Views (Public / Participant / Organizer / Client / Worker / Emergency‑Safety); Views are filtered projections of the same Project, never separate Project models; roles are evaluated per Project — **AUTHORITATIVE**.
+- **`ADR_012_PROJECT_ACCESS_MODEL.md`** — how access to a Project View is granted: a per‑Project relationship, never a global user type; scoped/revocable/time‑limited access links; emergency‑safety access is lower‑friction but narrower in scope — **AUTHORITATIVE**.
 - **`MIGRATION_STATUS.md`** — committed vs. applied migrations + verification procedure — **AUTHORITATIVE (operational)**.
 
 ## 4. OPE V1 (deployed engine)
