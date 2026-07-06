@@ -18,7 +18,7 @@ export interface AccessPolicyEntry {
 export const ACCESS_POLICY: Record<AccessType, AccessPolicyEntry> = {
   client: { view: 'client', implemented: true },
   worker: { view: 'worker', implemented: true },
-  safety: { view: 'safety', implemented: false },
+  safety: { view: 'safety', implemented: true },
   participant: { view: 'participant', implemented: true },
   vendor: { view: 'vendor', implemented: false },
   inspector: { view: 'inspector', implemented: false },
