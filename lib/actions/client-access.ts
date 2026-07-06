@@ -1,26 +1,17 @@
 'use server'
 
-// Client access server actions — the organizer controls for attaching Clients to a Project and managing their
-// access to the Client View (ADR_012). Every action is OWNER-gated (getProject under owner RLS). Invitation
-// tokens are secure and project-scoped (one token → one project_clients row → one project → the Client View
-// only). No new route/model; reuses the project store + the client-access store.
+// Client access server actions — organizer controls for attaching Clients and managing their Client View access
+// (ADR_012). They run entirely on the SHARED Project Access layer (access_type = 'client'); token generation,
+// revocation, and invitation logic are NOT reimplemented here. Owner-gated. No new route/model.
 
-import { randomBytes } from 'node:crypto'
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { getProject } from '@/lib/projects/store'
-import {
-  insertProjectClient, updateProjectClientStatus, updateProjectClientToken, deleteProjectClient,
-} from '@/lib/client-access/store'
+import { createAccessRelationship, revokeAccess, removeAccess, regenerateToken } from '@/lib/project-access/store'
 
 export type ClientAccessResult =
   | { ok: true }
   | { ok: false; reason: 'not_authenticated' | 'not_authorized' | 'invalid_contact' | 'failed' }
-
-/** A secure, unguessable, project-scoped invitation token. */
-function newInviteToken(): string {
-  return randomBytes(24).toString('hex')
-}
 
 async function ownedProject(projectId: string) {
   const supabase = await createClient()
@@ -33,7 +24,7 @@ async function ownedProject(projectId: string) {
   return { ok: true as const, supabase }
 }
 
-/** Attach a Client to the project by email and/or phone; generates a project-scoped invite link (status invited). */
+/** Attach a Client by email and/or phone; generates a project-scoped invite link (status invited). */
 export async function addClientAction(projectId: string, email: string, phone: string, locale: string): Promise<ClientAccessResult> {
   const e = typeof email === 'string' && email.trim() ? email.trim() : null
   const p = typeof phone === 'string' && phone.trim() ? phone.trim() : null
@@ -42,7 +33,7 @@ export async function addClientAction(projectId: string, email: string, phone: s
   const ctx = await ownedProject(projectId)
   if (!ctx.ok) return { ok: false, reason: ctx.reason }
 
-  const row = await insertProjectClient(ctx.supabase, { projectId, email: e, phone: p, inviteToken: newInviteToken() })
+  const row = await createAccessRelationship(ctx.supabase, { projectId, accessType: 'client', email: e, phone: p })
   if (!row) return { ok: false, reason: 'failed' }
   revalidatePath(`/${locale}/dashboard/projects/${projectId}`)
   return { ok: true }
@@ -52,7 +43,7 @@ export async function addClientAction(projectId: string, email: string, phone: s
 export async function revokeClientAction(projectId: string, clientId: string, locale: string): Promise<ClientAccessResult> {
   const ctx = await ownedProject(projectId)
   if (!ctx.ok) return { ok: false, reason: ctx.reason }
-  if (!(await updateProjectClientStatus(ctx.supabase, projectId, clientId, 'revoked'))) return { ok: false, reason: 'failed' }
+  if (!(await revokeAccess(ctx.supabase, projectId, clientId, new Date().toISOString()))) return { ok: false, reason: 'failed' }
   revalidatePath(`/${locale}/dashboard/projects/${projectId}`)
   return { ok: true }
 }
@@ -61,7 +52,7 @@ export async function revokeClientAction(projectId: string, clientId: string, lo
 export async function removeClientAction(projectId: string, clientId: string, locale: string): Promise<ClientAccessResult> {
   const ctx = await ownedProject(projectId)
   if (!ctx.ok) return { ok: false, reason: ctx.reason }
-  if (!(await deleteProjectClient(ctx.supabase, projectId, clientId))) return { ok: false, reason: 'failed' }
+  if (!(await removeAccess(ctx.supabase, projectId, clientId))) return { ok: false, reason: 'failed' }
   revalidatePath(`/${locale}/dashboard/projects/${projectId}`)
   return { ok: true }
 }
@@ -70,9 +61,7 @@ export async function removeClientAction(projectId: string, clientId: string, lo
 export async function resendInvitationAction(projectId: string, clientId: string, locale: string): Promise<ClientAccessResult> {
   const ctx = await ownedProject(projectId)
   if (!ctx.ok) return { ok: false, reason: ctx.reason }
-  const tokenOk = await updateProjectClientToken(ctx.supabase, projectId, clientId, newInviteToken())
-  const statusOk = await updateProjectClientStatus(ctx.supabase, projectId, clientId, 'invited')
-  if (!tokenOk || !statusOk) return { ok: false, reason: 'failed' }
+  if (!(await regenerateToken(ctx.supabase, projectId, clientId))) return { ok: false, reason: 'failed' }
   revalidatePath(`/${locale}/dashboard/projects/${projectId}`)
   return { ok: true }
 }

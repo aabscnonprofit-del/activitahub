@@ -1,12 +1,13 @@
-// Client View — the first Project View rendered for an attached Client (ADR_011 Client View, ADR_012 access).
-// It is a filtered PROJECTION of the same Project: the prepared event (via the existing public-safe
-// buildPublicEventProjection — never organizer-only/financial data) plus the event schedule. Access is gated
-// by a project-scoped invite token; a revoked relationship resolves to nothing. No new Project model.
+// Client View (ADR_011 / ADR_012) — a filtered projection of the same Project for an attached Client. It reuses
+// the public-safe buildPublicEventProjection (never organizer-only/financial data) + the schedule. Access is
+// resolved through the SHARED Project Access layer (one token choke point + the Access Policy for view-scope);
+// this module only builds the client projection. No new Project model.
 
 import { createAdminClient } from '@/lib/supabase/server'
 import { buildPublicEventProjection, type PublicEventProjection } from '@/lib/planning/public-event-projection'
 import type { EventPlanV2 } from '@/lib/planning/event-plan-v2'
-import { getProjectClientByToken, type ClientStatus } from './store'
+import { resolveActiveByToken } from '@/lib/project-access/store'
+import { accessGrantsView } from '@/lib/project-access/policy'
 
 /** One scheduled occurrence, client-safe (date + location only). */
 export interface ClientViewOccurrence {
@@ -23,39 +24,28 @@ export interface ClientViewData {
 }
 
 /**
- * Compose the Client View from the relationship status + the project's plan + its occurrences. Pure: a revoked
- * (or missing) relationship yields null (no access); otherwise the prepared event is the public-safe projection
- * and the schedule is date + location only. Exposes NO organizer-only data (budget / delivery / team / capacity
- * / lead / execution).
+ * Compose the Client View from the project's plan + occurrences. Pure: the prepared event is the public-safe
+ * projection; the schedule is date + location only. Exposes NO organizer-only data. (Access has already been
+ * validated by the shared resolver — this only projects.)
  */
-export function buildClientView(
-  projectId: string,
-  status: ClientStatus,
-  plan: EventPlanV2 | null,
-  occurrences: ClientViewOccurrence[],
-): ClientViewData | null {
-  if (status === 'revoked') return null
-  return {
-    projectId,
-    event: plan ? buildPublicEventProjection(plan) : null,
-    occurrences,
-  }
+export function buildClientView(projectId: string, plan: EventPlanV2 | null, occurrences: ClientViewOccurrence[]): ClientViewData {
+  return { projectId, event: plan ? buildPublicEventProjection(plan) : null, occurrences }
 }
 
 /**
- * Load the Client View for an invite token. Resolves the relationship server-side (admin), denies a revoked or
- * unknown token, then loads the plan + occurrences and composes the client-safe view. Returns null when the
- * token grants no access.
+ * Load the Client View for an invite token via the shared Project Access layer: resolve an ACTIVE grant (not
+ * revoked, not expired) whose type may render the Client View, then load the plan + occurrences and project.
+ * Returns null when the token grants no client access.
  */
 export async function loadClientView(token: string): Promise<ClientViewData | null> {
   const admin = await createAdminClient()
-  const client = await getProjectClientByToken(admin, token)
-  if (!client || client.status === 'revoked') return null
+  const access = await resolveActiveByToken(admin, token, new Date().toISOString())
+  if (!access || !accessGrantsView(access.access_type, 'client')) return null
 
   const { data: planRow } = await admin
     .from('project_event_plans_v2')
     .select('plan')
-    .eq('project_id', client.project_id)
+    .eq('project_id', access.project_id)
     .eq('project_version', 1)
     .maybeSingle()
   const plan = (planRow?.plan as EventPlanV2 | undefined) ?? null
@@ -63,7 +53,7 @@ export async function loadClientView(token: string): Promise<ClientViewData | nu
   const { data: occ } = await admin
     .from('occurrences')
     .select('starts_at, ends_at, location')
-    .eq('project_id', client.project_id)
+    .eq('project_id', access.project_id)
     .order('starts_at', { ascending: true })
   const occurrences: ClientViewOccurrence[] = ((occ as { starts_at: string; ends_at: string | null; location: string | null }[]) ?? []).map((o) => ({
     startsAt: o.starts_at,
@@ -71,5 +61,5 @@ export async function loadClientView(token: string): Promise<ClientViewData | nu
     location: o.location,
   }))
 
-  return buildClientView(client.project_id, client.status, plan, occurrences)
+  return buildClientView(access.project_id, plan, occurrences)
 }
