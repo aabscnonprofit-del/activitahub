@@ -58,6 +58,12 @@ export function PublicHeader({ locale, isAuthenticated, isOrganizer = false }: P
         {/* Desktop navigation */}
         <nav className="hidden items-center gap-6 md:flex">
           <Link
+            href={`/${locale}/plan-an-event`}
+            className="rounded-lg bg-brand-600 px-3 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-brand-700"
+          >
+            {t('planEvent')}
+          </Link>
+          <Link
             href={`/${locale}/marketplace`}
             className="text-sm font-medium text-slate-600 hover:text-brand-600 transition-colors"
           >
@@ -189,6 +195,13 @@ export function PublicHeader({ locale, isAuthenticated, isOrganizer = false }: P
       {mobileOpen && (
         <div className="border-t border-slate-100 bg-white px-4 py-4 md:hidden">
           <nav className="flex flex-col gap-1">
+            <Link
+              href={`/${locale}/plan-an-event`}
+              onClick={() => setMobileOpen(false)}
+              className="rounded-lg bg-brand-600 px-3 py-2.5 text-center text-sm font-semibold text-white"
+            >
+              {t('planEvent')}
+            </Link>
             <Link
               href={`/${locale}`}
               onClick={() => setMobileOpen(false)}

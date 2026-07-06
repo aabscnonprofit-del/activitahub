@@ -81,17 +81,17 @@ export default async function HomePage({ params }: HomePageProps) {
             </p>
             <div className="mt-7 flex flex-col items-center gap-3 sm:mt-9 sm:flex-row sm:flex-wrap sm:justify-center">
               <Link
-                href={`/${locale}/marketplace`}
+                href={`/${locale}/plan-an-event`}
                 className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-amber-400 px-6 py-3.5 text-base sm:px-8 sm:py-4 font-bold text-slate-900 shadow-lg transition-colors hover:bg-amber-300 sm:w-auto"
               >
-                {t('hero.ctaPrimary')}
+                {t('planner.cta')}
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
               <Link
-                href={`/${locale}/plan-an-event`}
+                href={`/${locale}/marketplace`}
                 className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-white/25 bg-white/10 px-6 py-3.5 text-base sm:px-8 sm:py-4 font-semibold text-white transition-colors hover:bg-white/20 sm:w-auto"
               >
-                {t('planner.cta')}
+                {t('hero.ctaPrimary')}
               </Link>
               <Link
                 href={viewer.isOrganizer ? orgCtaHref : `/${locale}/become-an-organizer`}

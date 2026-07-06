@@ -179,6 +179,7 @@
     "fullName": "Nombre completo"
   },
   "nav": {
+    "planEvent": "Planear un evento",
     "home": "Inicio",
     "pricing": "Precios",
     "marketplace": "Mercado",
