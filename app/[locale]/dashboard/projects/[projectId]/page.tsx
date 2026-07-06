@@ -19,7 +19,7 @@ import { VisibilityPanel } from '@/components/projects/VisibilityPanel'
 import { JoinPolicyPanel } from '@/components/projects/JoinPolicyPanel'
 import { TicketConfigPanel } from '@/components/projects/TicketConfigPanel'
 import { ParticipantsRosterPanel } from '@/components/projects/ParticipantsRosterPanel'
-import { listProjectParticipants } from '@/lib/participants/store'
+import { listProjectParticipants, getParticipantProfiles } from '@/lib/participants/store'
 import { loadCapacityGate } from '@/lib/capacity/gate'
 import { listAccessByType } from '@/lib/project-access/store'
 import { ClientAccessPanel } from '@/components/projects/ClientAccessPanel'
@@ -78,6 +78,11 @@ export default async function ProjectDetailsPage({ params }: Props) {
   const ticketType = await getProjectTicketType(supabase, projectId)
   // Project Participants — people who joined this Project (owner sees all); graceful [] if 061 unapplied.
   const participants = await listProjectParticipants(supabase, projectId)
+  // Participant card enrichment: account profiles (name/email) + a join-source label derived from the Project's
+  // current join configuration (no per-participant source column — schema-free approximation).
+  const participantProfiles = await getParticipantProfiles(participants.map((p) => p.accountId))
+  const joinSourceLabel =
+    joinPolicy === 'instant' ? 'Instant Join' : joinPolicy === 'approval' ? 'Approval Request' : ticketType === 'free' ? 'Free Ticket' : ticketType === 'paid' ? 'Paid Ticket' : 'Donation'
   // Approval state (reused; no new query). Once approved, the Draft-only sections are replaced by the
   // Approved presentation — presentation only, no business/approval/snapshot/Publish logic changes.
   const approvedAt = project.approved_at
@@ -357,10 +362,13 @@ export default async function ProjectDetailsPage({ params }: Props) {
       <section className="rounded-lg border border-slate-200 p-4">
         <h2 className="mb-1 text-sm font-semibold text-slate-700">Participants</h2>
         <p className="mb-3 max-w-2xl text-xs text-slate-500">
-          People who joined this activity, grouped by status. Approve or decline pending join requests.
+          Manage the people who joined this activity — a card for each, grouped by status. Approve, decline, or remove where appropriate.
         </p>
         <ParticipantsRosterPanel
-          participants={participants.map((p) => ({ id: p.id, accountId: p.accountId, status: p.status, createdAt: p.createdAt }))}
+          participants={participants.map((p) => {
+            const prof = participantProfiles[p.accountId]
+            return { id: p.id, accountId: p.accountId, status: p.status, createdAt: p.createdAt, name: prof?.fullName ?? null, email: prof?.email ?? null, phone: null, joinSource: joinSourceLabel }
+          })}
           projectId={projectId}
           locale={locale}
         />

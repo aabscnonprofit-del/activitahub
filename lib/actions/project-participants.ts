@@ -10,7 +10,7 @@ import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { getProject, getPublicProject, getProjectJoinPolicy, getProjectTicketType } from '@/lib/projects/store'
 import { admissionStatusForJoinPolicy, type ParticipantStatus } from '@/lib/participants/model'
-import { joinProject, getParticipantForAccount, setParticipantStatus } from '@/lib/participants/store'
+import { joinProject, getParticipantForAccount, setParticipantStatus, removeParticipant } from '@/lib/participants/store'
 
 export type JoinProjectResult =
   | { ok: true; outcome: ParticipantStatus | 'paid' | 'donation' }
@@ -82,6 +82,20 @@ export async function approveParticipantAction(projectId: string, participantId:
 /** Organizer declines a pending participant → 'declined'. */
 export async function declineParticipantAction(projectId: string, participantId: string, locale: string): Promise<ParticipantActionResult> {
   return ownerSetStatus(projectId, participantId, 'declined', locale)
+}
+
+/** Organizer removes a participant from the Project (hard delete). Owner-only. */
+export async function removeParticipantAction(projectId: string, participantId: string, locale: string): Promise<ParticipantActionResult> {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) return { ok: false, error: 'not_authenticated' }
+  const project = await getProject(supabase, projectId)
+  if (!project) return { ok: false, error: 'not_authorized' }
+  if (!(await removeParticipant(supabase, projectId, participantId))) return { ok: false, error: 'failed' }
+  revalidatePath(`/${locale}/dashboard/projects/${projectId}`)
+  return { ok: true }
 }
 
 /** Participant cancels their own participation → 'cancelled' (self RLS scopes it to their own row). */
