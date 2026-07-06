@@ -18,7 +18,15 @@ interface RosterItem {
 }
 
 const STATUS_ORDER: ParticipantStatus[] = ['pending', 'approved', 'declined', 'cancelled']
+// Short labels for the count chips.
 const STATUS_LABEL: Record<ParticipantStatus, string> = { pending: 'Pending', approved: 'Approved', declined: 'Declined', cancelled: 'Cancelled' }
+// Understandable group headings.
+const GROUP_HEADING: Record<ParticipantStatus, string> = {
+  pending: 'Pending requests',
+  approved: 'Approved participants',
+  declined: 'Declined requests',
+  cancelled: 'Cancelled participation',
+}
 
 export function ParticipantsRosterPanel({
   participants,
@@ -62,7 +70,7 @@ export function ParticipantsRosterPanel({
           .filter((g) => g.items.length > 0)
           .map(({ status, items }) => (
             <div key={status}>
-              <h3 className="mb-1 text-xs font-semibold uppercase tracking-wide text-slate-400">{STATUS_LABEL[status]}</h3>
+              <h3 className="mb-1 text-xs font-semibold uppercase tracking-wide text-slate-400">{GROUP_HEADING[status]}</h3>
               <ul className="space-y-1 rounded-lg border border-slate-200 p-3 text-sm text-slate-700">
                 {items.map((p) => (
                   <li key={p.id} className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-2 last:border-0 last:pb-0">
