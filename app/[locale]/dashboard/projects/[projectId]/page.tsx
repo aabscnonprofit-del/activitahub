@@ -363,11 +363,20 @@ export default async function ProjectDetailsPage({ params }: Props) {
         />
       </section>
 
-      {/* ── 7. External Access — sharing appears only once the Project is approved (ready to invite people).
-          The organizer controls the shared Project Access layer (ADR_012 / ADR_013); each guest sees only
-          their own View via a project-scoped link. Presentation/timing only — the access model is unchanged. */}
+      {/* ── 7. Project Access — permission / view-sharing. People you invite to VIEW or collaborate on this
+          Project via private access links (Client / Worker / Guest / Safety). DISTINCT from Participants (who
+          JOINED the activity). Sharing appears only once the Project is approved. The access model is unchanged
+          (ADR_012 / ADR_013); each recipient sees only their own View via a project-scoped access link. */}
       {approvedAt && (
         <>
+          <div>
+            <h2 className="text-sm font-semibold text-slate-700">Project Access</h2>
+            <p className="max-w-2xl text-xs text-slate-500">
+              People you invite to view or collaborate on this Project via private access links — separate from
+              Participants, who joined the activity.
+            </p>
+          </div>
+
           {/* Client access — attach the client who ordered this event; they see only their Client View. */}
           <section className="rounded-lg border border-slate-200 p-4">
             <h2 className="mb-1 text-sm font-semibold text-slate-700">Clients</h2>
@@ -398,11 +407,12 @@ export default async function ProjectDetailsPage({ params }: Props) {
             />
           </section>
 
-          {/* Participant access — attach the people attending; they see only their Participant View. */}
+          {/* Guest access — a Shared View of the event via a private access link. (Backed by access_type
+              'participant' in the shared layer; UI terminology only — NOT the Participants roster of joiners.) */}
           <section className="rounded-lg border border-slate-200 p-4">
-            <h2 className="mb-1 text-sm font-semibold text-slate-700">Participants</h2>
+            <h2 className="mb-1 text-sm font-semibold text-slate-700">Guest Access</h2>
             <p className="mb-3 max-w-2xl text-xs text-slate-500">
-              Attach the people attending and share a private link to their Participant View.
+              Share a private access link to a Shared View of this event — for a guest, not to be confused with Participants who joined.
             </p>
             <ParticipantAccessPanel
               participants={projectParticipants.map((pt) => ({ id: pt.id, email: pt.email, phone: pt.phone, status: pt.status, inviteToken: pt.invite_token }))}

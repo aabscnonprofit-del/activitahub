@@ -1,8 +1,10 @@
 'use client'
 
-// Participant access panel (Organizer control) — attach Participants to the Project and manage their Participant
-// View access via the SHARED Project Access layer. Shows each participant's contact + status + project-scoped
-// invite link (copyable), with add / revoke / regenerate / remove. Calls the owner-gated server actions and
+// Guest Access panel (Organizer control, part of Project Access) — grant someone a Shared View of the event via
+// a private access link. Backed by access_type 'participant' in the SHARED Project Access layer (code identifiers
+// unchanged); this is the permission/view-sharing model, DISTINCT from the Participants roster (people who
+// joined). Shows each grant's contact + status + project-scoped access link (copyable), with add / revoke /
+// regenerate / remove. Calls the owner-gated server actions and
 // refreshes on success. Organizer-only surface. No clock/randomness → no hydration mismatch.
 
 import { useState, useTransition } from 'react'
@@ -49,17 +51,17 @@ export function ParticipantAccessPanel({
   return (
     <div>
       <ul className="space-y-2 rounded-lg border border-slate-200 p-3 text-sm text-slate-700">
-        {participants.length === 0 && <li className="text-xs text-slate-400">No participants attached yet.</li>}
+        {participants.length === 0 && <li className="text-xs text-slate-400">No access granted yet.</li>}
         {participants.map((pt) => (
           <li key={pt.id} className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-2 last:border-0 last:pb-0">
             <span className="min-w-0">
-              <span>{pt.email || pt.phone || 'Participant'}</span>
+              <span>{pt.email || pt.phone || 'Guest'}</span>
               <span className="ml-2 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase text-slate-500">{pt.status}</span>
             </span>
             <span className="flex flex-wrap items-center gap-2">
               {pt.status !== 'revoked' && (
                 <button type="button" onClick={() => navigator.clipboard?.writeText(inviteLink(pt.inviteToken))}
-                  className="rounded border border-slate-300 px-2 py-0.5 text-xs text-slate-600 hover:bg-slate-50">Copy invite link</button>
+                  className="rounded border border-slate-300 px-2 py-0.5 text-xs text-slate-600 hover:bg-slate-50">Copy access link</button>
               )}
               <button type="button" disabled={pending} onClick={() => run(() => regenerateParticipantLinkAction(projectId, pt.id, locale))}
                 className="rounded border border-slate-300 px-2 py-0.5 text-xs text-slate-600 hover:bg-slate-50 disabled:opacity-50">Regenerate</button>
@@ -75,13 +77,13 @@ export function ParticipantAccessPanel({
       </ul>
 
       <div className="mt-2 flex flex-wrap items-end gap-2">
-        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Participant email"
+        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Guest email"
           className="w-48 rounded border border-slate-300 px-2 py-1 text-sm" />
         <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="or phone"
           className="w-36 rounded border border-slate-300 px-2 py-1 text-sm" />
         <button type="button" disabled={pending || (!email.trim() && !phone.trim())}
           onClick={() => run(() => addParticipantAction(projectId, email, phone, locale), () => { setEmail(''); setPhone('') })}
-          className="rounded border border-slate-300 px-3 py-1 text-xs text-slate-600 hover:bg-slate-50 disabled:opacity-50">Add participant</button>
+          className="rounded border border-slate-300 px-3 py-1 text-xs text-slate-600 hover:bg-slate-50 disabled:opacity-50">Grant access</button>
       </div>
       {error && <p className="mt-1 text-xs text-red-600">{error}</p>}
     </div>
