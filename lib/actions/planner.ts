@@ -16,6 +16,8 @@ import type { FutureEventDescription } from '@/lib/domain/future-event-descripti
 import { planningEngineV2 } from '@/lib/planning/planning-engine-v2'
 import { persistEventPlanV2 } from '@/lib/planning/persistence'
 import { persistPlanningDomain } from '@/lib/planning/planning-domain-store'
+import { listBudgetsForProject } from '@/lib/budget/store'
+import { createBudgetForProjectAction } from '@/lib/actions/budget'
 import { planningDomainFromFed } from '@/lib/planning/planning-domain'
 import type { EventPlanV2 } from '@/lib/planning/event-plan-v2'
 
@@ -271,6 +273,23 @@ export async function generateFromIdeaAction(
     }
   } catch (err) {
     console.error('[planner] failed to persist/reflect EventPlanV2', err)
+  }
+
+  // Convergence: a successful ('planned') Plan should hand the organizer a Project that already has its Budget,
+  // so the Workspace opens ready to review — no manual "create budget" step. This REUSES the existing Budget
+  // generation (createBudgetForProjectAction mirrors one line per plan resource/role from the just-persisted
+  // EventPlanV2); it introduces no new Budget model or workflow. Idempotent: only when the Project has no
+  // Budget yet, so re-generation for the same Project never creates a duplicate. Best-effort: a Budget failure
+  // is logged and never blocks returning the Plan.
+  if (activeProjectId && plan.feasibility.verdict === 'planned') {
+    try {
+      const existing = await listBudgetsForProject(supabase, activeProjectId)
+      if (existing.length === 0) {
+        await createBudgetForProjectAction({ projectId: activeProjectId, projectVersion: 1, currency: 'USD' })
+      }
+    } catch (err) {
+      console.error('[planner] failed to auto-create Budget for the Project', err)
+    }
   }
 
   return { ok: true, eventPlanV2: plan, projectId: activeProjectId }
