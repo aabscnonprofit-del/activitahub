@@ -15,10 +15,16 @@ type JoinPolicy = 'instant' | 'approval' | 'ticket'
 type ParticipantStatus = 'pending' | 'approved' | 'declined' | 'cancelled'
 
 const CTA: Record<Exclude<JoinPolicy, 'ticket'>, string> = { instant: 'Join', approval: 'Request to Join' }
+// What happens after each Join Policy (shown under the CTA before joining).
+const HINT: Record<Exclude<JoinPolicy, 'ticket'>, string> = {
+  instant: 'You will be added to this activity immediately.',
+  approval: 'The organizer will review your request.',
+}
+// Clear status shown once the participant has joined.
 const STATUS_MSG: Record<ParticipantStatus, string> = {
-  approved: 'You’re in — your participation is confirmed.',
-  pending: 'Request sent — waiting for the organizer to approve.',
-  declined: 'Your join request was declined.',
+  approved: 'You are approved for this activity.',
+  pending: 'Request sent. Waiting for organizer approval.',
+  declined: 'Your request was declined.',
   cancelled: 'You cancelled your participation.',
 }
 
@@ -49,7 +55,7 @@ export function JoinButton({
         <span aria-disabled="true" className="inline-flex cursor-not-allowed items-center justify-center rounded-xl bg-slate-200 px-7 py-3.5 font-bold text-slate-500">
           Get Tickets
         </span>
-        <p className="mt-2 text-xs text-slate-400">Ticketing opens in a future update. (coming soon)</p>
+        <p className="mt-2 text-xs text-slate-400">Tickets are required for this activity. Ticketing will be available in a future update.</p>
       </div>
     )
   }
@@ -113,6 +119,7 @@ export function JoinButton({
       >
         {pending ? 'Working…' : CTA[joinPolicy]}
       </button>
+      <p className="mt-2 text-xs text-slate-400">{HINT[joinPolicy]}</p>
       {error && <p className="mt-2 text-xs text-red-600">{error}</p>}
     </div>
   )
