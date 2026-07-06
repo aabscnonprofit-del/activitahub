@@ -23,8 +23,8 @@ check('instant → "Join" + hint "added … immediately"',
   joinBtn.includes("instant: 'Join'") && joinBtn.includes('You will be added to this activity immediately.'))
 check('approval → "Request to Join" + hint "organizer will review"',
   joinBtn.includes("approval: 'Request to Join'") && joinBtn.includes('The organizer will review your request.'))
-check('ticket → "Get Tickets" + hint "required … future update"',
-  joinBtn.includes('Get Tickets') && joinBtn.includes('Tickets are required for this activity. Ticketing will be available in a future update.'))
+check('ticket → type-specific CTA via the Ticket System (Get Free Ticket / Buy Ticket / Support this Activity)',
+  joinBtn.includes('Get Free Ticket') && joinBtn.includes("label: 'Buy Ticket'") && joinBtn.includes("label: 'Support this Activity'"))
 check('ticket remains NON-functional (no participant, disabled CTA)', joinBtn.includes("joinPolicy === 'ticket'") && joinBtn.includes('aria-disabled'))
 
 // 2. Participant status after joining — clear message per status.

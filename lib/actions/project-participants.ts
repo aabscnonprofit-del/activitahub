@@ -8,21 +8,24 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
-import { getProject, getPublicProject, getProjectJoinPolicy } from '@/lib/projects/store'
+import { getProject, getPublicProject, getProjectJoinPolicy, getProjectTicketType } from '@/lib/projects/store'
 import { initialParticipantStatus, type ParticipantStatus } from '@/lib/participants/model'
 import { joinProject, getParticipantForAccount, setParticipantStatus } from '@/lib/participants/store'
 
 export type JoinProjectResult =
-  | { ok: true; outcome: 'ticket' | ParticipantStatus }
+  | { ok: true; outcome: ParticipantStatus | 'paid' | 'donation' }
   | { ok: false; error: 'not_authenticated' | 'not_available' | 'failed' }
 
 /**
- * Join a Project from its Activity Page. Server-authoritative on the Join Policy:
- *   instant  → participant created as 'approved'
- *   approval → participant created as 'pending' (a join request)
- *   ticket   → NO participant is created (future Ticket System) — returns outcome 'ticket'
+ * Join a Project from its Activity Page. Server-authoritative on the Join Policy (and, when the policy is
+ * 'ticket', on the ticket type — the Ticket System sits on top of Participants):
+ *   instant                 → participant created as 'approved'
+ *   approval                → participant created as 'pending' (a join request)
+ *   ticket + free           → participant created as 'approved' (free ticket granted immediately)
+ *   ticket + paid           → NO participant yet (future Checkout System) — outcome 'paid'
+ *   ticket + donation       → NO participant yet (future Donation flow)   — outcome 'donation'
  * Requires authentication and a published (joinable) Project. Idempotent — a repeat Join returns the existing
- * participation.
+ * participation. Creates no checkout/payment.
  */
 export async function joinProjectAction(projectId: string, locale: string): Promise<JoinProjectResult> {
   const supabase = await createClient()
@@ -36,8 +39,17 @@ export async function joinProjectAction(projectId: string, locale: string): Prom
   if (!project) return { ok: false, error: 'not_available' }
 
   const joinPolicy = await getProjectJoinPolicy(supabase, projectId)
-  const status = initialParticipantStatus(joinPolicy)
-  if (status === null) return { ok: true, outcome: 'ticket' } // ticket policy → no participant yet
+
+  // Ticket policy → the Ticket System decides. Only a FREE ticket creates a participant now; paid/donation wait
+  // for the future Checkout/Donation flow (server-authoritative — a crafted request never creates a participant).
+  let status: ParticipantStatus
+  if (joinPolicy === 'ticket') {
+    const ticketType = await getProjectTicketType(supabase, projectId)
+    if (ticketType !== 'free') return { ok: true, outcome: ticketType } // 'paid' | 'donation' → no participant yet
+    status = 'approved'
+  } else {
+    status = initialParticipantStatus(joinPolicy) ?? 'pending' // instant → approved, approval → pending
+  }
 
   const participant = await joinProject(supabase, projectId, user.id, status)
   if (!participant) return { ok: false, error: 'failed' }

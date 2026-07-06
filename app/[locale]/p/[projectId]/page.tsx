@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { getPublicProject, listPublicFutureOccurrences, getProjectJoinPolicy } from '@/lib/projects/store'
+import { getPublicProject, listPublicFutureOccurrences, getProjectJoinPolicy, getProjectTicketType } from '@/lib/projects/store'
 import { getParticipantForAccount } from '@/lib/participants/store'
 import { JoinButton } from '@/components/participants/JoinButton'
 import { getPublicEventPlan } from '@/lib/planning/load-public-event-plan'
@@ -29,8 +29,10 @@ export default async function PublicProjectPage({ params }: Props) {
 
   const occurrences = await listPublicFutureOccurrences(supabase, projectId, new Date().toISOString())
 
-  // Join policy drives the participant Join action (tolerant default 'approval').
+  // Join policy drives the participant Join action (tolerant default 'approval'). When the policy is 'ticket',
+  // the Ticket System's ticket type (tolerant default 'free') decides the Join CTA.
   const joinPolicy = await getProjectJoinPolicy(supabase, projectId)
+  const ticketType = await getProjectTicketType(supabase, projectId)
 
   // Stage 5d: render the prepared event from EventPlanV2 (public-safe subset). Null for projects without
   // an EventPlanV2 (e.g. legacy structured-flow) → the existing bare projection is shown instead.
@@ -118,6 +120,7 @@ export default async function PublicProjectPage({ params }: Props) {
           projectId={projectId}
           locale={locale}
           joinPolicy={joinPolicy}
+          ticketType={ticketType}
           initialStatus={myParticipation?.status ?? null}
           isAuthenticated={!!user}
           signInHref={`/${locale}/sign-in`}
