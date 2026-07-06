@@ -30,10 +30,10 @@ check('dedicated Budget Workspace entry section kept',
   page.includes('Budget Workspace') && page.includes('Open Budget Workspace') && page.includes('Budget Workspace available'))
 check('Budget Workspace entry still links to the budget route', page.includes('/budget`'))
 
-// 4. Module grid itself is intact (only the Budget tile removed).
-check('"Manage this event" module grid kept', page.includes('Manage this event') && page.includes('modules.map('))
-check('other module tiles kept (Vendors, Participants, Files)',
-  page.includes("name: 'Vendors'") && page.includes("name: 'Participants'") && page.includes("name: 'Files'"))
+// 4. Convergence: the legacy "Manage this event" module grid was removed entirely, so the dedicated Budget
+//    Workspace entry is unambiguously the single Budget surface (no grid tiles remain that could duplicate it).
+check('legacy "Manage this event" module grid removed (convergence)', !page.includes('Manage this event') && !page.includes('modules.map('))
+check('no placeholder module tiles remain', !page.includes("name: 'Vendors'") && !page.includes("name: 'Participants'") && !page.includes("name: 'Files'"))
 // "Plans" tile removed (Plans module role cleanup) — the plan (EventPlanV2) is not a future integration;
 // it is surfaced via "Related plan" + the Approved Project Snapshot, not a placeholder grid tile.
 check('"Plans" grid tile removed', !page.includes("name: 'Plans'") && !page.includes('ClipboardList'))

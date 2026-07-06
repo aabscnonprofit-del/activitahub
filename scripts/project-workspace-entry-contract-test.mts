@@ -33,7 +33,7 @@ check('budget module live link present', page.includes('/budget'))
 
 // 4. Existing project route unchanged (data loading + modules + publish still intact).
 check('project route still loads the project', page.includes('getProject(') && page.includes('getProjectPublishState('))
-check('publish panel + module grid still rendered', page.includes('PublishPanel') && page.includes('Manage this event'))
+check('publish panel still rendered', page.includes('PublishPanel'))
 
 // 5. Existing Planning handoff unchanged (planner still routes here).
 check('planner handoff still offers "Continue to Project Workspace"', planner.includes('Continue to Project Workspace'))
@@ -54,19 +54,19 @@ check('"Review Checklist" section exists', page.includes('Review Checklist'))
 check('checklist covers reviewing the draft project details', page.includes('Review the draft project details'))
 check('checklist covers checking the related plan', page.includes('Check the related plan'))
 check('checklist covers checking the budget status', page.includes('Check the budget status'))
-check('checklist covers modules/vendors/participants/timeline when available',
-  page.includes('vendors') && page.includes('participants') && page.includes('timeline') && page.includes('when available'))
+check('checklist no longer references the removed module grid (convergence)',
+  !page.includes('Review the workspace modules'))
 check('checklist covers fixing missing/incorrect info before approval',
   page.includes('missing or incorrect information') && page.includes('before approval'))
 check('checklist is read-only — no button/input/form control introduced (copy may mention approval)',
   !page.includes('<button') && !page.includes('<input') && !page.includes('<form'))
 
-// 8. Module status — the "Manage this event" module grid is the single source (Module Status Overview
-//    removed in IA cleanup #4; its ModuleStatusRow helper is gone).
+// 8. Module status — the obsolete "Manage this event" placeholder grid (dead "Project integration planned"
+//    tiles) was removed in the Workspace convergence; no module-status placeholder surface remains.
 check('duplicate "Module Status Overview" section removed', !page.includes('Module Status Overview'))
 check('ModuleStatusRow helper removed', !page.includes('ModuleStatusRow'))
-check('module grid remains the single module/integration-status surface',
-  page.includes('Manage this event') && page.includes('modules.map(') && page.includes('Project integration planned'))
+check('legacy module/integration-status grid removed (convergence)',
+  !page.includes('Manage this event') && !page.includes('modules.map(') && !page.includes('Project integration planned'))
 
 // 9. Budget Workspace entry — navigate into the existing Budget Workspace for this Draft Project.
 check('"Budget Workspace" entry section exists', page.includes('Budget Workspace'))
