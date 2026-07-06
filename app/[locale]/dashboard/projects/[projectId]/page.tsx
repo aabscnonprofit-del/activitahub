@@ -31,6 +31,10 @@ import { CapacityGatePanel } from '@/components/projects/CapacityGatePanel'
 import { loadCapacityGate } from '@/lib/capacity/gate'
 import { listProjectClients } from '@/lib/client-access/store'
 import { ClientAccessPanel } from '@/components/projects/ClientAccessPanel'
+import { listProjectWorkers } from '@/lib/worker-access/store'
+import { WorkerAccessPanel } from '@/components/projects/WorkerAccessPanel'
+import { getEventPlanV2 } from '@/lib/planning/persistence'
+import { projectRolesFromPlan } from '@/lib/team/roles'
 import { formatDate, cn } from '@/lib/utils'
 import type { Locale } from '@/lib/types'
 
@@ -83,6 +87,11 @@ export default async function ProjectDetailsPage({ params }: Props) {
   const capacityBlocked = !!capacityGate && !capacityGate.allowed
   // Client access (Organizer control) — the Project↔Client relationships (owner-scoped).
   const projectClients = await listProjectClients(supabase, projectId)
+  // Worker access (Organizer control) — the Project↔Worker relationships + the canonical project roles.
+  const projectWorkers = await listProjectWorkers(supabase, projectId)
+  const workerPlan = await getEventPlanV2(supabase, projectId, 1).catch(() => null)
+  const workerRoles = workerPlan ? projectRolesFromPlan(workerPlan) : []
+  const workerRoleLabelById = Object.fromEntries(workerRoles.map((r) => [r.id, r.label]))
   // Live Organizer Execution Workspace (approved projects only). Null → render nothing new (preserve behavior).
   const executionWorkspace = approvedAt ? await loadOrganizerExecutionWorkspace(supabase, projectId) : null
   const workspaceLabelById: Record<string, string> = executionWorkspace
@@ -291,6 +300,21 @@ export default async function ProjectDetailsPage({ params }: Props) {
         </p>
         <ClientAccessPanel
           clients={projectClients.map((c) => ({ id: c.id, email: c.email, phone: c.phone, status: c.status, inviteToken: c.invite_token }))}
+          projectId={projectId}
+          locale={locale}
+        />
+      </section>
+
+      {/* Worker access (Organizer control) — attach Workers to canonical roles and manage their Worker View
+          access (ADR_012). Roles reuse the Team/Delivery source; the Worker sees only their own Worker View. */}
+      <section className="rounded-lg border border-slate-200 p-4">
+        <h2 className="mb-1 text-sm font-semibold text-slate-700">Workers</h2>
+        <p className="mb-3 max-w-2xl text-xs text-slate-500">
+          Attach the people and providers doing the work and share a private link to their Worker View.
+        </p>
+        <WorkerAccessPanel
+          workers={projectWorkers.map((w) => ({ id: w.id, email: w.email, phone: w.phone, roleLabel: w.role_id ? workerRoleLabelById[w.role_id] ?? null : null, status: w.status, confirmed: w.confirmed_at != null, inviteToken: w.invite_token }))}
+          roles={workerRoles}
           projectId={projectId}
           locale={locale}
         />
