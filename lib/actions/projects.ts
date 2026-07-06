@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
-import { getProject, publishProject, updateProject, insertApprovedProjectSnapshot, setProjectVisibility, type ProjectVisibility } from '@/lib/projects/store'
+import { getProject, publishProject, updateProject, insertApprovedProjectSnapshot, setProjectVisibility, type ProjectVisibility, setProjectJoinPolicy, type JoinPolicy } from '@/lib/projects/store'
 import { getEventPlanV2 } from '@/lib/planning/persistence'
 import { createOrGetOccurrence } from '@/lib/occurrence/store'
 import { loadCapacityGate } from '@/lib/capacity/gate'
@@ -68,6 +68,37 @@ export async function setProjectVisibilityAction(projectId: string, visibility: 
 
   revalidatePath(`/${locale}/dashboard/projects/${projectId}`)
   revalidatePath(`/${locale}/activities`)
+  return { ok: true }
+}
+
+export interface JoinPolicyResult {
+  ok: boolean
+  error?: 'not_authenticated' | 'not_authorized' | 'invalid' | 'join_policy_failed'
+}
+
+/**
+ * Set a Project's join policy (instant / approval / ticket). Owner-only. Defines only how a participant joins
+ * this Project — it creates no Join / Ticket / Registration entity and no payment. Changes no Planning /
+ * Budget / Execution / Publication / Visibility / lifecycle state. Revalidates the workspace + the public
+ * Activity Page (/p/[projectId]) so the Join action reflects the new policy immediately.
+ */
+export async function setProjectJoinPolicyAction(projectId: string, joinPolicy: JoinPolicy, locale: string): Promise<JoinPolicyResult> {
+  if (joinPolicy !== 'instant' && joinPolicy !== 'approval' && joinPolicy !== 'ticket') return { ok: false, error: 'invalid' }
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) return { ok: false, error: 'not_authenticated' }
+
+  // Ownership: getProject returns null unless the caller owns the Project (owner RLS).
+  const project = await getProject(supabase, projectId)
+  if (!project) return { ok: false, error: 'not_authorized' }
+
+  const ok = await setProjectJoinPolicy(supabase, projectId, joinPolicy)
+  if (!ok) return { ok: false, error: 'join_policy_failed' }
+
+  revalidatePath(`/${locale}/dashboard/projects/${projectId}`)
+  revalidatePath(`/${locale}/p/${projectId}`)
   return { ok: true }
 }
 

@@ -216,6 +216,31 @@ export async function setProjectVisibility(supabase: ServerClient, projectId: st
   return !error
 }
 
+/** How a participant joins a Project (migration 060). Project-level behavior only — no Join/Ticket entity. */
+export type JoinPolicy = 'instant' | 'approval' | 'ticket'
+
+/**
+ * Read a Project's join policy. Tolerant: defaults to 'approval' when the column is absent (migration 060 not
+ * yet applied) or on any error — the safe default (participants request; the organizer approves). Works in both
+ * the owner context (RLS scopes to the owner) and Public Space (RLS exposes published Projects).
+ */
+export async function getProjectJoinPolicy(supabase: ServerClient, projectId: string): Promise<JoinPolicy> {
+  try {
+    const { data, error } = await supabase.from('projects').select('join_policy').eq('id', projectId).maybeSingle()
+    if (error || !data) return 'approval'
+    const v = (data as { join_policy?: string }).join_policy
+    return v === 'instant' || v === 'ticket' ? v : 'approval'
+  } catch {
+    return 'approval'
+  }
+}
+
+/** Set a Project's join policy (owner RLS scopes it). Returns true on success. */
+export async function setProjectJoinPolicy(supabase: ServerClient, projectId: string, joinPolicy: JoinPolicy): Promise<boolean> {
+  const { error } = await supabase.from('projects').update({ join_policy: joinPolicy }).eq('id', projectId)
+  return !error
+}
+
 /**
  * Insert the Approved Project Snapshot — the SEPARATE IMMUTABLE ARTIFACT capturing the Operational
  * Configuration (the EventPlanV2) at approval (docs/PROJECT_LIFECYCLE.md). Insert-only: on conflict

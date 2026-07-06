@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { getPublicProject, listPublicFutureOccurrences } from '@/lib/projects/store'
+import { getPublicProject, listPublicFutureOccurrences, getProjectJoinPolicy } from '@/lib/projects/store'
 import { getPublicEventPlan } from '@/lib/planning/load-public-event-plan'
 import { PublicHeader } from '@/components/layout/PublicHeader'
 import { formatDate } from '@/lib/utils'
@@ -26,6 +26,15 @@ export default async function PublicProjectPage({ params }: Props) {
   if (!project) notFound()
 
   const occurrences = await listPublicFutureOccurrences(supabase, projectId, new Date().toISOString())
+
+  // Join policy drives the participant Join action (tolerant default 'approval'). The Join action itself is
+  // not implemented in this stage (no Join/Ticket/Registration entity) — the CTA reflects the policy only.
+  const joinPolicy = await getProjectJoinPolicy(supabase, projectId)
+  const joinCta = {
+    instant: { label: 'Join', hint: 'You would be added to this activity right away.' },
+    approval: { label: 'Request to Join', hint: 'The organizer reviews and approves join requests.' },
+    ticket: { label: 'Get Tickets', hint: 'Ticketing opens in a future update.' },
+  }[joinPolicy]
 
   // Stage 5d: render the prepared event from EventPlanV2 (public-safe subset). Null for projects without
   // an EventPlanV2 (e.g. legacy structured-flow) → the existing bare projection is shown instead.
@@ -106,14 +115,16 @@ export default async function PublicProjectPage({ params }: Props) {
           )}
         </section>
 
-        {/* CTA — not functional yet */}
+        {/* Join CTA — label/behavior driven by the Project's Join Policy. Not functional yet (no Join/Ticket/
+            Registration entity in this stage); the participant Join action arrives in a future stage. */}
         <div className="mt-8">
           <span
             className="inline-flex cursor-not-allowed items-center justify-center rounded-xl bg-slate-200 px-7 py-3.5 font-bold text-slate-500"
             aria-disabled="true"
           >
-            Registration coming soon
+            {joinCta.label}
           </span>
+          <p className="mt-2 text-xs text-slate-400">{joinCta.hint} (coming soon)</p>
         </div>
       </main>
     </div>
