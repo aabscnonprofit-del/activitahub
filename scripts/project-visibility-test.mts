@@ -28,6 +28,8 @@ check('truth: Draft(unpublished) + Private → NOT shown', appears(false, 'priva
 check('truth: Draft(unpublished) + Public  → NOT shown', appears(false, 'public') === false)
 check('truth: Published + Private → NOT shown', appears(true, 'private') === false)
 check('truth: Published + Public  → shown', appears(true, 'public') === true)
+check('rule: Local Activities = published Projects with visibility = public',
+  appears(true, 'public') && !appears(true, 'private') && !appears(false, 'public') && !appears(false, 'private'))
 
 // 2. Migration 059 — adds the visibility field, default private, NOT NULL, constrained to private/public.
 check('migration adds visibility column (idempotent)', mig.includes('ADD COLUMN IF NOT EXISTS visibility'))
@@ -60,14 +62,19 @@ const visFnStart = action.indexOf('export async function setProjectVisibilityAct
 const visFnBody = action.slice(visFnStart, visFnStart + (action.slice(visFnStart).indexOf('\n}\n') + 1))
 check('action does not touch approval/lifecycle/planning/budget', !/approveProject|publishProject|updateProject|persistEventPlan|Budget/.test(visFnBody))
 
-// 6. Organizer UI — Private + Public (Local Activity) options with the specified copy; calls the action.
-check('VisibilityPanel offers Private and Public (Local Activity)', panel.includes("title: 'Private'") && panel.includes("title: 'Public (Local Activity)'"))
-check('Private copy: only invited participants can join', panel.includes('Only invited participants can join'))
-check('Public copy: show in Local Activities so people can discover and join', panel.includes('Show this activity in Local Activities'))
+// 6. Organizer UI — Private + Public (Local Activities) options with the specified copy; calls the action.
+check('VisibilityPanel offers Private and Public (Local Activities)', panel.includes("title: 'Private'") && panel.includes("title: 'Public (Local Activities)'"))
+check('Private copy: hidden from Local Activities, invitation/direct-link only', panel.includes('Hidden from Local Activities. Accessible only by invitation or direct link'))
+check('Public copy: show this Project in Local Activities so people can discover and join', panel.includes('Show this Project in Local Activities so people can discover and join it'))
+check('label "Public (Local Activities)" used consistently (no singular "Local Activity)")', !panel.includes('Public (Local Activity)') && !page.includes('Public (Local Activity)'))
 check('panel calls the owner-gated action', panel.includes('setProjectVisibilityAction(projectId, next, locale)'))
 
-// 7. Wired into the Project workspace (publication section), loading the tolerant default.
+// 7. Wired into the Project workspace, grouped WITH Publish as one publication decision (tolerant default).
 check('workspace loads visibility + renders the VisibilityPanel', page.includes('getProjectVisibility(supabase, projectId)') && page.includes('<VisibilityPanel'))
+check('Visibility is grouped with Publish (one publication decision)',
+  page.includes('Publish &amp; Visibility') && page.indexOf('<VisibilityPanel') > page.indexOf('Publish &amp; Visibility') && page.indexOf('<PublishPanel') > page.indexOf('<VisibilityPanel'))
+check('UI makes clear a published+public Project appears while private stays hidden',
+  /published[\s\S]{0,80}public[\s\S]{0,120}Local Activities/i.test(page) && page.includes('stay hidden'))
 
 console.log(`\n${failures === 0 ? 'ALL PASS' : `${failures} FAILURE(S)`}`)
 process.exit(failures === 0 ? 0 : 1)

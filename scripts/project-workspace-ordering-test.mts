@@ -27,7 +27,7 @@ const order = [
   ['Delivery', '── 5. Delivery'],
   ['Team', '── 6. Team'],
   ['External Access', '── 7. External Access'],
-  ['Publish', 'Publish Flow'],
+  ['Publish', 'Publish &amp; Visibility'],
 ] as const
 const idx = order.map(([, marker]) => src.indexOf(marker))
 check('every workflow section is present', idx.every((i) => i !== -1))
