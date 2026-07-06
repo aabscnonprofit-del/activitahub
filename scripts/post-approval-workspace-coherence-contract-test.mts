@@ -44,7 +44,7 @@ check('approved UI does not imply Execution started / locked / frozen / Revision
 
 // 4. Kept in both states.
 check('PublishPanel kept', page.includes('<PublishPanel'))
-check('module grid kept', page.includes('Manage this event'))
+check('legacy module grid removed (convergence)', !page.includes('Manage this event'))
 check('Budget Workspace entry kept', page.includes('Budget Workspace') && page.includes('/budget`'))
 check('navigation + data loading kept',
   page.includes('← Projects') && page.includes('getProject(') && page.includes('getProjectPublishState('))

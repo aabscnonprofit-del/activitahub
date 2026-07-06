@@ -44,9 +44,9 @@ check('no edit controls in the workspace UI (no button/input/form/onClick)',
   !page.includes('<button') && !page.includes('<input') && !page.includes('<form') && !page.includes('onClick='))
 
 // 5. Existing Project Workspace content preserved.
-check('existing content preserved (Project Approved / Draft Overview / Budget Workspace / PublishPanel / module grid)',
-  page.includes('Project Approved') && page.includes('Draft Project Overview') &&
-  page.includes('Budget Workspace') && page.includes('<PublishPanel') && page.includes('Manage this event'))
+check('existing content preserved (Project Approved / Project Overview / Budget Workspace / PublishPanel)',
+  page.includes('Project Approved') && page.includes('Project Overview') &&
+  page.includes('Budget Workspace') && page.includes('<PublishPanel'))
 
 // 6. No new route / no page redesign markers (still the same default export server component).
 check('still a single server-component page (no new route/export)', page.includes('export default async function ProjectDetailsPage'))
