@@ -193,6 +193,29 @@ export async function setProjectLeadOrganizer(supabase: ServerClient, projectId:
   return !error
 }
 
+/** A Project's discovery visibility (migration 059). Independent of publication. */
+export type ProjectVisibility = 'private' | 'public'
+
+/**
+ * Read a Project's discovery visibility. Tolerant: defaults to 'private' when the column is absent (migration
+ * 059 not yet applied) or on any error — so a Project is NEVER accidentally treated as publicly discoverable.
+ */
+export async function getProjectVisibility(supabase: ServerClient, projectId: string): Promise<ProjectVisibility> {
+  try {
+    const { data, error } = await supabase.from('projects').select('visibility').eq('id', projectId).maybeSingle()
+    if (error || !data) return 'private'
+    return (data as { visibility?: string }).visibility === 'public' ? 'public' : 'private'
+  } catch {
+    return 'private'
+  }
+}
+
+/** Set a Project's discovery visibility (owner RLS scopes it). Returns true on success. */
+export async function setProjectVisibility(supabase: ServerClient, projectId: string, visibility: ProjectVisibility): Promise<boolean> {
+  const { error } = await supabase.from('projects').update({ visibility }).eq('id', projectId)
+  return !error
+}
+
 /**
  * Insert the Approved Project Snapshot — the SEPARATE IMMUTABLE ARTIFACT capturing the Operational
  * Configuration (the EventPlanV2) at approval (docs/PROJECT_LIFECYCLE.md). Insert-only: on conflict
