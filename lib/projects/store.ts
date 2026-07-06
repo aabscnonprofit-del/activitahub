@@ -241,6 +241,30 @@ export async function setProjectJoinPolicy(supabase: ServerClient, projectId: st
   return !error
 }
 
+/** Ticket type (migration 062) — the ticket configuration; matters only when join_policy = 'ticket'. */
+export type TicketType = 'free' | 'paid' | 'donation'
+
+/**
+ * Read a Project's ticket type. Tolerant: defaults to 'free' when the column is absent (migration 062 not yet
+ * applied) or on any error. Works in both the owner context and Public Space (RLS exposes published Projects).
+ */
+export async function getProjectTicketType(supabase: ServerClient, projectId: string): Promise<TicketType> {
+  try {
+    const { data, error } = await supabase.from('projects').select('ticket_type').eq('id', projectId).maybeSingle()
+    if (error || !data) return 'free'
+    const v = (data as { ticket_type?: string }).ticket_type
+    return v === 'paid' || v === 'donation' ? v : 'free'
+  } catch {
+    return 'free'
+  }
+}
+
+/** Set a Project's ticket type (owner RLS scopes it). Returns true on success. */
+export async function setProjectTicketType(supabase: ServerClient, projectId: string, ticketType: TicketType): Promise<boolean> {
+  const { error } = await supabase.from('projects').update({ ticket_type: ticketType }).eq('id', projectId)
+  return !error
+}
+
 /**
  * Insert the Approved Project Snapshot — the SEPARATE IMMUTABLE ARTIFACT capturing the Operational
  * Configuration (the EventPlanV2) at approval (docs/PROJECT_LIFECYCLE.md). Insert-only: on conflict

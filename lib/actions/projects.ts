@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
-import { getProject, publishProject, updateProject, insertApprovedProjectSnapshot, setProjectVisibility, type ProjectVisibility, setProjectJoinPolicy, type JoinPolicy } from '@/lib/projects/store'
+import { getProject, publishProject, updateProject, insertApprovedProjectSnapshot, setProjectVisibility, type ProjectVisibility, setProjectJoinPolicy, type JoinPolicy, setProjectTicketType, type TicketType } from '@/lib/projects/store'
 import { getEventPlanV2 } from '@/lib/planning/persistence'
 import { createOrGetOccurrence } from '@/lib/occurrence/store'
 import { loadCapacityGate } from '@/lib/capacity/gate'
@@ -96,6 +96,36 @@ export async function setProjectJoinPolicyAction(projectId: string, joinPolicy: 
 
   const ok = await setProjectJoinPolicy(supabase, projectId, joinPolicy)
   if (!ok) return { ok: false, error: 'join_policy_failed' }
+
+  revalidatePath(`/${locale}/dashboard/projects/${projectId}`)
+  revalidatePath(`/${locale}/p/${projectId}`)
+  return { ok: true }
+}
+
+export interface TicketTypeResult {
+  ok: boolean
+  error?: 'not_authenticated' | 'not_authorized' | 'invalid' | 'ticket_type_failed'
+}
+
+/**
+ * Set a Project's ticket type (free / paid / donation). Owner-only. The Ticket System sits on top of
+ * Participants and only applies when the Join Policy is 'ticket': it decides WHAT ticket is required. Creates no
+ * checkout/payment. Changes no Planning / Budget / Execution / Publication / Visibility / Join Policy / lifecycle.
+ */
+export async function setProjectTicketTypeAction(projectId: string, ticketType: TicketType, locale: string): Promise<TicketTypeResult> {
+  if (ticketType !== 'free' && ticketType !== 'paid' && ticketType !== 'donation') return { ok: false, error: 'invalid' }
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) return { ok: false, error: 'not_authenticated' }
+
+  // Ownership: getProject returns null unless the caller owns the Project (owner RLS).
+  const project = await getProject(supabase, projectId)
+  if (!project) return { ok: false, error: 'not_authorized' }
+
+  const ok = await setProjectTicketType(supabase, projectId, ticketType)
+  if (!ok) return { ok: false, error: 'ticket_type_failed' }
 
   revalidatePath(`/${locale}/dashboard/projects/${projectId}`)
   revalidatePath(`/${locale}/p/${projectId}`)

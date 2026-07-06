@@ -60,15 +60,15 @@ check('store touches only project_participants (no ticket/registration table)',
 // 4. Actions — Join is server-authoritative on the policy; approve/decline owner-gated; cancel is self.
 check('joinProjectAction requires auth + a published (joinable) Project', action.includes("error: 'not_authenticated'") && action.includes('getPublicProject(supabase, projectId)'))
 check('Join maps policy → status via the model (instant/approval)', action.includes('initialParticipantStatus(joinPolicy)') && action.includes('joinProject(supabase, projectId, user.id, status)'))
-check('Ticket policy creates NO participant (outcome ticket, no join)', action.includes("if (status === null) return { ok: true, outcome: 'ticket' }"))
+check('Ticket policy: paid/donation create NO participant (deferred to the Ticket System)', action.includes("if (ticketType !== 'free') return { ok: true, outcome: ticketType }"))
 check('organizer approve/decline are owner-gated (getProject)', action.includes('approveParticipantAction') && action.includes('declineParticipantAction') && action.includes('getProject(supabase, projectId)'))
 check('participant can cancel their own participation', action.includes('cancelParticipationAction') && action.includes("'cancelled'"))
 check('actions implement no ticket/payment/qr/check-in system (only the participant model)',
   !/from\('(tickets|payments|check_?ins|attendance|registrations|purchases)'\)|createTicket|createPayment|stripe|qr(code)?/i.test(action))
 
 // 5. Activity Page Join button — policy-driven; ticket is non-functional; sign-in required; no ticket created.
-check('JoinButton CTA is policy-driven (Join / Request to Join / Get Tickets)',
-  joinBtn.includes("instant: 'Join'") && joinBtn.includes("approval: 'Request to Join'") && joinBtn.includes('Get Tickets'))
+check('JoinButton CTA is policy-driven (Join / Request to Join; ticket via the Ticket System)',
+  joinBtn.includes("instant: 'Join'") && joinBtn.includes("approval: 'Request to Join'") && joinBtn.includes('Get Free Ticket'))
 check('ticket policy renders a NON-functional CTA (no participant)', joinBtn.includes("joinPolicy === 'ticket'") && joinBtn.includes('aria-disabled'))
 check('requires sign-in to join', joinBtn.includes('Sign in to') && joinBtn.includes('signInHref'))
 check('calls the Join action (creates the participant)', joinBtn.includes('joinProjectAction(projectId, locale)'))

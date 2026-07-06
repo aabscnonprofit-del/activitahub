@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Wallet, CheckCircle2 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
-import { getProject, getProjectPublishState, getApprovedProjectSnapshot, getProjectVisibility, getProjectJoinPolicy } from '@/lib/projects/store'
+import { getProject, getProjectPublishState, getApprovedProjectSnapshot, getProjectVisibility, getProjectJoinPolicy, getProjectTicketType } from '@/lib/projects/store'
 import { loadOrganizerExecutionWorkspace } from '@/lib/organizer-workspace/load-execution-workspace'
 import { loadDeliveryWorkspace } from '@/lib/organizer-workspace/load-delivery-workspace'
 import { loadTeamWorkspace } from '@/lib/organizer-workspace/load-team-workspace'
@@ -17,6 +17,7 @@ import { ApproveProjectPanel } from '@/components/projects/ApproveProjectPanel'
 import { CapacityGatePanel } from '@/components/projects/CapacityGatePanel'
 import { VisibilityPanel } from '@/components/projects/VisibilityPanel'
 import { JoinPolicyPanel } from '@/components/projects/JoinPolicyPanel'
+import { TicketConfigPanel } from '@/components/projects/TicketConfigPanel'
 import { ParticipantsRosterPanel } from '@/components/projects/ParticipantsRosterPanel'
 import { listProjectParticipants } from '@/lib/participants/store'
 import { loadCapacityGate } from '@/lib/capacity/gate'
@@ -73,6 +74,8 @@ export default async function ProjectDetailsPage({ params }: Props) {
   const visibility = await getProjectVisibility(supabase, projectId)
   // Join policy (instant/approval/ticket) — how participants join; tolerant default 'approval'.
   const joinPolicy = await getProjectJoinPolicy(supabase, projectId)
+  // Ticket type (free/paid/donation) — the Ticket System config; applies when join policy is 'ticket'.
+  const ticketType = await getProjectTicketType(supabase, projectId)
   // Project Participants — people who joined this Project (owner sees all); graceful [] if 061 unapplied.
   const participants = await listProjectParticipants(supabase, projectId)
   // Approval state (reused; no new query). Once approved, the Draft-only sections are replaced by the
@@ -439,6 +442,10 @@ export default async function ProjectDetailsPage({ params }: Props) {
       {/* Participation — how participants join this Project (instant / approval / ticket). Drives the Join
           action on the public Activity Page; creates no Join/Ticket/Registration entity. */}
       <JoinPolicyPanel projectId={projectId} locale={locale} initialJoinPolicy={joinPolicy} />
+
+      {/* Ticket Configuration — the Ticket System (free / paid / donation), on top of Participants. Applies when
+          the Join Policy is "Ticket Required". No checkout/payment in this stage. */}
+      <TicketConfigPanel projectId={projectId} locale={locale} initialTicketType={ticketType} joinPolicyIsTicket={joinPolicy === 'ticket'} />
 
       {/* Publish & Visibility — one publication decision. Publication answers "Is this Project published?";
           visibility answers "Who can discover this published Project?". Core rule: Local Activities = published
