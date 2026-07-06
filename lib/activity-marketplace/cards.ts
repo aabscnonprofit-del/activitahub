@@ -1,5 +1,7 @@
-// Activity Marketplace — the server query that builds public activity cards from the EXISTING published-project
-// representation (no new activity model). An "activity" is an APPROVED + PUBLISHED project; each card composes
+// Activity Marketplace ("Local Activities") — the server query that builds public activity cards from the
+// EXISTING published-project representation (no new activity/Local-Activity model). Local Activities is simply
+// the catalog of published PUBLIC Projects: an "activity" is an APPROVED + PUBLISHED + PUBLIC project (business
+// rule: published Projects WHERE visibility = 'public'). Each card composes
 // the public prepared event (getPublicEventPlan — title/summary), its next public occurrence (date / location /
 // capacity / price), and the public organizer profile (getPublicOrganizer). Only public-safe fields are
 // returned — never owner_id or any draft/internal data. Filtering/sorting live in ./model (pure).
@@ -19,10 +21,15 @@ export type { MarketplaceActivityCard } from './model'
 export async function listMarketplaceActivities(nowIso: string): Promise<MarketplaceActivityCard[]> {
   const admin = await createAdminClient()
 
+  // Local Activities = published Projects WHERE visibility = 'public'. Publication and visibility are
+  // independent, so BOTH are required (a published-but-private Project never appears here). The visibility
+  // filter also degrades safely: if migration 059 is not yet applied, the query errors → projects is null →
+  // an empty catalog (nothing is public until the column exists + the organizer opts in).
   const { data: projects } = await admin
     .from('projects')
     .select('id, owner_id, created_at')
     .eq('is_published', true)
+    .eq('visibility', 'public')
     .not('approved_at', 'is', null)
     .order('created_at', { ascending: false })
   if (!projects) return []

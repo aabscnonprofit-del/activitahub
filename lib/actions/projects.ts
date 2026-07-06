@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
-import { getProject, publishProject, updateProject, insertApprovedProjectSnapshot } from '@/lib/projects/store'
+import { getProject, publishProject, updateProject, insertApprovedProjectSnapshot, setProjectVisibility, type ProjectVisibility } from '@/lib/projects/store'
 import { getEventPlanV2 } from '@/lib/planning/persistence'
 import { createOrGetOccurrence } from '@/lib/occurrence/store'
 import { loadCapacityGate } from '@/lib/capacity/gate'
@@ -37,6 +37,37 @@ export async function publishProjectAction(projectId: string, locale: string): P
 
   revalidatePath(`/${locale}/dashboard/projects/${projectId}`)
   revalidatePath(`/${locale}/p/${projectId}`)
+  return { ok: true }
+}
+
+export interface VisibilityResult {
+  ok: boolean
+  error?: 'not_authenticated' | 'not_authorized' | 'invalid' | 'visibility_failed'
+}
+
+/**
+ * Set a Project's discovery visibility (private / public). Owner-only. Independent of publication — it only
+ * decides whether the Project is eligible to appear in Local Activities (published + public). Changes no
+ * Planning / Budget / Execution / lifecycle / approval state. Revalidates the workspace + the Local Activities
+ * catalog so a public/private switch is reflected immediately.
+ */
+export async function setProjectVisibilityAction(projectId: string, visibility: ProjectVisibility, locale: string): Promise<VisibilityResult> {
+  if (visibility !== 'private' && visibility !== 'public') return { ok: false, error: 'invalid' }
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) return { ok: false, error: 'not_authenticated' }
+
+  // Ownership: getProject returns null unless the caller owns the Project (owner RLS).
+  const project = await getProject(supabase, projectId)
+  if (!project) return { ok: false, error: 'not_authorized' }
+
+  const ok = await setProjectVisibility(supabase, projectId, visibility)
+  if (!ok) return { ok: false, error: 'visibility_failed' }
+
+  revalidatePath(`/${locale}/dashboard/projects/${projectId}`)
+  revalidatePath(`/${locale}/activities`)
   return { ok: true }
 }
 

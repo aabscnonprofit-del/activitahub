@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Wallet, CheckCircle2 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
-import { getProject, getProjectPublishState, getApprovedProjectSnapshot } from '@/lib/projects/store'
+import { getProject, getProjectPublishState, getApprovedProjectSnapshot, getProjectVisibility } from '@/lib/projects/store'
 import { loadOrganizerExecutionWorkspace } from '@/lib/organizer-workspace/load-execution-workspace'
 import { loadDeliveryWorkspace } from '@/lib/organizer-workspace/load-delivery-workspace'
 import { loadTeamWorkspace } from '@/lib/organizer-workspace/load-team-workspace'
@@ -15,6 +15,7 @@ import { listBudgetsForProject } from '@/lib/budget/store'
 import { PublishPanel } from '@/components/projects/PublishPanel'
 import { ApproveProjectPanel } from '@/components/projects/ApproveProjectPanel'
 import { CapacityGatePanel } from '@/components/projects/CapacityGatePanel'
+import { VisibilityPanel } from '@/components/projects/VisibilityPanel'
 import { loadCapacityGate } from '@/lib/capacity/gate'
 import { listAccessByType } from '@/lib/project-access/store'
 import { ClientAccessPanel } from '@/components/projects/ClientAccessPanel'
@@ -65,6 +66,8 @@ export default async function ProjectDetailsPage({ params }: Props) {
   const budget = budgets[0] ?? null
   const planLabel = PLAN_STAGE[project.current_step] ?? project.current_step
   const isPublished = await getProjectPublishState(supabase, projectId)
+  // Discovery visibility (private/public) — independent of publication; tolerant default 'private'.
+  const visibility = await getProjectVisibility(supabase, projectId)
   // Approval state (reused; no new query). Once approved, the Draft-only sections are replaced by the
   // Approved presentation — presentation only, no business/approval/snapshot/Publish logic changes.
   const approvedAt = project.approved_at
@@ -400,6 +403,10 @@ export default async function ProjectDetailsPage({ params }: Props) {
           </section>
         </>
       )}
+
+      {/* Visibility (publication section) — Private vs Public (Local Activity); independent of publication.
+          Only a published + public Project appears in Local Activities. */}
+      <VisibilityPanel projectId={projectId} locale={locale} initialVisibility={visibility} />
 
       {/* Publish Flow — make the Project visible in Public Space (existing /p/[projectId] route). */}
       <PublishPanel
