@@ -5,9 +5,6 @@ import Link from 'next/link'
 import { useTranslations } from 'next-intl'
 import { Sparkles, Loader2, ArrowLeft, ArrowRight, Wand2 } from 'lucide-react'
 import { analyzeIdeaAction, generateFromIdeaAction, type IdeaPrefill, type DiscoveryTurn } from '@/lib/actions/planner'
-import { discoverAction } from '@/lib/actions/discovery'
-import { describeFutureEventAction } from '@/lib/actions/future-event-description'
-import { planFromApprovedFedAction } from '@/lib/actions/planning-from-fed'
 import { buildFutureEventDescription, type EventDetails, type RecurrenceFrequency } from '@/lib/domain/future-event-description'
 import EventPlanV2Review from './EventPlanV2Review'
 import EventPlanV2Handoff from './EventPlanV2Handoff'
@@ -92,14 +89,6 @@ export default function PlannerClient({ locale }: { locale: string }) {
   // it, then reused on subsequent generations (e.g. clarification) so the user stays in the
   // same Project. The Project row persists server-side (RLS owner-only).
   const [projectId, setProjectId] = useState<string | undefined>(undefined)
-  // Non-blocking preview of the AUTHORITATIVE Discovery seam (additive; never gates the existing flow).
-  const [seamDiscovery, setSeamDiscovery] = useState<Awaited<ReturnType<typeof discoverAction>> | null>(null)
-  // Non-blocking preview of the AUTHORITATIVE FED seam, fed ONLY from the Discovery preview's Statement of
-  // Understanding (additive; never gates the flow, replaces WSH/Planning, or becomes the default).
-  const [seamFed, setSeamFed] = useState<Awaited<ReturnType<typeof describeFutureEventAction>> | null>(null)
-  // The Future Event Description the user opted to use as the planning description (opt-in path); '' on the
-  // legacy path. It carries the FED into Planning WITHOUT depending on the legacy "what should happen".
-  const [fedPlanningDescription, setFedPlanningDescription] = useState('')
 
   // When a gate (sign-in / license) or error appears after Generate, scroll it into view so it
   // can never be silently off-screen at the bottom of the long details form.
@@ -108,24 +97,13 @@ export default function PlannerClient({ locale }: { locale: string }) {
     if (gate || error) gateRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
   }, [gate, error])
 
-  // Fire-and-forget FED-seam preview: only once the Discovery preview has produced a Statement of
-  // Understanding, describe the future event from it. It never runs without a Statement of Understanding,
-  // never blocks the flow, and never gates planning.
-  useEffect(() => {
-    if (seamDiscovery?.status === 'understood') {
-      void describeFutureEventAction(seamDiscovery.statementOfUnderstanding).then(setSeamFed).catch(() => setSeamFed(null))
-    } else {
-      setSeamFed(null)
-    }
-  }, [seamDiscovery])
-
   function resetAll() {
     setStep('idea'); setIdea(''); setWhatShouldHappen(''); setNeedsWsh(false)
     setCategory('birthday'); setTotal(''); setAdults(''); setKids(''); setVenue(''); setBudget('')
     setRequirements(''); setCity(''); setStateRegion(''); setCountry(''); setPostal('')
     setRepeats('one_time'); setSessions(''); setInstructor(''); setMaterials('')
     setEventPlanV2(null); setError(false); setGate(null); setDiscovery(null); setAnswer('')
-    setProjectId(undefined); setSeamDiscovery(null); setSeamFed(null); setFedPlanningDescription('')
+    setProjectId(undefined)
   }
 
   function applyPrefill(p: IdeaPrefill) {
@@ -155,10 +133,7 @@ export default function PlannerClient({ locale }: { locale: string }) {
   async function submitIdea(e: React.FormEvent) {
     e.preventDefault()
     if (!idea.trim()) return
-    setLoading(true); setError(false); setDiscovery(null); setAnswer(''); setSeamDiscovery(null); setFedPlanningDescription('')
-    // Non-blocking: also call the AUTHORITATIVE Discovery seam for a small preview. It runs in parallel,
-    // never blocks or alters the existing planner flow below, and never gates planning.
-    void discoverAction(idea).then(setSeamDiscovery).catch(() => setSeamDiscovery(null))
+    setLoading(true); setError(false); setDiscovery(null); setAnswer('')
     try {
       const res = await analyzeIdeaAction(idea)
       if (!res.ok) { setError(true); return }
@@ -245,21 +220,11 @@ export default function PlannerClient({ locale }: { locale: string }) {
       postalCode: postal.trim() || undefined,
     }
     try {
-      // Branch ONLY on the FED opt-in state. The opt-in FED path starts Planning through the published
-      // approved-FED → legacy Planning adapter; the legacy WSH path keeps the existing generateFromIdeaAction
-      // call unchanged. Both return the same GenerateFromIdeaResult, so the handling below is shared.
-      const res = fedPlanningDescription.trim()
-        ? await planFromApprovedFedAction({
-            approvedFutureEventDescription: fedPlanningDescription,
-            clientRequest: idea,
-            details,
-            location,
-            projectId,
-          })
-        : await generateFromIdeaAction(
-            buildFutureEventDescription({ clientRequest: idea, description: whatShouldHappen.trim() || '', details, location }),
-            projectId,
-          )
+      // Planning is created from the single understanding step — the approved "what should happen" description.
+      const res = await generateFromIdeaAction(
+        buildFutureEventDescription({ clientRequest: idea, description: whatShouldHappen.trim() || '', details, location }),
+        projectId,
+      )
       // Stay inside the same Project across re-generations.
       if (res.projectId) setProjectId(res.projectId)
       if (res.ok) {
@@ -300,14 +265,6 @@ export default function PlannerClient({ locale }: { locale: string }) {
           <ArrowLeft className="h-4 w-4" />
           {t('result.newPlan')}
         </button>
-        {/* Planning source indicator — shown only when this plan came from the opt-in FED path.
-            The legacy WSH path (fedPlanningDescription empty) shows nothing here. */}
-        {fedPlanningDescription.trim() && (
-          <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-brand-200 bg-brand-50 px-3 py-1.5 text-xs font-medium text-brand-700">
-            <Sparkles className="h-3.5 w-3.5" />
-            Built from your approved Future Event Description
-          </p>
-        )}
         {eventPlanV2.feasibility.verdict === 'planned' ? (
           <EventPlanV2Review plan={eventPlanV2} />
         ) : (
@@ -513,65 +470,16 @@ export default function PlannerClient({ locale }: { locale: string }) {
       <div className="rounded-2xl border border-brand-100 bg-brand-50/60 p-4">
         <p className="text-xs uppercase tracking-wide text-brand-500">Your idea</p>
         <p className="mt-0.5 text-sm text-slate-700">&ldquo;{idea}&rdquo;</p>
-        {fedPlanningDescription.trim() && (
-          <p className="mt-1 text-xs font-medium text-brand-600">Using your approved Future Event Description</p>
-        )}
-        {(fedPlanningDescription.trim() || whatShouldHappen.trim()) && (
+        {whatShouldHappen.trim() && (
           <div className="mt-2 rounded-lg bg-white px-3 py-2 text-xs text-slate-600">
             <p>
-              <span className="font-semibold text-brand-700">
-                {fedPlanningDescription.trim() ? 'Approved Future Event Description: ' : 'What should happen: '}
-              </span>
-              {fedPlanningDescription.trim() || whatShouldHappen}
+              <span className="font-semibold text-brand-700">What should happen: </span>
+              {whatShouldHappen}
             </p>
           </div>
         )}
-        <p className="mt-2 text-xs text-slate-500">
-          {fedPlanningDescription.trim()
-            ? 'Confirm the details below — Planning is created from your approved Future Event Description.'
-            : 'Just a few details left so we can plan it.'}
-        </p>
+        <p className="mt-2 text-xs text-slate-500">Just a few details left so we can plan it.</p>
       </div>
-
-      {/* Non-blocking preview of the AUTHORITATIVE Discovery seam. Informational only — it does not
-          drive the flow, replace anything above, or gate planning. */}
-      {seamDiscovery && (
-        <div className="rounded-2xl border border-slate-200 bg-white p-4">
-          <p className="text-xs uppercase tracking-wide text-slate-400">Discovery (preview)</p>
-          {seamDiscovery.status === 'understood' ? (
-            <p className="mt-1 whitespace-pre-wrap text-sm text-slate-600">{seamDiscovery.statementOfUnderstanding}</p>
-          ) : (
-            <p className="mt-1 text-sm text-slate-600">{seamDiscovery.question}</p>
-          )}
-        </div>
-      )}
-
-      {/* Non-blocking preview of the AUTHORITATIVE FED seam. Informational only — no approval, no revision,
-          no gate; it does not drive the flow, replace WSH/Planning, or become the default. */}
-      {seamFed && (
-        <div className="rounded-2xl border border-brand-200 bg-brand-50/40 p-4">
-          <p className="text-xs uppercase tracking-wide text-brand-500">Future Event Description (preview)</p>
-          {seamFed.status === 'awaiting_approval' || seamFed.status === 'approved' ? (
-            <>
-              <p className="mt-1 whitespace-pre-wrap text-sm text-slate-600">{seamFed.futureEventDescription}</p>
-              {seamFed.futureEventDescription.trim() && (
-                // Optional: adopt this preview as the planning description. It only fills the existing
-                // whatShouldHappen and lands on the details step — it never calls Planning, bypasses the
-                // details, or replaces the WSH / legacy flow.
-                <button
-                  type="button"
-                  onClick={() => { setFedPlanningDescription(seamFed.futureEventDescription); setStep('details') }}
-                  className="btn-primary mt-3 w-full px-6 py-3 text-sm sm:w-auto"
-                >
-                  Continue to Planning
-                </button>
-              )}
-            </>
-          ) : (
-            <p className="mt-1 text-sm text-slate-400">Not available yet.</p>
-          )}
-        </div>
-      )}
 
       <Section title={tf('sectionActivity')}>
         <div className="flex flex-wrap gap-2">
