@@ -17,6 +17,8 @@ import { ApproveProjectPanel } from '@/components/projects/ApproveProjectPanel'
 import { CapacityGatePanel } from '@/components/projects/CapacityGatePanel'
 import { VisibilityPanel } from '@/components/projects/VisibilityPanel'
 import { JoinPolicyPanel } from '@/components/projects/JoinPolicyPanel'
+import { ParticipantsRosterPanel } from '@/components/projects/ParticipantsRosterPanel'
+import { listProjectParticipants } from '@/lib/participants/store'
 import { loadCapacityGate } from '@/lib/capacity/gate'
 import { listAccessByType } from '@/lib/project-access/store'
 import { ClientAccessPanel } from '@/components/projects/ClientAccessPanel'
@@ -71,6 +73,8 @@ export default async function ProjectDetailsPage({ params }: Props) {
   const visibility = await getProjectVisibility(supabase, projectId)
   // Join policy (instant/approval/ticket) — how participants join; tolerant default 'approval'.
   const joinPolicy = await getProjectJoinPolicy(supabase, projectId)
+  // Project Participants — people who joined this Project (owner sees all); graceful [] if 061 unapplied.
+  const participants = await listProjectParticipants(supabase, projectId)
   // Approval state (reused; no new query). Once approved, the Draft-only sections are replaced by the
   // Approved presentation — presentation only, no business/approval/snapshot/Publish logic changes.
   const approvedAt = project.approved_at
@@ -343,6 +347,21 @@ export default async function ProjectDetailsPage({ params }: Props) {
           />
         </section>
       )}
+
+      {/* Participants — the roster of people who JOINED this Project (Local Activities → Activity Page → Join),
+          grouped by status. Displays participants + lets the organizer approve/decline pending join requests.
+          No messaging/editing/attendance/ticketing. */}
+      <section className="rounded-lg border border-slate-200 p-4">
+        <h2 className="mb-1 text-sm font-semibold text-slate-700">Participants</h2>
+        <p className="mb-3 max-w-2xl text-xs text-slate-500">
+          People who joined this activity, grouped by status. Approve or decline pending join requests.
+        </p>
+        <ParticipantsRosterPanel
+          participants={participants.map((p) => ({ id: p.id, accountId: p.accountId, status: p.status, createdAt: p.createdAt }))}
+          projectId={projectId}
+          locale={locale}
+        />
+      </section>
 
       {/* ── 7. External Access — sharing appears only once the Project is approved (ready to invite people).
           The organizer controls the shared Project Access layer (ADR_012 / ADR_013); each guest sees only

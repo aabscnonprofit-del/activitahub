@@ -66,13 +66,10 @@ check('JoinPolicyPanel offers Instant Join / Approval Required / Ticket Required
 check('panel calls the owner-gated action', panel.includes('setProjectJoinPolicyAction(projectId, next, locale)'))
 check('panel creates no join/ticket entity (presentation + action only)', !/from\('/.test(panel) && !panel.includes('createJoin') && !panel.includes('createTicket'))
 
-// 6. Activity Page — the Join CTA label/behavior is driven by the policy; not implemented (no join persisted).
+// 6. Activity Page — the Join CTA label/behavior is driven by the policy (now rendered by the JoinButton, which
+//    maps instant→Join, approval→Request to Join, ticket→Get Tickets). Policy plumbing is what this test guards.
 check('Activity Page loads the join policy', activityPage.includes('getProjectJoinPolicy(supabase, projectId)'))
-check('Activity Page CTA maps all three policies to their labels',
-  activityPage.includes("instant: { label: 'Join'") && activityPage.includes("approval: { label: 'Request to Join'") && activityPage.includes("ticket: { label: 'Get Tickets'"))
-check('Activity Page CTA renders the policy-driven label', activityPage.includes('{joinCta.label}'))
-check('Join action is NOT implemented yet (non-functional CTA, no join persisted)',
-  activityPage.includes('aria-disabled') && !/setProject|createJoin|from\('(joins|tickets|registrations)'\)/.test(activityPage))
+check('Activity Page renders the policy-driven Join button', activityPage.includes('<JoinButton') && activityPage.includes('joinPolicy={joinPolicy}'))
 
 // 7. Wired into the Project workspace configuration; loads the tolerant default.
 check('workspace loads join policy + renders the JoinPolicyPanel',
