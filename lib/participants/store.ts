@@ -3,6 +3,7 @@
 // RLS owns authorization: the Project owner manages all rows of their Projects; a participant may join/read/
 // cancel their OWN row. No Ticket/Registration/Purchase entity — this is only the participant model.
 
+import { createAdminClient } from '@/lib/supabase/server'
 import type { createClient } from '@/lib/supabase/server'
 import { type ParticipantStatus, type ProjectParticipant, isParticipantStatus } from './model'
 
@@ -77,4 +78,35 @@ export async function joinProject(supabase: ServerClient, projectId: string, acc
 export async function setParticipantStatus(supabase: ServerClient, projectId: string, participantId: string, status: ParticipantStatus): Promise<boolean> {
   const { error } = await supabase.from('project_participants').update({ status }).eq('id', participantId).eq('project_id', projectId)
   return !error
+}
+
+/** Remove a participant from the Project (owner RLS scopes it). Hard delete — they may re-join later. */
+export async function removeParticipant(supabase: ServerClient, projectId: string, participantId: string): Promise<boolean> {
+  const { error } = await supabase.from('project_participants').delete().eq('id', participantId).eq('project_id', projectId)
+  return !error
+}
+
+/** A participant's account profile (name + email) for the participant card. No phone: profiles store none. */
+export interface ParticipantProfile {
+  accountId: string
+  fullName: string | null
+  email: string | null
+}
+
+/**
+ * Load participant account profiles (name + email) by account id, for the organizer's Participant Workspace.
+ * Reads profiles via the admin client (the caller has already owner-gated the Project). Graceful {} on error.
+ */
+export async function getParticipantProfiles(accountIds: string[]): Promise<Record<string, ParticipantProfile>> {
+  const ids = [...new Set(accountIds)]
+  if (ids.length === 0) return {}
+  try {
+    const admin = await createAdminClient()
+    const { data } = await admin.from('profiles').select('id, full_name, email').in('id', ids)
+    return Object.fromEntries(
+      ((data ?? []) as { id: string; full_name: string | null; email: string | null }[]).map((r) => [r.id, { accountId: r.id, fullName: r.full_name, email: r.email }]),
+    )
+  } catch {
+    return {}
+  }
 }

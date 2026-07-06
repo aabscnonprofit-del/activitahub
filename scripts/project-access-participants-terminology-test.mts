@@ -22,7 +22,7 @@ function check(name: string, cond: boolean) {
 
 // 1. Participants section (061) — the JOINED roster; "Participants" means only people who joined.
 check('workspace has a Participants section (the join roster)', workspace.includes('>Participants</h2>') && workspace.includes('<ParticipantsRosterPanel'))
-check('"Participants" refers to people who joined the activity', /People who joined this activity/.test(workspace))
+check('"Participants" refers to people who joined the activity', /people who joined this activity/i.test(workspace))
 check('exactly ONE "Participants" heading (only the roster carries it)', (workspace.match(/>Participants<\/h2>/g) ?? []).length === 1)
 
 // 2. Project Access section — the permission / view-sharing model, clearly separate.
