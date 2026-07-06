@@ -9,7 +9,7 @@
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { getProject, getPublicProject, getProjectJoinPolicy, getProjectTicketType } from '@/lib/projects/store'
-import { initialParticipantStatus, type ParticipantStatus } from '@/lib/participants/model'
+import { admissionStatusForJoinPolicy, type ParticipantStatus } from '@/lib/participants/model'
 import { joinProject, getParticipantForAccount, setParticipantStatus } from '@/lib/participants/store'
 
 export type JoinProjectResult =
@@ -40,17 +40,16 @@ export async function joinProjectAction(projectId: string, locale: string): Prom
 
   const joinPolicy = await getProjectJoinPolicy(supabase, projectId)
 
-  // Ticket policy → the Ticket System decides. Only a FREE ticket creates a participant now; paid/donation wait
-  // for the future Checkout/Donation flow (server-authoritative — a crafted request never creates a participant).
-  let status: ParticipantStatus
+  // TICKET SYSTEM — ticket ACQUISITION only ("does this person have the required ticket?"). When the Join Policy
+  // is 'ticket': FREE → the ticket is acquired (fall through and create the participant); PAID / DONATION → the
+  // ticket is not acquired yet (future Checkout/Donation) → NO participant. It NEVER decides participant status.
   if (joinPolicy === 'ticket') {
     const ticketType = await getProjectTicketType(supabase, projectId)
     if (ticketType !== 'free') return { ok: true, outcome: ticketType } // 'paid' | 'donation' → no participant yet
-    status = 'approved'
-  } else {
-    status = initialParticipantStatus(joinPolicy) ?? 'pending' // instant → approved, approval → pending
   }
 
+  // JOIN POLICY — ADMISSION ("can this person participate?"). It ALONE determines the new participant's status.
+  const status = admissionStatusForJoinPolicy(joinPolicy)
   const participant = await joinProject(supabase, projectId, user.id, status)
   if (!participant) return { ok: false, error: 'failed' }
 

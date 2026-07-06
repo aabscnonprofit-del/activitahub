@@ -46,9 +46,10 @@ check('setProjectTicketTypeAction validates + owner-gated',
 
 // 4. Join action — the acceptance table for participant creation.
 check('join is server-authoritative on the ticket type (reads getProjectTicketType)', joinAction.includes('getProjectTicketType(supabase, projectId)'))
-check('FREE ticket → a Participant is created (approved)', joinAction.includes("if (joinPolicy === 'ticket')") && joinAction.includes("status = 'approved'"))
+check('FREE ticket → a Participant is created; status comes from the Join Policy (not the ticket branch)',
+  joinAction.includes("if (joinPolicy === 'ticket')") && joinAction.includes('admissionStatusForJoinPolicy(joinPolicy)') && !joinAction.includes("status = 'approved'"))
 check('PAID / DONATION → NO participant yet (returns before joinProject)', joinAction.includes("if (ticketType !== 'free') return { ok: true, outcome: ticketType }"))
-check('instant/approval unchanged (initialParticipantStatus)', joinAction.includes('initialParticipantStatus(joinPolicy)'))
+check('Ticket System (ticket branch) assigns NO participant status', !/if \(joinPolicy === 'ticket'\)[\s\S]*?status = '(approved|pending|declined|cancelled)'/.test(joinAction))
 check('join action implements no payment/checkout/qr/check-in', !NO_PAYMENT.test(joinAction))
 
 // 5. Organizer Ticket Configuration — Free / Paid / Donation, with the future-update copy; calls the action.

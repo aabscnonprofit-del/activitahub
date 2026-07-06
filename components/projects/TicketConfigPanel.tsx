@@ -2,7 +2,8 @@
 
 // Ticket Configuration (Organizer control) — the Ticket System's ticket type. The Ticket System sits ON TOP OF
 // Participants and applies only when the Join Policy is "Ticket Required"; it decides WHAT ticket is required.
-//   free     → participant gets a ticket immediately (a Participant is created, per the Ticket System)
+// The Ticket System decides only ticket ACQUISITION; the Join Policy decides the Participant's status.
+//   free     → ticket acquired immediately → a Participant is created (status decided by the Join Policy)
 //   paid     → requires the future Checkout System (no participant yet)
 //   donation → requires the future Donation flow (no participant yet)
 // Runs the owner-gated setProjectTicketTypeAction. No checkout/payment — configuration only.

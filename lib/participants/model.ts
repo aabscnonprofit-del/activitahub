@@ -24,15 +24,17 @@ export function isParticipantStatus(v: unknown): v is ParticipantStatus {
 }
 
 /**
- * Join Policy → the initial participant status when a participant Joins:
- *   instant  → 'approved'  (joined immediately)
- *   approval → 'pending'   (a join request awaiting organizer action)
- *   ticket   → null        (NO participant is created — ticketing is a future stage)
+ * ADMISSION — the participant status the JOIN POLICY assigns to a newly-created participant. This answers only
+ * "can this person participate?"; it is TOTAL (always a status) and is the SOLE source of participant status.
+ *   approval          → 'pending'   (a join request awaiting organizer action)
+ *   instant / ticket  → 'approved'  (admitted — instant on join; ticket once a valid ticket is acquired)
+ *
+ * It deliberately does NOT decide WHETHER a participant is created. That is a separate concern: for a 'ticket'
+ * Join Policy the Ticket System decides ticket acquisition (free → acquired; paid/donation → not yet), and only
+ * then is a participant created — at the status this function returns. The Ticket System never assigns status.
  */
-export function initialParticipantStatus(joinPolicy: JoinPolicy): ParticipantStatus | null {
-  if (joinPolicy === 'instant') return 'approved'
-  if (joinPolicy === 'approval') return 'pending'
-  return null
+export function admissionStatusForJoinPolicy(joinPolicy: JoinPolicy): ParticipantStatus {
+  return joinPolicy === 'approval' ? 'pending' : 'approved'
 }
 
 /** Group participants by status — all four buckets always present, in canonical order. */

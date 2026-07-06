@@ -9,7 +9,7 @@
 //   Run:  npx tsx scripts/project-participants-test.mts
 
 import { readFileSync } from 'node:fs'
-import { initialParticipantStatus, groupByStatus, PARTICIPANT_STATUSES, isParticipantStatus, type ProjectParticipant } from '../lib/participants/model'
+import { admissionStatusForJoinPolicy, groupByStatus, PARTICIPANT_STATUSES, isParticipantStatus, type ProjectParticipant } from '../lib/participants/model'
 
 const read = (p: string) => readFileSync(new URL(p, import.meta.url), 'utf8')
 const mig = read('../supabase/migrations/061_project_participants.sql')
@@ -29,9 +29,9 @@ function check(name: string, cond: boolean) {
 // 1. Pure model — statuses + Join-Policy → initial status (the acceptance table).
 check('statuses are exactly pending/approved/declined/cancelled', PARTICIPANT_STATUSES.join(',') === 'pending,approved,declined,cancelled')
 check('NO checked-in/attended/no-show status (future Check-in System)', !PARTICIPANT_STATUSES.some((s) => /check|attend|show/i.test(s)))
-check('Instant Join → approved participant', initialParticipantStatus('instant') === 'approved')
-check('Approval Join → pending participant', initialParticipantStatus('approval') === 'pending')
-check('Ticket policy → NO participant (null)', initialParticipantStatus('ticket') === null)
+check('Instant → approved (Join Policy admission)', admissionStatusForJoinPolicy('instant') === 'approved')
+check('Approval → pending (Join Policy admission)', admissionStatusForJoinPolicy('approval') === 'pending')
+check('Ticket (once acquired) → approved via Join Policy — status is never null', admissionStatusForJoinPolicy('ticket') === 'approved')
 check('isParticipantStatus guards the four values', isParticipantStatus('approved') && !isParticipantStatus('attended'))
 {
   const mk = (status: string): ProjectParticipant => ({ id: status, projectId: 'p', accountId: 'a', status: status as ProjectParticipant['status'], createdAt: '', updatedAt: '' })
@@ -59,7 +59,7 @@ check('store touches only project_participants (no ticket/registration table)',
 
 // 4. Actions — Join is server-authoritative on the policy; approve/decline owner-gated; cancel is self.
 check('joinProjectAction requires auth + a published (joinable) Project', action.includes("error: 'not_authenticated'") && action.includes('getPublicProject(supabase, projectId)'))
-check('Join maps policy → status via the model (instant/approval)', action.includes('initialParticipantStatus(joinPolicy)') && action.includes('joinProject(supabase, projectId, user.id, status)'))
+check('Join maps policy → status via the Join Policy admission function', action.includes('admissionStatusForJoinPolicy(joinPolicy)') && action.includes('joinProject(supabase, projectId, user.id, status)'))
 check('Ticket policy: paid/donation create NO participant (deferred to the Ticket System)', action.includes("if (ticketType !== 'free') return { ok: true, outcome: ticketType }"))
 check('organizer approve/decline are owner-gated (getProject)', action.includes('approveParticipantAction') && action.includes('declineParticipantAction') && action.includes('getProject(supabase, projectId)'))
 check('participant can cancel their own participation', action.includes('cancelParticipationAction') && action.includes("'cancelled'"))

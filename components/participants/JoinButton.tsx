@@ -4,7 +4,7 @@
 // (when the policy is 'ticket'), and the participant's current state.
 //   instant            → "Join" (→ approved)
 //   approval           → "Request to Join" (→ pending)
-//   ticket + free      → "Get Free Ticket" (→ approved; free ticket granted immediately)
+//   ticket + free      → "Get Free Ticket" (ticket acquired → a Participant is created; status per Join Policy)
 //   ticket + paid      → "Buy Ticket" (display only — future Checkout; no participant)
 //   ticket + donation  → "Support this Activity" (display only — future Donation; no participant)
 // Once joined, it shows the participation status and lets the participant cancel. Requires sign-in to join. Runs
