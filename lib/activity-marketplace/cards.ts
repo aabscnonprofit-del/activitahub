@@ -1,10 +1,10 @@
 // Activity Marketplace ("Local Activities") — the server query that builds public activity cards from the
 // EXISTING published-project representation (no new activity/Local-Activity model). Local Activities is simply
 // the catalog of published PUBLIC Projects: an "activity" is an APPROVED + PUBLISHED + PUBLIC project (business
-// rule: published Projects WHERE visibility = 'public'). Each card composes
-// the public prepared event (getPublicEventPlan — title/summary), its next public occurrence (date / location /
-// capacity / price), and the public organizer profile (getPublicOrganizer). Only public-safe fields are
-// returned — never owner_id or any draft/internal data. Filtering/sorting live in ./model (pure).
+// rule: published Projects WHERE visibility = 'public'). Each card composes the public prepared event
+// (getPublicEventPlan — title/summary), its next public occurrence (date / location / capacity / price), and the
+// public organizer profile (getPublicOrganizer). Only public-safe fields are returned — never owner_id or any
+// draft/internal data. Filtering/sorting live in ./model (pure).
 
 import { createAdminClient } from '@/lib/supabase/server'
 import { getPublicEventPlan } from '@/lib/planning/load-public-event-plan'
@@ -13,31 +13,16 @@ import type { MarketplaceActivityCard } from './model'
 
 export type { MarketplaceActivityCard } from './model'
 
-/**
- * List the marketplace activities: APPROVED + PUBLISHED projects, each composed into a public-safe card from
- * the existing public readers. Reads server-side (admin client, same pattern as getPublicEventPlan) but exposes
- * only public-safe fields. Projects with no public prepared event are skipped.
- */
-export async function listMarketplaceActivities(nowIso: string): Promise<MarketplaceActivityCard[]> {
-  const admin = await createAdminClient()
+type AdminClient = Awaited<ReturnType<typeof createAdminClient>>
+interface ProjectRow { id: string; owner_id: string; created_at: string }
 
-  // Local Activities = published Projects WHERE visibility = 'public'. Publication and visibility are
-  // independent, so BOTH are required (a published-but-private Project never appears here). The visibility
-  // filter also degrades safely: if migration 059 is not yet applied, the query errors → projects is null →
-  // an empty catalog (nothing is public until the column exists + the organizer opts in).
-  const { data: projects } = await admin
-    .from('projects')
-    .select('id, owner_id, created_at')
-    .eq('is_published', true)
-    .eq('visibility', 'public')
-    .not('approved_at', 'is', null)
-    .order('created_at', { ascending: false })
-  if (!projects) return []
-
+/** Compose public-safe cards from published-public-approved project rows. Projects with no public prepared
+ *  event are skipped. Shared by the catalog and the per-organizer query so the same public-safe rule applies. */
+async function composeActivityCards(admin: AdminClient, projects: ProjectRow[], nowIso: string): Promise<MarketplaceActivityCard[]> {
   const organizerCache = new Map<string, Awaited<ReturnType<typeof getPublicOrganizer>>>()
   const cards: MarketplaceActivityCard[] = []
 
-  for (const p of projects as { id: string; owner_id: string; created_at: string }[]) {
+  for (const p of projects) {
     const plan = await getPublicEventPlan(p.id)
     if (!plan) continue // no public prepared event → nothing to show
 
@@ -73,4 +58,48 @@ export async function listMarketplaceActivities(nowIso: string): Promise<Marketp
   }
 
   return cards
+}
+
+/**
+ * List the marketplace activities: APPROVED + PUBLISHED + PUBLIC projects, each composed into a public-safe
+ * card. Reads server-side (admin client) but exposes only public-safe fields.
+ */
+export async function listMarketplaceActivities(nowIso: string): Promise<MarketplaceActivityCard[]> {
+  const admin = await createAdminClient()
+
+  // Local Activities = published Projects WHERE visibility = 'public'. Publication and visibility are
+  // independent, so BOTH are required (a published-but-private Project never appears here). The visibility
+  // filter also degrades safely: if migration 059 is not yet applied, the query errors → projects is null →
+  // an empty catalog (nothing is public until the column exists + the organizer opts in).
+  const { data: projects } = await admin
+    .from('projects')
+    .select('id, owner_id, created_at')
+    .eq('is_published', true)
+    .eq('visibility', 'public')
+    .not('approved_at', 'is', null)
+    .order('created_at', { ascending: false })
+  if (!projects) return []
+
+  return composeActivityCards(admin, projects as ProjectRow[], nowIso)
+}
+
+/**
+ * List ONE organizer's current public activities for their public Organizer Page — the SAME public-safe rule
+ * (published + visibility = 'public' + approved), scoped to this organizer. Private / published-private /
+ * draft-public Projects never appear. Degrades to [] if the visibility column is absent.
+ */
+export async function listOrganizerPublicActivities(organizerId: string, nowIso: string): Promise<MarketplaceActivityCard[]> {
+  const admin = await createAdminClient()
+
+  const { data: projects } = await admin
+    .from('projects')
+    .select('id, owner_id, created_at')
+    .eq('owner_id', organizerId)
+    .eq('is_published', true)
+    .eq('visibility', 'public')
+    .not('approved_at', 'is', null)
+    .order('created_at', { ascending: false })
+  if (!projects) return []
+
+  return composeActivityCards(admin, projects as ProjectRow[], nowIso)
 }

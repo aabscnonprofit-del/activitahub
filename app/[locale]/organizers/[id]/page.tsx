@@ -1,7 +1,8 @@
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { getPublicOrganizer, getOrganizerReviews } from '@/lib/marketplace/queries'
-import { OrganizerProfileView } from '@/components/organizer/OrganizerProfileView'
+import { getPublicOrganizer } from '@/lib/marketplace/queries'
+import { listOrganizerPublicActivities } from '@/lib/activity-marketplace/cards'
+import { OrganizerPublicView } from '@/components/organizer/OrganizerPublicView'
 import { absoluteUrl, organizerHref } from '@/lib/utils'
 import type { Locale } from '@/lib/types'
 import type { Metadata } from 'next'
@@ -31,13 +32,17 @@ export default async function OrganizerProfilePage({ params }: OrganizerPageProp
   } = await supabase.auth.getUser()
   const org = await getPublicOrganizer(supabase, id)
   if (!org) notFound()
-  const reviews = await getOrganizerReviews(supabase, org.id)
+
+  // The organizer's CURRENT public activities = their published Projects with visibility = 'public' (the same
+  // public-safe Local Activities rule, scoped to this organizer). Private / published-private / draft-public
+  // Projects never appear.
+  const activities = await listOrganizerPublicActivities(id, new Date().toISOString())
 
   return (
-    <OrganizerProfileView
+    <OrganizerPublicView
       locale={locale}
       org={org}
-      reviews={reviews}
+      activities={activities}
       isAuthenticated={!!user}
     />
   )
