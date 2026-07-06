@@ -77,7 +77,7 @@ export default async function ParticipantViewPage({ params }: Props) {
           </section>
         )}
 
-        <p className="mt-8 text-xs text-slate-400">You are viewing this event as a participant. This link is private to you.</p>
+        <p className="mt-8 text-xs text-slate-400">You are viewing a shared view of this event. This access link is private to you.</p>
       </main>
     </div>
   )

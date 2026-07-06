@@ -26,7 +26,7 @@ const order = [
   ['Budget', '── 4. Budget'],
   ['Delivery', '── 5. Delivery'],
   ['Team', '── 6. Team'],
-  ['External Access', '── 7. External Access'],
+  ['Project Access', '── 7. Project Access'],
   ['Publish', 'Publish &amp; Visibility'],
 ] as const
 const idx = order.map(([, marker]) => src.indexOf(marker))
@@ -53,7 +53,7 @@ check('Team gated on approval', src.includes('approvedAt ? await loadTeamWorkspa
 
 // 5. External Access (sharing) appears only once approved — the four panels are inside an approvedAt gate,
 //    after Team, and still driven by the shared Project Access implementation (reused, unchanged).
-const extIdx = src.indexOf('── 7. External Access')
+const extIdx = src.indexOf('── 7. Project Access')
 const clientIdx = src.indexOf('<ClientAccessPanel')
 check('External Access section is gated on approvedAt', src.slice(extIdx, clientIdx).includes('{approvedAt && ('))
 check('all four access panels are inside the approved gate',
