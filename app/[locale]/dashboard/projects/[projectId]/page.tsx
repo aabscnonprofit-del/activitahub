@@ -29,6 +29,8 @@ import { PublishPanel } from '@/components/projects/PublishPanel'
 import { ApproveProjectPanel } from '@/components/projects/ApproveProjectPanel'
 import { CapacityGatePanel } from '@/components/projects/CapacityGatePanel'
 import { loadCapacityGate } from '@/lib/capacity/gate'
+import { listProjectClients } from '@/lib/client-access/store'
+import { ClientAccessPanel } from '@/components/projects/ClientAccessPanel'
 import { formatDate, cn } from '@/lib/utils'
 import type { Locale } from '@/lib/types'
 
@@ -79,6 +81,8 @@ export default async function ProjectDetailsPage({ params }: Props) {
   // Organizer Capacity Gate (draft-only) — may this organizer independently lead a project of this size?
   const capacityGate = !approvedAt ? await loadCapacityGate(supabase, projectId, user.id) : null
   const capacityBlocked = !!capacityGate && !capacityGate.allowed
+  // Client access (Organizer control) — the Project↔Client relationships (owner-scoped).
+  const projectClients = await listProjectClients(supabase, projectId)
   // Live Organizer Execution Workspace (approved projects only). Null → render nothing new (preserve behavior).
   const executionWorkspace = approvedAt ? await loadOrganizerExecutionWorkspace(supabase, projectId) : null
   const workspaceLabelById: Record<string, string> = executionWorkspace
@@ -277,6 +281,20 @@ export default async function ProjectDetailsPage({ params }: Props) {
           />
         </section>
       )}
+
+      {/* Client access (Organizer control) — attach Clients and manage their access to the Client View
+          (ADR_012). Organizer-only; the Client sees only their own Client View via a project-scoped link. */}
+      <section className="rounded-lg border border-slate-200 p-4">
+        <h2 className="mb-1 text-sm font-semibold text-slate-700">Clients</h2>
+        <p className="mb-3 max-w-2xl text-xs text-slate-500">
+          Attach the client who ordered this event and share a private link to their Client View.
+        </p>
+        <ClientAccessPanel
+          clients={projectClients.map((c) => ({ id: c.id, email: c.email, phone: c.phone, status: c.status, inviteToken: c.invite_token }))}
+          projectId={projectId}
+          locale={locale}
+        />
+      </section>
 
       {/* Draft-only preparation sections — hidden once the Project is approved (Approved block above). */}
       {!approvedAt && (
