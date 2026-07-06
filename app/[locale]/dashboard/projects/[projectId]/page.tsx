@@ -34,6 +34,7 @@ import { ClientAccessPanel } from '@/components/projects/ClientAccessPanel'
 import { WorkerAccessPanel } from '@/components/projects/WorkerAccessPanel'
 import type { WorkerAccessMetadata } from '@/lib/worker-access/view'
 import { ParticipantAccessPanel } from '@/components/projects/ParticipantAccessPanel'
+import { SafetyAccessPanel } from '@/components/projects/SafetyAccessPanel'
 import { getEventPlanV2 } from '@/lib/planning/persistence'
 import { projectRolesFromPlan } from '@/lib/team/roles'
 import { formatDate, cn } from '@/lib/utils'
@@ -90,6 +91,7 @@ export default async function ProjectDetailsPage({ params }: Props) {
   const projectClients = await listAccessByType(supabase, projectId, 'client')
   const projectWorkers = await listAccessByType(supabase, projectId, 'worker')
   const projectParticipants = await listAccessByType(supabase, projectId, 'participant')
+  const projectSafety = await listAccessByType(supabase, projectId, 'safety')
   const workerPlan = await getEventPlanV2(supabase, projectId, 1).catch(() => null)
   const workerRoles = workerPlan ? projectRolesFromPlan(workerPlan) : []
   const workerRoleLabelById = Object.fromEntries(workerRoles.map((r) => [r.id, r.label]))
@@ -333,6 +335,20 @@ export default async function ProjectDetailsPage({ params }: Props) {
         </p>
         <ParticipantAccessPanel
           participants={projectParticipants.map((pt) => ({ id: pt.id, email: pt.email, phone: pt.phone, status: pt.status, inviteToken: pt.invite_token }))}
+          projectId={projectId}
+          locale={locale}
+        />
+      </section>
+
+      {/* Safety access (Organizer control) — grant project-scoped Safety Links to authorized safety personnel
+          via the shared Project Access layer (ADR_013). Organizer-only; safety personnel see only the Safety View. */}
+      <section className="rounded-lg border border-slate-200 p-4">
+        <h2 className="mb-1 text-sm font-semibold text-slate-700">Safety access</h2>
+        <p className="mb-3 max-w-2xl text-xs text-slate-500">
+          Grant a private Safety Link to authorized safety personnel (fire, police, EMS, inspectors, venue). They see only safety information.
+        </p>
+        <SafetyAccessPanel
+          grants={projectSafety.map((g) => ({ id: g.id, email: g.email, phone: g.phone, status: g.status, inviteToken: g.invite_token }))}
           projectId={projectId}
           locale={locale}
         />
