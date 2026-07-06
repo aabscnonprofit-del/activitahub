@@ -33,6 +33,7 @@ import { listAccessByType } from '@/lib/project-access/store'
 import { ClientAccessPanel } from '@/components/projects/ClientAccessPanel'
 import { WorkerAccessPanel } from '@/components/projects/WorkerAccessPanel'
 import type { WorkerAccessMetadata } from '@/lib/worker-access/view'
+import { ParticipantAccessPanel } from '@/components/projects/ParticipantAccessPanel'
 import { getEventPlanV2 } from '@/lib/planning/persistence'
 import { projectRolesFromPlan } from '@/lib/team/roles'
 import { formatDate, cn } from '@/lib/utils'
@@ -88,6 +89,7 @@ export default async function ProjectDetailsPage({ params }: Props) {
   // Client + Worker access (Organizer control) — via the shared Project Access layer (owner-scoped).
   const projectClients = await listAccessByType(supabase, projectId, 'client')
   const projectWorkers = await listAccessByType(supabase, projectId, 'worker')
+  const projectParticipants = await listAccessByType(supabase, projectId, 'participant')
   const workerPlan = await getEventPlanV2(supabase, projectId, 1).catch(() => null)
   const workerRoles = workerPlan ? projectRolesFromPlan(workerPlan) : []
   const workerRoleLabelById = Object.fromEntries(workerRoles.map((r) => [r.id, r.label]))
@@ -317,6 +319,20 @@ export default async function ProjectDetailsPage({ params }: Props) {
             return { id: w.id, email: w.email, phone: w.phone, roleLabel: meta.roleId ? workerRoleLabelById[meta.roleId] ?? null : null, status: w.status, confirmed: meta.confirmedAt != null, inviteToken: w.invite_token }
           })}
           roles={workerRoles}
+          projectId={projectId}
+          locale={locale}
+        />
+      </section>
+
+      {/* Participant access (Organizer control) — attach Participants and manage their Participant View access
+          via the shared Project Access layer (ADR_012). Organizer-only; participants see only their own View. */}
+      <section className="rounded-lg border border-slate-200 p-4">
+        <h2 className="mb-1 text-sm font-semibold text-slate-700">Participants</h2>
+        <p className="mb-3 max-w-2xl text-xs text-slate-500">
+          Attach the people attending and share a private link to their Participant View.
+        </p>
+        <ParticipantAccessPanel
+          participants={projectParticipants.map((pt) => ({ id: pt.id, email: pt.email, phone: pt.phone, status: pt.status, inviteToken: pt.invite_token }))}
           projectId={projectId}
           locale={locale}
         />
