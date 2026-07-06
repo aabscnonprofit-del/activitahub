@@ -1,8 +1,9 @@
 'use client'
 
-// Visibility (Organizer control) — sets whether this Project is Private or Public (a Local Activity). Visibility
-// is independent of publication: only a PUBLISHED + PUBLIC Project appears in Local Activities. Switching is a
-// single click (optimistic; reverted on failure). Runs the owner-gated setProjectVisibilityAction on the shared
+// Visibility (Organizer control) — part of the publication decision. Publication answers "Is this Project
+// published?"; visibility answers "Who can discover this published Project?" (Private vs Public (Local
+// Activities)). Core rule: Local Activities = published Projects with visibility = public. Switching is a single
+// click (optimistic; reverted on failure). Runs the owner-gated setProjectVisibilityAction on the shared
 // Project Service — no Planning/Budget/Execution/lifecycle/approval change.
 
 import { useState, useTransition } from 'react'
@@ -42,14 +43,14 @@ export function VisibilityPanel({
   }
 
   const options: { value: Visibility; icon: typeof Lock; title: string; desc: string }[] = [
-    { value: 'private', icon: Lock, title: 'Private', desc: 'Only invited participants can join.' },
-    { value: 'public', icon: Globe, title: 'Public (Local Activity)', desc: 'Show this activity in Local Activities so people can discover and join it.' },
+    { value: 'private', icon: Lock, title: 'Private', desc: 'Hidden from Local Activities. Accessible only by invitation or direct link.' },
+    { value: 'public', icon: Globe, title: 'Public (Local Activities)', desc: 'Show this Project in Local Activities so people can discover and join it.' },
   ]
 
   return (
     <div className="rounded-lg border border-slate-200 p-5">
       <h2 className="text-base font-bold text-slate-900">Visibility</h2>
-      <p className="mt-0.5 text-sm text-slate-600">Choose who can discover this Project.</p>
+      <p className="mt-0.5 text-sm text-slate-600">Choose who can discover this Project once it&rsquo;s published.</p>
 
       <div className="mt-4 space-y-2">
         {options.map(({ value, icon: Icon, title, desc }) => {

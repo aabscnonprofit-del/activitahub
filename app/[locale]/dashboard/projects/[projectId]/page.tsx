@@ -404,17 +404,26 @@ export default async function ProjectDetailsPage({ params }: Props) {
         </>
       )}
 
-      {/* Visibility (publication section) — Private vs Public (Local Activity); independent of publication.
-          Only a published + public Project appears in Local Activities. */}
-      <VisibilityPanel projectId={projectId} locale={locale} initialVisibility={visibility} />
-
-      {/* Publish Flow — make the Project visible in Public Space (existing /p/[projectId] route). */}
-      <PublishPanel
-        projectId={projectId}
-        locale={locale}
-        initialPublished={isPublished}
-        publicPath={`/${locale}/p/${projectId}`}
-      />
+      {/* Publish & Visibility — one publication decision. Publication answers "Is this Project published?";
+          visibility answers "Who can discover this published Project?". Core rule: Local Activities = published
+          Projects with visibility = public (private Projects stay hidden). */}
+      <section className="space-y-3">
+        <div>
+          <h2 className="text-sm font-semibold text-slate-700">Publish &amp; Visibility</h2>
+          <p className="max-w-2xl text-xs text-slate-500">
+            Publishing makes this Project live. Visibility decides who can discover it — a{' '}
+            <span className="font-medium">published</span> and <span className="font-medium">public</span> Project
+            appears in Local Activities, while private Projects stay hidden (reachable only by invitation or direct link).
+          </p>
+        </div>
+        <VisibilityPanel projectId={projectId} locale={locale} initialVisibility={visibility} />
+        <PublishPanel
+          projectId={projectId}
+          locale={locale}
+          initialPublished={isPublished}
+          publicPath={`/${locale}/p/${projectId}`}
+        />
+      </section>
     </div>
   )
 }
