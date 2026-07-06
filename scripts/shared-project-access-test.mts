@@ -26,8 +26,8 @@ check('expired → not a grant; future expiry → still a grant',
   isActiveGrant({ status: 'active', expires_at: '2026-08-01T00:00:00.000Z' }, NOW))
 
 // 2. Policy — access_type → View; view-scope + implemented gating.
-check('client→client view, worker→worker view (implemented)', viewForAccessType('client') === 'client' && viewForAccessType('worker') === 'worker' && ACCESS_POLICY.client.implemented && ACCESS_POLICY.worker.implemented)
-check('safety/participant/etc reserved but NOT implemented', !ACCESS_POLICY.safety.implemented && !ACCESS_POLICY.participant.implemented && !ACCESS_POLICY.emergency.implemented)
+check('client/worker/participant views implemented', viewForAccessType('client') === 'client' && viewForAccessType('worker') === 'worker' && viewForAccessType('participant') === 'participant' && ACCESS_POLICY.client.implemented && ACCESS_POLICY.worker.implemented && ACCESS_POLICY.participant.implemented)
+check('safety/vendor/inspector/venue/emergency reserved but NOT implemented', !ACCESS_POLICY.safety.implemented && !ACCESS_POLICY.vendor.implemented && !ACCESS_POLICY.inspector.implemented && !ACCESS_POLICY.venue.implemented && !ACCESS_POLICY.emergency.implemented)
 check('view-scope: a worker grant may NOT render the client view (and vice versa)', accessGrantsView('worker', 'worker') && !accessGrantsView('worker', 'client') && accessGrantsView('client', 'client') && !accessGrantsView('client', 'worker'))
 check('unimplemented type grants no view yet', !accessGrantsView('safety', 'safety'))
 

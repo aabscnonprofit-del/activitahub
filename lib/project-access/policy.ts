@@ -1,7 +1,7 @@
 // Access Policy — the explicit map from an access type to the Project View it may render (and whether that
 // view is implemented yet). This is the single source of truth for "which View does this relationship grant",
 // so View loaders enforce view-scope (a token of one type can never open another type's View) from one place.
-// Structure is ready for safety / participant / etc.; only client + worker are implemented.
+// Structure is ready for safety / etc.; client + worker + participant are implemented.
 
 import type { AccessType } from './model'
 
@@ -19,7 +19,7 @@ export const ACCESS_POLICY: Record<AccessType, AccessPolicyEntry> = {
   client: { view: 'client', implemented: true },
   worker: { view: 'worker', implemented: true },
   safety: { view: 'safety', implemented: false },
-  participant: { view: 'participant', implemented: false },
+  participant: { view: 'participant', implemented: true },
   vendor: { view: 'vendor', implemented: false },
   inspector: { view: 'inspector', implemented: false },
   venue: { view: 'venue', implemented: false },
