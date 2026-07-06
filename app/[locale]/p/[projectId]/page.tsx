@@ -1,7 +1,9 @@
 import { notFound } from 'next/navigation'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { getPublicProject, listPublicFutureOccurrences, getProjectJoinPolicy, getProjectTicketType } from '@/lib/projects/store'
 import { getParticipantForAccount } from '@/lib/participants/store'
+import { getPublicOrganizer } from '@/lib/marketplace/queries'
 import { JoinButton } from '@/components/participants/JoinButton'
 import { getPublicEventPlan } from '@/lib/planning/load-public-event-plan'
 import { PublicHeader } from '@/components/layout/PublicHeader'
@@ -44,11 +46,26 @@ export default async function PublicProjectPage({ params }: Props) {
   } = await supabase.auth.getUser()
   const myParticipation = user ? await getParticipantForAccount(supabase, projectId, user.id) : null
 
+  // Organizer identity for the "Organized by" link → the public Organizer Page. owner_id is readable for a
+  // published Project; the public organizer profile is a public projection (no private account data).
+  const { data: ownerRow } = await supabase.from('projects').select('owner_id').eq('id', projectId).eq('is_published', true).maybeSingle()
+  const organizerId = (ownerRow as { owner_id?: string } | null)?.owner_id ?? null
+  const organizer = organizerId ? await getPublicOrganizer(supabase, organizerId) : null
+
   return (
     <div className="min-h-screen bg-white">
       <PublicHeader locale={locale} isAuthenticated={!!user} />
       <main className="mx-auto max-w-3xl px-4 py-10">
         <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Public event</p>
+        {/* Organized by → the public Organizer Page (identity + trust layer). */}
+        {organizer?.display_name && organizerId && (
+          <p className="mt-1 text-sm text-slate-500">
+            Organized by{' '}
+            <Link href={`/${locale}/organizers/${organizerId}`} className="font-medium text-brand-600 hover:underline">
+              {organizer.display_name}
+            </Link>
+          </p>
+        )}
         {publicPlan ? (
           <>
             <h1 className="mt-1 text-2xl font-extrabold text-slate-900">{publicPlan.intendedExperience}</h1>
