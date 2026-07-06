@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Wallet, CheckCircle2 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
-import { getProject, getProjectPublishState, getApprovedProjectSnapshot, getProjectVisibility } from '@/lib/projects/store'
+import { getProject, getProjectPublishState, getApprovedProjectSnapshot, getProjectVisibility, getProjectJoinPolicy } from '@/lib/projects/store'
 import { loadOrganizerExecutionWorkspace } from '@/lib/organizer-workspace/load-execution-workspace'
 import { loadDeliveryWorkspace } from '@/lib/organizer-workspace/load-delivery-workspace'
 import { loadTeamWorkspace } from '@/lib/organizer-workspace/load-team-workspace'
@@ -16,6 +16,7 @@ import { PublishPanel } from '@/components/projects/PublishPanel'
 import { ApproveProjectPanel } from '@/components/projects/ApproveProjectPanel'
 import { CapacityGatePanel } from '@/components/projects/CapacityGatePanel'
 import { VisibilityPanel } from '@/components/projects/VisibilityPanel'
+import { JoinPolicyPanel } from '@/components/projects/JoinPolicyPanel'
 import { loadCapacityGate } from '@/lib/capacity/gate'
 import { listAccessByType } from '@/lib/project-access/store'
 import { ClientAccessPanel } from '@/components/projects/ClientAccessPanel'
@@ -68,6 +69,8 @@ export default async function ProjectDetailsPage({ params }: Props) {
   const isPublished = await getProjectPublishState(supabase, projectId)
   // Discovery visibility (private/public) — independent of publication; tolerant default 'private'.
   const visibility = await getProjectVisibility(supabase, projectId)
+  // Join policy (instant/approval/ticket) — how participants join; tolerant default 'approval'.
+  const joinPolicy = await getProjectJoinPolicy(supabase, projectId)
   // Approval state (reused; no new query). Once approved, the Draft-only sections are replaced by the
   // Approved presentation — presentation only, no business/approval/snapshot/Publish logic changes.
   const approvedAt = project.approved_at
@@ -403,6 +406,10 @@ export default async function ProjectDetailsPage({ params }: Props) {
           </section>
         </>
       )}
+
+      {/* Participation — how participants join this Project (instant / approval / ticket). Drives the Join
+          action on the public Activity Page; creates no Join/Ticket/Registration entity. */}
+      <JoinPolicyPanel projectId={projectId} locale={locale} initialJoinPolicy={joinPolicy} />
 
       {/* Publish & Visibility — one publication decision. Publication answers "Is this Project published?";
           visibility answers "Who can discover this published Project?". Core rule: Local Activities = published
