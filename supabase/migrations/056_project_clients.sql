@@ -1,4 +1,6 @@
 -- 056_project_clients.sql — Client Project Access (first implementation of the Project Access Model, ADR_012).
+-- ⚠️ LEGACY / DORMANT — SUPERSEDED by 058_project_access.sql (the shared Project Access layer). No production
+-- code depends on this table. Kept (not dropped) for migration-history integrity; not applied to live DBs.
 -- Depends on: 001 (update_updated_at_column), 041 (projects, profiles), uuid-ossp (uuid_generate_v4).
 --
 -- Attaches Clients to a Project as a per-Project RELATIONSHIP (ADR_012): each row grants access to the

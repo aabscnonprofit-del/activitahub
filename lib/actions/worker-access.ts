@@ -1,27 +1,21 @@
 'use server'
 
-// Worker access server actions — the organizer controls for attaching Workers to a Project and managing their
-// access to the Worker View (ADR_012), plus the worker-facing work confirmation. Organizer actions are
-// OWNER-gated; the confirm action is token-scoped (no login). Invitation tokens are secure and project-scoped
-// (one token → one project_workers row → one project → the Worker View only). The worker's role is a REFERENCE
-// to a canonical project role (Team/Delivery stay canonical). No new route/model.
+// Worker access server actions — organizer controls for attaching Workers and managing their Worker View access
+// (ADR_012), plus the worker-facing work confirmation. They run on the SHARED Project Access layer (access_type
+// = 'worker'); the worker's role and confirmation are carried in the relationship's metadata (role_id only
+// REFERENCES a canonical project role — Team/Delivery stay canonical). Token/revocation/invitation logic is not
+// reimplemented here. Organizer actions are owner-gated; the confirm action is token-scoped.
 
-import { randomBytes } from 'node:crypto'
 import { revalidatePath } from 'next/cache'
 import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { getProject } from '@/lib/projects/store'
-import {
-  insertProjectWorker, updateProjectWorkerStatus, updateProjectWorkerToken, deleteProjectWorker,
-  getProjectWorkerByToken, setWorkerConfirmed,
-} from '@/lib/worker-access/store'
+import { createAccessRelationship, revokeAccess, removeAccess, regenerateToken, resolveActiveByToken, setAccessMetadata } from '@/lib/project-access/store'
+import { accessGrantsView } from '@/lib/project-access/policy'
+import type { WorkerAccessMetadata } from '@/lib/worker-access/view'
 
 export type WorkerAccessResult =
   | { ok: true }
   | { ok: false; reason: 'not_authenticated' | 'not_authorized' | 'invalid_contact' | 'not_found' | 'failed' }
-
-function newInviteToken(): string {
-  return randomBytes(24).toString('hex')
-}
 
 async function ownedProject(projectId: string) {
   const supabase = await createClient()
@@ -43,7 +37,8 @@ export async function addWorkerAction(projectId: string, email: string, phone: s
   const ctx = await ownedProject(projectId)
   if (!ctx.ok) return { ok: false, reason: ctx.reason }
 
-  const row = await insertProjectWorker(ctx.supabase, { projectId, email: e, phone: p, roleId: roleId?.trim() || null, inviteToken: newInviteToken() })
+  const metadata: WorkerAccessMetadata = { roleId: roleId?.trim() || null }
+  const row = await createAccessRelationship(ctx.supabase, { projectId, accessType: 'worker', email: e, phone: p, metadata: metadata as Record<string, unknown> })
   if (!row) return { ok: false, reason: 'failed' }
   revalidatePath(`/${locale}/dashboard/projects/${projectId}`)
   return { ok: true }
@@ -53,7 +48,7 @@ export async function addWorkerAction(projectId: string, email: string, phone: s
 export async function revokeWorkerAction(projectId: string, workerId: string, locale: string): Promise<WorkerAccessResult> {
   const ctx = await ownedProject(projectId)
   if (!ctx.ok) return { ok: false, reason: ctx.reason }
-  if (!(await updateProjectWorkerStatus(ctx.supabase, projectId, workerId, 'revoked'))) return { ok: false, reason: 'failed' }
+  if (!(await revokeAccess(ctx.supabase, projectId, workerId, new Date().toISOString()))) return { ok: false, reason: 'failed' }
   revalidatePath(`/${locale}/dashboard/projects/${projectId}`)
   return { ok: true }
 }
@@ -62,7 +57,7 @@ export async function revokeWorkerAction(projectId: string, workerId: string, lo
 export async function removeWorkerAction(projectId: string, workerId: string, locale: string): Promise<WorkerAccessResult> {
   const ctx = await ownedProject(projectId)
   if (!ctx.ok) return { ok: false, reason: ctx.reason }
-  if (!(await deleteProjectWorker(ctx.supabase, projectId, workerId))) return { ok: false, reason: 'failed' }
+  if (!(await removeAccess(ctx.supabase, projectId, workerId))) return { ok: false, reason: 'failed' }
   revalidatePath(`/${locale}/dashboard/projects/${projectId}`)
   return { ok: true }
 }
@@ -71,19 +66,18 @@ export async function removeWorkerAction(projectId: string, workerId: string, lo
 export async function resendWorkerInvitationAction(projectId: string, workerId: string, locale: string): Promise<WorkerAccessResult> {
   const ctx = await ownedProject(projectId)
   if (!ctx.ok) return { ok: false, reason: ctx.reason }
-  const tokenOk = await updateProjectWorkerToken(ctx.supabase, projectId, workerId, newInviteToken())
-  const statusOk = await updateProjectWorkerStatus(ctx.supabase, projectId, workerId, 'invited')
-  if (!tokenOk || !statusOk) return { ok: false, reason: 'failed' }
+  if (!(await regenerateToken(ctx.supabase, projectId, workerId))) return { ok: false, reason: 'failed' }
   revalidatePath(`/${locale}/dashboard/projects/${projectId}`)
   return { ok: true }
 }
 
-/** Worker-facing (token-scoped, no login): confirm the assigned work. Denied for a revoked/unknown token. */
+/** Worker-facing (token-scoped, no login): confirm the assigned work. Denied for a revoked/expired/unknown token. */
 export async function confirmWorkAction(token: string, locale: string): Promise<WorkerAccessResult> {
   const admin = await createAdminClient()
-  const worker = await getProjectWorkerByToken(admin, token)
-  if (!worker || worker.status === 'revoked') return { ok: false, reason: 'not_found' }
-  if (!(await setWorkerConfirmed(admin, worker.id, new Date().toISOString()))) return { ok: false, reason: 'failed' }
+  const access = await resolveActiveByToken(admin, token, new Date().toISOString())
+  if (!access || !accessGrantsView(access.access_type, 'worker')) return { ok: false, reason: 'not_found' }
+  const nextMeta: WorkerAccessMetadata = { ...(access.metadata as WorkerAccessMetadata), confirmedAt: new Date().toISOString() }
+  if (!(await setAccessMetadata(admin, access.id, nextMeta as Record<string, unknown>))) return { ok: false, reason: 'failed' }
   revalidatePath(`/${locale}/worker/${token}`)
   return { ok: true }
 }

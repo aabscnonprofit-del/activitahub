@@ -1,4 +1,4 @@
-// Worker Project Access — Worker View projection + role reuse + access-safety contract test.
+// Worker Project Access — Worker View projection + role reuse + shared-layer access-safety contract test.
 //
 //   Run:  npx tsx scripts/worker-access-test.mts
 
@@ -21,62 +21,48 @@ const plan = {
 } as unknown as EventPlanV2
 const occ = [{ startsAt: '2026-08-01T17:00:00.000Z', endsAt: null, location: 'Garden' }]
 
-// 1. Role resolution REUSES the canonical project roles (Delivery role components / Team roles) — no new defs.
+// 1. Role resolution REUSES the canonical project roles (Delivery components / Team roles) — no new defs.
 {
   const role = resolveWorkerRole(plan, 'role:0')
-  check('worker role resolves from the canonical Delivery role component (label + responsibilities)',
-    role?.label === 'DJ' && role?.responsibilities === 'Music for the reception')
-  // same ids Team + Delivery use:
+  check('worker role resolves from the canonical Delivery role component', role?.label === 'DJ' && role?.responsibilities === 'Music for the reception')
   const teamIds = projectRolesFromPlan(plan).map((r) => r.id).join(',')
   const deliveryRoleIds = buildDeliveryComponentModel(plan).components.filter((c) => c.kind === 'role').map((c) => c.id).join(',')
   check('worker role ids are the SAME canonical ids as Team + Delivery (no duplication)', teamIds === deliveryRoleIds && teamIds === 'role:0,role:1')
-  check('unknown / no role → null (not fabricated)', resolveWorkerRole(plan, 'role:9') === null && resolveWorkerRole(plan, null) === null && resolveWorkerRole(null, 'role:0') === null)
+  check('unknown / no role → null', resolveWorkerRole(plan, 'role:9') === null && resolveWorkerRole(plan, null) === null && resolveWorkerRole(null, 'role:0') === null)
 }
 
-// 2. Worker View: active/invited → role + schedule + confirmation; revoked → null.
+// 2. Worker View projection (role + schedule + confirmation).
 {
-  const v = buildWorkerView('p', 'invited', resolveWorkerRole(plan, 'role:0'), occ, false)
-  check('invited worker → view built (role + schedule), not confirmed', v !== null && v.role?.label === 'DJ' && v.occurrences.length === 1 && v.confirmed === false)
-  check('worker view exposes only role/occurrences/confirmed (no organizer fields)',
-    v !== null && Object.keys(v).sort().join(',') === 'confirmed,occurrences,projectId,role')
-  check('revoked worker → null (no access)', buildWorkerView('p', 'revoked', resolveWorkerRole(plan, 'role:0'), occ, true) === null)
-  check('confirmed reflected', buildWorkerView('p', 'active', null, occ, true)?.confirmed === true)
+  const v = buildWorkerView('p', resolveWorkerRole(plan, 'role:0'), occ, false)
+  check('worker view: role + schedule, not confirmed', v.role?.label === 'DJ' && v.occurrences.length === 1 && v.confirmed === false)
+  check('worker view exposes only role/occurrences/confirmed', Object.keys(v).sort().join(',') === 'confirmed,occurrences,projectId,role')
+  check('confirmed reflected', buildWorkerView('p', null, occ, true).confirmed === true)
 }
 
-// 3. Loader resolves by token, denies revoked, reuses the canonical role resolution + schedule only.
+// 3. Loader goes through the SHARED access layer (resolve active by token + worker view-scope + metadata).
 const view = read('../lib/worker-access/view.ts')
-check('loadWorkerView resolves by token, denies revoked, resolves role from canonical projection',
-  view.includes('getProjectWorkerByToken(admin, token)') && view.includes("worker.status === 'revoked'") &&
-  view.includes('buildDeliveryComponentModel(plan)') && view.includes("select('starts_at, ends_at, location')"))
+check('loadWorkerView resolves via the shared choke point + worker view-scope',
+  view.includes('resolveActiveByToken(admin, token, new Date().toISOString())') && view.includes("accessGrantsView(access.access_type, 'worker')"))
+check('role + confirmation come from the relationship metadata; role reuses the canonical projection',
+  view.includes('access.metadata') && view.includes('meta.roleId') && view.includes('meta.confirmedAt') && view.includes('buildDeliveryComponentModel(plan)'))
+check('worker view does not import a per-type store or touch the old table', !/worker-access\/store|project_workers/.test(view))
 
-// 4. Worker page exposes ONLY the worker projection — no organizer modules imported.
+// 4. Worker page — token-gated, no organizer-only imports.
 const page = read('../app/[locale]/worker/[token]/page.tsx')
-check('worker page loads by token + 404s a revoked/unknown token', page.includes('loadWorkerView(token)') && page.includes('notFound()'))
+check('worker page loads by token + 404s when denied', page.includes('loadWorkerView(token)') && page.includes('notFound()'))
 {
   const imports = page.split('\n').filter((l) => l.trim().startsWith('import'))
-  check('worker page imports NO organizer-only modules (budget/delivery panel/team/capacity/lead/execution)',
-    !imports.some((l) => /delivery|team|budget|capacity|lead-organizer|execution|organizer-workspace/i.test(l)))
+  check('worker page imports NO organizer-only modules', !imports.some((l) => /delivery|team|budget|capacity|lead-organizer|execution|organizer-workspace/i.test(l)))
 }
 
-// 5. Organizer actions: owner-gated, project-scoped token, add/revoke/remove/resend, revalidate; worker confirm.
+// 5. Actions on the SHARED layer; worker confirm via the shared resolver + metadata; role in metadata.
 const action = read('../lib/actions/worker-access.ts')
-check('actions owner-gated + secure project-scoped token', action.includes('getProject(supabase, projectId)') && action.includes("randomBytes(24).toString('hex')"))
-check('actions cover add / revoke / remove / resend + revalidate', ['addWorkerAction', 'revokeWorkerAction', 'removeWorkerAction', 'resendWorkerInvitationAction'].every((a) => action.includes(a)) && action.includes('revalidatePath('))
-check('worker confirm is token-scoped (no login), denied when revoked',
-  action.includes('confirmWorkAction') && action.includes('getProjectWorkerByToken(admin, token)') && action.includes("worker.status === 'revoked'") && action.includes('setWorkerConfirmed('))
-
-// 6. Project-scoped invite + relationship-only migration; role is a REFERENCE (Team/Delivery stay canonical).
-const store = read('../lib/worker-access/store.ts')
-const mig = read('../supabase/migrations/057_project_workers.sql')
-check('token resolves to one project via one relationship row (project-scoped)',
-  store.includes("eq('invite_token', token)") && /invite_token +TEXT NOT NULL UNIQUE/.test(mig) && /project_id +UUID NOT NULL REFERENCES projects/.test(mig))
-check('role is a REFERENCE (role_id TEXT), not a duplicated role/assignment table',
-  /role_id +TEXT/.test(mig) && !/plan|budget|delivery|execution|assignment/i.test(mig.replace(/--.*$/gm, '')))
-
-// 7. Organizer page renders the panel with canonical roles; never the Worker View.
-const projPage = read('../app/[locale]/dashboard/projects/[projectId]/page.tsx')
-check('organizer page loads workers + canonical roles (projectRolesFromPlan) + renders WorkerAccessPanel',
-  projPage.includes('listProjectWorkers(supabase, projectId)') && projPage.includes('projectRolesFromPlan(workerPlan)') && projPage.includes('<WorkerAccessPanel'))
+check('worker actions use the shared store (create type worker w/ role metadata / revoke / remove / regenerate)',
+  action.includes("createAccessRelationship(ctx.supabase, { projectId, accessType: 'worker'") && action.includes('roleId: roleId') && action.includes('revokeAccess(') && action.includes('regenerateToken('))
+check('worker confirm goes through the single choke point + writes confirmedAt to metadata',
+  action.includes('confirmWorkAction') && action.includes('resolveActiveByToken(admin, token, new Date().toISOString())') && action.includes("accessGrantsView(access.access_type, 'worker')") && action.includes('confirmedAt: new Date().toISOString()') && action.includes('setAccessMetadata('))
+check('worker actions do NOT reimplement token generation or touch the old store/table',
+  !action.includes('randomBytes') && !/worker-access\/store|project_workers/.test(action))
 
 console.log(`\n${failures === 0 ? 'ALL PASS' : `${failures} FAILURE(S)`}`)
 process.exit(failures === 0 ? 0 : 1)

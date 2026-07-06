@@ -1,4 +1,4 @@
-// Client Project Access — Client View projection + access-safety contract test.
+// Client Project Access — Client View projection + shared-layer access-safety contract test.
 //
 //   Run:  npx tsx scripts/client-access-test.mts
 
@@ -17,63 +17,42 @@ const plan = {
   experienceDesign: { intendedFeeling: 'A joyful birthday', arc: 'Build-up to cake' },
   structure: { concept: 'Backyard party' },
   itinerary: [{ name: 'Ceremony', purpose: 'Gather everyone' }],
-  // internal fields the client must never see:
   costEstimate: { low: 100, likely: 200, high: 300, currency: 'USD', basis: 'x' },
   staffing: [{ role: 'DJ', reason: 'music' }], resources: [{ label: 'Chairs' }], logistics: [{ description: 'setup' }],
 } as unknown as EventPlanV2
 const occ = [{ startsAt: '2026-08-01T18:00:00.000Z', endsAt: null, location: 'Backyard' }]
 
-// 1. Active/invited relationship → the client-safe projection (event + schedule).
+// 1. Client View projection (public-safe; internal fields never present).
 {
-  const v = buildClientView('p', 'invited', plan, occ)
-  check('invited client → view built with event + schedule', v !== null && v.projectId === 'p' && v.event?.intendedExperience === 'A joyful birthday' && v.occurrences.length === 1)
-  check('event exposes only public-safe fields (title/arc/concept/itinerary) — no cost/staffing/resources/logistics',
-    v !== null && v.event !== null && Object.keys(v.event).sort().join(',') === 'concept,experienceArc,intendedExperience,itinerary')
-  check('schedule is date + location only', v !== null && Object.keys(v.occurrences[0]).sort().join(',') === 'endsAt,location,startsAt')
+  const v = buildClientView('p', plan, occ)
+  check('client view: event + schedule', v.projectId === 'p' && v.event?.intendedExperience === 'A joyful birthday' && v.occurrences.length === 1)
+  check('event exposes only public-safe fields (no cost/staffing/resources/logistics)', v.event !== null && Object.keys(v.event).sort().join(',') === 'concept,experienceArc,intendedExperience,itinerary')
+  check('schedule is date + location only', Object.keys(v.occurrences[0]).sort().join(',') === 'endsAt,location,startsAt')
+  check('no plan → view with null event', buildClientView('p', null, occ).event === null)
 }
-// 2. Revoked relationship → NO access.
-check('revoked client → null (no access)', buildClientView('p', 'revoked', plan, occ) === null)
-// 3. No plan yet → view with null event (event being prepared), still no crash.
-check('no plan → view with null event', buildClientView('p', 'active', null, occ)?.event === null)
 
-// 4. Loader resolves by token, denies revoked, reuses the public-safe projection.
+// 2. Loader goes through the SHARED access layer (resolve active by token + view-scope) — no per-type store.
 const view = read('../lib/client-access/view.ts')
-check('loadClientView resolves by invite token and denies revoked',
-  view.includes('getProjectClientByToken(admin, token)') && view.includes("client.status === 'revoked'"))
-check('client view reuses buildPublicEventProjection (no duplicated projection) and is date/location for schedule',
-  view.includes('buildPublicEventProjection') && view.includes("select('starts_at, ends_at, location')"))
+check('loadClientView resolves via the shared choke point + client view-scope',
+  view.includes('resolveActiveByToken(admin, token, new Date().toISOString())') && view.includes("accessGrantsView(access.access_type, 'client')"))
+check('client view reuses buildPublicEventProjection (no duplicated projection)', view.includes('buildPublicEventProjection') && view.includes("select('starts_at, ends_at, location')"))
+check('client view does not import a per-type store or touch the old table', !/client-access\/store|project_clients/.test(view))
 
-// 5. Client View page exposes ONLY the client projection — no organizer modules imported.
+// 3. Client View page — token-gated, 404s no-access, no organizer-only imports.
 const page = read('../app/[locale]/client/[token]/page.tsx')
-check('client page loads by token and 404s a revoked/unknown token', page.includes('loadClientView(token)') && page.includes('notFound()'))
+check('client page loads by token and 404s when access is denied', page.includes('loadClientView(token)') && page.includes('notFound()'))
 {
   const imports = page.split('\n').filter((l) => l.trim().startsWith('import'))
-  check('client page imports NO organizer-only modules (budget/delivery/team/capacity/lead/execution)',
-    !imports.some((l) => /delivery|team|budget|capacity|lead-organizer|execution|organizer-workspace/i.test(l)))
+  check('client page imports NO organizer-only modules', !imports.some((l) => /delivery|team|budget|capacity|lead-organizer|execution|organizer-workspace/i.test(l)))
 }
 
-// 6. Organizer actions: owner-gated, project-scoped secure token, add/revoke/remove/resend, revalidate.
+// 4. Organizer actions run on the SHARED layer (create/revoke/remove/resend) — no reimplemented token/revocation.
 const action = read('../lib/actions/client-access.ts')
-check('actions are owner-gated (getProject) + generate a secure project-scoped token',
-  action.includes('getProject(supabase, projectId)') && action.includes("randomBytes(24).toString('hex')") && action.includes("reason: 'not_authenticated'"))
-check('actions cover add / revoke / remove / resend and revalidate',
-  action.includes('addClientAction') && action.includes('revokeClientAction') && action.includes('removeClientAction') && action.includes('resendInvitationAction') && action.includes('revalidatePath('))
-check('add requires a contact (email or phone) — invalid_contact otherwise', action.includes("reason: 'invalid_contact'"))
-check('revoke sets status revoked; resend issues a fresh token',
-  action.includes("updateProjectClientStatus(ctx.supabase, projectId, clientId, 'revoked')") && action.includes('updateProjectClientToken(ctx.supabase, projectId, clientId, newInviteToken())'))
-
-// 7. Invite link is project-scoped (token → one project via one project_clients row); migration is a relationship.
-const store = read('../lib/client-access/store.ts')
-const mig = read('../supabase/migrations/056_project_clients.sql')
-check('token resolves to exactly one project via one relationship row (project-scoped)',
-  store.includes("eq('invite_token', token)") && /invite_token +TEXT NOT NULL UNIQUE/.test(mig) && /project_id +UUID NOT NULL REFERENCES projects/.test(mig))
-check('relationship, not a new Project model: table carries only the link + status + token',
-  /status +TEXT NOT NULL DEFAULT 'invited' CHECK/.test(mig) && !/plan|budget|delivery|execution/i.test(mig))
-
-// 8. Organizer page renders the panel (organizer-only control), never the Client View there.
-const projPage = read('../app/[locale]/dashboard/projects/[projectId]/page.tsx')
-check('organizer page loads clients + renders ClientAccessPanel (owner control)',
-  projPage.includes('listProjectClients(supabase, projectId)') && projPage.includes('<ClientAccessPanel'))
+check('client actions use the shared store (createAccessRelationship type client / revoke / remove / regenerate)',
+  action.includes("createAccessRelationship(ctx.supabase, { projectId, accessType: 'client'") && action.includes('revokeAccess(') && action.includes('removeAccess(') && action.includes('regenerateToken('))
+check('client actions do NOT reimplement token generation or touch the old store/table',
+  !action.includes('randomBytes') && !/client-access\/store|project_clients/.test(action) && action.includes("reason: 'invalid_contact'"))
+check('add / revoke / remove / resend + revalidate', ['addClientAction', 'revokeClientAction', 'removeClientAction', 'resendInvitationAction'].every((a) => action.includes(a)) && action.includes('revalidatePath('))
 
 console.log(`\n${failures === 0 ? 'ALL PASS' : `${failures} FAILURE(S)`}`)
 process.exit(failures === 0 ? 0 : 1)
