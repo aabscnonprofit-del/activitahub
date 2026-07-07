@@ -5,6 +5,8 @@ import { getPublicProject, listPublicFutureOccurrences, getProjectJoinPolicy, ge
 import { getParticipantForAccount } from '@/lib/participants/store'
 import { getPublicOrganizer } from '@/lib/marketplace/queries'
 import { isProjectCompleted, representativeOccurrence } from '@/lib/activity-marketplace/completed-public-activities'
+import { getParticipantMemoryEligibility } from '@/lib/activity-memories/participant-memory-eligibility'
+import { listParticipantStories, getParticipantStory } from '@/lib/activity-memories/store'
 import { JoinButton } from '@/components/participants/JoinButton'
 import { ActivityArchive } from '@/components/activities/ActivityArchive'
 import { getPublicEventPlan } from '@/lib/planning/load-public-event-plan'
@@ -70,6 +72,19 @@ export default async function PublicProjectPage({ params }: Props) {
   const isOwner = !!user && !!organizerId && user.id === organizerId
   const organizerStory = showArchive ? await getProjectOrganizerStory(supabase, projectId) : null
 
+  // Participant Stories (participant-generated Activity Memory) — loaded only in the archive state. Contribution
+  // is gated by the shared Participant Memory Eligibility helper (public + completed + approved participant);
+  // ticket ownership never grants it. Only the eligible participant edits their OWN story.
+  const participantStories = showArchive ? await listParticipantStories(projectId) : []
+  const canContributeStory = showArchive && getParticipantMemoryEligibility({
+    isPublished: true, // getPublicProject already required published
+    visibility,
+    occurrences: allOccs,
+    nowMs,
+    participantStatus: myParticipation?.status ?? null,
+  }).eligible
+  const myParticipantStory = canContributeStory && user ? await getParticipantStory(supabase, projectId, user.id) : null
+
   return (
     <div className="min-h-screen bg-white">
       <PublicHeader locale={locale} isAuthenticated={!!user} />
@@ -127,7 +142,15 @@ export default async function PublicProjectPage({ params }: Props) {
               </section>
             )}
             {/* Activity Archive + Activity Memories (Organizer Story + placeholders). No Join — completed. */}
-            <ActivityArchive projectId={projectId} locale={locale} organizerStory={organizerStory} canEditStory={showArchive && isOwner} />
+            <ActivityArchive
+              projectId={projectId}
+              locale={locale}
+              organizerStory={organizerStory}
+              canEditStory={showArchive && isOwner}
+              participantStories={participantStories}
+              myParticipantStory={myParticipantStory}
+              canContributeStory={canContributeStory}
+            />
           </>
         ) : (
           <>

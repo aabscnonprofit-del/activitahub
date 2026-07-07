@@ -22,17 +22,18 @@ function check(name: string, cond: boolean) {
 check('Activity Memories section present', archive.includes('Activity Memories'))
 check('memories intro explains future content will appear here', /will appear here in future versions/i.test(archive))
 
-// 2. The remaining placeholder cards (Organizer Story is now a real block, not a placeholder), each "Coming soon".
-const MEMORIES = ['Photos', 'Videos', 'Participant Stories', 'Reviews', 'Results', 'Achievements', 'Shared Links', 'Documents']
+// 2. The remaining placeholder cards (Organizer Story + Participant Stories are now real blocks), each "Coming soon".
+const MEMORIES = ['Photos', 'Videos', 'Reviews', 'Results', 'Achievements', 'Shared Links', 'Documents']
 check('remaining memory placeholders present', MEMORIES.every((m) => archive.includes(`'${m}'`)))
-check('Organizer Story is a real block (rendered), not a placeholder', archive.includes('<OrganizerStory') && !archive.includes("'Organizer Story'"))
+check('Organizer Story + Participant Stories are real blocks, not placeholders',
+  archive.includes('<OrganizerStory') && archive.includes('<ParticipantStories') && !archive.includes("'Organizer Story'") && !archive.includes("'Participant Stories'"))
 check('each placeholder is "Coming soon"', archive.includes('Coming soon'))
-check('flat "Participant Reviews" placeholder reorganized (now Participant Stories + Reviews)',
-  !archive.includes("'Participant Reviews'") && archive.includes("'Participant Stories'") && archive.includes("'Reviews'"))
+check('flat "Participant Reviews" placeholder reorganized (Participant Stories is a real block; Reviews stays)',
+  !archive.includes("'Participant Reviews'") && archive.includes('<ParticipantStories') && archive.includes("'Reviews'"))
 
 // 3. Structure: Activity Archive precedes Activity Memories (within the same archive presentation).
 check('Activity Archive appears before Activity Memories', archive.indexOf('Activity Archive') < archive.indexOf('Activity Memories'))
-check('page order: activity info → Activity Archive → Activity Memories (via <ActivityArchive)', page.includes('<ActivityArchive '))
+check('page order: activity info → Activity Archive → Activity Memories (via <ActivityArchive)', page.includes('<ActivityArchive'))
 
 // 4. Placeholders only — no upload/media/form/interaction/storage/API/DB.
 const code = archive.replace(/\/\/.*$/gm, '').replace(/\/\*[\s\S]*?\*\//g, '')

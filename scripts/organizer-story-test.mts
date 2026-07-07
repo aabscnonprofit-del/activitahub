@@ -48,8 +48,8 @@ check('page loads the story only in the archive state', page.includes('showArchi
 check('edit allowed only for the owner on a completed public activity', page.includes('canEditStory={showArchive && isOwner}') && page.includes('user.id === organizerId'))
 
 // 6. Only Organizer Story implemented — Photos/Videos/Participant Stories/Reviews remain placeholders.
-check('Photos/Videos/Participant Stories/Reviews still placeholders (not implemented)',
-  archive.includes("'Photos'") && archive.includes("'Videos'") && archive.includes("'Participant Stories'") && archive.includes("'Reviews'"))
+check('Photos/Videos/Reviews still placeholders (not implemented)',
+  archive.includes("'Photos'") && archive.includes("'Videos'") && archive.includes("'Reviews'"))
 
 console.log(`\n${failures === 0 ? 'ALL PASS' : `${failures} FAILURE(S)`}`)
 process.exit(failures === 0 ? 0 : 1)
