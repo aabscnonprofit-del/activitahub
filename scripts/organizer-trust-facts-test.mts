@@ -34,9 +34,10 @@ check('Completed Activities shows the real archive count', view.includes("label:
 // 5. Verification — existing certified field only (no new verification system).
 check('Verification uses the existing certified field', view.includes("label: 'Verification'") && view.includes("org.certified ? 'Verified' : 'Not verified'"))
 
-// 6. Facts only — no ratings/reviews/score/reputation/level/stars/percentages/gamification.
+// 6. Facts only — no ratings/score/reputation/level/stars/percentages/gamification. (Objective review FACTS —
+// counts on the separate "Organizer review facts" section — are allowed; ratings/scores are not.)
 const codeOnly = view.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '')
-check('no rating/review/reputation/level/score/stars/percentage/gamification', !/rating|review|reputation|\blevel\b|\bscore\b|\bstars?\b|percentage|gamif/i.test(codeOnly))
+check('no rating/reputation/level/score/stars/percentage/gamification', !/rating|reputation|\blevel\b|\bscore\b|\bstars?\b|percentage|gamif/i.test(codeOnly))
 
 // 7. Read-only projection — no new schema/migration, no reputation/score tables.
 check('no new migration for trust facts', (() => { try { read('../supabase/migrations/063_organizer_trust.sql'); return false } catch { return true } })())
