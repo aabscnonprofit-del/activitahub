@@ -160,3 +160,70 @@ export async function partitionOrganizerActivities(organizerId: string, nowIso: 
   completed.sort((a, b) => new Date(b.startsAt ?? 0).getTime() - new Date(a.startsAt ?? 0).getTime())
   return { current, completed }
 }
+
+/**
+ * Participant History — the completed PUBLIC activities where `userId` was an APPROVED participant. A read-only
+ * projection over Project + Participants + the shared completed-public-activities rule (no history table/entity):
+ * only published + visibility = 'public' + approved + COMPLETED, and only where the user was an approved
+ * participant. Ticket ownership never grants history (participation is read from project_participants, never the
+ * Ticket System). Newest-completed first; each activity appears once. Degrades to [] on any error.
+ */
+export async function listParticipantHistory(userId: string, nowIso: string): Promise<MarketplaceActivityCard[]> {
+  const admin = await createAdminClient()
+
+  // The user's APPROVED participations (the source of truth for attendance; unique per project).
+  const { data: parts } = await admin.from('project_participants').select('project_id').eq('account_id', userId).eq('status', 'approved')
+  const projectIds = [...new Set(((parts ?? []) as { project_id: string }[]).map((p) => p.project_id))]
+  if (projectIds.length === 0) return []
+
+  // Of those, the published + public + approved Projects (private / draft never appear).
+  const { data: projects } = await admin
+    .from('projects')
+    .select('id, owner_id, created_at')
+    .in('id', projectIds)
+    .eq('is_published', true)
+    .eq('visibility', 'public')
+    .not('approved_at', 'is', null)
+  if (!projects) return []
+
+  const nowMs = new Date(nowIso).getTime()
+  const organizerCache = new Map<string, Awaited<ReturnType<typeof getPublicOrganizer>>>()
+  const cards: MarketplaceActivityCard[] = []
+
+  for (const p of projects as ProjectRow[]) {
+    const plan = await getPublicEventPlan(p.id)
+    if (!plan) continue
+
+    const { data: occRows } = await admin
+      .from('occurrences')
+      .select('starts_at, ends_at, location, capacity, price_cents')
+      .eq('project_id', p.id)
+      .order('starts_at', { ascending: true })
+    const occs = (occRows ?? []) as OccRow[]
+    if (!isProjectCompleted(occs, nowMs)) continue // only COMPLETED activities belong to history
+    const o = representativeOccurrence(occs, nowMs, true) // its latest finished occurrence
+
+    if (!organizerCache.has(p.owner_id)) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      organizerCache.set(p.owner_id, await getPublicOrganizer(admin as any, p.owner_id))
+    }
+    const organizer = organizerCache.get(p.owner_id) ?? null
+
+    cards.push({
+      projectId: p.id,
+      title: plan.intendedExperience,
+      summary: plan.concept || null,
+      organizerName: organizer?.display_name ?? null,
+      organizerSlug: organizer?.slug ?? null,
+      location: o?.location ?? null,
+      startsAt: o?.starts_at ?? null,
+      endsAt: o?.ends_at ?? null,
+      capacity: o?.capacity ?? null,
+      priceCents: o?.price_cents ?? null,
+      createdAt: p.created_at,
+    })
+  }
+
+  cards.sort((a, b) => new Date(b.startsAt ?? 0).getTime() - new Date(a.startsAt ?? 0).getTime())
+  return cards
+}
