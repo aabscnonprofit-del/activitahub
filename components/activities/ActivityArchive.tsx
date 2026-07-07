@@ -1,14 +1,14 @@
 // Public Activity Space — the archive state of a COMPLETED public activity. A read-only presentation projection:
-// the permanent public-record notice (Activity Archive) + Activity Memories, the permanent container into which
-// all future content (photos, videos, organizer story, participant stories, reviews, results, achievements,
-// shared links, documents) will later be added. Nothing here is implemented — placeholders only. No media,
-// uploads, forms, interactions, storage, API, or database.
+// the permanent public-record notice (Activity Archive) + Activity Memories, the permanent container that
+// gradually accumulates content. Organizer Story is the first REAL memory (see OrganizerStory); the rest remain
+// placeholders. No photos/videos/participant-stories/reviews implementation, no uploads/storage/API/database.
 
-// Activity Memories — the future content that will live in a completed activity's public space. Placeholders.
+import { OrganizerStory } from './OrganizerStory'
+
+// Remaining Activity Memories (future content) — placeholders. Organizer Story is a real block, not listed here.
 const ACTIVITY_MEMORIES = [
   'Photos',
   'Videos',
-  'Organizer Story',
   'Participant Stories',
   'Reviews',
   'Results',
@@ -17,7 +17,17 @@ const ACTIVITY_MEMORIES = [
   'Documents',
 ]
 
-export function ActivityArchive() {
+export function ActivityArchive({
+  projectId,
+  locale,
+  organizerStory,
+  canEditStory,
+}: {
+  projectId: string
+  locale: string
+  organizerStory: string | null
+  canEditStory: boolean
+}) {
   return (
     <>
       {/* Activity Archive — the permanent-public-record notice. */}
@@ -33,7 +43,13 @@ export function ActivityArchive() {
         <p className="mt-2 max-w-2xl text-sm text-slate-500">
           Memories from this activity — photos, videos, stories, results and more — will appear here in future versions.
         </p>
-        <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+
+        {/* Organizer Story — the first real memory (public read-only; the organizer can edit their own). */}
+        <div className="mt-4">
+          <OrganizerStory projectId={projectId} locale={locale} initialStory={organizerStory} canEdit={canEditStory} />
+        </div>
+
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {ACTIVITY_MEMORIES.map((label) => (
             <div key={label} className="rounded-lg border border-dashed border-slate-200 p-4">
               <p className="text-sm font-semibold text-slate-700">{label}</p>
