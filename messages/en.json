@@ -1296,6 +1296,7 @@
     }
   },
   "account": {
+    "history": { "title": "Activity history", "description": "See the public activities you have completed.", "cta": "View history" },
     "greeting": "Welcome back, {name}",
     "greetingPlain": "Welcome back",
     "subtitle": "Your experiences, bookings, and requests — all in one place.",

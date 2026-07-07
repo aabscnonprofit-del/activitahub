@@ -1296,6 +1296,7 @@
     }
   },
   "account": {
+    "history": { "title": "Historial de actividades", "description": "Consulta las actividades públicas que has completado.", "cta": "Ver historial" },
     "greeting": "Hola de nuevo, {name}",
     "greetingPlain": "Hola de nuevo",
     "subtitle": "Tus experiencias, reservas y solicitudes, todo en un solo lugar.",

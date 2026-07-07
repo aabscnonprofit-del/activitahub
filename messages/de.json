@@ -1296,6 +1296,7 @@
     }
   },
   "account": {
+    "history": { "title": "Aktivitätsverlauf", "description": "Sieh dir die öffentlichen Aktivitäten an, die du abgeschlossen hast.", "cta": "Verlauf ansehen" },
     "greeting": "Willkommen zurück, {name}",
     "greetingPlain": "Willkommen zurück",
     "subtitle": "Deine Erlebnisse, Buchungen und Anfragen – alles an einem Ort.",

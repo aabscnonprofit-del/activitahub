@@ -2,7 +2,7 @@ import { getTranslations } from 'next-intl/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import {
-  Compass, CalendarPlus, CalendarDays, ArrowRight, LayoutDashboard, Sparkles,
+  Compass, CalendarPlus, CalendarDays, ArrowRight, LayoutDashboard, Sparkles, History,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { PublicHeader } from '@/components/layout/PublicHeader'
@@ -77,7 +77,7 @@ export default async function AccountPage({ params }: AccountPageProps) {
           <p className="mt-1 text-sm text-slate-500 sm:text-base">{t('subtitle')}</p>
 
           {/* Primary participant actions */}
-          <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <Link href={`/${locale}/marketplace`} className="card card-hover flex flex-col p-5 sm:p-6">
               <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
                 <Compass className="h-5 w-5" aria-hidden="true" />
@@ -97,6 +97,18 @@ export default async function AccountPage({ params }: AccountPageProps) {
               <p className="mt-1 flex-1 text-sm leading-relaxed text-slate-600">{t('request.description')}</p>
               <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-brand-600">
                 {t('request.cta')}<ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </span>
+            </Link>
+
+            {/* Participant History — reuses the existing /me/history projection page (navigation only). */}
+            <Link href={`/${locale}/me/history`} className="card card-hover flex flex-col p-5 sm:p-6">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+                <History className="h-5 w-5" aria-hidden="true" />
+              </div>
+              <h2 className="mt-4 font-bold text-slate-900">{t('history.title')}</h2>
+              <p className="mt-1 flex-1 text-sm leading-relaxed text-slate-600">{t('history.description')}</p>
+              <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-brand-600">
+                {t('history.cta')}<ArrowRight className="h-4 w-4" aria-hidden="true" />
               </span>
             </Link>
           </div>
