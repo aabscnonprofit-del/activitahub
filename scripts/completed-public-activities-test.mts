@@ -19,10 +19,12 @@ function check(name: string, cond: boolean) {
   if (cond) console.log(`  ok  ${name}`)
   else { failures++; console.log(`  FAIL ${name}`) }
 }
+const helper = read('../lib/activity-marketplace/completed-public-activities.ts')
 const partition = cards.slice(cards.indexOf('export async function partitionOrganizerActivities'))
 
 // 1. Projection over existing Project + Occurrence data — no new entity / lifecycle / status.
-check('partitionOrganizerActivities is a projection over occurrences', partition.includes("from('occurrences')") && partition.includes('ends_at ?? o.starts_at'))
+check('partitionOrganizerActivities is a projection over occurrences (uses the shared rule)',
+  partition.includes("from('occurrences')") && partition.includes('isProjectCompleted(occs, nowMs)') && partition.includes('representativeOccurrence(occs, nowMs, isCompleted)'))
 check('no new "completed" Project state written (read-only projection)', !/update\(\{[^}]*completed|status:\s*'completed'/i.test(cards))
 check('no new entity/table created for completed activities', !/CREATE TABLE|from\('(completed_activities|organizer_archive|activity_archive)'\)/i.test(cards))
 
@@ -30,10 +32,12 @@ check('no new entity/table created for completed activities', !/CREATE TABLE|fro
 check('archive rule: owner + published + public + approved',
   partition.includes(".eq('owner_id', organizerId)") && partition.includes(".eq('is_published', true)") && partition.includes(".eq('visibility', 'public')") && partition.includes(".not('approved_at', 'is', null)"))
 
-// 3. Completion definition — every occurrence finished; current otherwise.
-check('completed = has occurrences and every one finished', partition.includes('const isCompleted = future.length === 0 && past.length > 0'))
-check('current uses the next upcoming occurrence (or none scheduled yet)', partition.includes('future[0] ?? null'))
-check('completed uses the latest finished occurrence', partition.includes('past[past.length - 1]'))
+// 3. Completion RULE lives in the ONE shared helper — the raw rule is not duplicated in cards.ts.
+check('shared helper exposes the completion rule', helper.includes('export function isOccurrenceFinished') && helper.includes('export function isProjectCompleted') && helper.includes('export function representativeOccurrence'))
+check('helper: occurrence finished = (ends_at ?? starts_at) < now', /ends_at \?\? occ\.starts_at[\s\S]{0,30}getTime\(\) < nowMs/.test(helper))
+check('helper: completed = has occurrences and every one finished', helper.includes('occurrences.length > 0 && occurrences.every'))
+const cardsCode = cards.replace(/\/\/.*$/gm, '').replace(/\/\*[\s\S]*?\*\//g, '')
+check('the raw rule (ends_at ?? starts_at) is NOT duplicated in cards.ts', !/ends_at \?\? [a-z.]*starts_at/.test(cardsCode))
 
 // 4. A Project is in EXACTLY one bucket — never both.
 check('exclusive partition (isCompleted → completed, else current)',
