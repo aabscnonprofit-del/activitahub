@@ -9,7 +9,7 @@
 import { readFileSync } from 'node:fs'
 
 const read = (p: string) => readFileSync(new URL(p, import.meta.url), 'utf8')
-const mig = read('../supabase/migrations/063_project_organizer_story.sql')
+const mig = read('../supabase/migrations/064_project_activity_memories.sql')
 const store = read('../lib/projects/store.ts')
 const action = read('../lib/actions/organizer-story.ts')
 const comp = read('../components/activities/OrganizerStory.tsx')
@@ -22,14 +22,13 @@ function check(name: string, cond: boolean) {
   else { failures++; console.log(`  FAIL ${name}`) }
 }
 
-// 1. Minimal persistence — one nullable text column; NO Story/Memory/Timeline entity.
-check('migration adds a single organizer_story text column (idempotent)', mig.includes('ADD COLUMN IF NOT EXISTS organizer_story TEXT'))
-check('story is nullable (NULL = no story → placeholder)', !/organizer_story TEXT NOT NULL/.test(mig))
-check('no Story/Memory/Timeline entity (only ALTER projects)', !/CREATE TABLE/i.test(mig) && mig.includes('ALTER TABLE') && mig.includes('projects'))
+// 1. Persistence — the Activity Memories storage table (one nullable text field); story moved off projects.
+check('memories table has a nullable organizer_story text field', mig.includes('CREATE TABLE IF NOT EXISTS project_activity_memories') && mig.includes('organizer_story TEXT') && !/organizer_story TEXT NOT NULL/.test(mig))
+check('organizer story moved off projects (legacy column dropped)', mig.includes('DROP COLUMN organizer_story'))
 
-// 2. Store — a Project property; tolerant read; owner-scoped write.
-check('getProjectOrganizerStory reads the column, tolerant null', store.includes("select('organizer_story')") && /getProjectOrganizerStory[\s\S]{0,400}return null/.test(store))
-check('setProjectOrganizerStory owner-scoped update', store.includes('.update({ organizer_story: story })'))
+// 2. Store — reads/writes the Activity Memories storage; tolerant read; owner-scoped upsert.
+check('getProjectOrganizerStory reads the memories table, tolerant null', store.includes("from('project_activity_memories').select('organizer_story')") && /getProjectOrganizerStory[\s\S]{0,500}return null/.test(store))
+check('setProjectOrganizerStory upserts the memories row', store.includes("from('project_activity_memories').upsert({ project_id: projectId, organizer_story: story }"))
 
 // 3. Action — owner-only, plain text, length-limited.
 check('setOrganizerStoryAction is owner-gated', action.includes('export async function setOrganizerStoryAction') && action.includes('getProject(supabase, projectId)') && action.includes("error: 'not_authenticated'"))
