@@ -42,8 +42,8 @@ check('action auth-gated + rejects the ineligible + length-limited + writes own 
 check('action never reads the Ticket System', !/ticket_type|getProjectTicketType|TicketType/i.test(action.replace(/\/\/.*$/gm, '')))
 
 // 4. Store — child-table get/set(own)/list(names + date, chronological).
-check('store uses the reviews table + upserts one row per (project, participant)',
-  store.includes("from('project_activity_reviews')") && store.includes("onConflict: 'project_id,participant_id'"))
+check('store uses the unified memory-items layer (activity_review) + upserts one row per (project, participant, type)',
+  store.includes("from('project_activity_memory_items')") && store.includes('activity_review') && store.includes("onConflict: 'project_id,memory_type,author_id'"))
 check('store lists reviews with names, chronological', store.includes('listActivityReviews') && store.includes("order('created_at', { ascending: true })"))
 
 // 5. Display + editor — read-only list (name + text + date); eligible participant edits own; plain text; placeholder.
