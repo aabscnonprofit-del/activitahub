@@ -4,12 +4,14 @@
 // placeholders. No photos/videos/participant-stories/reviews implementation, no uploads/storage/API/database.
 
 import { OrganizerStory } from './OrganizerStory'
+import { ParticipantStories } from './ParticipantStories'
+import type { ParticipantStoryEntry } from '@/lib/activity-memories/store'
 
-// Remaining Activity Memories (future content) — placeholders. Organizer Story is a real block, not listed here.
+// Remaining Activity Memories (future content) — placeholders. Organizer Story and Participant Stories are real
+// blocks, not listed here.
 const ACTIVITY_MEMORIES = [
   'Photos',
   'Videos',
-  'Participant Stories',
   'Reviews',
   'Results',
   'Achievements',
@@ -22,11 +24,17 @@ export function ActivityArchive({
   locale,
   organizerStory,
   canEditStory,
+  participantStories,
+  myParticipantStory,
+  canContributeStory,
 }: {
   projectId: string
   locale: string
   organizerStory: string | null
   canEditStory: boolean
+  participantStories: ParticipantStoryEntry[]
+  myParticipantStory: string | null
+  canContributeStory: boolean
 }) {
   return (
     <>
@@ -44,10 +52,20 @@ export function ActivityArchive({
           Memories from this activity — photos, videos, stories, results and more — will appear here in future versions.
         </p>
 
-        {/* Organizer Story — the first real memory (public read-only; the organizer can edit their own). */}
+        {/* Organizer Story — the organizer's reflection (public read-only; the organizer can edit their own). */}
         <div className="mt-4">
           <OrganizerStory projectId={projectId} locale={locale} initialStory={organizerStory} canEdit={canEditStory} />
         </div>
+
+        {/* Participant Stories — participants' reflections (public read-only; an eligible participant edits own). */}
+        <ParticipantStories
+          projectId={projectId}
+          locale={locale}
+          stories={participantStories.map((s) => ({ participantId: s.participantId, name: s.name, story: s.story }))}
+          myStory={myParticipantStory}
+          canContribute={canContributeStory}
+        />
+
 
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {ACTIVITY_MEMORIES.map((label) => (
