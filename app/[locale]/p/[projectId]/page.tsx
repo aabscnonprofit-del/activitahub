@@ -1,10 +1,12 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
-import { getPublicProject, listPublicFutureOccurrences, getProjectJoinPolicy, getProjectTicketType } from '@/lib/projects/store'
+import { getPublicProject, listPublicFutureOccurrences, getProjectJoinPolicy, getProjectTicketType, getProjectVisibility } from '@/lib/projects/store'
 import { getParticipantForAccount } from '@/lib/participants/store'
 import { getPublicOrganizer } from '@/lib/marketplace/queries'
+import { isProjectCompleted, representativeOccurrence } from '@/lib/activity-marketplace/completed-public-activities'
 import { JoinButton } from '@/components/participants/JoinButton'
+import { ActivityArchive } from '@/components/activities/ActivityArchive'
 import { getPublicEventPlan } from '@/lib/planning/load-public-event-plan'
 import { PublicHeader } from '@/components/layout/PublicHeader'
 import { formatDate } from '@/lib/utils'
@@ -31,6 +33,17 @@ export default async function PublicProjectPage({ params }: Props) {
 
   const occurrences = await listPublicFutureOccurrences(supabase, projectId, new Date().toISOString())
 
+  // Public Activity Space — a completed PUBLIC activity's /p/[projectId] page becomes its permanent public
+  // archive. "Completed" is the shared occurrence projection (every occurrence finished); "public" is required
+  // so private/invitation-only Projects never expose the archive. Reads all occurrences (timestamps only) for
+  // the completion rule + the finished occurrence to show its date/location.
+  const visibility = await getProjectVisibility(supabase, projectId)
+  const { data: allOccData } = await supabase.from('occurrences').select('starts_at, ends_at, location').eq('project_id', projectId).order('starts_at', { ascending: true })
+  const allOccs = (allOccData ?? []) as { starts_at: string; ends_at: string | null; location: string | null }[]
+  const nowMs = Date.now()
+  const showArchive = visibility === 'public' && isProjectCompleted(allOccs, nowMs)
+  const archivedOccurrence = showArchive ? representativeOccurrence(allOccs, nowMs, true) : null
+
   // Join policy drives the participant Join action (tolerant default 'approval'). When the policy is 'ticket',
   // the Ticket System's ticket type (tolerant default 'free') decides the Join CTA.
   const joinPolicy = await getProjectJoinPolicy(supabase, projectId)
@@ -56,7 +69,7 @@ export default async function PublicProjectPage({ params }: Props) {
     <div className="min-h-screen bg-white">
       <PublicHeader locale={locale} isAuthenticated={!!user} />
       <main className="mx-auto max-w-3xl px-4 py-10">
-        <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Public event</p>
+        <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">{showArchive ? 'Completed activity' : 'Public event'}</p>
         {/* Organized by → the public Organizer Page (identity + trust layer). */}
         {organizer?.display_name && organizerId && (
           <p className="mt-1 text-sm text-slate-500">
@@ -96,52 +109,71 @@ export default async function PublicProjectPage({ params }: Props) {
           </>
         )}
 
-        {/* Future Occurrences */}
-        <section className="mt-8">
-          <h2 className="text-sm font-bold uppercase tracking-wide text-slate-400">
-            {occurrences.length > 1 ? 'Choose a date' : 'When'}
-          </h2>
+        {showArchive ? (
+          <>
+            {/* When & where it was held — the completed occurrence's date + location. */}
+            {archivedOccurrence && (
+              <section className="mt-8">
+                <h2 className="text-sm font-bold uppercase tracking-wide text-slate-400">When &amp; where</h2>
+                <p className="mt-3 flex flex-wrap items-center gap-3 text-sm text-slate-700">
+                  <span className="flex items-center gap-1.5"><CalendarDays className="h-4 w-4 text-slate-400" aria-hidden />{formatDate(archivedOccurrence.starts_at)}</span>
+                  {archivedOccurrence.location && <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4 text-slate-400" aria-hidden />{archivedOccurrence.location}</span>}
+                </p>
+              </section>
+            )}
+            {/* Activity Archive + future-content placeholders (no Join — a completed activity is not joinable). */}
+            <ActivityArchive />
+          </>
+        ) : (
+          <>
+            {/* Future Occurrences */}
+            <section className="mt-8">
+              <h2 className="text-sm font-bold uppercase tracking-wide text-slate-400">
+                {occurrences.length > 1 ? 'Choose a date' : 'When'}
+              </h2>
 
-          {occurrences.length === 0 ? (
-            <p className="mt-3 rounded-lg border border-dashed border-slate-200 bg-slate-50/50 p-4 text-sm text-slate-400">
-              Dates coming soon.
-            </p>
-          ) : (
-            <ul className="mt-3 space-y-2">
-              {occurrences.map((o) => (
-                <li key={o.id} className="flex items-center gap-3 rounded-lg border border-slate-200 p-4">
-                  <CalendarDays className="h-5 w-5 shrink-0 text-brand-600" aria-hidden="true" />
-                  <div>
-                    <p className="text-sm font-semibold text-slate-900">
-                      {o.title?.trim() || formatDate(o.starts_at)}
-                    </p>
-                    <p className="text-xs text-slate-500">
-                      {formatDate(o.starts_at)}
-                      {o.location ? (
-                        <span className="ml-1 inline-flex items-center gap-1">
-                          <MapPin className="h-3.5 w-3.5" aria-hidden="true" />
-                          {o.location}
-                        </span>
-                      ) : null}
-                    </p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
-        </section>
+              {occurrences.length === 0 ? (
+                <p className="mt-3 rounded-lg border border-dashed border-slate-200 bg-slate-50/50 p-4 text-sm text-slate-400">
+                  Dates coming soon.
+                </p>
+              ) : (
+                <ul className="mt-3 space-y-2">
+                  {occurrences.map((o) => (
+                    <li key={o.id} className="flex items-center gap-3 rounded-lg border border-slate-200 p-4">
+                      <CalendarDays className="h-5 w-5 shrink-0 text-brand-600" aria-hidden="true" />
+                      <div>
+                        <p className="text-sm font-semibold text-slate-900">
+                          {o.title?.trim() || formatDate(o.starts_at)}
+                        </p>
+                        <p className="text-xs text-slate-500">
+                          {formatDate(o.starts_at)}
+                          {o.location ? (
+                            <span className="ml-1 inline-flex items-center gap-1">
+                              <MapPin className="h-3.5 w-3.5" aria-hidden="true" />
+                              {o.location}
+                            </span>
+                          ) : null}
+                        </p>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </section>
 
-        {/* Join — label + behavior driven by the Project's Join Policy and the viewer's participation.
-            instant → join as approved; approval → request (pending); ticket → non-functional "Get Tickets". */}
-        <JoinButton
-          projectId={projectId}
-          locale={locale}
-          joinPolicy={joinPolicy}
-          ticketType={ticketType}
-          initialStatus={myParticipation?.status ?? null}
-          isAuthenticated={!!user}
-          signInHref={`/${locale}/sign-in`}
-        />
+            {/* Join — label + behavior driven by the Project's Join Policy and the viewer's participation.
+                instant → join as approved; approval → request (pending); ticket → non-functional "Get Tickets". */}
+            <JoinButton
+              projectId={projectId}
+              locale={locale}
+              joinPolicy={joinPolicy}
+              ticketType={ticketType}
+              initialStatus={myParticipation?.status ?? null}
+              isAuthenticated={!!user}
+              signInHref={`/${locale}/sign-in`}
+            />
+          </>
+        )}
       </main>
     </div>
   )
