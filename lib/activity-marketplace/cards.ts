@@ -9,6 +9,7 @@
 import { createAdminClient } from '@/lib/supabase/server'
 import { getPublicEventPlan } from '@/lib/planning/load-public-event-plan'
 import { getPublicOrganizer } from '@/lib/marketplace/queries'
+import { isProjectCompleted, representativeOccurrence } from './completed-public-activities'
 import type { MarketplaceActivityCard } from './model'
 
 export type { MarketplaceActivityCard } from './model'
@@ -96,11 +97,10 @@ export interface OrganizerActivities {
  * the SAME public-safe rule (published + visibility = 'public' + approved), scoped to this organizer. Private /
  * published-private / draft-public Projects never appear.
  *
- * "Completed" is a read-only PROJECTION over existing occurrence timestamps (no "completed" Project state, no
- * new lifecycle): a Project is completed when it HAS occurrences and EVERY occurrence has finished
- * (ends_at ?? starts_at < now). Otherwise it is current (an upcoming/ongoing occurrence, or none scheduled yet).
- * The future-occurrence discriminator puts each Project in exactly ONE bucket — never both. Completed are
- * ordered newest-finished first. Degrades to empty when the visibility column is absent.
+ * "Completed" is a read-only PROJECTION (no "completed" Project state, no new lifecycle). The completion rule
+ * itself lives in the single shared module ./completed-public-activities (isProjectCompleted /
+ * representativeOccurrence) — it is NOT restated here. Each Project falls into exactly ONE bucket — never both.
+ * Completed are ordered newest-finished first. Degrades to empty when the visibility column is absent.
  */
 export async function partitionOrganizerActivities(organizerId: string, nowIso: string): Promise<OrganizerActivities> {
   const admin = await createAdminClient()
@@ -130,12 +130,9 @@ export async function partitionOrganizerActivities(organizerId: string, nowIso: 
       .eq('project_id', p.id)
       .order('starts_at', { ascending: true })
     const occs = (occRows ?? []) as OccRow[]
-    const effEndMs = (o: OccRow) => new Date(o.ends_at ?? o.starts_at).getTime()
-    const future = occs.filter((o) => effEndMs(o) >= nowMs)
-    const past = occs.filter((o) => effEndMs(o) < nowMs)
-    // Completed = has occurrences and every one has finished. Otherwise current (incl. not-yet-scheduled).
-    const isCompleted = future.length === 0 && past.length > 0
-    const o = isCompleted ? past[past.length - 1] : future[0] ?? null
+    // Completion rule lives in ./completed-public-activities (the single shared projection) — not inline here.
+    const isCompleted = isProjectCompleted(occs, nowMs)
+    const o = representativeOccurrence(occs, nowMs, isCompleted)
 
     if (!organizerCache.has(p.owner_id)) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
