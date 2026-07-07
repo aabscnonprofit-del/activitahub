@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { getPublicOrganizer } from '@/lib/marketplace/queries'
-import { listOrganizerPublicActivities } from '@/lib/activity-marketplace/cards'
+import { partitionOrganizerActivities } from '@/lib/activity-marketplace/cards'
 import { OrganizerPublicView } from '@/components/organizer/OrganizerPublicView'
 import { absoluteUrl, organizerHref } from '@/lib/utils'
 import type { Locale } from '@/lib/types'
@@ -33,16 +33,17 @@ export default async function OrganizerProfilePage({ params }: OrganizerPageProp
   const org = await getPublicOrganizer(supabase, id)
   if (!org) notFound()
 
-  // The organizer's CURRENT public activities = their published Projects with visibility = 'public' (the same
-  // public-safe Local Activities rule, scoped to this organizer). Private / published-private / draft-public
-  // Projects never appear.
-  const activities = await listOrganizerPublicActivities(id, new Date().toISOString())
+  // The organizer's public activities (published + visibility = 'public' + approved), partitioned into CURRENT
+  // (upcoming/ongoing) and COMPLETED (every occurrence finished — a projection over occurrence timestamps). A
+  // Project is in exactly one bucket. Private / published-private / draft-public Projects never appear.
+  const { current, completed } = await partitionOrganizerActivities(id, new Date().toISOString())
 
   return (
     <OrganizerPublicView
       locale={locale}
       org={org}
-      activities={activities}
+      activities={current}
+      completedActivities={completed}
       isAuthenticated={!!user}
     />
   )

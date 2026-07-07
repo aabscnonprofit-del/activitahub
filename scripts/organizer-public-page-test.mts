@@ -23,7 +23,7 @@ function check(name: string, cond: boolean) {
 
 // 1. Public Organizer Page exists at /organizers/[id], reading existing public organizer data + Project activities.
 check('organizer page renders the public view', page.includes('<OrganizerPublicView') && page.includes('getPublicOrganizer(supabase, id)'))
-check('organizer page loads the organizer\'s public activities', page.includes('listOrganizerPublicActivities(id, new Date().toISOString())'))
+check('organizer page loads the organizer\'s public activities', page.includes('partitionOrganizerActivities(id, new Date().toISOString())'))
 check('missing organizer → 404 (no fake page)', page.includes('notFound()'))
 
 // 2. Profile shows public info (name / bio / location / languages) with safe placeholders; no private data.
@@ -32,19 +32,19 @@ check('safe placeholder when bio is missing', view.includes("org.bio || 'This or
 check('no private account data exposed (no email/phone/account fields)', !/org\.(email|phone|account)|\bemail\b|\bphone\b/i.test(view))
 
 // 3. Current activities = published Projects WHERE visibility = public (the strict data rule).
-check('per-organizer query scoped to the organizer', cards.includes("export async function listOrganizerPublicActivities") && cards.includes(".eq('owner_id', organizerId)"))
+check('per-organizer query scoped to the organizer', cards.includes("export async function partitionOrganizerActivities") && cards.includes(".eq('owner_id', organizerId)"))
 check('data rule: published', cards.includes(".eq('is_published', true)"))
 check('data rule: visibility = public (private never appears)', cards.includes(".eq('visibility', 'public')"))
 check('data rule: approved (draft never appears)', cards.includes(".not('approved_at', 'is', null)"))
 {
   // The per-organizer query must carry ALL of owner + published + public + approved together.
-  const fn = cards.slice(cards.indexOf('listOrganizerPublicActivities'))
+  const fn = cards.slice(cards.indexOf('partitionOrganizerActivities'))
   check('per-organizer query requires owner + published + public + approved together',
     fn.includes(".eq('owner_id', organizerId)") && fn.includes(".eq('is_published', true)") && fn.includes(".eq('visibility', 'public')") && fn.includes(".not('approved_at', 'is', null)"))
 }
 
 // 4. Past Activities — placeholder, NOT faked.
-check('past activities is a placeholder (not faked)', view.includes('Past Activities archive will appear after completed-project tracking is available'))
+check('past activities shows the completed public archive (real projection, not faked)', view.includes('completedActivities.map') && view.includes('has no completed public activities yet'))
 
 // 5. Activity Page links to the Organizer Page.
 check('Activity Page shows "Organized by" linking to /organizers/[organizerId]',
