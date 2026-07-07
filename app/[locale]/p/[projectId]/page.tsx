@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
-import { getPublicProject, listPublicFutureOccurrences, getProjectJoinPolicy, getProjectTicketType, getProjectVisibility } from '@/lib/projects/store'
+import { getPublicProject, listPublicFutureOccurrences, getProjectJoinPolicy, getProjectTicketType, getProjectVisibility, getProjectOrganizerStory } from '@/lib/projects/store'
 import { getParticipantForAccount } from '@/lib/participants/store'
 import { getPublicOrganizer } from '@/lib/marketplace/queries'
 import { isProjectCompleted, representativeOccurrence } from '@/lib/activity-marketplace/completed-public-activities'
@@ -65,6 +65,11 @@ export default async function PublicProjectPage({ params }: Props) {
   const organizerId = (ownerRow as { owner_id?: string } | null)?.owner_id ?? null
   const organizer = organizerId ? await getPublicOrganizer(supabase, organizerId) : null
 
+  // Organizer Story (first Activity Memory) — public content, loaded only in the archive state. Only the owner
+  // (the organizer) may edit it, and only for a completed public activity.
+  const isOwner = !!user && !!organizerId && user.id === organizerId
+  const organizerStory = showArchive ? await getProjectOrganizerStory(supabase, projectId) : null
+
   return (
     <div className="min-h-screen bg-white">
       <PublicHeader locale={locale} isAuthenticated={!!user} />
@@ -121,8 +126,8 @@ export default async function PublicProjectPage({ params }: Props) {
                 </p>
               </section>
             )}
-            {/* Activity Archive + future-content placeholders (no Join — a completed activity is not joinable). */}
-            <ActivityArchive />
+            {/* Activity Archive + Activity Memories (Organizer Story + placeholders). No Join — completed. */}
+            <ActivityArchive projectId={projectId} locale={locale} organizerStory={organizerStory} canEditStory={showArchive && isOwner} />
           </>
         ) : (
           <>

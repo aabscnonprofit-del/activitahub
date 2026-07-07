@@ -32,7 +32,7 @@ check('page only loads published Projects (unpublished/draft never reach the arc
 check('Activity Archive section exists', archive.includes('Activity Archive'))
 check('archive message: "This activity has been completed."', archive.includes('This activity has been completed.'))
 check('archive message: permanent public archive', archive.includes('This page will become the permanent public archive of the activity.'))
-check('page renders the ActivityArchive in the completed branch', page.includes('<ActivityArchive />'))
+check('page renders the ActivityArchive in the completed branch', page.includes('<ActivityArchive '))
 
 // 4. Future sections appear only as placeholders (Coming soon) — no implementation.
 check('future sections are placeholders in an Activity Memories section', archive.includes('Activity Memories') && archive.includes("'Photos'") && archive.includes('Coming soon'))
