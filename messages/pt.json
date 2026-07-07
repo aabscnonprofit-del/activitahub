@@ -1296,6 +1296,7 @@
     }
   },
   "account": {
+    "history": { "title": "Histórico de atividades", "description": "Veja as atividades públicas que você concluiu.", "cta": "Ver histórico" },
     "greeting": "Bem-vindo de volta, {name}",
     "greetingPlain": "Bem-vindo de volta",
     "subtitle": "As suas experiências, reservas e pedidos — tudo num só lugar.",
