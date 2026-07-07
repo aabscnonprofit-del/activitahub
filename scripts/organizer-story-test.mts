@@ -47,9 +47,9 @@ check('Organizer Story rendered inside Activity Memories (archive)', archive.inc
 check('page loads the story only in the archive state', page.includes('showArchive ? await getProjectOrganizerStory(supabase, projectId) : null'))
 check('edit allowed only for the owner on a completed public activity', page.includes('canEditStory={showArchive && isOwner}') && page.includes('user.id === organizerId'))
 
-// 6. Only Organizer Story implemented — Photos/Videos/Participant Stories/Reviews remain placeholders.
-check('Photos/Videos/Reviews still placeholders (not implemented)',
-  archive.includes("'Photos'") && archive.includes("'Videos'") && archive.includes("'Reviews'"))
+// 6. Organizer Story is its own block; Photos/Videos remain placeholders.
+check('Photos/Videos still placeholders (not implemented)',
+  archive.includes("'Photos'") && archive.includes("'Videos'"))
 
 console.log(`\n${failures === 0 ? 'ALL PASS' : `${failures} FAILURE(S)`}`)
 process.exit(failures === 0 ? 0 : 1)

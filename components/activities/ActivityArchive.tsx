@@ -5,14 +5,14 @@
 
 import { OrganizerStory } from './OrganizerStory'
 import { ParticipantStories } from './ParticipantStories'
-import type { ParticipantStoryEntry } from '@/lib/activity-memories/store'
+import { ActivityReviews } from './ActivityReviews'
+import type { ParticipantStoryEntry, ActivityReviewEntry } from '@/lib/activity-memories/store'
 
-// Remaining Activity Memories (future content) — placeholders. Organizer Story and Participant Stories are real
-// blocks, not listed here.
+// Remaining Activity Memories (future content) — placeholders. Organizer Story, Participant Stories, and
+// Activity Reviews are real blocks, not listed here.
 const ACTIVITY_MEMORIES = [
   'Photos',
   'Videos',
-  'Reviews',
   'Results',
   'Achievements',
   'Shared Links',
@@ -27,6 +27,9 @@ export function ActivityArchive({
   participantStories,
   myParticipantStory,
   canContributeStory,
+  activityReviews,
+  myActivityReview,
+  canReview,
 }: {
   projectId: string
   locale: string
@@ -35,6 +38,9 @@ export function ActivityArchive({
   participantStories: ParticipantStoryEntry[]
   myParticipantStory: string | null
   canContributeStory: boolean
+  activityReviews: ActivityReviewEntry[]
+  myActivityReview: string | null
+  canReview: boolean
 }) {
   return (
     <>
@@ -64,6 +70,15 @@ export function ActivityArchive({
           stories={participantStories.map((s) => ({ participantId: s.participantId, name: s.name, story: s.story }))}
           myStory={myParticipantStory}
           canContribute={canContributeStory}
+        />
+
+        {/* Activity Reviews — participants' feedback (public read-only; an eligible participant edits own). */}
+        <ActivityReviews
+          projectId={projectId}
+          locale={locale}
+          reviews={activityReviews}
+          myReview={myActivityReview}
+          canReview={canReview}
         />
 
 
