@@ -266,13 +266,14 @@ export async function setProjectTicketType(supabase: ServerClient, projectId: st
 }
 
 /**
- * Read a Project's Organizer Story (migration 063) — the organizer's public reflection on a completed public
- * activity. Tolerant: null when the column is absent (063 not yet applied), on error, or when empty. A property
- * of the Project; public content readable for a published Project.
+ * Read a Project's Organizer Story from the Activity Memories storage layer (project_activity_memories,
+ * migration 064) — the organizer's public reflection on a completed public activity. Tolerant: null when the
+ * table is absent (064 not yet applied), no memories row exists, on error, or when empty. Public content
+ * readable for a published + public Project (public-read RLS); the "completed" gate stays in the UI.
  */
 export async function getProjectOrganizerStory(supabase: ServerClient, projectId: string): Promise<string | null> {
   try {
-    const { data, error } = await supabase.from('projects').select('organizer_story').eq('id', projectId).maybeSingle()
+    const { data, error } = await supabase.from('project_activity_memories').select('organizer_story').eq('project_id', projectId).maybeSingle()
     if (error || !data) return null
     const s = (data as { organizer_story?: string | null }).organizer_story
     return typeof s === 'string' && s.trim().length > 0 ? s : null
@@ -281,9 +282,12 @@ export async function getProjectOrganizerStory(supabase: ServerClient, projectId
   }
 }
 
-/** Set (or clear, with null) a Project's Organizer Story (owner RLS scopes it). Returns true on success. */
+/**
+ * Set (or clear, with null) a Project's Organizer Story in the Activity Memories storage layer. Upserts the
+ * single per-Project memories row (owner RLS scopes it). Returns true on success.
+ */
 export async function setProjectOrganizerStory(supabase: ServerClient, projectId: string, story: string | null): Promise<boolean> {
-  const { error } = await supabase.from('projects').update({ organizer_story: story }).eq('id', projectId)
+  const { error } = await supabase.from('project_activity_memories').upsert({ project_id: projectId, organizer_story: story }, { onConflict: 'project_id' })
   return !error
 }
 
