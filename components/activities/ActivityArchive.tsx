@@ -1,9 +1,21 @@
-// Public Activity Space — the archive state of a COMPLETED public activity. A read-only projection: the
-// permanent public record message + placeholders for the future content that will EXTEND this space (photos,
-// videos, organizer story, participant reviews, achievements). Nothing here is implemented — placeholders only,
-// no media/reviews/uploads/entities.
+// Public Activity Space — the archive state of a COMPLETED public activity. A read-only presentation projection:
+// the permanent public-record notice (Activity Archive) + Activity Memories, the permanent container into which
+// all future content (photos, videos, organizer story, participant stories, reviews, results, achievements,
+// shared links, documents) will later be added. Nothing here is implemented — placeholders only. No media,
+// uploads, forms, interactions, storage, API, or database.
 
-const FUTURE_SECTIONS = ['Photos', 'Videos', 'Organizer Story', 'Participant Reviews', 'Achievements']
+// Activity Memories — the future content that will live in a completed activity's public space. Placeholders.
+const ACTIVITY_MEMORIES = [
+  'Photos',
+  'Videos',
+  'Organizer Story',
+  'Participant Stories',
+  'Reviews',
+  'Results',
+  'Achievements',
+  'Shared Links',
+  'Documents',
+]
 
 export function ActivityArchive() {
   return (
@@ -15,15 +27,21 @@ export function ActivityArchive() {
         <p className="mt-1 text-sm text-slate-500">This page will become the permanent public archive of the activity.</p>
       </section>
 
-      {/* Future content — placeholders only (extensions of this space, added in later stages). */}
-      <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
-        {FUTURE_SECTIONS.map((label) => (
-          <div key={label} className="rounded-lg border border-dashed border-slate-200 p-4">
-            <p className="text-sm font-semibold text-slate-700">{label}</p>
-            <p className="mt-0.5 text-xs text-slate-400">Coming soon</p>
-          </div>
-        ))}
-      </div>
+      {/* Activity Memories — the permanent container for everything that will enrich this activity over time. */}
+      <section className="mt-8">
+        <h2 className="text-sm font-bold uppercase tracking-wide text-slate-500">Activity Memories</h2>
+        <p className="mt-2 max-w-2xl text-sm text-slate-500">
+          Memories from this activity — photos, videos, stories, results and more — will appear here in future versions.
+        </p>
+        <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {ACTIVITY_MEMORIES.map((label) => (
+            <div key={label} className="rounded-lg border border-dashed border-slate-200 p-4">
+              <p className="text-sm font-semibold text-slate-700">{label}</p>
+              <p className="mt-0.5 text-xs text-slate-400">Coming soon</p>
+            </div>
+          ))}
+        </div>
+      </section>
     </>
   )
 }
