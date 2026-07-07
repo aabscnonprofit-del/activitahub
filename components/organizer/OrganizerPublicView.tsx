@@ -5,10 +5,21 @@ import type { MarketplaceActivityCard } from '@/lib/activity-marketplace/cards'
 import type { PublicOrganizer, Locale } from '@/lib/types'
 
 // Public Organizer Page — the participant-facing identity + trust layer for an organizer. It is a PUBLIC
-// PROJECTION built from existing public data: the organizer profile (name / bio / location / languages) and the
-// organizer's CURRENT public activities (published Projects WHERE visibility = 'public'). It never exposes
-// private account data, and never shows private / published-private / draft-public Projects. Past Activities is
-// a placeholder until reliable completed-project tracking exists — it is not faked.
+// PROJECTION built from existing public data: the organizer profile (name / bio / location / languages), the
+// organizer's CURRENT public activities (published Projects WHERE visibility = 'public'), and objective
+// Organizer Facts (no ratings/reviews/score/reputation — facts only). It never exposes private account data,
+// and never shows private / published-private / draft-public Projects. Past Activities and Completed Activities
+// are placeholders until reliable completed-project tracking exists — they are not faked.
+
+// Format a stored date as "Month Year" (e.g. "June 2026"), deterministically (UTC). Returns null on no/invalid
+// date — the caller shows a placeholder rather than inventing a date.
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+function monthYear(iso: string | null): string | null {
+  if (!iso) return null
+  const d = new Date(iso)
+  if (Number.isNaN(d.getTime())) return null
+  return `${MONTHS[d.getUTCMonth()]} ${d.getUTCFullYear()}`
+}
 
 export function OrganizerPublicView({
   locale,
@@ -22,6 +33,17 @@ export function OrganizerPublicView({
   isAuthenticated: boolean
 }) {
   const location = [org.city, org.country].filter(Boolean).join(', ')
+  const organizerSince = monthYear(org.member_since ?? null)
+  // Facts are objective, derived from existing public data — no rating/review/score/reputation/level.
+  const facts: { label: string; value: string }[] = [
+    { label: 'Organizer since', value: organizerSince ?? 'Coming soon' },
+    // Public Activities uses EXACTLY the Organizer Page rule (published + visibility = public): this is that list.
+    { label: 'Public Activities', value: String(activities.length) },
+    // No reliable completed-project model yet — never estimated/inferred.
+    { label: 'Completed Activities', value: 'Coming soon' },
+    // Existing verification field only (certified) — no new verification system.
+    { label: 'Verification', value: org.certified ? 'Verified' : 'Not verified' },
+  ]
 
   return (
     <div className="min-h-screen bg-white">
@@ -51,7 +73,20 @@ export function OrganizerPublicView({
           </p>
         </header>
 
-        {/* 2. Current public activities — published Projects with visibility = public. */}
+        {/* 2. Organizer Facts — objective public signals only (no ratings/reviews/score/reputation/badges). */}
+        <section className="mt-8">
+          <h2 className="mb-3 text-lg font-bold text-slate-900">Organizer facts</h2>
+          <dl className="grid grid-cols-2 gap-4 rounded-lg border border-slate-200 p-4 sm:grid-cols-4">
+            {facts.map((f) => (
+              <div key={f.label}>
+                <dt className="text-xs uppercase tracking-wide text-slate-400">{f.label}</dt>
+                <dd className="mt-0.5 text-sm font-semibold text-slate-900">{f.value}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+
+        {/* 3. Current public activities — published Projects with visibility = public. */}
         <section className="mt-10">
           <h2 className="mb-4 text-lg font-bold text-slate-900">Current activities</h2>
           {activities.length === 0 ? (
@@ -67,7 +102,7 @@ export function OrganizerPublicView({
           )}
         </section>
 
-        {/* 3. Past activities / archive — placeholder (no reliable completed-project model yet; not faked). */}
+        {/* 4. Past activities / archive — placeholder (no reliable completed-project model yet; not faked). */}
         <section className="mt-10">
           <h2 className="mb-4 text-lg font-bold text-slate-900">Past activities</h2>
           <p className="rounded-lg border border-dashed border-slate-200 p-4 text-sm text-slate-400">
