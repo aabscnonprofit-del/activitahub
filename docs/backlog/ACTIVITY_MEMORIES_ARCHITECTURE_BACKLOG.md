@@ -128,6 +128,34 @@ twice.
 
 ---
 
+## 6. Activity Memories Timeline Projection
+
+**Current state.** The Public Activity Space shows only the final state of a completed activity, as independent
+sections (Organizer Story, Participant Stories, and placeholder future content).
+
+**Backlog note.** When several content types exist (Organizer Story, Participant Stories, Photos, Videos, Results,
+Documents, …), decide whether Activity Memories needs a single **chronological timeline** view:
+
+```
+Activity Memories
+  ↓
+Timeline projection
+  ↓
+Organizer Story → Participant Story → Photos → Results → Achievements
+```
+
+A **read-only projection** over the existing per-type storage — it re-orders content by time for display,
+**without changing the storage model**.
+
+**Reason.** Today independent sections are enough. But if content grows, users may prefer browsing the activity's
+history in chronological order rather than by section.
+
+**Constraints.** **Do not implement. No schema, no UI.**
+
+**Decision trigger.** **More than 4–5 independent Activity Memory content types.**
+
+---
+
 ## Principle
 
 Record the future decision points now, so later implementation continues from the same architecture instead of
