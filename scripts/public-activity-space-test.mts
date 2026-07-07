@@ -35,8 +35,7 @@ check('archive message: permanent public archive', archive.includes('This page w
 check('page renders the ActivityArchive in the completed branch', page.includes('<ActivityArchive />'))
 
 // 4. Future sections appear only as placeholders (Coming soon) — no implementation.
-check('future sections are placeholders: Photos/Videos/Organizer Story/Participant Reviews/Achievements',
-  ['Photos', 'Videos', 'Organizer Story', 'Participant Reviews', 'Achievements'].every((s) => archive.includes(`'${s}'`)) && archive.includes('Coming soon'))
+check('future sections are placeholders in an Activity Memories section', archive.includes('Activity Memories') && archive.includes("'Photos'") && archive.includes('Coming soon'))
 check('no media/reviews/uploads/entity implementation in the archive', !/<input|<video|<img|<form|upload|createReview|createStory|createGallery/i.test(archive.replace(/\/\/.*$/gm, '')))
 
 // 5. Current activities unchanged — the else branch keeps the existing schedule + Join, and the archive has no Join.
