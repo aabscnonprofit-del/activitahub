@@ -32,7 +32,7 @@ export async function setOrganizerStoryAction(projectId: string, story: string, 
   if (!project) return { ok: false, error: 'not_authorized' }
 
   const trimmed = story.trim()
-  if (!(await setProjectOrganizerStory(supabase, projectId, trimmed.length > 0 ? trimmed : null))) return { ok: false, error: 'failed' }
+  if (!(await setProjectOrganizerStory(supabase, projectId, user.id, trimmed.length > 0 ? trimmed : null))) return { ok: false, error: 'failed' }
 
   revalidatePath(`/${locale}/p/${projectId}`)
   revalidatePath(`/${locale}/dashboard/projects/${projectId}`)

@@ -44,9 +44,9 @@ check('action enforces a length limit + writes the caller\'s own story', action.
 check('action never reads the Ticket System', !/ticket_type|getProjectTicketType|TicketType/i.test(action.replace(/\/\/.*$/gm, '')))
 
 // 4. Store — child-table get/set(own)/list(with names, chronological).
-check('store uses the participant-memories table', store.includes("from('project_activity_participant_memories')"))
+check('store uses the unified memory-items layer (participant_story)', store.includes("from('project_activity_memory_items')") && store.includes('participant_story'))
 check('store lists stories with names, chronological', store.includes('listParticipantStories') && store.includes('getParticipantProfiles') && store.includes("order('created_at', { ascending: true })"))
-check('store upserts one row per (project, participant)', store.includes("onConflict: 'project_id,participant_id'"))
+check('store upserts one row per (project, participant, type)', store.includes("onConflict: 'project_id,memory_type,author_id'"))
 
 // 5. Display + editor — public read-only list (name + text); eligible participant edits own; plain text; placeholder.
 check('public read-only list shows name + story text', comp.includes('s.name') && comp.includes('s.story'))

@@ -26,9 +26,9 @@ function check(name: string, cond: boolean) {
 check('memories table has a nullable organizer_story text field', mig.includes('CREATE TABLE IF NOT EXISTS project_activity_memories') && mig.includes('organizer_story TEXT') && !/organizer_story TEXT NOT NULL/.test(mig))
 check('organizer story moved off projects (legacy column dropped)', mig.includes('DROP COLUMN organizer_story'))
 
-// 2. Store — reads/writes the Activity Memories storage; tolerant read; owner-scoped upsert.
-check('getProjectOrganizerStory reads the memories table, tolerant null', store.includes("from('project_activity_memories').select('organizer_story')") && /getProjectOrganizerStory[\s\S]{0,500}return null/.test(store))
-check('setProjectOrganizerStory upserts the memories row', store.includes("from('project_activity_memories').upsert({ project_id: projectId, organizer_story: story }"))
+// 2. Store — reads/writes the UNIFIED Activity Memories layer (memory_type 'organizer_story'); owner-scoped upsert.
+check('getProjectOrganizerStory reads the unified layer (organizer_story), tolerant null', store.includes("from('project_activity_memory_items')") && store.includes("'organizer_story'") && /getProjectOrganizerStory[\s\S]{0,600}return null/.test(store))
+check('setProjectOrganizerStory upserts the unified organizer_story item (author = owner)', store.includes("author_type: 'organizer'") && store.includes("memory_type: 'organizer_story'") && store.includes("onConflict: 'project_id,memory_type,author_id'"))
 
 // 3. Action — owner-only, plain text, length-limited.
 check('setOrganizerStoryAction is owner-gated', action.includes('export async function setOrganizerStoryAction') && action.includes('getProject(supabase, projectId)') && action.includes("error: 'not_authenticated'"))

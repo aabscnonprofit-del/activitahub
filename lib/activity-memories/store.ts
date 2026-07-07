@@ -1,7 +1,8 @@
-// Activity Memories — participant-memories storage (project_activity_participant_memories, migration 065).
-// Persistence for Participant Story (the first participant-generated memory). Graceful degradation: reads return
-// [] / null when the table is absent. RLS owns authorization (participant self-write + approved; public read for
-// published+public). Not a Story/Timeline entity — a simple child storage of Activity Memories.
+// Activity Memories — participant-memory storage over the UNIFIED content layer (project_activity_memory_items,
+// migration 067). Persistence for Participant Story and Activity Review (typed memory items). Graceful
+// degradation: reads return [] / null when the table is absent. RLS owns authorization (participant self-write +
+// approved; public read for published+public). Text only — no ratings/reactions/comments. Same public function
+// signatures + entry types as before, so actions/components are unchanged; only the underlying table changed.
 
 import { createAdminClient } from '@/lib/supabase/server'
 import type { createClient } from '@/lib/supabase/server'
@@ -9,6 +10,68 @@ import { getParticipantProfiles } from '@/lib/participants/store'
 
 type ServerClient = Awaited<ReturnType<typeof createClient>>
 
+const PARTICIPANT_STORY = 'participant_story'
+const ACTIVITY_REVIEW = 'activity_review'
+
+// ── shared unified-layer access ─────────────────────────────────────────────────────────────────────────────
+interface MemoryEntry { authorId: string; name: string | null; body: string; createdAt: string }
+
+/** The caller's own memory-item body for (project, type, author), or null. Tolerant (null when absent/empty/error). */
+async function getOwnMemoryBody(supabase: ServerClient, projectId: string, memoryType: string, authorId: string): Promise<string | null> {
+  try {
+    const { data, error } = await supabase
+      .from('project_activity_memory_items')
+      .select('body')
+      .eq('project_id', projectId)
+      .eq('memory_type', memoryType)
+      .eq('author_id', authorId)
+      .maybeSingle()
+    if (error || !data) return null
+    const s = (data as { body?: string | null }).body
+    return typeof s === 'string' && s.trim().length > 0 ? s : null
+  } catch {
+    return null
+  }
+}
+
+/** Upsert the caller's own PARTICIPANT memory item (RLS: own row + approved participant). Returns true on success. */
+async function upsertParticipantMemory(supabase: ServerClient, projectId: string, memoryType: string, authorId: string, body: string | null): Promise<boolean> {
+  const { error } = await supabase
+    .from('project_activity_memory_items')
+    .upsert(
+      { project_id: projectId, author_type: 'participant', author_id: authorId, memory_type: memoryType, body },
+      { onConflict: 'project_id,memory_type,author_id' },
+    )
+  return !error
+}
+
+/** List non-empty memory items of a type for public display — chronological (oldest first), with display names. */
+async function listMemoryEntries(projectId: string, memoryType: string): Promise<MemoryEntry[]> {
+  try {
+    const admin = await createAdminClient()
+    const { data } = await admin
+      .from('project_activity_memory_items')
+      .select('author_id, body, created_at')
+      .eq('project_id', projectId)
+      .eq('memory_type', memoryType)
+      .order('created_at', { ascending: true })
+    const rows = ((data ?? []) as { author_id: string; body: string | null; created_at: string }[]).filter(
+      (r) => typeof r.body === 'string' && r.body.trim().length > 0,
+    )
+    if (rows.length === 0) return []
+    const profiles = await getParticipantProfiles(rows.map((r) => r.author_id))
+    return rows.map((r) => ({
+      authorId: r.author_id,
+      name: profiles[r.author_id]?.fullName ?? null,
+      body: (r.body as string).trim(),
+      createdAt: r.created_at,
+    }))
+  } catch {
+    return []
+  }
+}
+
+// ── Participant Stories (memory_type = 'participant_story') ──────────────────────────────────────────────────
 /** A participant's story for display — name (public profile) + text, with its created time (chronological). */
 export interface ParticipantStoryEntry {
   participantId: string
@@ -17,63 +80,23 @@ export interface ParticipantStoryEntry {
   createdAt: string
 }
 
-/** The caller's own participant story for a Project, or null. Tolerant (null when absent/empty/error). */
+/** The caller's own participant story for a Project, or null. */
 export async function getParticipantStory(supabase: ServerClient, projectId: string, participantId: string): Promise<string | null> {
-  try {
-    const { data, error } = await supabase
-      .from('project_activity_participant_memories')
-      .select('participant_story')
-      .eq('project_id', projectId)
-      .eq('participant_id', participantId)
-      .maybeSingle()
-    if (error || !data) return null
-    const s = (data as { participant_story?: string | null }).participant_story
-    return typeof s === 'string' && s.trim().length > 0 ? s : null
-  } catch {
-    return null
-  }
+  return getOwnMemoryBody(supabase, projectId, PARTICIPANT_STORY, participantId)
 }
 
-/** Upsert the caller's OWN participant story (RLS: own row + approved participant). Returns true on success. */
+/** Upsert the caller's OWN participant story. Returns true on success. */
 export async function setParticipantStory(supabase: ServerClient, projectId: string, participantId: string, story: string | null): Promise<boolean> {
-  const { error } = await supabase
-    .from('project_activity_participant_memories')
-    .upsert({ project_id: projectId, participant_id: participantId, participant_story: story }, { onConflict: 'project_id,participant_id' })
-  return !error
+  return upsertParticipantMemory(supabase, projectId, PARTICIPANT_STORY, participantId, story)
 }
 
-/**
- * List a Project's participant stories (non-empty) for public display — chronological (oldest first), each with
- * the participant's public display name. Reads via the admin client to resolve names; graceful [] on error/empty.
- */
+/** List a Project's participant stories (non-empty) for public display — chronological, with display names. */
 export async function listParticipantStories(projectId: string): Promise<ParticipantStoryEntry[]> {
-  try {
-    const admin = await createAdminClient()
-    const { data } = await admin
-      .from('project_activity_participant_memories')
-      .select('participant_id, participant_story, created_at')
-      .eq('project_id', projectId)
-      .order('created_at', { ascending: true })
-    const rows = ((data ?? []) as { participant_id: string; participant_story: string | null; created_at: string }[]).filter(
-      (r) => typeof r.participant_story === 'string' && r.participant_story.trim().length > 0,
-    )
-    if (rows.length === 0) return []
-    const profiles = await getParticipantProfiles(rows.map((r) => r.participant_id))
-    return rows.map((r) => ({
-      participantId: r.participant_id,
-      name: profiles[r.participant_id]?.fullName ?? null,
-      story: (r.participant_story as string).trim(),
-      createdAt: r.created_at,
-    }))
-  } catch {
-    return []
-  }
+  const entries = await listMemoryEntries(projectId, PARTICIPANT_STORY)
+  return entries.map((e) => ({ participantId: e.authorId, name: e.name, story: e.body, createdAt: e.createdAt }))
 }
 
-// ── Activity Reviews (project_activity_reviews, migration 066) ─────────────────────────────────────────────
-// Participant feedback attached to a completed public activity. Plain text only (no ratings/scores). Same
-// storage shape + tolerance as participant stories. Organizer reputation is a future projection, not here.
-
+// ── Activity Reviews (memory_type = 'activity_review') ───────────────────────────────────────────────────────
 /** A participant's review for display — name (public profile) + text + creation date (chronological). */
 export interface ActivityReviewEntry {
   participantId: string
@@ -82,55 +105,18 @@ export interface ActivityReviewEntry {
   createdAt: string
 }
 
-/** The caller's own review for a Project, or null. Tolerant (null when absent/empty/error). */
+/** The caller's own review for a Project, or null. */
 export async function getActivityReview(supabase: ServerClient, projectId: string, participantId: string): Promise<string | null> {
-  try {
-    const { data, error } = await supabase
-      .from('project_activity_reviews')
-      .select('review_text')
-      .eq('project_id', projectId)
-      .eq('participant_id', participantId)
-      .maybeSingle()
-    if (error || !data) return null
-    const s = (data as { review_text?: string | null }).review_text
-    return typeof s === 'string' && s.trim().length > 0 ? s : null
-  } catch {
-    return null
-  }
+  return getOwnMemoryBody(supabase, projectId, ACTIVITY_REVIEW, participantId)
 }
 
-/** Upsert the caller's OWN review (RLS: own row + approved participant). Returns true on success. */
+/** Upsert the caller's OWN review. Returns true on success. */
 export async function setActivityReview(supabase: ServerClient, projectId: string, participantId: string, review: string | null): Promise<boolean> {
-  const { error } = await supabase
-    .from('project_activity_reviews')
-    .upsert({ project_id: projectId, participant_id: participantId, review_text: review }, { onConflict: 'project_id,participant_id' })
-  return !error
+  return upsertParticipantMemory(supabase, projectId, ACTIVITY_REVIEW, participantId, review)
 }
 
-/**
- * List a Project's reviews (non-empty) for public display — chronological (oldest first), each with the
- * participant's public display name + creation date. Reads via the admin client to resolve names; graceful [].
- */
+/** List a Project's reviews (non-empty) for public display — chronological, with display names + creation date. */
 export async function listActivityReviews(projectId: string): Promise<ActivityReviewEntry[]> {
-  try {
-    const admin = await createAdminClient()
-    const { data } = await admin
-      .from('project_activity_reviews')
-      .select('participant_id, review_text, created_at')
-      .eq('project_id', projectId)
-      .order('created_at', { ascending: true })
-    const rows = ((data ?? []) as { participant_id: string; review_text: string | null; created_at: string }[]).filter(
-      (r) => typeof r.review_text === 'string' && r.review_text.trim().length > 0,
-    )
-    if (rows.length === 0) return []
-    const profiles = await getParticipantProfiles(rows.map((r) => r.participant_id))
-    return rows.map((r) => ({
-      participantId: r.participant_id,
-      name: profiles[r.participant_id]?.fullName ?? null,
-      review: (r.review_text as string).trim(),
-      createdAt: r.created_at,
-    }))
-  } catch {
-    return []
-  }
+  const entries = await listMemoryEntries(projectId, ACTIVITY_REVIEW)
+  return entries.map((e) => ({ participantId: e.authorId, name: e.name, review: e.body, createdAt: e.createdAt }))
 }
