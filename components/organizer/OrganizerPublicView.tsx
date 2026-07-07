@@ -25,11 +25,13 @@ export function OrganizerPublicView({
   locale,
   org,
   activities,
+  completedActivities,
   isAuthenticated,
 }: {
   locale: Locale
   org: PublicOrganizer
   activities: MarketplaceActivityCard[]
+  completedActivities: MarketplaceActivityCard[]
   isAuthenticated: boolean
 }) {
   const location = [org.city, org.country].filter(Boolean).join(', ')
@@ -39,8 +41,8 @@ export function OrganizerPublicView({
     { label: 'Organizer since', value: organizerSince ?? 'Coming soon' },
     // Public Activities uses EXACTLY the Organizer Page rule (published + visibility = public): this is that list.
     { label: 'Public Activities', value: String(activities.length) },
-    // No reliable completed-project model yet — never estimated/inferred.
-    { label: 'Completed Activities', value: 'Coming soon' },
+    // Completed = the archive count, from EXACTLY the same list rendered in "Past activities" (single source).
+    { label: 'Completed Activities', value: String(completedActivities.length) },
     // Existing verification field only (certified) — no new verification system.
     { label: 'Verification', value: org.certified ? 'Verified' : 'Not verified' },
   ]
@@ -102,12 +104,21 @@ export function OrganizerPublicView({
           )}
         </section>
 
-        {/* 4. Past activities / archive — placeholder (no reliable completed-project model yet; not faked). */}
+        {/* 4. Past activities / archive — completed public activities (occurrence-finished projection), newest
+            first. A Project appears here XOR in Current activities, never both. */}
         <section className="mt-10">
           <h2 className="mb-4 text-lg font-bold text-slate-900">Past activities</h2>
-          <p className="rounded-lg border border-dashed border-slate-200 p-4 text-sm text-slate-400">
-            Past Activities archive will appear after completed-project tracking is available.
-          </p>
+          {completedActivities.length === 0 ? (
+            <p className="rounded-lg border border-slate-200 p-4 text-sm text-slate-500">
+              This organizer has no completed public activities yet.
+            </p>
+          ) : (
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              {completedActivities.map((card) => (
+                <ActivityCard key={card.projectId} card={card} locale={locale} />
+              ))}
+            </div>
+          )}
         </section>
       </main>
     </div>

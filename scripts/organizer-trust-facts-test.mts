@@ -28,8 +28,8 @@ check('date formatter is deterministic + returns null on no/invalid date', view.
 // 3. Public Activities — the count of published public Projects (the same list the page already filters).
 check('Public Activities = the published-public activities count', view.includes("label: 'Public Activities'") && view.includes('String(activities.length)'))
 
-// 4. Completed Activities — placeholder only (no reliable model; never estimated/inferred).
-check('Completed Activities shows "Coming soon" (not estimated)', view.includes("label: 'Completed Activities'") && /Completed Activities'[\s\S]{0,40}'Coming soon'/.test(view))
+// 4. Completed Activities — the real archive count (single source of truth), not estimated/inferred.
+check('Completed Activities shows the real archive count', view.includes("label: 'Completed Activities'") && view.includes('String(completedActivities.length)'))
 
 // 5. Verification — existing certified field only (no new verification system).
 check('Verification uses the existing certified field', view.includes("label: 'Verification'") && view.includes("org.certified ? 'Verified' : 'Not verified'"))
