@@ -2,6 +2,7 @@ import { MapPin, Globe, BadgeCheck } from 'lucide-react'
 import { PublicHeader } from '@/components/layout/PublicHeader'
 import { ActivityCard } from '@/components/activities/ActivityCard'
 import type { MarketplaceActivityCard } from '@/lib/activity-marketplace/cards'
+import type { OrganizerReviewFacts } from '@/lib/reviews/organizer-review-facts'
 import type { PublicOrganizer, Locale } from '@/lib/types'
 
 // Public Organizer Page — the participant-facing identity + trust layer for an organizer. It is a PUBLIC
@@ -26,12 +27,14 @@ export function OrganizerPublicView({
   org,
   activities,
   completedActivities,
+  reviewFacts,
   isAuthenticated,
 }: {
   locale: Locale
   org: PublicOrganizer
   activities: MarketplaceActivityCard[]
   completedActivities: MarketplaceActivityCard[]
+  reviewFacts: OrganizerReviewFacts
   isAuthenticated: boolean
 }) {
   const location = [org.city, org.country].filter(Boolean).join(', ')
@@ -45,6 +48,14 @@ export function OrganizerPublicView({
     { label: 'Completed Activities', value: String(completedActivities.length) },
     // Existing verification field only (certified) — no new verification system.
     { label: 'Verification', value: org.certified ? 'Verified' : 'Not verified' },
+  ]
+
+  // Organizer Review Facts — objective counts projected from Activity Reviews on completed public activities.
+  // Facts only: no average/stars/score/ranking/trust. Latest review date shows "Coming soon" when there are none.
+  const reviewFactsList: { label: string; value: string }[] = [
+    { label: 'Reviews received', value: String(reviewFacts.reviewsReceived) },
+    { label: 'Reviewed activities', value: String(reviewFacts.reviewedActivities) },
+    { label: 'Latest review', value: reviewFacts.latestReviewDate ? reviewFacts.latestReviewDate.slice(0, 10) : 'Coming soon' },
   ]
 
   return (
@@ -80,6 +91,19 @@ export function OrganizerPublicView({
           <h2 className="mb-3 text-lg font-bold text-slate-900">Organizer facts</h2>
           <dl className="grid grid-cols-2 gap-4 rounded-lg border border-slate-200 p-4 sm:grid-cols-4">
             {facts.map((f) => (
+              <div key={f.label}>
+                <dt className="text-xs uppercase tracking-wide text-slate-400">{f.label}</dt>
+                <dd className="mt-0.5 text-sm font-semibold text-slate-900">{f.value}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+
+        {/* 2b. Organizer Review Facts — objective review counts (no ratings/stars/score/reputation/ranking). */}
+        <section className="mt-6">
+          <h2 className="mb-3 text-lg font-bold text-slate-900">Organizer review facts</h2>
+          <dl className="grid grid-cols-2 gap-4 rounded-lg border border-slate-200 p-4 sm:grid-cols-3">
+            {reviewFactsList.map((f) => (
               <div key={f.label}>
                 <dt className="text-xs uppercase tracking-wide text-slate-400">{f.label}</dt>
                 <dd className="mt-0.5 text-sm font-semibold text-slate-900">{f.value}</dd>
