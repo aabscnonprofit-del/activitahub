@@ -23,13 +23,13 @@ check('Activity Memories section present', archive.includes('Activity Memories')
 check('memories intro explains future content will appear here', /will appear here in future versions/i.test(archive))
 
 // 2. The remaining placeholder cards (Organizer Story + Participant Stories are now real blocks), each "Coming soon".
-const MEMORIES = ['Photos', 'Videos', 'Reviews', 'Results', 'Achievements', 'Shared Links', 'Documents']
+const MEMORIES = ['Photos', 'Videos', 'Results', 'Achievements', 'Shared Links', 'Documents']
 check('remaining memory placeholders present', MEMORIES.every((m) => archive.includes(`'${m}'`)))
 check('Organizer Story + Participant Stories are real blocks, not placeholders',
   archive.includes('<OrganizerStory') && archive.includes('<ParticipantStories') && !archive.includes("'Organizer Story'") && !archive.includes("'Participant Stories'"))
 check('each placeholder is "Coming soon"', archive.includes('Coming soon'))
-check('flat "Participant Reviews" placeholder reorganized (Participant Stories is a real block; Reviews stays)',
-  !archive.includes("'Participant Reviews'") && archive.includes('<ParticipantStories') && archive.includes("'Reviews'"))
+check('flat "Participant Reviews" placeholder reorganized (Participant Stories + Activity Reviews are real blocks)',
+  !archive.includes("'Participant Reviews'") && archive.includes('<ParticipantStories') && archive.includes('<ActivityReviews'))
 
 // 3. Structure: Activity Archive precedes Activity Memories (within the same archive presentation).
 check('Activity Archive appears before Activity Memories', archive.indexOf('Activity Archive') < archive.indexOf('Activity Memories'))

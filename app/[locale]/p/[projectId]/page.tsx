@@ -6,7 +6,8 @@ import { getParticipantForAccount } from '@/lib/participants/store'
 import { getPublicOrganizer } from '@/lib/marketplace/queries'
 import { isProjectCompleted, representativeOccurrence } from '@/lib/activity-marketplace/completed-public-activities'
 import { getParticipantMemoryEligibility } from '@/lib/activity-memories/participant-memory-eligibility'
-import { listParticipantStories, getParticipantStory } from '@/lib/activity-memories/store'
+import { getReviewEligibility } from '@/lib/reviews/reviews-eligibility'
+import { listParticipantStories, getParticipantStory, listActivityReviews, getActivityReview } from '@/lib/activity-memories/store'
 import { JoinButton } from '@/components/participants/JoinButton'
 import { ActivityArchive } from '@/components/activities/ActivityArchive'
 import { getPublicEventPlan } from '@/lib/planning/load-public-event-plan'
@@ -85,6 +86,18 @@ export default async function PublicProjectPage({ params }: Props) {
   }).eligible
   const myParticipantStory = canContributeStory && user ? await getParticipantStory(supabase, projectId, user.id) : null
 
+  // Activity Reviews (participant feedback) — loaded only in the archive state. Editing is gated by the canonical
+  // Review Eligibility helper (public + completed + approved participant); ticket ownership never grants it.
+  const activityReviews = showArchive ? await listActivityReviews(projectId) : []
+  const canReview = showArchive && getReviewEligibility({
+    isPublished: true, // getPublicProject already required published
+    visibility,
+    occurrences: allOccs,
+    nowMs,
+    participantStatus: myParticipation?.status ?? null,
+  }).eligible
+  const myActivityReview = canReview && user ? await getActivityReview(supabase, projectId, user.id) : null
+
   return (
     <div className="min-h-screen bg-white">
       <PublicHeader locale={locale} isAuthenticated={!!user} />
@@ -150,6 +163,9 @@ export default async function PublicProjectPage({ params }: Props) {
               participantStories={participantStories}
               myParticipantStory={myParticipantStory}
               canContributeStory={canContributeStory}
+              activityReviews={activityReviews}
+              myActivityReview={myActivityReview}
+              canReview={canReview}
             />
           </>
         ) : (
