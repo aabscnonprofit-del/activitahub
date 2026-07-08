@@ -12,9 +12,7 @@ import { getPublicProject, getProjectVisibility } from '@/lib/projects/store'
 import { getParticipantForAccount } from '@/lib/participants/store'
 import { setParticipantStory } from '@/lib/activity-memories/store'
 import { getParticipantMemoryEligibility } from '@/lib/activity-memories/participant-memory-eligibility'
-
-/** Plain-text length cap for a Participant Story (a short reflection). */
-export const PARTICIPANT_STORY_MAX = 2000
+import { PARTICIPANT_STORY_MAX } from '@/lib/activity-memories/limits'
 
 export type ParticipantStoryResult = { ok: true } | { ok: false; error: 'not_authenticated' | 'not_eligible' | 'too_long' | 'failed' }
 

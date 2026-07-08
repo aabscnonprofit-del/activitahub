@@ -8,10 +8,7 @@ import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { getParticipantForAccount } from '@/lib/participants/store'
 import { setArrivalPreference } from '@/lib/arrival/store'
-
-export const ARRIVAL_NOTE_MAX = 280
-export const ARRIVAL_ZIP_MAX = 20
-export const ARRIVAL_SEATS_MAX = 20
+import { ARRIVAL_NOTE_MAX, ARRIVAL_ZIP_MAX, ARRIVAL_SEATS_MAX } from '@/lib/arrival/limits'
 
 export interface ArrivalPreferenceInput {
   needsRide: boolean

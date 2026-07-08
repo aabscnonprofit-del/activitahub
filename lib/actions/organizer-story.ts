@@ -8,9 +8,7 @@
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { getProject, setProjectOrganizerStory } from '@/lib/projects/store'
-
-/** Plain-text length cap for the Organizer Story. */
-export const ORGANIZER_STORY_MAX = 4000
+import { ORGANIZER_STORY_MAX } from '@/lib/activity-memories/limits'
 
 export type OrganizerStoryResult = { ok: true } | { ok: false; error: 'not_authenticated' | 'not_authorized' | 'too_long' | 'failed' }
 

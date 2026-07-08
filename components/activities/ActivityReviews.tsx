@@ -9,7 +9,8 @@
 
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import { setActivityReviewAction, ACTIVITY_REVIEW_MAX } from '@/lib/actions/activity-review'
+import { setActivityReviewAction } from '@/lib/actions/activity-review'
+import { ACTIVITY_REVIEW_MAX } from '@/lib/activity-memories/limits'
 
 interface ReviewEntry {
   participantId: string

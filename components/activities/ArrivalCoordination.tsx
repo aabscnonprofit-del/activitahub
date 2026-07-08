@@ -8,7 +8,8 @@
 
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import { setArrivalPreferenceAction, ARRIVAL_NOTE_MAX, ARRIVAL_ZIP_MAX, ARRIVAL_SEATS_MAX } from '@/lib/actions/arrival-preference'
+import { setArrivalPreferenceAction } from '@/lib/actions/arrival-preference'
+import { ARRIVAL_NOTE_MAX, ARRIVAL_ZIP_MAX, ARRIVAL_SEATS_MAX } from '@/lib/arrival/limits'
 import type { ArrivalPreference, ArrivalSummary } from '@/lib/arrival/store'
 
 const DISCLAIMER = 'This is participant coordination only. ActivLife Hub does not provide transportation, drivers, insurance, or payment handling.'

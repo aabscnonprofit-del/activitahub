@@ -7,7 +7,8 @@
 
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import { setOrganizerStoryAction, ORGANIZER_STORY_MAX } from '@/lib/actions/organizer-story'
+import { setOrganizerStoryAction } from '@/lib/actions/organizer-story'
+import { ORGANIZER_STORY_MAX } from '@/lib/activity-memories/limits'
 
 export function OrganizerStory({
   projectId,
