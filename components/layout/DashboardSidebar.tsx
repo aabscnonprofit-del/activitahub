@@ -18,6 +18,7 @@ import {
   CreditCard,
   ShieldCheck,
   FolderKanban,
+  History,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { Locale, UserRole, OnboardingStatus } from '@/lib/types'
@@ -56,6 +57,8 @@ export async function DashboardSidebar({
     { key: 'activities', href: `${base}/activities`, icon: Layers },
     { key: 'plans', href: `${base}/plans`, icon: ClipboardList },
     { key: 'projects', href: `${base}/projects`, icon: FolderKanban, label: 'Projects' },
+    // History reuses the existing Participant History page (/me/history); literal label, no new i18n key.
+    { key: 'history', href: `/${locale}/me/history`, icon: History, label: 'History' },
     { key: 'calendar', href: `${base}/calendar`, icon: CalendarDays },
     { key: 'bookings', href: `${base}/bookings`, icon: BookOpen },
     { key: 'requests', href: `${base}/requests`, icon: Inbox },
