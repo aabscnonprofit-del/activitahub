@@ -110,7 +110,9 @@ export default async function CommandCenterPage({ params, searchParams }: Props)
   const toneCls = { red: 'bg-rose-50 text-rose-600', amber: 'bg-amber-50 text-amber-600', brand: 'bg-brand-50 text-brand-600' }
 
   const quick = [
-    { icon: Plus, label: tc('quick.createActivity'), href: `/${locale}/dashboard/activities`, c: 'bg-indigo-50 text-indigo-600' },
+    // Stage A5: the primary "Create activity" enters the Project pipeline (planner → resolveProjectForPlan →
+    // Project). Legacy activity creation stays reachable under the Classic "Activities" sidebar item.
+    { icon: Plus, label: tc('quick.createActivity'), href: `/${locale}/dashboard/plans/new`, c: 'bg-indigo-50 text-indigo-600' },
     { icon: UserPlus, label: tc('quick.addParticipants'), href: `/${locale}/dashboard/activities`, c: 'bg-emerald-50 text-emerald-600' },
     { icon: Megaphone, label: tc('quick.generatePromotion'), href: `/${locale}/dashboard/activities`, c: 'bg-brand-50 text-brand-600' },
     { icon: Send, label: tc('quick.sendUpdate'), href: `/${locale}/dashboard/activities`, c: 'bg-amber-50 text-amber-600' },
