@@ -8,7 +8,8 @@
 
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import { setParticipantStoryAction, PARTICIPANT_STORY_MAX } from '@/lib/actions/participant-story'
+import { setParticipantStoryAction } from '@/lib/actions/participant-story'
+import { PARTICIPANT_STORY_MAX } from '@/lib/activity-memories/limits'
 
 interface StoryEntry {
   participantId: string

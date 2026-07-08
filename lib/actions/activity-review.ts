@@ -12,9 +12,7 @@ import { getPublicProject, getProjectVisibility } from '@/lib/projects/store'
 import { getParticipantForAccount } from '@/lib/participants/store'
 import { setActivityReview } from '@/lib/activity-memories/store'
 import { getReviewEligibility } from '@/lib/reviews/reviews-eligibility'
-
-/** Plain-text length cap for an Activity Review. */
-export const ACTIVITY_REVIEW_MAX = 2000
+import { ACTIVITY_REVIEW_MAX } from '@/lib/activity-memories/limits'
 
 export type ActivityReviewResult = { ok: true } | { ok: false; error: 'not_authenticated' | 'not_eligible' | 'too_long' | 'failed' }
 
