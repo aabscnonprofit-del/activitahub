@@ -9,6 +9,8 @@ import { getParticipantMemoryEligibility } from '@/lib/activity-memories/partici
 import { getReviewEligibility } from '@/lib/reviews/reviews-eligibility'
 import { listParticipantStories, getParticipantStory, listActivityReviews, getActivityReview } from '@/lib/activity-memories/store'
 import { JoinButton } from '@/components/participants/JoinButton'
+import { ArrivalCoordination } from '@/components/activities/ArrivalCoordination'
+import { getArrivalPreference, getArrivalSummary } from '@/lib/arrival/store'
 import { ActivityArchive } from '@/components/activities/ActivityArchive'
 import { getPublicEventPlan } from '@/lib/planning/load-public-event-plan'
 import { PublicHeader } from '@/components/layout/PublicHeader'
@@ -97,6 +99,13 @@ export default async function PublicProjectPage({ params }: Props) {
     participantStatus: myParticipation?.status ?? null,
   }).eligible
   const myActivityReview = canReview && user ? await getActivityReview(supabase, projectId, user.id) : null
+
+  // Arrival Coordination ("Getting there") — only for the CURRENT (non-archive) activity, and only visible to the
+  // organizer or an APPROVED participant (never public). Only approved participants may submit.
+  const isApprovedParticipant = myParticipation?.status === 'approved'
+  const showArrival = !showArchive && (isOwner || isApprovedParticipant)
+  const arrivalSummary = showArrival ? await getArrivalSummary(projectId) : null
+  const myArrivalPreference = showArrival && isApprovedParticipant && user ? await getArrivalPreference(supabase, projectId, user.id) : null
 
   return (
     <div className="min-h-screen bg-white">
@@ -216,6 +225,17 @@ export default async function PublicProjectPage({ params }: Props) {
               isAuthenticated={!!user}
               signInHref={`/${locale}/sign-in`}
             />
+
+            {/* Getting there — arrival coordination for the organizer + approved participants (never public). */}
+            {showArrival && arrivalSummary && (
+              <ArrivalCoordination
+                projectId={projectId}
+                locale={locale}
+                myPreference={myArrivalPreference}
+                summary={arrivalSummary}
+                canSubmit={isApprovedParticipant}
+              />
+            )}
           </>
         )}
       </main>
