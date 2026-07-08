@@ -45,6 +45,7 @@ export default async function ProjectsPage({ params }: Props) {
                 <th className="px-4 py-2 font-medium">Step</th>
                 <th className="px-4 py-2 font-medium">Created</th>
                 <th className="px-4 py-2 font-medium">Updated</th>
+                <th className="px-4 py-2 font-medium">Public activity</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -62,6 +63,12 @@ export default async function ProjectsPage({ params }: Props) {
                   <td className="px-4 py-2 text-slate-700">{p.current_step}</td>
                   <td className="px-4 py-2 text-slate-500">{formatDate(p.created_at)}</td>
                   <td className="px-4 py-2 text-slate-500">{formatDate(p.updated_at)}</td>
+                  <td className="px-4 py-2">
+                    {/* Pure navigation to the existing Public Activity Space (published + public only). */}
+                    <Link href={`/${locale}/p/${p.id}`} className="text-brand-700 hover:underline">
+                      View public activity
+                    </Link>
+                  </td>
                 </tr>
               ))}
             </tbody>
