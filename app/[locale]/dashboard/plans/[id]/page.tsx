@@ -54,6 +54,16 @@ export default async function SavedPlanPage({ params, searchParams }: Props) {
   return (
     <div className="mx-auto max-w-3xl px-4 py-8 sm:py-10">
       {backLink}
+      {/* Stage D — bridge into the Project world: from a plan straight to its Project workspace
+          (publish / visibility / occurrence / public activity live there). Reuses the plan's project_id. */}
+      {res.data.project_id && (
+        <Link
+          href={`/${locale}/dashboard/projects/${res.data.project_id}`}
+          className="mb-4 inline-flex items-center gap-1.5 rounded-lg border border-brand-200 px-3 py-1.5 text-sm font-semibold text-brand-700 hover:bg-brand-50"
+        >
+          Open project workspace →
+        </Link>
+      )}
       <PlanDetailClient initialPlan={res.data} />
       <VendorSourcingPanel plan={res.data} locale={locale as Locale} />
       <InvoicesPanel plan={res.data} locale={locale as Locale} errorCode={invoiceError} />
