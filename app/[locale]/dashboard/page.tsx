@@ -4,9 +4,10 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import {
   AlertTriangle, Clock, MapPinOff, Inbox, Megaphone, CalendarDays, Users, ArrowRight,
-  Plus, UserPlus, Send, FileText, Sparkles, CheckCircle2, Star, Ticket,
+  Plus, FileText, Sparkles, CheckCircle2, Star, Ticket, FolderKanban, Compass,
 } from 'lucide-react'
 import { formatDate } from '@/lib/utils'
+import { listProjects } from '@/lib/projects/store'
 import ConnectPanel from '@/components/dashboard/ConnectPanel'
 import type { Locale, Profile } from '@/lib/types'
 import type { Metadata } from 'next'
@@ -48,6 +49,9 @@ export default async function CommandCenterPage({ params, searchParams }: Props)
   const weekAgo = new Date(now.getTime() - 7 * 86400_000).toISOString()
 
   const { data: profileRow } = await supabase.from('profiles').select('full_name, timezone').eq('id', uid).single()
+
+  // Stage C — Project-first home. Reuses the existing Project store (RLS owner-only); no new business logic.
+  const projects = await listProjects(supabase)
   const profile = profileRow as Pick<Profile, 'full_name' | 'timezone'> | null
   const tz = profile?.timezone ?? 'UTC'
   const firstName = profile?.full_name?.split(' ')[0] ?? null
@@ -67,7 +71,6 @@ export default async function CommandCenterPage({ params, searchParams }: Props)
     ])
 
   const actById = new Map(activities.map((a) => [a.id, a]))
-  const noActivities = activities.length === 0
 
   // Participant aggregates.
   const overview: Record<string, number> = { invited: 0, confirmed: 0, maybe: 0, declined: 0, checked_in: 0, no_show: 0 }
@@ -109,15 +112,15 @@ export default async function CommandCenterPage({ params, searchParams }: Props)
 
   const toneCls = { red: 'bg-rose-50 text-rose-600', amber: 'bg-amber-50 text-amber-600', brand: 'bg-brand-50 text-brand-600' }
 
+  // Stage C: quick actions route into the Project world only. The legacy-activity actions (add participants /
+  // promotion / send update, which pointed at /dashboard/activities) are removed from the home — that workflow
+  // remains reachable under the Classic sidebar. Requests (a separate legacy business surface) is retained.
   const quick = [
-    // Stage A5: the primary "Create activity" enters the Project pipeline (planner → resolveProjectForPlan →
-    // Project). Legacy activity creation stays reachable under the Classic "Activities" sidebar item.
     { icon: Plus, label: tc('quick.createActivity'), href: `/${locale}/dashboard/plans/new`, c: 'bg-indigo-50 text-indigo-600' },
-    { icon: UserPlus, label: tc('quick.addParticipants'), href: `/${locale}/dashboard/activities`, c: 'bg-emerald-50 text-emerald-600' },
-    { icon: Megaphone, label: tc('quick.generatePromotion'), href: `/${locale}/dashboard/activities`, c: 'bg-brand-50 text-brand-600' },
-    { icon: Send, label: tc('quick.sendUpdate'), href: `/${locale}/dashboard/activities`, c: 'bg-amber-50 text-amber-600' },
-    { icon: FileText, label: tc('quick.viewRequests'), href: `/${locale}/dashboard/requests`, c: 'bg-sky-50 text-sky-600' },
+    { icon: FolderKanban, label: 'Projects', href: `/${locale}/dashboard/projects`, c: 'bg-emerald-50 text-emerald-600' },
+    { icon: Compass, label: 'Discover', href: `/${locale}/activities`, c: 'bg-brand-50 text-brand-600' },
     { icon: Sparkles, label: tc('quick.openOpe'), href: `/${locale}/plan-an-event`, c: 'bg-violet-50 text-violet-600' },
+    { icon: FileText, label: tc('quick.viewRequests'), href: `/${locale}/dashboard/requests`, c: 'bg-sky-50 text-sky-600' },
   ]
 
   const weekly = [
@@ -168,15 +171,42 @@ export default async function CommandCenterPage({ params, searchParams }: Props)
       {/* Get paid — Stripe Connect onboarding status (returns here via ?connect=) */}
       <ConnectPanel locale={locale} statusMarker={connect} />
 
-      {noActivities && (
-        <div className="overflow-hidden rounded-2xl bg-gradient-to-br from-brand-600 to-brand-800 p-6 text-white sm:p-8">
-          <h2 className="text-xl font-extrabold sm:text-2xl">{t('start.title')}</h2>
-          <p className="mt-2 max-w-xl text-sm leading-relaxed text-brand-100">{t('start.body')}</p>
-          <Link href={`/${locale}/dashboard/activities`} className="mt-5 inline-flex items-center gap-2 rounded-xl bg-white px-5 py-2.5 text-sm font-bold text-brand-700 hover:bg-brand-50">
-            <Plus className="h-4 w-4" />{t('start.cta')}
-          </Link>
+      {/* Section 0 — Your Projects (Stage C: the Project world is the home). Reuses listProjects; links only
+          into the Project world (workspace, public activity, planner, discovery). */}
+      <section>
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+          <h2 className="font-bold text-slate-900">Your projects</h2>
+          <div className="flex items-center gap-4 text-sm font-semibold text-brand-600">
+            <Link href={`/${locale}/dashboard/plans/new`} className="hover:underline">Create activity</Link>
+            <Link href={`/${locale}/activities`} className="hover:underline">Discover</Link>
+            <Link href={`/${locale}/dashboard/projects`} className="hover:underline">View all</Link>
+          </div>
         </div>
-      )}
+        {projects.length === 0 ? (
+          <div className="overflow-hidden rounded-2xl bg-gradient-to-br from-brand-600 to-brand-800 p-6 text-white sm:p-8">
+            <h3 className="text-xl font-extrabold sm:text-2xl">{t('start.title')}</h3>
+            <p className="mt-2 max-w-xl text-sm leading-relaxed text-brand-100">{t('start.body')}</p>
+            <Link href={`/${locale}/dashboard/plans/new`} className="mt-5 inline-flex items-center gap-2 rounded-xl bg-white px-5 py-2.5 text-sm font-bold text-brand-700 hover:bg-brand-50">
+              <Plus className="h-4 w-4" />{t('start.cta')}
+            </Link>
+          </div>
+        ) : (
+          <ul className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+            {projects.slice(0, 6).map((p) => (
+              <li key={p.id} className="card flex items-center justify-between gap-3 p-3.5">
+                <Link href={`/${locale}/dashboard/projects/${p.id}`} className="min-w-0 flex-1">
+                  <span className="flex items-center gap-2">
+                    <FolderKanban className="h-4 w-4 shrink-0 text-brand-600" />
+                    <span className="truncate text-sm font-semibold text-slate-900">{p.id.slice(0, 8)}…</span>
+                  </span>
+                  <span className="mt-0.5 block text-xs text-slate-500">{p.status} · {p.current_step}</span>
+                </Link>
+                <Link href={`/${locale}/p/${p.id}`} className="shrink-0 text-xs font-semibold text-brand-600 hover:underline">Public</Link>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
 
       {/* Section 1 — Requires Attention */}
       <section>

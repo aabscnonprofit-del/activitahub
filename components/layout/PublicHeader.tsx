@@ -64,7 +64,7 @@ export function PublicHeader({ locale, isAuthenticated, isOrganizer = false }: P
             {t('planEvent')}
           </Link>
           <Link
-            href={`/${locale}/marketplace`}
+            href={`/${locale}/activities`}
             className="text-sm font-medium text-slate-600 hover:text-brand-600 transition-colors"
           >
             {t('marketplace')}
@@ -210,7 +210,7 @@ export function PublicHeader({ locale, isAuthenticated, isOrganizer = false }: P
               {t('home')}
             </Link>
             <Link
-              href={`/${locale}/marketplace`}
+              href={`/${locale}/activities`}
               onClick={() => setMobileOpen(false)}
               className="rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
             >
