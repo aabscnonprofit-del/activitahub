@@ -19,6 +19,7 @@ import {
   ShieldCheck,
   FolderKanban,
   History,
+  Compass,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { Locale, UserRole, OnboardingStatus } from '@/lib/types'
@@ -55,6 +56,9 @@ export async function DashboardSidebar({
   const primaryItems: SidebarNavItem[] = [
     { key: 'home', href: base, icon: LayoutDashboard },
     { key: 'projects', href: `${base}/projects`, icon: FolderKanban, label: 'Projects' },
+    // Discover = the Project-based Local Activities page (/activities, over projects). Was orphaned (no nav);
+    // reuses the existing page — literal label, no new i18n key.
+    { key: 'discover', href: `/${locale}/activities`, icon: Compass, label: 'Discover' },
     // History reuses the existing Participant History page (/me/history); literal label, no new i18n key.
     { key: 'history', href: `/${locale}/me/history`, icon: History, label: 'History' },
     { key: 'profile', href: `${base}/profile`, icon: UserCircle },
