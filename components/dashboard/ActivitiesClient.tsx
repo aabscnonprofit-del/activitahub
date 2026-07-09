@@ -213,10 +213,12 @@ export default function ActivitiesClient({ initialActivities, venues, locale }: 
           <h1 className="text-2xl font-extrabold text-slate-900">{t('title')}</h1>
           <p className="text-slate-500 text-sm mt-0.5">{t('subtitle')}</p>
         </div>
-        <button onClick={() => setFormMode({ type: 'create' })} className="btn-primary">
+        {/* Stage D1: "New activity" routes into the single Project creation pipeline (no legacy activity
+            creation). Editing existing legacy activities below is unchanged. */}
+        <Link href={`/${locale}/dashboard/plans/new`} className="btn-primary">
           <Plus className="w-4 h-4" />
           {t('create')}
-        </button>
+        </Link>
       </div>
 
       {/* List */}
@@ -226,10 +228,10 @@ export default function ActivitiesClient({ initialActivities, venues, locale }: 
           title={t('empty')}
           description={t('emptyDesc')}
           action={
-            <button onClick={() => setFormMode({ type: 'create' })} className="btn-primary text-sm">
+            <Link href={`/${locale}/dashboard/plans/new`} className="btn-primary text-sm">
               <Plus className="w-4 h-4" />
               {t('create')}
-            </button>
+            </Link>
           }
         />
       ) : (
