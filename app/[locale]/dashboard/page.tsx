@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import {
   AlertTriangle, Clock, MapPinOff, Inbox, Megaphone, CalendarDays, Users, ArrowRight,
-  Plus, FileText, Sparkles, CheckCircle2, Star, Ticket, FolderKanban, Compass,
+  Plus, FileText, CheckCircle2, Star, Ticket, FolderKanban, Compass,
 } from 'lucide-react'
 import { formatDate } from '@/lib/utils'
 import { listProjects } from '@/lib/projects/store'
@@ -119,7 +119,8 @@ export default async function CommandCenterPage({ params, searchParams }: Props)
     { icon: Plus, label: tc('quick.createActivity'), href: `/${locale}/dashboard/plans/new`, c: 'bg-indigo-50 text-indigo-600' },
     { icon: FolderKanban, label: 'Projects', href: `/${locale}/dashboard/projects`, c: 'bg-emerald-50 text-emerald-600' },
     { icon: Compass, label: 'Discover', href: `/${locale}/activities`, c: 'bg-brand-50 text-brand-600' },
-    { icon: Sparkles, label: tc('quick.openOpe'), href: `/${locale}/plan-an-event`, c: 'bg-violet-50 text-violet-600' },
+    // Stage D: removed the duplicate "openOpe" create entry (→ /plan-an-event) — the dashboard now has ONE
+    // primary create ("Create activity"). The public header retains "Plan an event".
     { icon: FileText, label: tc('quick.viewRequests'), href: `/${locale}/dashboard/requests`, c: 'bg-sky-50 text-sky-600' },
   ]
 
