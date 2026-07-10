@@ -9,6 +9,7 @@
 
 import type { createClient } from '@/lib/supabase/server'
 import type { EventPlanV2 } from './event-plan-v2'
+import { activityTitleFromPlan } from './activity-identity'
 
 type ServerClient = Awaited<ReturnType<typeof createClient>>
 
@@ -42,6 +43,29 @@ export async function persistEventPlanV2(
     .from('project_event_plans_v2')
     .upsert(toEventPlanV2Row(projectId, projectVersion, plan), { onConflict: 'project_id,project_version' })
   if (error) throw new Error(`persistEventPlanV2 failed: ${error.message}`)
+}
+
+/**
+ * Batch-read the canonical activity display names for a set of projects (version 1) — one query, for list
+ * views. Returns a map of project_id → title, omitting projects with no prepared event. Uses the single
+ * identity source (activityTitleFromPlan), so lists and the public page never disagree on a name.
+ */
+export async function getActivityTitles(
+  supabase: ServerClient,
+  projectIds: string[],
+): Promise<Record<string, string>> {
+  if (projectIds.length === 0) return {}
+  const { data } = await supabase
+    .from('project_event_plans_v2')
+    .select('project_id, plan')
+    .in('project_id', projectIds)
+    .eq('project_version', 1)
+  const titles: Record<string, string> = {}
+  for (const row of (data as { project_id: string; plan: EventPlanV2 }[] | null) ?? []) {
+    const title = activityTitleFromPlan(row.plan)
+    if (title) titles[row.project_id] = title
+  }
+  return titles
 }
 
 /**

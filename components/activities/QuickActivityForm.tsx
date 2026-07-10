@@ -111,7 +111,7 @@ export function QuickActivityForm({ locale }: { locale: string }) {
         locale,
       )
       if (res.ok) {
-        router.push(`/${locale}/dashboard/projects/${res.projectId}`)
+        router.push(`/${locale}/dashboard/projects/${res.projectId}?created=1`)
       } else {
         setError((res.detail && REASON_TEXT[res.detail]) || REASON_TEXT[res.reason] || 'Could not create the activity. Please try again.')
       }

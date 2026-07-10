@@ -28,6 +28,7 @@ import type { WorkerAccessMetadata } from '@/lib/worker-access/view'
 import { ParticipantAccessPanel } from '@/components/projects/ParticipantAccessPanel'
 import { SafetyAccessPanel } from '@/components/projects/SafetyAccessPanel'
 import { getEventPlanV2 } from '@/lib/planning/persistence'
+import { activityTitleFromPlan, UNTITLED_ACTIVITY } from '@/lib/planning/activity-identity'
 import { projectRolesFromPlan } from '@/lib/team/roles'
 import { formatDate } from '@/lib/utils'
 import type { Locale } from '@/lib/types'
@@ -39,6 +40,7 @@ import type { Locale } from '@/lib/types'
 // they become meaningful (Delivery/Team once approved; sharing/External Access only once approved).
 interface Props {
   params: Promise<{ locale: string; projectId: string }>
+  searchParams: Promise<{ created?: string }>
 }
 
 const PLAN_STAGE: Record<string, string> = {
@@ -52,8 +54,10 @@ const STATUS_LABEL: Record<string, string> = {
   active: 'Active Project',
 }
 
-export default async function ProjectDetailsPage({ params }: Props) {
+export default async function ProjectDetailsPage({ params, searchParams }: Props) {
   const { locale, projectId } = (await params) as { locale: Locale; projectId: string }
+  const { created } = await searchParams
+  const justCreated = created === '1'
 
   const supabase = await createClient()
   const {
@@ -99,6 +103,8 @@ export default async function ProjectDetailsPage({ params }: Props) {
   const projectParticipants = await listAccessByType(supabase, projectId, 'participant')
   const projectSafety = await listAccessByType(supabase, projectId, 'safety')
   const workerPlan = await getEventPlanV2(supabase, projectId, 1).catch(() => null)
+  // The activity's canonical name — the SAME identity the public page and Discover show (one source of truth).
+  const activityTitle = activityTitleFromPlan(workerPlan) ?? UNTITLED_ACTIVITY
   const workerRoles = workerPlan ? projectRolesFromPlan(workerPlan) : []
   const workerRoleLabelById = Object.fromEntries(workerRoles.map((r) => [r.id, r.label]))
   // Live Organizer Execution Workspace (approved projects only). Null → render nothing new (preserve behavior).
@@ -119,12 +125,19 @@ export default async function ProjectDetailsPage({ params }: Props) {
 
   return (
     <div className="space-y-6">
+      {/* Just created (Quick Activity / planner hand-off) — recognizable success feedback. */}
+      {justCreated && (
+        <div className="rounded-lg border border-emerald-200 bg-emerald-50/70 px-4 py-3 text-sm text-emerald-800">
+          <span className="font-semibold">Activity created.</span> This is its workspace — set it public and publish it below to go live.
+        </div>
+      )}
       <div>
         <Link href={`/${locale}/dashboard/projects`} className="text-xs text-slate-500 hover:underline">
-          ← Projects
+          ← Your activities
         </Link>
-        <h1 className="mt-1 text-2xl font-extrabold text-slate-900">Project Workspace</h1>
-        <p className="mt-0.5 font-mono text-sm text-slate-500">{projectId}</p>
+        {/* Identity: lead with the activity's real name (same as the public page), not the internal id. */}
+        <p className="mt-1 text-xs font-semibold uppercase tracking-wide text-slate-400">Activity workspace</p>
+        <h1 className="mt-0.5 text-2xl font-extrabold text-slate-900">{activityTitle}</h1>
         {/* Workspace entry — draft-only orientation; hidden once the Project is approved. */}
         {!approvedAt && (
           <p className="mt-3 max-w-2xl text-sm text-slate-600">
