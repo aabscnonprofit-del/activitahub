@@ -32,31 +32,32 @@ export async function createClient() {
 }
 
 /**
- * Creates a Supabase client with the service role key.
- * Use ONLY in trusted server-side contexts (webhooks, admin actions).
- * Never expose to the client.
+ * Creates a Supabase client with the service role key that TRULY bypasses RLS.
+ * Use ONLY in trusted server-side contexts (webhooks, admin actions, public-safe projections that read
+ * owner-only tables on behalf of any visitor). Never expose to the client.
+ *
+ * It deliberately does NOT read the request's auth cookies. @supabase/ssr derives the outgoing Authorization
+ * header from the session cookies; if a user is signed in, that would send THEIR JWT and PostgREST would run
+ * as that user — silently re-applying RLS and hiding owner-only rows (e.g. project_event_plans_v2) from every
+ * non-owner viewer. So this client is given no cookies and its Authorization is pinned to the service-role key,
+ * making it service_role for every caller regardless of who is logged in.
  */
 export async function createAdminClient() {
-  const cookieStore = await cookies()
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
 
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    serviceKey,
     {
+      // No session: never inherit the caller's cookies.
       cookies: {
         getAll() {
-          return cookieStore.getAll()
+          return []
         },
-        setAll(cookiesToSet: { name: string; value: string; options?: CookieOptions }[]) {
-          try {
-            cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
-            )
-          } catch {
-            // Server Component context
-          }
-        },
+        setAll() {},
       },
+      // Belt-and-suspenders: force the service-role key as the bearer token.
+      global: { headers: { Authorization: `Bearer ${serviceKey}` } },
     }
   )
 }
