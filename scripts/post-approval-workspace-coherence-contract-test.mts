@@ -47,7 +47,7 @@ check('PublishPanel kept', page.includes('<PublishPanel'))
 check('legacy module grid removed (convergence)', !page.includes('Manage this event'))
 check('Budget Workspace entry kept', page.includes('Budget Workspace') && page.includes('/budget`'))
 check('navigation + data loading kept',
-  page.includes('← Projects') && page.includes('getProject(') && page.includes('getProjectPublishState('))
+  page.includes('← Your activities') && page.includes('getProject(') && page.includes('getProjectPublishState('))
 
 // 5. Presentation only — no new action / mutation / state introduced on the page.
 check('presentation only — no action call / mutation / client state on the page',

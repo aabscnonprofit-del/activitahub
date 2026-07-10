@@ -28,8 +28,14 @@ check('workspace introduction says Planning is complete', page.includes('Plannin
 check('workspace introduction frames refinement before approval', page.includes('before approval'))
 
 // 3. Existing navigation still works.
-check('back-to-Projects navigation present', page.includes('← Projects'))
+check('back-to-activities navigation present', page.includes('← Your activities'))
 check('budget module live link present', page.includes('/budget'))
+
+// 3b. Identity: the workspace leads with the activity's real name (same source as the public page), under an
+// "Activity workspace" eyebrow — not the internal project id.
+check('workspace leads with the activity identity (name from the plan)', page.includes('{activityTitle}') && page.includes('activityTitleFromPlan('))
+check('workspace shows the "Activity workspace" eyebrow', page.includes('Activity workspace'))
+check('workspace no longer prints the raw project id as the subtitle', !page.includes('font-mono text-sm text-slate-500">{projectId}'))
 
 // 4. Existing project route unchanged (data loading + modules + publish still intact).
 check('project route still loads the project', page.includes('getProject(') && page.includes('getProjectPublishState('))

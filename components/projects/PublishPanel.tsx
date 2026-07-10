@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { CheckCircle2, Copy, ExternalLink, Globe, ImageDown, QrCode, Facebook, Instagram } from 'lucide-react'
+import { CheckCircle2, Copy, ExternalLink, Globe } from 'lucide-react'
 import { publishProjectAction } from '@/lib/actions/projects'
 
 interface Props {
@@ -11,13 +11,6 @@ interface Props {
   /** Public Space path for this Project (existing /[locale]/p/[projectId] route). */
   publicPath: string
 }
-
-const PLACEHOLDERS = [
-  { label: 'Download Poster', icon: ImageDown },
-  { label: 'Download QR', icon: QrCode },
-  { label: 'Facebook Post', icon: Facebook },
-  { label: 'Instagram Post', icon: Instagram },
-]
 
 export function PublishPanel({ projectId, locale, initialPublished, publicPath }: Props) {
   const [published, setPublished] = useState(initialPublished)
@@ -55,9 +48,9 @@ export function PublishPanel({ projectId, locale, initialPublished, publicPath }
       <div className="rounded-lg border border-emerald-200 bg-emerald-50/60 p-5">
         <div className="flex items-center gap-2 text-emerald-700">
           <CheckCircle2 className="h-5 w-5" aria-hidden="true" />
-          <h2 className="text-base font-bold">Project Published</h2>
+          <h2 className="text-base font-bold">Activity published</h2>
         </div>
-        <p className="mt-1 text-sm text-emerald-800/80">This Project is now live in Public Space.</p>
+        <p className="mt-1 text-sm text-emerald-800/80">This activity is now live on its public page.</p>
 
         <div className="mt-4 flex flex-wrap gap-3">
           <button
@@ -75,26 +68,8 @@ export function PublishPanel({ projectId, locale, initialPublished, publicPath }
             className="inline-flex items-center gap-2 rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-500"
           >
             <ExternalLink className="h-4 w-4" aria-hidden="true" />
-            Open Public Page
+            Open public page
           </a>
-        </div>
-
-        {/* Organizer toolkit — not implemented yet (disabled placeholders) */}
-        <div className="mt-5 border-t border-emerald-200/70 pt-4">
-          <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-400">Organizer toolkit</p>
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-            {PLACEHOLDERS.map(({ label, icon: Icon }) => (
-              <div
-                key={label}
-                aria-disabled="true"
-                className="flex cursor-not-allowed flex-col items-center gap-1 rounded-lg border border-dashed border-slate-200 bg-slate-50/50 p-3 text-center"
-              >
-                <Icon className="h-5 w-5 text-slate-400" aria-hidden="true" />
-                <span className="text-xs font-medium text-slate-500">{label}</span>
-                <span className="text-[10px] font-medium text-slate-400">Coming Soon</span>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
     )
@@ -108,9 +83,9 @@ export function PublishPanel({ projectId, locale, initialPublished, publicPath }
           <Globe className="h-5 w-5" aria-hidden="true" />
         </div>
         <div className="min-w-0">
-          <h2 className="text-base font-bold text-slate-900">Publish this Project</h2>
+          <h2 className="text-base font-bold text-slate-900">Publish this activity</h2>
           <p className="mt-0.5 text-sm text-slate-600">
-            Make it visible in Public Space with its own public page.
+            Make it live on its own public page. Set visibility to <span className="font-medium">Public</span> as well to have it appear in Discover.
           </p>
         </div>
       </div>

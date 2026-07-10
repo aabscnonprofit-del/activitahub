@@ -13,8 +13,8 @@ function check(name: string, cond: boolean) {
 }
 
 check('projects list links each row to the Public Activity Space (/p/[projectId])', page.includes('href={`/${locale}/p/${p.id}`}'))
-check('link is labeled "View public activity"', page.includes('View public activity'))
-check('a Public activity column header exists', page.includes('>Public activity<'))
+check('link is labeled "View public page"', page.includes('View public page'))
+check('a Public page column header exists', page.includes('>Public page<'))
 // Pure navigation — no new data reads / mutations / entities introduced in this slice.
 check('no logic/data change (no new from()/insert/update in the list page)', !/\.insert\(|\.update\(|\.upsert\(/.test(page))
 
