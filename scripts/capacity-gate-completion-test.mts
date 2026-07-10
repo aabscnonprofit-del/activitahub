@@ -53,10 +53,13 @@ for (const load of ['loadOrganizerExecutionWorkspace', 'loadDeliveryWorkspace', 
 
 // 5. UI presents the gate + BOTH resolution paths, replacing the Approve action when blocked.
 const panel = read('../components/projects/CapacityGatePanel.tsx')
+// The draft Approve area is wrapped in an anchor target (id="approve"); when the organizer is over capacity the
+// gate panel renders in place of the Approve action, otherwise the Approve section renders.
 check('page loads the gate for drafts and renders the panel when blocked (in place of Approve)',
   page.includes('loadCapacityGate(supabase, projectId, user.id)') &&
-  page.includes('!approvedAt && capacityBlocked && capacityGate && <CapacityGatePanel gate={capacityGate} projectId={projectId} locale={locale} />') &&
-  page.includes('!approvedAt && !capacityBlocked && ('))
+  /\{!approvedAt && \(\s*<div id="approve"/.test(page) &&
+  page.includes('capacityBlocked && capacityGate && <CapacityGatePanel gate={capacityGate} projectId={projectId} locale={locale} />') &&
+  page.includes('!capacityBlocked && ('))
 check('panel presents the two resolution paths (upgrade qualification + assign a qualified Lead Organizer)',
   /Upgrade your qualification/i.test(panel) && /assign a qualified Lead Organizer/i.test(panel))
 check('panel states the project itself stays valid (restriction is on the organizer, not the event)',

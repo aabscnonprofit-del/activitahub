@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { Wallet, CheckCircle2, CalendarDays } from 'lucide-react'
+import { Wallet, CheckCircle2, CalendarDays, Check } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { getProject, getProjectPublishState, getApprovedProjectSnapshot, getProjectVisibility, getProjectJoinPolicy, getProjectTicketType } from '@/lib/projects/store'
 import { loadOrganizerExecutionWorkspace } from '@/lib/organizer-workspace/load-execution-workspace'
@@ -123,6 +123,23 @@ export default async function ProjectDetailsPage({ params, searchParams }: Props
   // Team Workspace (approved projects only) — project roles (from staffing) + the persisted team + assignments.
   const teamWorkspace = approvedAt ? await loadTeamWorkspace(supabase, projectId) : null
 
+  // ── Workspace progress — the single "where am I / what's next" signal, derived entirely from EXISTING
+  //    state (approval, a future occurrence, publication + public visibility). No new data or entity. Drives
+  //    the progress header so the organizer is never left wondering what to do next. ──────────────────────
+  const hasFutureDate = futureOccurrences.length > 0
+  const isLive = isPublished && visibility === 'public'
+  const stage: 'review' | 'schedule' | 'publish' | 'live' =
+    !approvedAt ? 'review' : !hasFutureDate ? 'schedule' : !isLive ? 'publish' : 'live'
+  const stageIndex = { review: 0, schedule: 1, publish: 2, live: 3 }[stage]
+  const nextStep: Record<'review' | 'schedule' | 'publish', { label: string; cta: string; anchor: string }> = {
+    review: capacityBlocked
+      ? { label: 'Resolve your organizer capacity, then approve this activity.', cta: 'Go to approval', anchor: 'approve' }
+      : { label: 'Review the details below, then approve to begin setting it up.', cta: 'Approve activity', anchor: 'approve' },
+    schedule: { label: 'Set when this activity happens.', cta: 'Set a date', anchor: 'schedule' },
+    publish: { label: 'Make it public and publish it to go live.', cta: 'Publish', anchor: 'publish' },
+  }
+  const publicPath = `/${locale}/p/${projectId}`
+
   return (
     <div className="space-y-6">
       {/* Just arrived from creating the activity — a single, state-aware confirmation shared by BOTH create
@@ -152,6 +169,57 @@ export default async function ProjectDetailsPage({ params, searchParams }: Props
           </p>
         )}
       </div>
+
+      {/* ── Progress & next step — the persistent guide to the current state and the one action to take next.
+          Presentation only, derived from existing state; each step jumps to its section below. ──────────── */}
+      <section aria-label="Progress" className="rounded-xl border border-slate-200 bg-white p-4">
+        <ol className="flex flex-wrap gap-2">
+          {['Approve', 'Schedule', 'Publish', 'Live'].map((label, i) => {
+            const done = i < stageIndex
+            const current = i === stageIndex
+            return (
+              <li
+                key={label}
+                aria-current={current ? 'step' : undefined}
+                className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ${
+                  done ? 'bg-emerald-50 text-emerald-700' : current ? 'bg-brand-600 text-white' : 'bg-slate-100 text-slate-400'
+                }`}
+              >
+                {done ? <Check className="h-3.5 w-3.5" aria-hidden="true" /> : <span>{i + 1}</span>}
+                {label}
+              </li>
+            )
+          })}
+        </ol>
+        <div className="mt-3 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-3">
+          {stage === 'live' ? (
+            <>
+              <p className="text-sm font-semibold text-emerald-700">Your activity is live and discoverable.</p>
+              <a
+                href={publicPath}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex shrink-0 items-center gap-1.5 text-sm font-semibold text-brand-600 hover:underline"
+              >
+                View public page →
+              </a>
+            </>
+          ) : (
+            <>
+              <div className="min-w-0">
+                <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Next step</p>
+                <p className="text-sm font-semibold text-slate-800">{nextStep[stage].label}</p>
+              </div>
+              <a
+                href={`#${nextStep[stage].anchor}`}
+                className="inline-flex shrink-0 items-center gap-2 rounded-lg bg-brand-600 px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-brand-500"
+              >
+                {nextStep[stage].cta}
+              </a>
+            </>
+          )}
+        </div>
+      </section>
 
       {/* ── 1. Project Overview ─────────────────────────────────────────────────────────────────────── */}
       {/* Approved presentation — the Overview once approved; replaces the Draft summary. Records approval
@@ -215,8 +283,10 @@ export default async function ProjectDetailsPage({ params, searchParams }: Props
       {/* ── 3. Approve — the central transition between planning and execution (draft-only, prominent) ── */}
       {/* Organizer Capacity Gate: when the organizer exceeds their capacity for this project's size, the gate
           panel (with the two resolution paths) replaces the Approve action. The project stays valid. */}
-      {!approvedAt && capacityBlocked && capacityGate && <CapacityGatePanel gate={capacityGate} projectId={projectId} locale={locale} />}
-      {!approvedAt && !capacityBlocked && (
+      {!approvedAt && (
+        <div id="approve" className="scroll-mt-6">
+          {capacityBlocked && capacityGate && <CapacityGatePanel gate={capacityGate} projectId={projectId} locale={locale} />}
+          {!capacityBlocked && (
         <section className="rounded-lg border-2 border-brand-200 bg-brand-50/50 p-4">
           <h2 className="mb-1 text-base font-bold text-brand-800">Approve Project</h2>
           <p className="mb-3 max-w-2xl text-xs text-slate-600">
@@ -231,13 +301,15 @@ export default async function ProjectDetailsPage({ params, searchParams }: Props
           )}
           <ApproveProjectPanel projectId={projectId} locale={locale} initialApprovedAt={project.approved_at} />
         </section>
+          )}
+        </div>
       )}
 
       {/* ── 3.5 Schedule — the obvious place to set the real date(s). Visible for every APPROVED project
           (independent of the Execution Workspace / EventPlanV2). Occurrence is the sole date/time source of
           truth; publishing a PUBLIC activity requires at least one future date (enforced on Publish). ── */}
       {approvedAt ? (
-        <section className="rounded-lg border-2 border-brand-200 bg-brand-50/40 p-4">
+        <section id="schedule" className="scroll-mt-6 rounded-lg border-2 border-brand-200 bg-brand-50/40 p-4">
           <div className="flex items-center gap-2">
             <CalendarDays className="h-5 w-5 text-brand-600" aria-hidden="true" />
             <h2 className="text-base font-bold text-brand-800">Schedule</h2>
@@ -279,7 +351,7 @@ export default async function ProjectDetailsPage({ params, searchParams }: Props
           />
         </section>
       ) : (
-        <section className="rounded-lg border border-dashed border-slate-200 bg-slate-50/50 p-4">
+        <section id="schedule" className="scroll-mt-6 rounded-lg border border-dashed border-slate-200 bg-slate-50/50 p-4">
           <div className="flex items-center gap-2 text-slate-500">
             <CalendarDays className="h-5 w-5" aria-hidden="true" />
             <h2 className="text-sm font-semibold">Schedule</h2>
@@ -531,7 +603,7 @@ export default async function ProjectDetailsPage({ params, searchParams }: Props
       {/* Publish & Visibility — one publication decision. Publication answers "Is this Project published?";
           visibility answers "Who can discover this published Project?". Core rule: Local Activities = published
           Projects with visibility = public (private Projects stay hidden). */}
-      <section className="space-y-3">
+      <section id="publish" className="scroll-mt-6 space-y-3">
         <div>
           <h2 className="text-sm font-semibold text-slate-700">Publish &amp; Visibility</h2>
           <p className="max-w-2xl text-xs text-slate-500">
