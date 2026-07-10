@@ -26,7 +26,7 @@ export default async function PlanProposalPage({ params, searchParams }: Props) 
 
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect(`/${locale}/auth/sign-in`)
+  if (!user) redirect(`/${locale}/sign-in`)
 
   const backLink = (
     <Link href={`/${locale}/dashboard/plans/${id}`} className="mb-4 inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-slate-800 print:hidden">

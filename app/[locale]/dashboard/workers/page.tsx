@@ -18,7 +18,7 @@ export default async function OrganizerWorkersPage({ params }: Props) {
 
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect(`/${locale}/auth/sign-in`)
+  if (!user) redirect(`/${locale}/sign-in`)
 
   if (!(await userHasOrganizerAccess(supabase, user.id))) {
     return (

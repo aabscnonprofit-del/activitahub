@@ -12,7 +12,7 @@ export default async function ClientsPage({ params }: Props) {
   const {
     data: { user },
   } = await supabase.auth.getUser()
-  if (!user) redirect(`/${locale}/auth/sign-in`)
+  if (!user) redirect(`/${locale}/sign-in`)
 
   const { data } = await supabase
     .from('clients')
