@@ -39,7 +39,7 @@ check('future sections are placeholders in an Activity Memories section', archiv
 check('no media/reviews/uploads/entity implementation in the archive', !/<input|<video|<img|<form|upload|createReview|createStory|createGallery/i.test(archive.replace(/\/\/.*$/gm, '')))
 
 // 5. Current activities unchanged — the else branch keeps the existing schedule + Join, and the archive has no Join.
-check('current (upcoming) branch keeps the schedule + JoinButton', page.includes('<JoinButton') && page.includes("occurrences.length > 1 ? 'Choose a date'"))
+check('current (upcoming) branch keeps the schedule + JoinButton', page.includes('<JoinButton') && page.includes("occurrences.length > 1 ? 'Upcoming dates'"))
 {
   const archiveBranch = page.slice(page.indexOf('showArchive ? ('), page.indexOf(') : ('))
   check('completed archive is NOT joinable (no JoinButton in the archive branch)', !archiveBranch.includes('<JoinButton'))

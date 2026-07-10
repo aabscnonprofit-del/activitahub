@@ -13,6 +13,7 @@
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { CheckCircle2, Clock, ArrowRight } from 'lucide-react'
 import { joinProjectAction, cancelParticipationAction } from '@/lib/actions/project-participants'
 
 type JoinPolicy = 'instant' | 'approval' | 'ticket'
@@ -58,25 +59,41 @@ export function JoinButton({
   const [pending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
 
-  // 1. Already has a participation → show its status (+ let active participants cancel).
+  // 1. Already has a participation → a clear confirmation of the spot (+ onward navigation and cancel).
   if (status === 'approved' || status === 'pending') {
+    const isApproved = status === 'approved'
     return (
-      <div className="mt-8">
-        <p className="text-sm font-semibold text-slate-800">{STATUS_MSG[status]}</p>
-        <button
-          type="button"
-          disabled={pending}
-          onClick={() =>
-            startTransition(async () => {
-              setError(null)
-              const res = await cancelParticipationAction(projectId, locale)
-              if (res.ok) { setStatus('cancelled'); router.refresh() } else setError('Could not cancel. Please try again.')
-            })
-          }
-          className="mt-2 text-sm font-medium text-slate-500 underline hover:text-slate-700 disabled:opacity-60"
-        >
-          Cancel participation
-        </button>
+      <div className={`mt-8 rounded-xl border p-4 ${isApproved ? 'border-emerald-200 bg-emerald-50/60' : 'border-slate-200 bg-slate-50'}`}>
+        <div className="flex items-center gap-2">
+          {isApproved
+            ? <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-600" aria-hidden="true" />
+            : <Clock className="h-5 w-5 shrink-0 text-slate-500" aria-hidden="true" />}
+          <p className={`text-sm font-semibold ${isApproved ? 'text-emerald-800' : 'text-slate-800'}`}>{STATUS_MSG[status]}</p>
+        </div>
+        <p className="mt-1 text-xs text-slate-500">
+          {isApproved
+            ? 'You’re on the list. Coordinate your arrival under “Getting there” below.'
+            : 'Your spot will be confirmed here as soon as the organizer approves your request.'}
+        </p>
+        <div className="mt-3 flex flex-wrap items-center gap-4">
+          <Link href={`/${locale}/activities`} className="inline-flex items-center gap-1 text-sm font-semibold text-brand-600 hover:underline">
+            Browse more activities<ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+          </Link>
+          <button
+            type="button"
+            disabled={pending}
+            onClick={() =>
+              startTransition(async () => {
+                setError(null)
+                const res = await cancelParticipationAction(projectId, locale)
+                if (res.ok) { setStatus('cancelled'); router.refresh() } else setError('Could not cancel. Please try again.')
+              })
+            }
+            className="text-sm font-medium text-slate-500 underline hover:text-slate-700 disabled:opacity-60"
+          >
+            Cancel participation
+          </button>
+        </div>
         {error && <p className="mt-2 text-xs text-red-600">{error}</p>}
       </div>
     )

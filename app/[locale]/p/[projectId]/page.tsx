@@ -182,7 +182,7 @@ export default async function PublicProjectPage({ params }: Props) {
             {/* Future Occurrences */}
             <section className="mt-8">
               <h2 className="text-sm font-bold uppercase tracking-wide text-slate-400">
-                {occurrences.length > 1 ? 'Choose a date' : 'When'}
+                {occurrences.length > 1 ? 'Upcoming dates' : 'When'}
               </h2>
 
               {occurrences.length === 0 ? (
