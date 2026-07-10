@@ -21,7 +21,7 @@ export default async function NotFound() {
       <p className="mx-auto mt-2 max-w-md text-slate-500">{t('body')}</p>
       <div className="mt-8 flex flex-col gap-3 sm:flex-row">
         <Link href={`/${locale}`} className="btn-primary px-6">{t('home')}</Link>
-        <Link href={`/${locale}/marketplace`} className="btn-secondary px-6">{t('marketplace')}</Link>
+        <Link href={`/${locale}/activities`} className="btn-secondary px-6">{t('marketplace')}</Link>
       </div>
     </div>
   )

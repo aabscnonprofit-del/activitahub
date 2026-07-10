@@ -88,7 +88,7 @@ export default async function HomePage({ params }: HomePageProps) {
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
               <Link
-                href={`/${locale}/marketplace`}
+                href={`/${locale}/activities`}
                 className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-white/25 bg-white/10 px-6 py-3.5 text-base sm:px-8 sm:py-4 font-semibold text-white transition-colors hover:bg-white/20 sm:w-auto"
               >
                 {t('hero.ctaPrimary')}
@@ -134,7 +134,7 @@ export default async function HomePage({ params }: HomePageProps) {
                       return (
                         <Link
                           key={c.key}
-                          href={`/${locale}/marketplace?category=${c.key}`}
+                          href={`/${locale}/activities?category=${c.key}`}
                           className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-opacity hover:opacity-80 ${GROUP_ACCENT[g]}`}
                         >
                           <Icon className="h-3.5 w-3.5" aria-hidden="true" />
@@ -148,7 +148,7 @@ export default async function HomePage({ params }: HomePageProps) {
             </div>
 
             <div className="mt-10 text-center">
-              <Link href={`/${locale}/marketplace`} className="btn-primary px-7 py-3">
+              <Link href={`/${locale}/activities`} className="btn-primary px-7 py-3">
                 {t('discover.cta')}
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
@@ -270,7 +270,7 @@ export default async function HomePage({ params }: HomePageProps) {
                     </li>
                   ))}
                 </ul>
-                <Link href={`/${locale}/marketplace`} className="btn-secondary mt-7 w-full">
+                <Link href={`/${locale}/activities`} className="btn-secondary mt-7 w-full">
                   {t('audience.join.cta')}
                   <ArrowRight className="h-4 w-4" aria-hidden="true" />
                 </Link>
