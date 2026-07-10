@@ -16,7 +16,7 @@ export default async function NewPlanPage({ params }: Props) {
 
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect(`/${locale}/auth/sign-in`)
+  if (!user) redirect(`/${locale}/sign-in`)
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-8 sm:py-10">

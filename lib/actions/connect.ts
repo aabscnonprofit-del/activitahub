@@ -28,7 +28,7 @@ export async function startConnectOnboarding(formData: FormData): Promise<void> 
   // 1. Auth — user-scoped (RLS) client.
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect(`/${locale}/auth/sign-in`)
+  if (!user) redirect(`/${locale}/sign-in`)
 
   // 2. Entitlement gate — only an organizer with active access may onboard.
   if (!(await userHasOrganizerAccess(supabase, user.id))) return dash('no_access')

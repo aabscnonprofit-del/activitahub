@@ -10,7 +10,7 @@ export default async function VendorsPage({ params }: Props) {
   const supabase = await createClient()
 
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect(`/${locale}/auth/sign-in`)
+  if (!user) redirect(`/${locale}/sign-in`)
 
   const { data } = await supabase
     .from('vendors')

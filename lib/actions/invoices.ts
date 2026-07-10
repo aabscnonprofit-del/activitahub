@@ -51,7 +51,7 @@ export async function createInvoice(formData: FormData): Promise<void> {
 
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect(`/${locale}/auth/sign-in`)
+  if (!user) redirect(`/${locale}/sign-in`)
 
   // Gate 1 — organizer entitlement.
   if (!(await userHasOrganizerAccess(supabase, user.id))) return back('no_access')
@@ -143,7 +143,7 @@ export async function voidInvoice(formData: FormData): Promise<void> {
 
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect(`/${locale}/auth/sign-in`)
+  if (!user) redirect(`/${locale}/sign-in`)
   if (!id) return back()
 
   const { data: inv } = await supabase
