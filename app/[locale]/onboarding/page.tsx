@@ -114,7 +114,7 @@ export default async function OnboardingPage({ params, searchParams }: Onboardin
           </Link>
           <div className="flex items-center gap-2 sm:gap-3">
             <Link
-              href={`/${locale}/marketplace`}
+              href={`/${locale}/activities`}
               className="hidden rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900 sm:inline-block"
             >
               {tNav('marketplace')}
@@ -162,7 +162,7 @@ export default async function OnboardingPage({ params, searchParams }: Onboardin
           </p>
           <div className="mx-auto mt-6 flex max-w-xl flex-col items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm text-slate-600 sm:flex-row sm:gap-2">
             <span>{t('notOrganizer')}</span>
-            <Link href={`/${locale}/marketplace`} className="inline-flex items-center gap-1 font-semibold text-brand-600 hover:underline">
+            <Link href={`/${locale}/activities`} className="inline-flex items-center gap-1 font-semibold text-brand-600 hover:underline">
               {tNav('marketplace')}
               <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
             </Link>

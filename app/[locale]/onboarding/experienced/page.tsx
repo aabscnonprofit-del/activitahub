@@ -89,7 +89,7 @@ export default async function ExperiencedReviewPage({ params }: PageProps) {
               </button>
             </form>
             <Link
-              href={`/${locale}/marketplace`}
+              href={`/${locale}/activities`}
               className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-slate-500 hover:text-slate-800"
             >
               {t('rejected.browseCta')}

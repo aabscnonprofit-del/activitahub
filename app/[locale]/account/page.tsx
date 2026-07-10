@@ -78,7 +78,7 @@ export default async function AccountPage({ params }: AccountPageProps) {
 
           {/* Primary participant actions */}
           <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            <Link href={`/${locale}/marketplace`} className="card card-hover flex flex-col p-5 sm:p-6">
+            <Link href={`/${locale}/activities`} className="card card-hover flex flex-col p-5 sm:p-6">
               <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
                 <Compass className="h-5 w-5" aria-hidden="true" />
               </div>
