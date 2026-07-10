@@ -2,9 +2,9 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
-import { getProject, publishProject, updateProject, insertApprovedProjectSnapshot, setProjectVisibility, type ProjectVisibility, setProjectJoinPolicy, type JoinPolicy, setProjectTicketType, type TicketType } from '@/lib/projects/store'
+import { getProject, publishProject, updateProject, insertApprovedProjectSnapshot, setProjectVisibility, type ProjectVisibility, setProjectJoinPolicy, type JoinPolicy, setProjectTicketType, type TicketType, getProjectVisibility, getProjectPublishState } from '@/lib/projects/store'
 import { getEventPlanV2 } from '@/lib/planning/persistence'
-import { createOrGetOccurrence } from '@/lib/occurrence/store'
+import { createOrGetOccurrence, hasFutureOccurrence } from '@/lib/occurrence/store'
 import { loadCapacityGate } from '@/lib/capacity/gate'
 
 // Project actions — thin server-action surface over the Project Service (lib/projects/store).
@@ -12,7 +12,7 @@ import { loadCapacityGate } from '@/lib/capacity/gate'
 
 export interface PublishResult {
   ok: boolean
-  error?: 'not_authenticated' | 'not_authorized' | 'publish_failed'
+  error?: 'not_authenticated' | 'not_authorized' | 'no_future_occurrence' | 'publish_failed'
 }
 
 /**
@@ -20,6 +20,11 @@ export interface PublishResult {
  *  - the caller must be authenticated and own the Project (getProject is RLS owner-scoped);
  *  - publishing sets `projects.is_published = true` via the Project Service and nothing else;
  *  - re-publishing an already-published Project is a no-op success.
+ *
+ * Readiness gate: a PUBLIC project may not be published without at least one future Occurrence — a publicly
+ * discoverable activity must never be presented as ready with no date ("Dates coming soon" is only for an
+ * intentional non-public preview). Publishing a PRIVATE (invitation-only) project stays allowed. Occurrence is
+ * the sole date/time source of truth for this check.
  */
 export async function publishProjectAction(projectId: string, locale: string): Promise<PublishResult> {
   const supabase = await createClient()
@@ -32,6 +37,12 @@ export async function publishProjectAction(projectId: string, locale: string): P
   const project = await getProject(supabase, projectId)
   if (!project) return { ok: false, error: 'not_authorized' }
 
+  // Readiness: publishing a PUBLIC project requires a real future date.
+  const visibility = await getProjectVisibility(supabase, projectId)
+  if (visibility === 'public' && !(await hasFutureOccurrence(supabase, projectId, new Date().toISOString()))) {
+    return { ok: false, error: 'no_future_occurrence' }
+  }
+
   const ok = await publishProject(supabase, projectId)
   if (!ok) return { ok: false, error: 'publish_failed' }
 
@@ -42,7 +53,7 @@ export async function publishProjectAction(projectId: string, locale: string): P
 
 export interface VisibilityResult {
   ok: boolean
-  error?: 'not_authenticated' | 'not_authorized' | 'invalid' | 'visibility_failed'
+  error?: 'not_authenticated' | 'not_authorized' | 'invalid' | 'no_future_occurrence' | 'visibility_failed'
 }
 
 /**
@@ -62,6 +73,15 @@ export async function setProjectVisibilityAction(projectId: string, visibility: 
   // Ownership: getProject returns null unless the caller owns the Project (owner RLS).
   const project = await getProject(supabase, projectId)
   if (!project) return { ok: false, error: 'not_authorized' }
+
+  // Readiness (the other ordering of the same rule): making an ALREADY-PUBLISHED project public requires a
+  // future Occurrence, so a discoverable activity can never end up published + public with no date.
+  if (visibility === 'public') {
+    const isPublished = await getProjectPublishState(supabase, projectId)
+    if (isPublished && !(await hasFutureOccurrence(supabase, projectId, new Date().toISOString()))) {
+      return { ok: false, error: 'no_future_occurrence' }
+    }
+  }
 
   const ok = await setProjectVisibility(supabase, projectId, visibility)
   if (!ok) return { ok: false, error: 'visibility_failed' }

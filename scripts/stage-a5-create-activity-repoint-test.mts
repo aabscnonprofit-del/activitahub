@@ -20,9 +20,11 @@ function check(name: string, cond: boolean) {
 const createLine = home.split('\n').find((l) => l.includes("tc('quick.createActivity')")) ?? ''
 
 check('primary "Create activity" no longer links to the legacy /dashboard/activities editor',
-  createLine.length > 0 && !createLine.includes('/dashboard/activities'))
-check('primary "Create activity" links to the Project/planner creation route (/dashboard/plans/new)',
-  createLine.includes('/dashboard/plans/new'))
+  createLine.length > 0 && !/\/dashboard\/activities`/.test(createLine))
+// The primary create now enters the Create Activity choice screen (Quick Activity vs Plan with AI) — both
+// branches of which create the same canonical Project.
+check('primary "Create activity" links to the Create Activity choice screen (/dashboard/activities/new)',
+  createLine.includes('/dashboard/activities/new'))
 check('reuses the existing planner pipeline — no second create flow / no bare-Project insert added',
   !/createProject\(|from\('projects'\)\s*\.insert|from\('activities'\)\s*\.insert/.test(home))
 

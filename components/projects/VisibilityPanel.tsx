@@ -37,7 +37,11 @@ export function VisibilityPanel({
       if (res.ok) router.refresh()
       else {
         setVisibility(prev)
-        setError('Could not update visibility. Please try again.')
+        setError(
+          res.error === 'no_future_occurrence'
+            ? 'Set a date first — a published activity needs an upcoming date before it can go public. Use the Schedule section above.'
+            : 'Could not update visibility. Please try again.',
+        )
       }
     })
   }

@@ -16,7 +16,7 @@ function check(name: string, cond: boolean) {
 
 // Phase 1 — Dashboard Home is Project-first.
 check('home surfaces Projects (reuses listProjects)', home.includes('listProjects(supabase)') && home.includes('Your projects'))
-check('home create + primary CTAs enter the Project world', home.includes('/dashboard/plans/new') && home.includes('/${locale}/activities') && home.includes('/dashboard/projects'))
+check('home create + primary CTAs enter the Project world', home.includes('/dashboard/activities/new') && home.includes('/${locale}/activities') && home.includes('/dashboard/projects'))
 check('legacy-activity quick actions removed from the home (add participants / promotion / send update)',
   !home.includes("quick.addParticipants") && !home.includes("quick.generatePromotion") && !home.includes("quick.sendUpdate"))
 // The empty-state ("start") CTA lives inside the Your-projects section and must point at the planner.
@@ -24,8 +24,8 @@ check('legacy-activity quick actions removed from the home (add participants / p
 // organizer with no legacy activities.)
 {
   const startBlock = home.slice(home.indexOf("t('start.title')"), home.indexOf("t('start.cta')") + 20)
-  check('empty-state / start CTA points at the planner, not the legacy editor',
-    startBlock.includes('/dashboard/plans/new') && !startBlock.includes('/dashboard/activities'))
+  check('empty-state / start CTA points at the Create Activity choice screen, not the legacy editor',
+    startBlock.includes('/dashboard/activities/new') && !/\/dashboard\/activities`/.test(startBlock))
 }
 
 // Phase 2 — Discovery converges on the Project surface.

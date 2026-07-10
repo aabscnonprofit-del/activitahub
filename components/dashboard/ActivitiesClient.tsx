@@ -215,7 +215,7 @@ export default function ActivitiesClient({ initialActivities, venues, locale }: 
         </div>
         {/* Stage D1: "New activity" routes into the single Project creation pipeline (no legacy activity
             creation). Editing existing legacy activities below is unchanged. */}
-        <Link href={`/${locale}/dashboard/plans/new`} className="btn-primary">
+        <Link href={`/${locale}/dashboard/activities/new`} className="btn-primary">
           <Plus className="w-4 h-4" />
           {t('create')}
         </Link>
@@ -228,7 +228,7 @@ export default function ActivitiesClient({ initialActivities, venues, locale }: 
           title={t('empty')}
           description={t('emptyDesc')}
           action={
-            <Link href={`/${locale}/dashboard/plans/new`} className="btn-primary text-sm">
+            <Link href={`/${locale}/dashboard/activities/new`} className="btn-primary text-sm">
               <Plus className="w-4 h-4" />
               {t('create')}
             </Link>

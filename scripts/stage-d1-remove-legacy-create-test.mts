@@ -16,7 +16,9 @@ function check(name: string, cond: boolean) {
 
 // The create trigger is gone; the "New activity" buttons now link to the Project pipeline.
 check('no button opens the legacy create modal (no setFormMode create)', !ac.includes("setFormMode({ type: 'create' })"))
-check('"New activity" buttons route to the Project planner (/dashboard/plans/new)', (ac.match(/\/\$\{locale\}\/dashboard\/plans\/new/g) ?? []).length >= 2)
+// The "New activity" buttons now route to the Create Activity choice screen (Quick Activity vs Plan with AI) —
+// still the single Project pipeline, never the legacy create modal.
+check('"New activity" buttons route to the Create Activity choice screen', (ac.match(/\/\$\{locale\}\/dashboard\/activities\/new/g) ?? []).length >= 2)
 check('editing existing legacy activities is preserved', ac.includes("setFormMode({ type: 'edit'"))
 
 // The legacy ACTIVITY create action is `createActivity` (distinct from vendor/client/venue creates, which also
