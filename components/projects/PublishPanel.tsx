@@ -117,7 +117,11 @@ export function PublishPanel({ projectId, locale, initialPublished, publicPath }
 
       {error && (
         <p className="mt-3 text-sm text-red-600">
-          {error === 'not_authorized' ? 'Only the owner can publish this Project.' : 'Could not publish. Please try again.'}
+          {error === 'not_authorized'
+            ? 'Only the owner can publish this Project.'
+            : error === 'no_future_occurrence'
+              ? 'Set a date first — a public activity needs at least one upcoming date before it can be published. Use the Schedule section above.'
+              : 'Could not publish. Please try again.'}
         </p>
       )}
 

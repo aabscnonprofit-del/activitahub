@@ -21,7 +21,8 @@ check('plan detail links to the Project workspace via project_id', planDetail.in
 // Check for the actual href template (the comment mentions the route in prose — strip line comments first).
 const homeCode = home.replace(/\/\/.*$/gm, '')
 check('dashboard quick actions no longer duplicate create via /plan-an-event', !homeCode.includes('quick.openOpe') && !homeCode.includes('/plan-an-event'))
-check('dashboard retains a single primary create ("Create activity" → planner)', home.includes("tc('quick.createActivity')") && home.includes('/dashboard/plans/new'))
+// The primary create entry now routes to the Create Activity choice screen (Quick Activity vs Plan with AI).
+check('dashboard retains a single primary create ("Create activity" → choice screen)', home.includes("tc('quick.createActivity')") && home.includes('/dashboard/activities/new'))
 
 console.log(`\n${failures === 0 ? 'ALL PASS' : `${failures} FAILURE(S)`}`)
 process.exit(failures === 0 ? 0 : 1)

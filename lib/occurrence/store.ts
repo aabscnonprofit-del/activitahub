@@ -78,6 +78,16 @@ export async function createOrGetOccurrence(
   return { ok: true, occurrence: data as Occurrence, created: true }
 }
 
+/** All of a project's occurrences (owner-scoped), soonest first — for the workspace Schedule display. */
+export async function listProjectOccurrences(supabase: ServerClient, projectId: string): Promise<Occurrence[]> {
+  const { data } = await supabase
+    .from('occurrences')
+    .select(OCC_COLS)
+    .eq('project_id', projectId)
+    .order('starts_at', { ascending: true })
+  return (data as Occurrence[]) ?? []
+}
+
 /** All of a project's occurrences, in created order — the explicit basis for resolution (private). */
 async function listOccurrences(supabase: ServerClient, projectId: string): Promise<Occurrence[]> {
   const { data } = await supabase
@@ -131,6 +141,92 @@ export async function resolveCurrentOccurrence(
     return res.ok ? { occurrence: res.occurrence, reason: 'created' } : { occurrence: null, reason: 'none' }
   }
   return { occurrence: null, reason: 'ambiguous' }
+}
+
+/**
+ * Whether the project has at least one occurrence starting at/after `nowIso` — the readiness signal for
+ * publication (a publicly discoverable activity must have a real future date). Owner- or admin-scoped read.
+ */
+export async function hasFutureOccurrence(supabase: ServerClient, projectId: string, nowIso: string): Promise<boolean> {
+  const { data } = await supabase
+    .from('occurrences')
+    .select('id')
+    .eq('project_id', projectId)
+    .gte('starts_at', nowIso)
+    .limit(1)
+  return Array.isArray(data) && data.length > 0
+}
+
+/** Public-safe metadata carried on an occurrence (date/time live in the window; these are the rest). */
+export interface OccurrenceMeta {
+  location?: string | null
+  capacity?: number | null
+  priceCents?: number | null
+  title?: string | null
+}
+
+export type ApplyScheduleResult =
+  | { ok: true; occurrences: Occurrence[] }
+  | { ok: false; reason: 'project_not_found' | 'project_not_approved' | 'empty' | 'error' }
+
+/**
+ * Apply concrete occurrence WINDOWS (absolute UTC instants, produced by lib/scheduling) to an APPROVED project
+ * — the real scheduling write. The Occurrence stays the sole date/time source of truth; no Project/Plan date is
+ * ever written.
+ *   - `mode: 'one_time'` with exactly ONE existing occurrence → update it IN PLACE (its id + persisted
+ *     execution status survive the reschedule).
+ *   - otherwise → REPLACE the project's FUTURE occurrences (starts_at ≥ now) with the given windows; already
+ *     started/past occurrences are left untouched. Deleting a future occurrence cascades its (not-yet-relevant)
+ *     execution/delivery status and detaches arrival prefs — safe for a reschedule.
+ * Dedup on (project, starts_at) is guaranteed by the unique index (migration 051).
+ */
+export async function applyOccurrenceWindows(
+  supabase: ServerClient,
+  projectId: string,
+  windows: { startsAt: string; endsAt: string | null }[],
+  meta: OccurrenceMeta,
+  nowIso: string,
+  mode: 'one_time' | 'series',
+): Promise<ApplyScheduleResult> {
+  const project = await getProject(supabase, projectId)
+  if (!project) return { ok: false, reason: 'project_not_found' }
+  if (!project.approved_at) return { ok: false, reason: 'project_not_approved' }
+  if (windows.length === 0) return { ok: false, reason: 'empty' }
+
+  // Only set the columns the caller actually provided (undefined = leave as-is; null = clear).
+  const metaCols: Record<string, unknown> = {}
+  if (meta.location !== undefined) metaCols.location = meta.location
+  if (meta.capacity !== undefined) metaCols.capacity = meta.capacity
+  if (meta.priceCents !== undefined) metaCols.price_cents = meta.priceCents
+  if (meta.title !== undefined) metaCols.title = meta.title
+
+  const existing = await listOccurrences(supabase, projectId)
+
+  // In-place reschedule of a single-occurrence project — preserves the occurrence id + its execution status.
+  if (mode === 'one_time' && existing.length === 1 && windows.length === 1) {
+    const w = windows[0]
+    const { data, error } = await supabase
+      .from('occurrences')
+      .update({ starts_at: w.startsAt, ends_at: w.endsAt, ...metaCols })
+      .eq('id', existing[0].id)
+      .select(OCC_COLS)
+      .single()
+    if (error || !data) return { ok: false, reason: 'error' }
+    return { ok: true, occurrences: [data as Occurrence] }
+  }
+
+  // Replace FUTURE occurrences (keep any that have already started).
+  const nowMs = new Date(nowIso).getTime()
+  const futureIds = existing.filter((o) => new Date(o.starts_at).getTime() >= nowMs).map((o) => o.id)
+  if (futureIds.length > 0) {
+    const { error: delErr } = await supabase.from('occurrences').delete().in('id', futureIds)
+    if (delErr) return { ok: false, reason: 'error' }
+  }
+
+  const rows = windows.map((w) => ({ project_id: projectId, starts_at: w.startsAt, ends_at: w.endsAt, ...metaCols }))
+  const { data, error } = await supabase.from('occurrences').insert(rows).select(OCC_COLS)
+  if (error || !data) return { ok: false, reason: 'error' }
+  return { ok: true, occurrences: data as Occurrence[] }
 }
 
 /** Result of setting a current/selected occurrence's start time. */

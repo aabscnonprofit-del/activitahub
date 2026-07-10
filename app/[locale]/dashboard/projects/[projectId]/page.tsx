@@ -1,14 +1,14 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { Wallet, CheckCircle2 } from 'lucide-react'
+import { Wallet, CheckCircle2, CalendarDays } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { getProject, getProjectPublishState, getApprovedProjectSnapshot, getProjectVisibility, getProjectJoinPolicy, getProjectTicketType } from '@/lib/projects/store'
 import { loadOrganizerExecutionWorkspace } from '@/lib/organizer-workspace/load-execution-workspace'
 import { loadDeliveryWorkspace } from '@/lib/organizer-workspace/load-delivery-workspace'
 import { loadTeamWorkspace } from '@/lib/organizer-workspace/load-team-workspace'
-import { resolveCurrentOccurrence } from '@/lib/occurrence/store'
+import { listProjectOccurrences } from '@/lib/occurrence/store'
 import { ExecutionChecklist } from '@/components/workspace/ExecutionChecklist'
-import { OccurrenceScheduler } from '@/components/workspace/OccurrenceScheduler'
+import { ActivityScheduler } from '@/components/workspace/ActivityScheduler'
 import { DeliveryChecklist } from '@/components/workspace/DeliveryChecklist'
 import { TeamWorkspacePanel } from '@/components/workspace/TeamWorkspacePanel'
 import { listBudgetsForProject } from '@/lib/budget/store'
@@ -106,8 +106,12 @@ export default async function ProjectDetailsPage({ params }: Props) {
   const workspaceLabelById: Record<string, string> = executionWorkspace
     ? Object.fromEntries(executionWorkspace.checklist.map((i) => [i.id, i.label]))
     : {}
-  // The current occurrence (for the scheduler); resolved explicitly after the workspace load ensured it exists.
-  const currentOccurrence = executionWorkspace ? (await resolveCurrentOccurrence(supabase, projectId)).occurrence : null
+  // The project's occurrences (approved projects only) — the canonical date/time source. Drives the Schedule
+  // section, its upcoming-dates list, and the scheduler prefill (the sole occurrence, when there is exactly one).
+  const projectOccurrences = approvedAt ? await listProjectOccurrences(supabase, projectId) : []
+  const nowMsWorkspace = Date.now()
+  const futureOccurrences = projectOccurrences.filter((o) => new Date(o.starts_at).getTime() >= nowMsWorkspace)
+  const soleOccurrence = projectOccurrences.length === 1 ? projectOccurrences[0] : null
   // Delivery Workspace (approved projects only) — delivery components projected from the plan + per-occurrence state.
   const deliveryWorkspace = approvedAt ? await loadDeliveryWorkspace(supabase, projectId) : null
   // Team Workspace (approved projects only) — project roles (from staffing) + the persisted team + assignments.
@@ -210,6 +214,63 @@ export default async function ProjectDetailsPage({ params }: Props) {
         </section>
       )}
 
+      {/* ── 3.5 Schedule — the obvious place to set the real date(s). Visible for every APPROVED project
+          (independent of the Execution Workspace / EventPlanV2). Occurrence is the sole date/time source of
+          truth; publishing a PUBLIC activity requires at least one future date (enforced on Publish). ── */}
+      {approvedAt ? (
+        <section className="rounded-lg border-2 border-brand-200 bg-brand-50/40 p-4">
+          <div className="flex items-center gap-2">
+            <CalendarDays className="h-5 w-5 text-brand-600" aria-hidden="true" />
+            <h2 className="text-base font-bold text-brand-800">Schedule</h2>
+          </div>
+          <p className="mb-3 mt-1 max-w-2xl text-xs text-slate-600">
+            Set when this activity happens — a one-time date or a weekly repeat. The date, time, and place appear
+            on the public activity page and in Local Activities. A public activity can be published only once it
+            has an upcoming date.
+          </p>
+
+          {futureOccurrences.length > 0 && (
+            <div className="mb-4">
+              <h3 className="mb-1 text-xs font-semibold uppercase tracking-wide text-slate-400">
+                Upcoming {futureOccurrences.length > 1 ? `(${futureOccurrences.length})` : ''}
+              </h3>
+              <ul className="space-y-1 rounded-lg border border-slate-200 bg-white p-3 text-sm text-slate-700">
+                {futureOccurrences.slice(0, 8).map((o) => (
+                  <li key={o.id} className="flex items-center gap-2">
+                    <CalendarDays className="h-4 w-4 shrink-0 text-brand-500" aria-hidden="true" />
+                    <span>{formatDate(o.starts_at)}</span>
+                    {o.location && <span className="text-xs text-slate-500">· {o.location}</span>}
+                  </li>
+                ))}
+                {futureOccurrences.length > 8 && (
+                  <li className="text-xs text-slate-400">+ {futureOccurrences.length - 8} more</li>
+                )}
+              </ul>
+            </div>
+          )}
+
+          <ActivityScheduler
+            projectId={projectId}
+            locale={locale}
+            initial={
+              soleOccurrence
+                ? { location: soleOccurrence.location, capacity: soleOccurrence.capacity, priceCents: soleOccurrence.price_cents, title: soleOccurrence.title }
+                : undefined
+            }
+          />
+        </section>
+      ) : (
+        <section className="rounded-lg border border-dashed border-slate-200 bg-slate-50/50 p-4">
+          <div className="flex items-center gap-2 text-slate-500">
+            <CalendarDays className="h-5 w-5" aria-hidden="true" />
+            <h2 className="text-sm font-semibold">Schedule</h2>
+          </div>
+          <p className="mt-1 max-w-2xl text-xs text-slate-500">
+            Approve this Project first — then you can set its date(s) here (one-time or weekly).
+          </p>
+        </section>
+      )}
+
       {/* ── 4. Budget — immediately available after Planning (reuses the existing /budget route) ──────── */}
       <section>
         <h2 className="mb-1 text-sm font-semibold text-slate-700">Budget Workspace</h2>
@@ -234,16 +295,9 @@ export default async function ProjectDetailsPage({ params }: Props) {
         <section className="rounded-lg border border-slate-200 p-4">
           <h2 className="mb-1 text-sm font-semibold text-slate-700">Execution Workspace</h2>
           <p className="mb-3 max-w-2xl text-xs text-slate-500">
-            Live execution state for this approved project&rsquo;s current occurrence.
+            Live execution state for this approved project&rsquo;s current occurrence. Set the date in the
+            Schedule section above.
           </p>
-
-          {/* Set/update the real event start time for the current occurrence (replaces the placeholder). */}
-          <OccurrenceScheduler
-            projectId={projectId}
-            locale={locale}
-            occurrenceId={currentOccurrence?.id}
-            currentStartIso={currentOccurrence?.starts_at}
-          />
 
           {/* Occurrence-level progress / completion. */}
           <div className="mt-4 flex items-center justify-between rounded-lg border border-slate-200 p-3">

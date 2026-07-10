@@ -128,10 +128,11 @@ const comp = read('../components/workspace/OccurrenceScheduler.tsx')
 const page = read('../app/[locale]/dashboard/projects/[projectId]/page.tsx')
 check('scheduler submits the explicit occurrenceId to the action',
   comp.includes('scheduleOccurrenceAction(projectId, iso, locale, occurrenceId)') && !comp.includes('First'))
-check('page passes the resolved current occurrence id + start to the scheduler',
-  page.includes('resolveCurrentOccurrence(supabase, projectId)') &&
-  page.includes('occurrenceId={currentOccurrence?.id}') && page.includes('currentStartIso={currentOccurrence?.starts_at}') &&
-  !page.includes('First'))
+// The workspace now schedules through the visible Schedule section (ActivityScheduler) over the canonical
+// occurrences (listProjectOccurrences) — the store's explicit current/selected resolution above still backs
+// the execution pipeline (loader/execution action), which this test's earlier checks cover.
+check('workspace schedules via ActivityScheduler over the canonical occurrences',
+  page.includes('listProjectOccurrences') && page.includes('<ActivityScheduler') && !page.includes('First'))
 
 console.log(`\n${failures === 0 ? 'ALL PASS' : `${failures} FAILURE(S)`}`)
 process.exit(failures === 0 ? 0 : 1)

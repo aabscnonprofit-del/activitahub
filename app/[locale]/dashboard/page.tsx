@@ -116,7 +116,7 @@ export default async function CommandCenterPage({ params, searchParams }: Props)
   // promotion / send update, which pointed at /dashboard/activities) are removed from the home — that workflow
   // remains reachable under the Classic sidebar. Requests (a separate legacy business surface) is retained.
   const quick = [
-    { icon: Plus, label: tc('quick.createActivity'), href: `/${locale}/dashboard/plans/new`, c: 'bg-indigo-50 text-indigo-600' },
+    { icon: Plus, label: tc('quick.createActivity'), href: `/${locale}/dashboard/activities/new`, c: 'bg-indigo-50 text-indigo-600' },
     { icon: FolderKanban, label: 'Projects', href: `/${locale}/dashboard/projects`, c: 'bg-emerald-50 text-emerald-600' },
     { icon: Compass, label: 'Discover', href: `/${locale}/activities`, c: 'bg-brand-50 text-brand-600' },
     // Stage D: removed the duplicate "openOpe" create entry (→ /plan-an-event) — the dashboard now has ONE
@@ -178,7 +178,7 @@ export default async function CommandCenterPage({ params, searchParams }: Props)
         <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
           <h2 className="font-bold text-slate-900">Your projects</h2>
           <div className="flex items-center gap-4 text-sm font-semibold text-brand-600">
-            <Link href={`/${locale}/dashboard/plans/new`} className="hover:underline">Create activity</Link>
+            <Link href={`/${locale}/dashboard/activities/new`} className="hover:underline">Create activity</Link>
             <Link href={`/${locale}/activities`} className="hover:underline">Discover</Link>
             <Link href={`/${locale}/dashboard/projects`} className="hover:underline">View all</Link>
           </div>
@@ -187,7 +187,7 @@ export default async function CommandCenterPage({ params, searchParams }: Props)
           <div className="overflow-hidden rounded-2xl bg-gradient-to-br from-brand-600 to-brand-800 p-6 text-white sm:p-8">
             <h3 className="text-xl font-extrabold sm:text-2xl">{t('start.title')}</h3>
             <p className="mt-2 max-w-xl text-sm leading-relaxed text-brand-100">{t('start.body')}</p>
-            <Link href={`/${locale}/dashboard/plans/new`} className="mt-5 inline-flex items-center gap-2 rounded-xl bg-white px-5 py-2.5 text-sm font-bold text-brand-700 hover:bg-brand-50">
+            <Link href={`/${locale}/dashboard/activities/new`} className="mt-5 inline-flex items-center gap-2 rounded-xl bg-white px-5 py-2.5 text-sm font-bold text-brand-700 hover:bg-brand-50">
               <Plus className="h-4 w-4" />{t('start.cta')}
             </Link>
           </div>
