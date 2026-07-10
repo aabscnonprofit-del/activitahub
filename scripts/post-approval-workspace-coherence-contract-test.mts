@@ -25,7 +25,7 @@ check('page derives the approval state from project.approved_at', page.includes(
 // 2. Draft-only sections are gated off when approved.
 const draftGates = (page.match(/\{!approvedAt &&/g) || []).length
 check('draft-only sections are gated on !approvedAt (intro + two prep groups; capacity gate is also draft-only)', draftGates >= 3)
-check('header draft intro gated on !approvedAt', /\{!approvedAt && \([\s\S]{0,120}Planning is complete/.test(page))
+check('header draft intro gated on !approvedAt (and hidden right after creation)', /\{!approvedAt && !justCreated && \([\s\S]{0,120}Planning is complete/.test(page))
 check('Draft Project Overview / Review Checklist still authored (gated, not deleted)',
   page.includes('Draft Project Overview') && page.includes('Review Checklist'))
 check('Budget entry copy is state-aware (draft copy only when not approved)',

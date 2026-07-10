@@ -125,10 +125,15 @@ export default async function ProjectDetailsPage({ params, searchParams }: Props
 
   return (
     <div className="space-y-6">
-      {/* Just created (Quick Activity / planner hand-off) — recognizable success feedback. */}
+      {/* Just arrived from creating the activity — a single, state-aware confirmation shared by BOTH create
+          paths (Quick Activity lands approved → publish next; AI Planning lands as a draft → approve next). */}
       {justCreated && (
         <div className="rounded-lg border border-emerald-200 bg-emerald-50/70 px-4 py-3 text-sm text-emerald-800">
-          <span className="font-semibold">Activity created.</span> This is its workspace — set it public and publish it below to go live.
+          {approvedAt ? (
+            <><span className="font-semibold">Activity created.</span> This is its workspace — set it public and publish it below to go live.</>
+          ) : (
+            <><span className="font-semibold">Your activity is planned.</span> This is its workspace — review it below, then approve it to continue.</>
+          )}
         </div>
       )}
       <div>
@@ -138,8 +143,9 @@ export default async function ProjectDetailsPage({ params, searchParams }: Props
         {/* Identity: lead with the activity's real name (same as the public page), not the internal id. */}
         <p className="mt-1 text-xs font-semibold uppercase tracking-wide text-slate-400">Activity workspace</p>
         <h1 className="mt-0.5 text-2xl font-extrabold text-slate-900">{activityTitle}</h1>
-        {/* Workspace entry — draft-only orientation; hidden once the Project is approved. */}
-        {!approvedAt && (
+        {/* Workspace entry — draft-only orientation; hidden once approved, and hidden right after creation
+            (the arrival banner above already gives the state-aware next step). */}
+        {!approvedAt && !justCreated && (
           <p className="mt-3 max-w-2xl text-sm text-slate-600">
             Planning is complete. This is your Project Workspace. Review the draft, then approve it — approval is
             the step that turns this plan into an event you can deliver.

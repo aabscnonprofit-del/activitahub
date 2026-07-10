@@ -278,7 +278,7 @@ export default function PlannerClient({ locale }: { locale: string }) {
               Your Planning is ready. Continue to the Project Workspace to begin organizing your event.
             </p>
             <Link
-              href={`/${locale}/dashboard/projects/${projectId}`}
+              href={`/${locale}/dashboard/projects/${projectId}?created=1`}
               className="btn-primary w-full px-7 py-3.5 text-base sm:w-auto"
             >
               Continue to Project Workspace
