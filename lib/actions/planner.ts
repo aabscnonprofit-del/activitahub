@@ -7,6 +7,13 @@ import { recognizeScenario, type ConceptFunnelResult, type ScenarioSource } from
 import { decideRequest } from '@/lib/ai/ope-agent'
 import { effectiveRequestText, type OpeAgentTurn } from '@/lib/ope/agent'
 import { extractFromText } from '@/lib/ope/request-text'
+import {
+  readHeadcount,
+  readBareCount,
+  readInstructor,
+  readInstructorAnswer,
+  missingRequiredFact,
+} from '@/lib/planning/required-facts'
 import { hasOrganizerAccess } from '@/lib/auth/organizer-access'
 import { resolveProjectForPlan, updateProject } from '@/lib/projects/store'
 
@@ -29,7 +36,7 @@ import type { EventPlanV2 } from '@/lib/planning/event-plan-v2'
 // chosen concept, overlays the user-confirmed operational details, and runs the UNCHANGED
 // engine. The Clarification Engine still runs inside generatePlan.
 
-/** Deterministic field hints extracted from the idea, used to prefill the detail step. */
+/** Deterministic field hints captured from the idea + discovery answers, carried into the FED. */
 export interface IdeaPrefill {
   category: PlannerInput['category'] | null
   guestCount: number | null
@@ -38,6 +45,8 @@ export interface IdeaPrefill {
   venueType: 'backyard_home' | 'public_park' | null
   budget: number | null
   timeframe: string | null
+  /** For class-type activities: whether the visitor will have their own instructor or need one. */
+  instructor: 'have' | 'need' | null
 }
 
 /**
@@ -64,6 +73,12 @@ export interface ScenarioState {
   directions?: string[]
   /** Clarifying questions from the AI Organizer to show the user, AFTER directions (may be empty). */
   discoveryQuestions?: string[]
+  /**
+   * A required operational fact still missing before planning (guestCount, or instructor for class
+   * activities). The client renders the localized follow-up question for it (route language). Set
+   * only while holding in Discovery to capture the fact — never on a WSH-bearing scenario.
+   */
+  missingFact?: 'guests' | 'instructor' | null
 }
 
 /** A discovery conversation turn passed from the client (organizer/user). */
@@ -93,16 +108,23 @@ export async function analyzeIdeaAction(idea: string, conversation?: DiscoveryTu
   const verdict = await decideRequest({ rawText: text, conversation, locale })
 
   // Deterministic helpers run ONLY AFTER the verdict, over the effective (idea + answers) text.
-  // Prefill populates form hints for the UI — it never decides anything.
+  // Prefill carries the captured facts into the FED — it never decides anything.
   const ext = extractFromText(effective)
+  // Required operational facts (accepted Details-step architecture verification): guestCount always,
+  // instructor for class-type activities. Captured from the idea/answers — including a short direct
+  // reply to our follow-up (readBareCount / readInstructorAnswer applied to the latest answer).
+  const lastAnswer = (conversation ?? []).filter((t) => t.role === 'user').slice(-1)[0]?.content ?? ''
+  const headcount = ext.guestCount ?? readHeadcount(effective) ?? readBareCount(lastAnswer)
+  const instructor = readInstructor(effective) ?? readInstructorAnswer(lastAnswer)
   const prefill: IdeaPrefill = {
     category: ext.category,
-    guestCount: ext.guestCount,
+    guestCount: headcount,
     adults: ext.adults,
     kids: ext.kids,
     venueType: ext.venueType,
     budget: ext.budget,
     timeframe: ext.timeframe,
+    instructor,
   }
 
   // Blocked verdicts (discovery_required / out_of_scope / infeasible): NO WSH, NO plan. The UI must
@@ -122,6 +144,35 @@ export async function analyzeIdeaAction(idea: string, conversation?: DiscoveryTu
         interpretation: verdict.interpretation ?? null,
         directions: verdict.directions ?? [],
         discoveryQuestions: verdict.discoveryQuestions ?? [],
+      },
+    }
+  }
+
+  // REQUIRED-FACTS GATE — the Organizer is ready to draft a WSH, but the current architecture still
+  // needs guestCount (always) and, for class-type activities, instructor before planning. Rather than
+  // reopen the removed Details form, we keep the SAME Discovery conversation open and ask a single
+  // natural follow-up for the one fact still missing, in the visitor's language. Once it is supplied
+  // the next call captures it (above) and the flow proceeds — so the FED always carries real values
+  // and no downstream consumer receives a degraded default.
+  const missing = missingRequiredFact(ext.category, headcount, instructor)
+  if (missing) {
+    // Same concept funnel the other discovery/WSH branches produce — the gate only holds for the
+    // missing fact; it changes nothing else about the analysis.
+    const funnel = await runConceptFunnelAI(effective)
+    return {
+      ok: true,
+      funnel,
+      prefill,
+      scenario: {
+        status: 'scenario_needed',
+        whatShouldHappen: null,
+        source: null,
+        discoveryRequired: true,
+        interpretation: verdict.interpretation ?? null,
+        directions: verdict.directions ?? [],
+        discoveryQuestions: verdict.discoveryQuestions ?? [],
+        // The client renders the localized follow-up for this fact (route language).
+        missingFact: missing,
       },
     }
   }

@@ -21,7 +21,9 @@ function check(name: string, cond: boolean, detail?: string) {
 // ── 1. Provided itinerary → scenario RECOGNISED (do not create) ──────────────────────
 console.log('\n1 — itinerary: "Airport pickup → hotel → dinner → paintball → sauna → airport transfer"')
 {
-  const idea = 'Airport pickup → hotel → dinner → paintball → sauna → airport transfer.'
+  // Includes a headcount so the required-facts gate (guestCount) is satisfied and the flow reaches
+  // the recognised-scenario branch — the behaviour this block verifies.
+  const idea = 'Airport pickup → hotel → dinner → paintball → sauna → airport transfer, for 6 guests.'
   const rec = recognizeScenario(idea)
   check('recognizeScenario → recognized', rec.recognized === true)
   check('source = provided', rec.source === 'provided', String(rec.source))
