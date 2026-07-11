@@ -16,7 +16,7 @@ type Category =
   | 'fitness_class' | 'art_class' | 'language_class' | 'workshop'
 type Venue = 'backyard_home' | 'public_park' | ''
 type Repeats = 'one_time' | RecurrenceFrequency
-type Step = 'idea' | 'wsh' | 'details'
+type Step = 'idea' | 'wsh'
 
 // Discovery conversation: an append-only chat between the Organizer and the user.
 type OrganizerMsg = { role: 'organizer'; interpretation: string | null; directions: string[]; questions: string[] }
@@ -33,19 +33,6 @@ const IDEA_EXAMPLES = [
   'I want a networking night for startup founders.',
 ]
 
-// Stable card-section wrapper. MUST stay at module scope: when this was defined
-// inside PlannerClient, each render gave it a new function identity, so React
-// remounted its subtree on every keystroke and the nested <input> lost focus
-// (City/Country/Budget/Requirements/guest counts). Module scope keeps it stable.
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <div className="card p-5">
-      <h2 className="mb-3 font-bold text-slate-900">{title}</h2>
-      {children}
-    </div>
-  )
-}
-
 export default function PlannerClient({ locale }: { locale: string }) {
   const t = useTranslations('planner')
   const tf = useTranslations('planner.form')
@@ -55,7 +42,6 @@ export default function PlannerClient({ locale }: { locale: string }) {
   const [step, setStep] = useState<Step>('idea')
   const [idea, setIdea] = useState('')
   const [whatShouldHappen, setWhatShouldHappen] = useState('')
-  const [needsWsh, setNeedsWsh] = useState(false)
 
   // Detail-completion form (secondary — prefilled from the idea, completed by the user).
   const [category, setCategory] = useState<Category>('birthday')
@@ -98,7 +84,7 @@ export default function PlannerClient({ locale }: { locale: string }) {
   }, [gate, error])
 
   function resetAll() {
-    setStep('idea'); setIdea(''); setWhatShouldHappen(''); setNeedsWsh(false)
+    setStep('idea'); setIdea(''); setWhatShouldHappen('')
     setCategory('birthday'); setTotal(''); setAdults(''); setKids(''); setVenue(''); setBudget('')
     setRequirements(''); setCity(''); setStateRegion(''); setCountry(''); setPostal('')
     setRepeats('one_time'); setSessions(''); setInstructor(''); setMaterials('')
@@ -135,7 +121,7 @@ export default function PlannerClient({ locale }: { locale: string }) {
     if (!idea.trim()) return
     setLoading(true); setError(false); setDiscovery(null); setAnswer('')
     try {
-      const res = await analyzeIdeaAction(idea)
+      const res = await analyzeIdeaAction(idea, undefined, locale)
       if (!res.ok) { setError(true); return }
       applyPrefill(res.prefill)
 
@@ -147,10 +133,10 @@ export default function PlannerClient({ locale }: { locale: string }) {
       }
 
       // "What should happen": the recognised story, or a request-specific draft to approve/edit.
+      // Both paths go to the WSH step — the visitor always reviews and approves what will be
+      // planned before any planning runs. Approval leads straight into Planning (no legacy form).
       setWhatShouldHappen(res.scenario.whatShouldHappen ?? '')
-      const needs = res.scenario.status === 'scenario_needed'
-      setNeedsWsh(needs)
-      setStep(needs ? 'wsh' : 'details')
+      setStep('wsh')
     } catch {
       setError(true)
     } finally {
@@ -169,7 +155,7 @@ export default function PlannerClient({ locale }: { locale: string }) {
     setAnswer('')
     setLoading(true); setError(false)
     try {
-      const res = await analyzeIdeaAction(idea, toConversation(nextMsgs))
+      const res = await analyzeIdeaAction(idea, toConversation(nextMsgs), locale)
       if (!res.ok) { setError(true); return }
       applyPrefill(res.prefill)
 
@@ -180,10 +166,9 @@ export default function PlannerClient({ locale }: { locale: string }) {
       }
 
       // Discovery ended — the Organizer has enough to draft a WSH (or recognised a scenario).
+      // Always go to the WSH step for approval; approval leads straight into Planning.
       setWhatShouldHappen(res.scenario.whatShouldHappen ?? '')
-      const needs = res.scenario.status === 'scenario_needed'
-      setNeedsWsh(needs)
-      setStep(needs ? 'wsh' : 'details')
+      setStep('wsh')
     } catch {
       setError(true)
     } finally {
@@ -192,9 +177,12 @@ export default function PlannerClient({ locale }: { locale: string }) {
   }
 
   function buildDetails(): EventDetails {
+    // guestCount now comes from the idea (extracted prefill), not a required form field. Guard the
+    // empty/non-numeric case so the FED never carries NaN; the engine treats 0 as "unspecified".
+    const guests = Number(total)
     return {
       category,
-      guestCount: Number(total),
+      guestCount: Number.isFinite(guests) && guests > 0 ? guests : 0,
       adults: adults ? Number(adults) : undefined,
       kids: kids ? Number(kids) : undefined,
       venueType: venue || undefined,
@@ -248,11 +236,6 @@ export default function PlannerClient({ locale }: { locale: string }) {
     } finally {
       setLoading(false)
     }
-  }
-
-  function onGenerate(e: React.FormEvent) {
-    e.preventDefault()
-    void submitDetails()
   }
 
   // ── Result ────────────────────────────────────────────────────────────────────────
@@ -315,10 +298,44 @@ export default function PlannerClient({ locale }: { locale: string }) {
             className="input-base w-full"
           />
         </div>
-        <button type="button" disabled={!whatShouldHappen.trim()} onClick={() => setStep('details')} className="btn-primary w-full px-7 py-3.5 text-base sm:w-auto">
-          <Sparkles className="h-4 w-4" />
-          Approve &amp; continue
+        {/* Approve leads STRAIGHT into Planning (Planning Engine V2) — no legacy category form.
+            The plan is generated from the approved "what should happen" plus the details already
+            extracted from the idea. */}
+        <button type="button" disabled={loading || !whatShouldHappen.trim()} onClick={() => void submitDetails()} className="btn-primary w-full px-7 py-3.5 text-base sm:w-auto">
+          {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+          {loading ? tf('generating') : 'Approve & continue'}
         </button>
+
+        {/* Gates/errors after Approve — sign-in / One Event License. Kept a SIBLING of the button
+            (never nesting BuyEventLicenseButton's own <form>) so the license CTA submits to Stripe. */}
+        {(error || gate) && (
+          <div ref={gateRef} className="space-y-4">
+            {error && <p className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600">{tf('error')}</p>}
+
+            {gate === 'signin' && (
+              <div className="rounded-2xl border border-slate-200 bg-white p-5 text-center">
+                <p className="font-semibold text-slate-900">{tL('gate.signinTitle')}</p>
+                <p className="mt-1 text-sm text-slate-600">{tL('gate.signinBody')}</p>
+                <Link
+                  href={`/${locale}/sign-in?next=${encodeURIComponent(`/${locale}/plan-an-event`)}`}
+                  className="btn-primary mt-4 inline-flex w-full justify-center sm:w-auto"
+                >
+                  {tL('gate.signinCta')}
+                </Link>
+              </div>
+            )}
+
+            {gate === 'license' && (
+              <div className="rounded-2xl border border-brand-200 bg-brand-50 p-5 text-center">
+                <p className="font-semibold text-slate-900">{tL('gate.licenseTitle')}</p>
+                <p className="mt-1 text-sm text-slate-600">{tL('gate.licenseBody')}</p>
+                <div className="mx-auto mt-4 max-w-xs">
+                  <BuyEventLicenseButton locale={locale} buttonClassName="btn-primary w-full justify-center" />
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     )
   }
@@ -438,212 +455,5 @@ export default function PlannerClient({ locale }: { locale: string }) {
     )
   }
 
-  // ── Step: detail completion (secondary — prefilled, completed by the user) ───────────
-  const cats: { key: Category; label: string }[] = [
-    { key: 'birthday', label: tf('birthday') },
-    { key: 'adult_birthday', label: tf('adultBirthday') },
-    { key: 'anniversary', label: tf('anniversary') },
-    { key: 'graduation', label: tf('graduation') },
-    { key: 'family_reunion', label: tf('familyReunion') },
-    { key: 'bbq', label: tf('bbq') },
-    { key: 'networking', label: tf('networking') },
-    { key: 'fitness_class', label: tf('fitnessClass') },
-    { key: 'art_class', label: tf('artClass') },
-    { key: 'language_class', label: tf('languageClass') },
-    { key: 'workshop', label: tf('workshop') },
-  ]
-  const venues: { key: Venue; label: string }[] = [
-    { key: 'backyard_home', label: tf('backyard') },
-    { key: 'public_park', label: tf('park') },
-    { key: '', label: tf('none') },
-  ]
-
-  return (
-    <>
-    <form onSubmit={onGenerate} className="space-y-4">
-      <button type="button" onClick={() => setStep(needsWsh ? 'wsh' : 'idea')}
-        className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-slate-800">
-        <ArrowLeft className="h-4 w-4" />
-        Back
-      </button>
-
-      <div className="rounded-2xl border border-brand-100 bg-brand-50/60 p-4">
-        <p className="text-xs uppercase tracking-wide text-brand-500">Your idea</p>
-        <p className="mt-0.5 text-sm text-slate-700">&ldquo;{idea}&rdquo;</p>
-        {whatShouldHappen.trim() && (
-          <div className="mt-2 rounded-lg bg-white px-3 py-2 text-xs text-slate-600">
-            <p>
-              <span className="font-semibold text-brand-700">What should happen: </span>
-              {whatShouldHappen}
-            </p>
-          </div>
-        )}
-        <p className="mt-2 text-xs text-slate-500">Just a few details left so we can plan it.</p>
-      </div>
-
-      <Section title={tf('sectionActivity')}>
-        <div className="flex flex-wrap gap-2">
-          {cats.map((c) => (
-            <button key={c.key} type="button" onClick={() => setCategory(c.key)}
-              className={`rounded-full border px-4 py-2 text-sm font-medium transition-colors ${category === c.key ? 'border-brand-300 bg-brand-50 text-brand-700' : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'}`}>
-              {c.label}
-            </button>
-          ))}
-        </div>
-      </Section>
-
-      <Section title={tf('sectionGuests')}>
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-          <div>
-            <label className="label-base">{tf('totalGuests')} *</label>
-            <input type="number" min="1" required value={total} onChange={(e) => setTotal(e.target.value)} className="input-base" />
-          </div>
-          <div>
-            <label className="label-base">{tf('adults')}</label>
-            <input type="number" min="0" value={adults} onChange={(e) => setAdults(e.target.value)} className="input-base" />
-          </div>
-          <div>
-            <label className="label-base">{tf('kids')}</label>
-            <input type="number" min="0" value={kids} onChange={(e) => setKids(e.target.value)} className="input-base" />
-          </div>
-        </div>
-      </Section>
-
-      <Section title={tf('sectionVenue')}>
-        <div className="flex flex-wrap gap-2">
-          {venues.map((v) => (
-            <button key={v.key || 'none'} type="button" onClick={() => setVenue(v.key)}
-              className={`rounded-full border px-4 py-2 text-sm font-medium transition-colors ${venue === v.key ? 'border-brand-300 bg-brand-50 text-brand-700' : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'}`}>
-              {v.label}
-            </button>
-          ))}
-        </div>
-      </Section>
-
-      {CLASS_CATEGORIES.has(category) && (
-        <Section title={tf('classDetails')}>
-          <label className="label-base">{tf('instructorQ')}</label>
-          <div className="mb-3 flex flex-wrap gap-2">
-            {([
-              { key: 'have', label: tf('instructorHave') },
-              { key: 'need', label: tf('instructorNeed') },
-            ] as { key: 'have' | 'need'; label: string }[]).map((o) => (
-              <button key={o.key} type="button" onClick={() => setInstructor(o.key)}
-                className={`rounded-full border px-4 py-2 text-sm font-medium transition-colors ${instructor === o.key ? 'border-brand-300 bg-brand-50 text-brand-700' : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'}`}>
-                {o.label}
-              </button>
-            ))}
-          </div>
-          <label className="label-base">{tf('materialsQ')}</label>
-          <div className="flex flex-wrap gap-2">
-            {([
-              { key: 'provided', label: tf('materialsProvided') },
-              { key: 'byo', label: tf('materialsByo') },
-            ] as { key: 'provided' | 'byo'; label: string }[]).map((o) => (
-              <button key={o.key} type="button" onClick={() => setMaterials(o.key)}
-                className={`rounded-full border px-4 py-2 text-sm font-medium transition-colors ${materials === o.key ? 'border-brand-300 bg-brand-50 text-brand-700' : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'}`}>
-                {o.label}
-              </button>
-            ))}
-          </div>
-        </Section>
-      )}
-
-      {RECURRING_CAPABLE.has(category) && (
-        <Section title={tf('repeats')}>
-          <div className="flex flex-wrap gap-2">
-            {([
-              { key: 'one_time', label: tf('oneTime') },
-              { key: 'weekly', label: tf('weekly') },
-              { key: 'biweekly', label: tf('biweekly') },
-              { key: 'monthly', label: tf('monthly') },
-            ] as { key: Repeats; label: string }[]).map((r) => (
-              <button key={r.key} type="button" onClick={() => setRepeats(r.key)}
-                className={`rounded-full border px-4 py-2 text-sm font-medium transition-colors ${repeats === r.key ? 'border-brand-300 bg-brand-50 text-brand-700' : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'}`}>
-                {r.label}
-              </button>
-            ))}
-          </div>
-          {repeats !== 'one_time' && (
-            <div className="mt-3">
-              <label className="label-base">{tf('sessions')}</label>
-              <input type="number" min="1" value={sessions} onChange={(e) => setSessions(e.target.value)} className="input-base" placeholder="10" />
-            </div>
-          )}
-        </Section>
-      )}
-
-      <Section title={tf('sectionLocation')}>
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-          <div>
-            <label className="label-base">{tf('city')} *</label>
-            <input required value={city} onChange={(e) => setCity(e.target.value)} className="input-base" placeholder="Honolulu" />
-          </div>
-          <div>
-            <label className="label-base">{tf('country')} *</label>
-            <input required value={country} onChange={(e) => setCountry(e.target.value)} className="input-base" placeholder="USA" />
-          </div>
-          <div>
-            <label className="label-base">{tf('state')}</label>
-            <input value={stateRegion} onChange={(e) => setStateRegion(e.target.value)} className="input-base" />
-          </div>
-          <div>
-            <label className="label-base">{tf('postalCode')}</label>
-            <input value={postal} onChange={(e) => setPostal(e.target.value)} className="input-base" />
-          </div>
-        </div>
-      </Section>
-
-      <Section title={tf('sectionBudget')}>
-        <label className="label-base">{tf('budget')}</label>
-        <input type="number" min="0" value={budget} onChange={(e) => setBudget(e.target.value)} className="input-base" placeholder="600" />
-        <p className="mt-1 text-xs text-slate-400">{tf('budgetHint')}</p>
-      </Section>
-
-      <Section title={tf('sectionExtras')}>
-        <label className="label-base">{tf('requirements')}</label>
-        <input value={requirements} onChange={(e) => setRequirements(e.target.value)} className="input-base" placeholder="superhero theme, nut allergy" />
-        <p className="mt-1 text-xs text-slate-400">{tf('requirementsHint')}</p>
-      </Section>
-
-      <button type="submit" disabled={loading} className="btn-primary w-full px-7 py-3.5 text-base sm:w-auto">
-        {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
-        {loading ? tf('generating') : tf('generate')}
-      </button>
-    </form>
-
-      {/* Gates/errors render OUTSIDE the Details <form>. BuyEventLicenseButton renders its
-          OWN <form action={createOneEventLicenseCheckout}>; nesting forms is invalid HTML, so
-          the browser drops the inner form and the license CTA never reaches Stripe. Keeping
-          this block a SIBLING of the Details form (not a child) makes the CTA submit correctly. */}
-      {(error || gate) && (
-        <div ref={gateRef} className="mt-4 space-y-4">
-          {error && <p className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600">{tf('error')}</p>}
-
-          {gate === 'signin' && (
-            <div className="rounded-2xl border border-slate-200 bg-white p-5 text-center">
-              <p className="font-semibold text-slate-900">{tL('gate.signinTitle')}</p>
-              <p className="mt-1 text-sm text-slate-600">{tL('gate.signinBody')}</p>
-              <Link
-                href={`/${locale}/sign-in?next=${encodeURIComponent(`/${locale}/plan-an-event`)}`}
-                className="btn-primary mt-4 inline-flex w-full justify-center sm:w-auto"
-              >
-                {tL('gate.signinCta')}
-              </Link>
-            </div>
-          )}
-
-          {gate === 'license' && (
-            <div className="rounded-2xl border border-brand-200 bg-brand-50 p-5 text-center">
-              <p className="font-semibold text-slate-900">{tL('gate.licenseTitle')}</p>
-              <p className="mt-1 text-sm text-slate-600">{tL('gate.licenseBody')}</p>
-              <div className="mx-auto mt-4 max-w-xs">
-                <BuyEventLicenseButton locale={locale} buttonClassName="btn-primary w-full justify-center" />
-              </div>
-            </div>
-          )}
-        </div>
-      )}
-    </>
-  )
+  return null
 }

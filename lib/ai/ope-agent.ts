@@ -24,6 +24,7 @@ import {
   type OpeAgentResult,
   type OpeAgentVerdict,
 } from '@/lib/ope/agent'
+import { languageDirective } from '@/lib/ai/language'
 
 /** Strict JSON-Schema the model MUST return. additionalProperties:false; all fields required. */
 const VERDICT_SCHEMA = {
@@ -100,10 +101,13 @@ export interface RunOpeAgentOptions {
 async function callOpenAi(input: OpeAgentInput): Promise<string | null> {
   const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY, timeout: 10_000, maxRetries: 1 })
   const model = process.env.OPENAI_MODEL || 'gpt-4o-mini'
+  // The Planner runs under a localized route: the Organizer must answer in the visitor's language.
+  const lang = languageDirective(input.locale)
   const completion = await client.chat.completions.create({
     model,
     messages: [
       { role: 'system', content: SYSTEM_PROMPT },
+      ...(lang ? [{ role: 'system' as const, content: lang }] : []),
       { role: 'user', content: JSON.stringify({ request: input.rawText, fields: input.fields ?? null, conversation: input.conversation ?? [] }) },
     ],
     response_format: {

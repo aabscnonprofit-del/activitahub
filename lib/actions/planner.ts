@@ -79,7 +79,7 @@ export type AnalyzeIdeaResult =
  * refined discovery state (interpretation + directions + follow-up questions). Discovery ends only
  * when it has enough (verdict leaves discovery) — then a WSH draft / recognised story is returned.
  */
-export async function analyzeIdeaAction(idea: string, conversation?: DiscoveryTurn[]): Promise<AnalyzeIdeaResult> {
+export async function analyzeIdeaAction(idea: string, conversation?: DiscoveryTurn[], locale?: string): Promise<AnalyzeIdeaResult> {
   const text = (idea ?? '').trim()
   if (!text) return { ok: false, error: 'empty_idea' }
 
@@ -89,7 +89,8 @@ export async function analyzeIdeaAction(idea: string, conversation?: DiscoveryTu
   // AI ORGANIZER FIRST — literally the first interpretation step. It receives the full discovery
   // conversation. assessRequest is only the deterministic fallback (inside decideRequest) when AI
   // is disabled / key-missing / invalid JSON / errors. No regex/anchor logic decides ahead of it.
-  const verdict = await decideRequest({ rawText: text, conversation })
+  // locale carries the visitor's route language so every AI response is written in it.
+  const verdict = await decideRequest({ rawText: text, conversation, locale })
 
   // Deterministic helpers run ONLY AFTER the verdict, over the effective (idea + answers) text.
   // Prefill populates form hints for the UI — it never decides anything.
@@ -152,7 +153,7 @@ export async function analyzeIdeaAction(idea: string, conversation?: DiscoveryTu
   // approve/edit. Prefer the Agent's draft; fall back to the deterministic composer. Concept
   // options accompany as optional inspiration; they do NOT define "what should happen".
   const funnel = await runConceptFunnelAI(effective)
-  const draft = verdict.whatShouldHappenDraft ?? (await composeWhatShouldHappen(effective))
+  const draft = verdict.whatShouldHappenDraft ?? (await composeWhatShouldHappen(effective, locale))
   return { ok: true, funnel, prefill, scenario: { status: 'scenario_needed', whatShouldHappen: draft, source: null } }
 }
 

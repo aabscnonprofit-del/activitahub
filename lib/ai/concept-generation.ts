@@ -18,6 +18,7 @@ import {
   type ConceptFunnelResult,
 } from '@/lib/ope/concept-funnel'
 import { aiUnderstandingEnabled } from '@/lib/ai/request-understanding'
+import { languageDirective } from '@/lib/ai/language'
 
 const MAX_OPTIONS = 4
 
@@ -129,16 +130,19 @@ const WSH_SYSTEM_PROMPT =
  * deterministic, request-specific draft (draftWhatShouldHappen) as the guaranteed fallback.
  * Never throws; always returns a non-empty, request-specific draft for a non-empty idea.
  */
-export async function composeWhatShouldHappen(idea: string): Promise<string> {
+export async function composeWhatShouldHappen(idea: string, locale?: string | null): Promise<string> {
   const fallback = draftWhatShouldHappen(idea)
   if (!aiUnderstandingEnabled()) return fallback
   try {
     const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY, timeout: 10_000, maxRetries: 1 })
     const model = process.env.OPENAI_MODEL || 'gpt-4o-mini'
+    // The Planner runs under a localized route: draft the WSH in the visitor's language.
+    const lang = languageDirective(locale)
     const completion = await client.chat.completions.create({
       model,
       messages: [
         { role: 'system', content: WSH_SYSTEM_PROMPT },
+        ...(lang ? [{ role: 'system' as const, content: lang }] : []),
         { role: 'user', content: (idea || '').slice(0, 2000) },
       ],
     })

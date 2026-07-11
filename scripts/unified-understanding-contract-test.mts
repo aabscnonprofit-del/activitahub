@@ -23,7 +23,7 @@ check('single understanding step present (step === \'wsh\')', src.includes("step
 check('states what was understood (a draft of what should happen)', src.includes('What should happen') && /draft of what happens/i.test(src))
 check('states it can be edited before approval', /edit it until it/i.test(src))
 check('approval is one natural action + says what happens next (plan only after this)',
-  src.includes('Approve &amp; continue') && /we plan only after this/i.test(src))
+  src.includes('Approve & continue') && /we plan only after this/i.test(src))
 
 // 2. NO duplicate understanding workflow remains visible in the client — the Discovery/FED preview surfaces
 //    and their exclusive plumbing are gone (they were a second, competing understanding artifact).
@@ -35,7 +35,11 @@ check('client does not import the preview/bypass actions',
 
 // 3. ONE planning path from the single understanding step (WSH → generateFromIdeaAction).
 check('planning flows through the single generateFromIdeaAction path', src.includes('generateFromIdeaAction('))
-check('details step recaps the single understanding ("What should happen:")', src.includes('What should happen: '))
+// The WSH step IS the single understanding recap: it presents the draft as an editable field and
+// approval leads straight into planning (the legacy category/details form is gone).
+check('the understanding is presented as an editable draft (WSH step)', src.includes('value={whatShouldHappen}'))
+check('WSH approval leads straight into planning (no legacy details form)',
+  src.includes('onClick={() => void submitDetails()}') && !src.includes("setStep('details')"))
 
 // 4. Architecture preserved — convergence removed UI duplication only; the FED/Discovery engines still exist.
 check('Discovery action still present in lib (architecture preserved)', existsSync(new URL('../lib/actions/discovery.ts', import.meta.url)))
