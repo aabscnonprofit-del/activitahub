@@ -1,46 +1,39 @@
 # Deployment Readiness — Reporting Standard
 
-**Status:** MANDATORY · PERMANENT · **v2** · effective 2026-07-11 · **replaces any previous reporting convention**
-**Applies to:** every Deployment Readiness execution report and every deployment-configuration investigation, from this date forward.
+**Status:** MANDATORY · PERMANENT · **v2 (frozen)** · effective 2026-07-11
+**Applies to:** every Deployment Readiness execution report and every deployment-configuration investigation, from this date forward. Replaces any previous reporting convention.
 **Type:** process/reporting standard only. It does not change any Deployment Readiness *phase*, task, code, or infrastructure — only how results are reported and how confidence is expressed.
 
-**v2 change:** adds the **Operational Evidence** rule (§3) — real production behavior is authoritative for Production and overrides speculative reasoning — plus a Quality-Check item and a Confidence-Summary line for it.
+---
+
+## Introduction
+
+During the Stripe Deployment Readiness investigation, a report verified the **Local** environment correctly but then included a **speculative statement about Production** ("most probable state: not configured"). Production was later confirmed **healthy** by a **real live One Event License payment** that had already succeeded. The local findings were technically correct; the failure was in the *reporting* — a Production conclusion was drawn from Local-only evidence, over the top of authoritative operational evidence.
+
+Root cause: **incomplete Production visibility was reported as a probable Production state.** This standard permanently eliminates that class of error. It is mandatory, permanent, and applies to every future Deployment Readiness report.
 
 ---
 
-## Why this standard exists
+## The Four States Rule
 
-During the Stripe Deployment Readiness investigation, a report verified the **Local** environment correctly but then included a **speculative statement about Production** ("most probable state: not configured"). Production was later confirmed **healthy** by a **real live One Event License payment** that had already succeeded. The local findings were technically correct; the failure was in the *reporting*: a Production conclusion was drawn from Local-only evidence, and it contradicted authoritative operational evidence (the live payment).
-
-Root cause: **incomplete Production visibility was reported as a probable Production state, over the top of real production behavior.** This standard permanently eliminates that class of error.
-
----
-
-## The Four States Rule (foundational)
-
-Every verification result must be classified as **exactly one** of four fundamentally different states. They must **never** be used interchangeably. Mixing them is exactly what produced the Stripe false conclusion.
+Every verification result must be classified as **exactly one** of four fundamentally different states. They must **never** be merged, redefined, or used interchangeably.
 
 | State | Definition | Requires |
 |---|---|---|
 | **Verified** | Objective evidence confirms the result **for this environment**. | Positive evidence from this environment. |
 | **Unknown** | Insufficient evidence exists; **no conclusion may be drawn**. | Explicit "no evidence available." |
-| **Not Accessible** | The required environment/system cannot be inspected (no credentials/token/dashboard/runtime access); **no conclusion may be drawn**. | A stated access limitation. |
-| **Failed** | An objective failure has been **directly observed**. | An observed failure — **never inferred from missing visibility**. |
+| **Not Accessible** | The required environment/system cannot be inspected (no credentials, token, dashboard, or runtime access); **no conclusion may be drawn**. | A stated access limitation. |
+| **Failed** | An objective failure has been **directly observed**. | An observed failure — never inferred from missing visibility. |
 
-**Hard rules:**
-- `Unknown` is **not** `Failed`. `Not Accessible` is **not** `Failed`. Absence of visibility is never a defect and never a failure.
-- `Failed` requires a **directly observed** failure.
-- Never assign `FAIL` to an unverifiable item — use `Not Accessible` / `Unknown` / `REQUIRES MANUAL ACTION`.
+**Hard rules:** `Unknown` is not `Failed`. `Not Accessible` is not `Failed`. Absence of visibility is never a defect and never a failure. `Failed` requires a directly observed failure. Never assign `FAIL` to an unverifiable item — use `Not Accessible`, `Unknown`, or `REQUIRES MANUAL ACTION`.
 
 ---
 
-## Mandatory report sections
+## §1 Evidence Confidence
 
-Every Deployment Readiness report MUST contain §1–§9 below, in addition to the per-task deliverable (Objective / Actions Performed / Evidence / Verification Result / Remaining Issues). Verification Result uses: **PASS · FAIL · PARTIAL PASS · REQUIRES MANUAL ACTION**.
+Report a confidence row for **every** environment. Conclusions may be drawn **only** for environments backed by objective evidence, and never inferred from another environment.
 
-### §1 Evidence Confidence (mandatory)
-
-Report a confidence row for **every** environment. Conclusions may be drawn **only** for environments backed by objective evidence.
+**Confidence Matrix**
 
 | Environment | Confidence | Evidence Source | Conclusions Allowed |
 |---|---|---|---|
@@ -54,9 +47,8 @@ If no objective evidence exists for an environment, report exactly:
 Confidence: Unknown
 Reason: No objective evidence available.
 ```
-Never infer one environment from another.
 
-### §2 Production Evidence (mandatory)
+## §2 Production Evidence
 
 Every Production conclusion must name its supporting evidence. Acceptable Production evidence:
 - Production runtime verification
@@ -76,9 +68,9 @@ Reason: Production could not be verified from the available evidence.
 
 **Forbidden when describing Production** (unless directly quoting evidence): `probably`, `likely`, `most likely`, `appears to be`, `assumed`, `inferred`. If a Production statement cannot be supported by Production evidence, write `Unknown` — not a hedge.
 
-### §3 Operational Evidence (mandatory · v2)
+## §3 Operational Evidence
 
-**Real production behavior has higher evidentiary value than local configuration.** It is **authoritative for Production**.
+**Real production behavior has higher evidentiary value than local configuration, and is authoritative for Production.**
 
 Examples of Operational Evidence:
 - Successful production payment
@@ -96,18 +88,18 @@ Examples of Operational Evidence:
 3. Do **not** assume Production is incorrect.
 4. Determine **why Local and Production differ** (e.g., a variable set in Vercel but absent from `.env.local`).
 
-Operational Evidence **overrides speculative reasoning** and Local-only inference about Production. A single successful production transaction outranks any amount of local configuration analysis for the question "does this work in Production?"
+**Precedence — the one clarification:** Operational Evidence **overrides speculative conclusions**. It **does not** override directly observed facts from the **same** environment. If evidence conflicts, the investigation must **explain the discrepancy** rather than discard either side.
 
-### §4 Cross-Environment Rule (mandatory)
+## §4 Cross-Environment Rule
 
 Local configuration and deployed environments are **independent systems**:
-- Missing in `.env.local` **does not** imply missing in Production.
-- Present in `.env.local` **does not** imply present in Production.
-- Missing Production access **does not** imply a Production defect.
-- Missing Preview access **does not** imply a Preview defect.
+- Missing in `.env.local` does not imply missing in Production.
+- Present in `.env.local` does not imply present in Production.
+- Missing Production access does not imply a Production defect.
+- Missing Preview access does not imply a Preview defect.
 - Production conclusions require **Production** evidence; Preview conclusions require **Preview** evidence; Local evidence proves only **Local**.
 
-### §5 Environment Independence Rule (mandatory)
+## §5 Environment Independence Rule
 
 Evidence from one environment must **never** determine the state of another without direct objective proof for that other environment.
 
@@ -117,7 +109,9 @@ Local:      Variable missing.    Production: Variable probably missing.
 Production: Unknown.
 ```
 
-### §6 Investigation Quality Check (mandatory pre-publish gate)
+**Scope of Conclusions.** Every conclusion must explicitly identify the environment to which it applies. A conclusion about Local must never be interpreted as a conclusion about Development, Preview, or Production.
+
+## §6 Investigation Quality Check
 
 Before publishing, verify each box. If **any** answer is YES, revise the report first.
 ```
@@ -130,15 +124,16 @@ Before publishing, verify each box. If **any** answer is YES, revise the report 
 □ Did Operational Evidence contradict any Local conclusion? (if so, §3 governs)
 ```
 
-### §7 Confidence Summary (mandatory — ends every report)
+## §7 Confidence Summary
 
+Every report must end with:
 ```
 Confidence Summary
 
-Local:        Verified / Unknown
-Development:  Verified / Unknown
-Preview:      Verified / Unknown
-Production:   Verified / Unknown
+Local:        Verified / Unknown / Not Accessible
+Development:  Verified / Unknown / Not Accessible
+Preview:      Verified / Unknown / Not Accessible
+Production:   Verified / Unknown / Not Accessible
 
 Production Evidence Used:
 □ Live deployment
@@ -153,9 +148,8 @@ Production Evidence Used:
 
 Overall Confidence: High / Medium / Low
 ```
-(Use `Not Accessible` in place of a verdict wherever access was unavailable; it is distinct from both `Verified` and `Failed`.)
 
-### §8 Investigation Assessment (mandatory)
+## §8 Investigation Assessment
 
 Every report classifies **its own** confidence — choose exactly one and explain why:
 - Correct
@@ -164,13 +158,13 @@ Every report classifies **its own** confidence — choose exactly one and explai
 - Based on incomplete visibility
 - Incorrect
 
-### §9 Lessons Learned (mandatory — even when no issues are found)
+## §9 Lessons Learned
 
-Summarize: what was learned · what process weakness was discovered · what should change in future investigations · how similar false conclusions will be prevented.
+Mandatory even when no issues are found. Summarize: what was learned · what process weakness was discovered · what should change in future investigations · how similar false conclusions will be prevented.
 
 ---
 
-## Standard report template
+## Standard Report Template
 
 Every Deployment Readiness execution report must follow this skeleton:
 
@@ -187,13 +181,13 @@ Access constraints: <what was / was not reachable>
 - Verification Result: PASS | FAIL | PARTIAL PASS | REQUIRES MANUAL ACTION
 - Remaining Issues
 
-## §1 Evidence Confidence         (table, all four environments)
+## §1 Evidence Confidence         (Confidence Matrix — all four environments)
 ## §2 Production Evidence          (named evidence, or "Unknown + reason")
 ## §3 Operational Evidence         (real production behavior; authoritative for Production)
 ## Completed
-## Failed                          (only DIRECTLY OBSERVED failures)
-## Requires Manual Action          (exact var/scope/mode/service/verification)
-## Environment Status              (Local / Development / Preview / Production — Verified / Not Accessible / Unknown / Failed; never conflate the four)
+## Failed                          (only directly observed failures)
+## Requires Manual Action          (exact variable / scope / mode / service / verification)
+## Environment Status              (Local / Development / Preview / Production — Verified / Unknown / Not Accessible / Failed; never conflate the four)
 ## Evidence Sources
 ## Blocking Issues                 (Critical / High / Medium / Low)
 ## Risk Introduced
@@ -209,22 +203,22 @@ Access constraints: <what was / was not reachable>
 
 ---
 
-## Applicability & enforcement
+## Applicability & Enforcement
 
-- **Mandatory rule, not a recommendation.** A Deployment Readiness report is not publishable unless it contains §1–§9.
-- Governs **reporting only** — it does not alter phases, tasks, code, Stripe, Supabase, Vercel, or any implementation.
-- When production access is unavailable, scope every conclusion to the environments actually observed and mark the rest `Not Accessible` / `Unknown` — never `Failed`, never a hedge.
-- **Operational Evidence is authoritative for Production** and takes precedence over speculative or Local-only reasoning.
+- **Mandatory, not a recommendation.** A Deployment Readiness report is not publishable unless it contains §1–§9.
+- **Permanent.** This standard applies to every future Deployment Readiness report and replaces any previous reporting convention.
+- **Reporting only** — it does not alter phases, tasks, code, Stripe, Supabase, Vercel, or any implementation.
+- When production access is unavailable, scope every conclusion to the environments actually observed and mark the rest `Not Accessible` or `Unknown` — never `Failed`, never a hedge. Operational Evidence (§3) is authoritative for Production.
 
 ---
 
-## Effect on previous reports (do not rewrite)
+## Effect on Previous Reports
 
 Old reports are **not** rewritten. Under this standard, the confidence of specific prior conclusions would change as follows:
 
-- **Runtime verification report — "most probable real state is Production not configured."** Would now be **Production: Unknown / Not Accessible** — and is directly overridden by **Operational Evidence** (the successful live One Event License payment). This is the single conclusion the standard corrects.
-- **Phase 0–3 reports — "Production: NOT ACCESSIBLE."** Already compliant (no Production state inferred). No change.
+- **Runtime verification report — "most probable real state is Production not configured."** Becomes **Production: Unknown / Not Accessible**, and is directly overridden by Operational Evidence (the successful live One Event License payment). This is the single conclusion the standard corrects.
+- **Phase 0–3 reports — "Production: Not Accessible."** Already compliant (no Production state inferred). No change.
 - **T2.1 investigation — "checkout cannot succeed today."** Was scoped to **Local** (env var unset locally) and remains correct **for Local only**; not a Production statement.
-- **One Event License reconciliation.** Confirmed the divergence was incomplete Production visibility, not a defect — and is the archetypal case the §3 Operational Evidence rule now formalizes.
+- **One Event License reconciliation.** Confirmed the divergence was incomplete Production visibility, not a defect — the archetypal case §3 now formalizes.
 
-Net: exactly one prior conclusion (the "probably not configured" lean) would flip to `Unknown` and defer to Operational Evidence; all `NOT ACCESSIBLE` statements already conform.
+Net: exactly one prior conclusion (the "probably not configured" lean) would flip to `Unknown` and defer to Operational Evidence; all `Not Accessible` statements already conform.
