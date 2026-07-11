@@ -99,11 +99,25 @@ export default function PlannerClient({ locale }: { locale: string }) {
     if (p.kids != null) setKids(String(p.kids))
     if (p.venueType) setVenue(p.venueType)
     if (p.budget != null) setBudget(String(p.budget))
+    // Instructor (class-type activities) — captured by Discovery, carried into the FED so the plan's
+    // Instructor staffing reasoning keeps working without the removed Details form.
+    if (p.instructor) setInstructor(p.instructor)
   }
 
-  // An organizer turn from a discovery scenario (interpretation + directions + questions).
-  function organizerTurn(s: { interpretation?: string | null; directions?: string[]; discoveryQuestions?: string[] }): OrganizerMsg {
-    return { role: 'organizer', interpretation: s.interpretation ?? null, directions: s.directions ?? [], questions: s.discoveryQuestions ?? [] }
+  // An organizer turn from a discovery scenario (interpretation + directions + questions). When the
+  // scenario is holding for a required operational fact (guestCount / instructor), append the
+  // localized follow-up question so Discovery keeps flowing in one continuous, in-language conversation.
+  function organizerTurn(s: {
+    interpretation?: string | null
+    directions?: string[]
+    discoveryQuestions?: string[]
+    missingFact?: 'guests' | 'instructor' | null
+  }): OrganizerMsg {
+    const questions = [...(s.discoveryQuestions ?? [])]
+    if (s.missingFact === 'guests') questions.push(tf('facts.askGuests'))
+    else if (s.missingFact === 'instructor') questions.push(tf('facts.askInstructor'))
+    const interpretation = s.interpretation ?? (s.missingFact ? tf('facts.ack') : null)
+    return { role: 'organizer', interpretation, directions: s.directions ?? [], questions }
   }
 
   // Serialise the visible conversation for the Organizer (it must receive the FULL history).

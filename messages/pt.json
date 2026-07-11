@@ -1296,7 +1296,11 @@
     }
   },
   "account": {
-    "history": { "title": "Histórico de atividades", "description": "Veja as atividades públicas que você concluiu.", "cta": "Ver histórico" },
+    "history": {
+      "title": "Histórico de atividades",
+      "description": "Veja as atividades públicas que você concluiu.",
+      "cta": "Ver histórico"
+    },
     "greeting": "Bem-vindo de volta, {name}",
     "greetingPlain": "Bem-vindo de volta",
     "subtitle": "As suas experiências, reservas e pedidos — tudo num só lugar.",
@@ -1951,6 +1955,11 @@
         "send": "Enviar",
         "thinking": "A pensar…",
         "startOver": "Recomeçar"
+      },
+      "facts": {
+        "ack": "Entendido.",
+        "askGuests": "Para quantas pessoas, aproximadamente?",
+        "askInstructor": "Você terá o seu próprio instrutor ou o plano deve incluir um?"
       }
     },
     "result": {

@@ -1296,7 +1296,11 @@
     }
   },
   "account": {
-    "history": { "title": "Activity history", "description": "See the public activities you have completed.", "cta": "View history" },
+    "history": {
+      "title": "Activity history",
+      "description": "See the public activities you have completed.",
+      "cta": "View history"
+    },
     "greeting": "Welcome back, {name}",
     "greetingPlain": "Welcome back",
     "subtitle": "Your experiences, bookings, and requests — all in one place.",
@@ -1951,6 +1955,11 @@
         "send": "Send",
         "thinking": "Thinking…",
         "startOver": "Start over"
+      },
+      "facts": {
+        "ack": "Got it.",
+        "askGuests": "About how many people are you expecting?",
+        "askInstructor": "Will you bring your own instructor, or should the plan include one?"
       }
     },
     "result": {
