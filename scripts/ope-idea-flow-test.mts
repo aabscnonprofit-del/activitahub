@@ -100,28 +100,25 @@ console.log('\n6 — /plan-an-event PlannerClient is idea-first (source guardrai
   check('initial step is "idea"', /useState<Step>\(\s*'idea'\s*\)/.test(src))
   check('shows the required first-screen copy', src.includes('Tell us what you want to create.'))
   check('first screen renders a free-text textarea, not the category form', src.includes('<textarea'))
-  // The structured category grid must NOT be the entry: it lives after the idea branch.
-  const ideaIdx = src.indexOf("step === 'idea'")
-  const catsIdx = src.indexOf('sectionActivity')
-  check('structured form is rendered AFTER the idea step', ideaIdx > -1 && catsIdx > -1 && ideaIdx < catsIdx)
+  // Convergence: the legacy category questionnaire is GONE. After the idea/discovery, the flow
+  // goes to the WSH approval step and then straight into planning — no structured category grid.
+  check('no legacy category questionnaire remains (idea → WSH → planning)',
+    !src.includes('sectionActivity') && src.includes("step === 'wsh'"))
 }
 
-// ── 7. License CTA is NOT nested inside the Details <form> (nested forms are invalid HTML
+// ── 7. License CTA is NOT nested inside any planner <form> (nested forms are invalid HTML
 //      and silently break the Stripe checkout submit). BuyEventLicenseButton renders its own
-//      <form>, so it must be a SIBLING of the Details form, never a child. ─────────────────
-console.log('\n7 — BuyEventLicenseButton is not nested inside the Details <form>')
+//      <form>. After convergence the CTA lives in the WSH step, which has NO <form> at all —
+//      so it can never be nested. The WSH step is emitted before the idea/discovery forms, so
+//      the CTA precedes every onSubmit form in the source. ────────────────────────────────
+console.log('\n7 — BuyEventLicenseButton is not nested inside any planner <form>')
 {
   const src = readFileSync(new URL('../components/planner/PlannerClient.tsx', import.meta.url), 'utf8')
-  const formOpenIdx = src.indexOf('onSubmit={onGenerate}')
-  const formCloseIdx = src.indexOf('</form>', formOpenIdx)
   const ctaIdx = src.indexOf('<BuyEventLicenseButton')
-  check('Details form found (onSubmit={onGenerate} … </form>)', formOpenIdx > -1 && formCloseIdx > formOpenIdx)
-  check('BuyEventLicenseButton is rendered', ctaIdx > -1)
-  // The CTA must appear AFTER the Details form closes → it cannot be a descendant of it.
-  check('license CTA is OUTSIDE the Details form (sibling, not child)', ctaIdx > -1 && ctaIdx > formCloseIdx)
-  // And it must not appear anywhere within the Details form region.
-  const detailsFormRegion = formOpenIdx > -1 && formCloseIdx > -1 ? src.slice(formOpenIdx, formCloseIdx) : ''
-  check('no BuyEventLicenseButton inside the Details form region', !detailsFormRegion.includes('BuyEventLicenseButton'))
+  const firstFormIdx = src.indexOf('onSubmit=')
+  check('BuyEventLicenseButton is rendered (license gate)', ctaIdx > -1)
+  check('license CTA is not nested in any planner <form> (it precedes every form)',
+    ctaIdx > -1 && firstFormIdx > -1 && ctaIdx < firstFormIdx)
 }
 
 console.log(`\n${failures === 0 ? 'ALL PASS' : `${failures} FAILURE(S)`}`)

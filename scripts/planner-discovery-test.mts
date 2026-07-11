@@ -79,7 +79,7 @@ console.log('\nD. PlannerClient renders a chat discovery conversation, does not 
   // The null-WSH branch (in submitIdea) must NOT advance — it returns before setStep.
   const idx = src.indexOf('res.scenario.whatShouldHappen === null')
   const ret = src.indexOf('return', idx)
-  const advance = src.indexOf('setStep(needs', idx)
+  const advance = src.indexOf("setStep('wsh')", idx)
   check('discovery branch returns before advancing', idx > -1 && ret > -1 && ret < advance)
 }
 

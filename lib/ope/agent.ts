@@ -58,6 +58,8 @@ export interface OpeAgentInput {
   fields?: OpeAgentFields | null
   /** Discovery history — prior organizer/user turns. The Organizer must use ALL of it. */
   conversation?: OpeAgentTurn[] | null
+  /** Route locale (e.g. 'ru'). AI responses are written in this language; ignored by the deterministic path. */
+  locale?: string | null
 }
 
 /**
