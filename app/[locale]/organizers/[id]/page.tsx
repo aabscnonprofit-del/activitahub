@@ -1,8 +1,7 @@
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { getPublicOrganizer } from '@/lib/marketplace/queries'
-import { partitionOrganizerActivities } from '@/lib/activity-marketplace/cards'
-import { getOrganizerReviewFacts } from '@/lib/reviews/organizer-review-facts'
+import { getOrganizerPublicPageData } from '@/lib/organizer/public-presence'
 import { OrganizerPublicView } from '@/components/organizer/OrganizerPublicView'
 import { absoluteUrl, organizerHref } from '@/lib/utils'
 import type { Locale } from '@/lib/types'
@@ -34,22 +33,21 @@ export default async function OrganizerProfilePage({ params }: OrganizerPageProp
   const org = await getPublicOrganizer(supabase, id)
   if (!org) notFound()
 
-  // The organizer's public activities (published + visibility = 'public' + approved), partitioned into CURRENT
-  // (upcoming/ongoing) and COMPLETED (every occurrence finished — a projection over occurrence timestamps). A
-  // Project is in exactly one bucket. Private / published-private / draft-public Projects never appear.
-  const { current, completed } = await partitionOrganizerActivities(id, new Date().toISOString())
-
-  // Organizer Review Facts — objective review counts over the organizer's COMPLETED PUBLIC activities (reuses the
-  // completed set above; completion is not re-derived). A read-only projection; no ratings/scores/reputation.
-  const reviewFacts = await getOrganizerReviewFacts(completed.map((c) => c.projectId))
+  // One shared projection powers BOTH public organizer routes (/organizers/[id] and /o/[slug]) so the page is
+  // identical however it was reached: current + completed public activities, participants hosted, written
+  // participant feedback, avatar, and categories — facts only, no ratings/scores/reputation.
+  const data = await getOrganizerPublicPageData(org)
 
   return (
     <OrganizerPublicView
       locale={locale}
       org={org}
-      activities={current}
-      completedActivities={completed}
-      reviewFacts={reviewFacts}
+      activities={data.activities}
+      completedActivities={data.completedActivities}
+      reviewFacts={data.reviewFacts}
+      participantsHosted={data.participantsHosted}
+      avatarUrl={data.avatarUrl}
+      categories={data.categories}
       isAuthenticated={!!user}
     />
   )

@@ -23,7 +23,7 @@ function check(name: string, cond: boolean) {
 
 // 1. Public Organizer Page exists at /organizers/[id], reading existing public organizer data + Project activities.
 check('organizer page renders the public view', page.includes('<OrganizerPublicView') && page.includes('getPublicOrganizer(supabase, id)'))
-check('organizer page loads the organizer\'s public activities', page.includes('partitionOrganizerActivities(id, new Date().toISOString())'))
+check('organizer page loads the organizer\'s public activities', page.includes('getOrganizerPublicPageData'))
 check('missing organizer → 404 (no fake page)', page.includes('notFound()'))
 
 // 2. Profile shows public info (name / bio / location / languages) with safe placeholders; no private data.
