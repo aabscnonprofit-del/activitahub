@@ -1,11 +1,12 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { upsertOrganizerProfile } from '@/lib/actions/profile'
 import { Toaster, useToast } from '@/components/ui/Toast'
 import type { OrganizerProfile } from '@/lib/types'
-import { User, Globe, MapPin } from 'lucide-react'
+import { User, Globe, MapPin, CheckCircle2 } from 'lucide-react'
 
 type Props = {
   locale: string
@@ -14,6 +15,7 @@ type Props = {
 
 export default function ProfileForm({ initialProfile }: Props) {
   const t = useTranslations('profile')
+  const router = useRouter()
   const { toasts, addToast, dismiss } = useToast()
   const [pending, setPending] = useState(false)
 
@@ -22,6 +24,8 @@ export default function ProfileForm({ initialProfile }: Props) {
     try {
       await upsertOrganizerProfile(formData)
       addToast('success', t('saved'))
+      // Re-render the server component so the publication state (now public) reflects immediately.
+      router.refresh()
     } catch {
       addToast('error', t('error'))
     } finally {
@@ -142,17 +146,19 @@ export default function ProfileForm({ initialProfile }: Props) {
           </div>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex flex-wrap items-center gap-4">
           <button type="submit" className="btn-primary" disabled={pending}>
             {pending ? t('saving') : t('save')}
           </button>
-          {initialProfile?.status && (
-            <span className="text-sm text-slate-500">
-              Status:{' '}
-              <span className="font-medium text-slate-700">
-                {t(`status.${initialProfile.status}` as 'status.draft')}
-              </span>
+          {/* Clear publication state: saving publishes the page. Suspended is admin-only and shown as-is. */}
+          {initialProfile?.status === 'published' ? (
+            <span className="inline-flex items-center gap-1.5 text-sm font-medium text-emerald-700">
+              <CheckCircle2 className="h-4 w-4" aria-hidden /> Your organizer page is public — anyone with the link can view it.
             </span>
+          ) : initialProfile?.status === 'suspended' ? (
+            <span className="text-sm font-medium text-red-600">Your organizer page is suspended.</span>
+          ) : (
+            <span className="text-sm text-slate-500">Save to publish your organizer page and make it public.</span>
           )}
         </div>
       </form>

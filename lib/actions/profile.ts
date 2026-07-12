@@ -55,6 +55,18 @@ export async function upsertOrganizerProfile(formData: FormData): Promise<void> 
   }
   if (slug && !RESERVED_SLUGS.has(slug)) payload.slug = slug.slice(0, 80)
 
+  // Saving the organizer profile makes the public Organizer Page live: the public-page RPCs require
+  // organizer_profiles.status = 'published'. Without this, a profile stays at its 'draft' default forever
+  // and the page 404s. Guard: never override an admin 'suspended' status (no self-unsuspend).
+  const { data: existing } = await supabase
+    .from('organizer_profiles')
+    .select('status')
+    .eq('user_id', user.id)
+    .maybeSingle()
+  if ((existing as { status?: string } | null)?.status !== 'suspended') {
+    payload.status = 'published'
+  }
+
   const { error } = await supabase
     .from('organizer_profiles')
     .upsert(payload, { onConflict: 'user_id' })
@@ -63,6 +75,38 @@ export async function upsertOrganizerProfile(formData: FormData): Promise<void> 
     console.error('[upsertOrganizerProfile] failed:', error.message)
     throw new Error(error.message)
   }
+
+  revalidatePath('/dashboard/profile')
+}
+
+/**
+ * Upload the organizer's public avatar photo (identity / trust element on the public Organizer Page).
+ * Reuses the existing public `venue-photos` bucket under the owner's own folder (RLS: first path segment
+ * must equal auth.uid()), then stores the public URL on profiles.avatar_url (owner-updatable). No new
+ * persistence or bucket. Called from the profile editor.
+ */
+export async function uploadOrganizerAvatar(formData: FormData): Promise<void> {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) throw new Error('Not authenticated')
+
+  const file = formData.get('avatar')
+  if (!(file instanceof File) || file.size === 0) return
+  if (!file.type.startsWith('image/')) throw new Error('Please choose an image file.')
+  if (file.size > 5 * 1024 * 1024) throw new Error('Image is too large (max 5 MB).')
+
+  const ext = (file.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg'
+  const path = `${user.id}/avatar-${Date.now()}.${ext}`
+  const { error: upErr } = await supabase.storage
+    .from('venue-photos')
+    .upload(path, file, { contentType: file.type || undefined, upsert: false })
+  if (upErr) throw new Error(upErr.message)
+
+  const { data: pub } = supabase.storage.from('venue-photos').getPublicUrl(path)
+  const { error } = await supabase.from('profiles').update({ avatar_url: pub.publicUrl }).eq('id', user.id)
+  if (error) throw new Error(error.message)
 
   revalidatePath('/dashboard/profile')
 }
