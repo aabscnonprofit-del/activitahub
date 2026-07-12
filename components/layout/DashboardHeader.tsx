@@ -39,8 +39,9 @@ export default function DashboardHeader({ locale, userName, avatarUrl }: Props) 
   return (
     <header className="bg-white border-b border-slate-200 sticky top-0 z-40">
       <div className="container-page h-16 flex items-center justify-between gap-4">
-        {/* Logo */}
-        <Link href={`/${locale}`} className="flex items-center gap-2 shrink-0">
+        {/* Logo — inside the organizer's working environment, "home" is the Dashboard, not the
+            public landing, so the organizer is never pulled back into customer-facing pages. */}
+        <Link href={`/${locale}/dashboard`} className="flex items-center gap-2 shrink-0">
           <BrandMark size={28} />
           <span className="font-extrabold text-slate-900 text-base hidden sm:block">
             ActivLife<span className="text-indigo-600">Hub</span>

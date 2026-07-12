@@ -143,7 +143,10 @@ export async function createSubscriptionCheckout(formData: FormData): Promise<vo
     subscription_data: {
       metadata: { profile_id: profile.id, kind: 'subscription' },
     },
-    success_url: absoluteUrl(`/${locale}/billing?checkout=success`),
+    // Subscription active → land the organizer in their Dashboard, not on the Billing page. (Billing
+    // stays reachable via nav.) If the activating webhook hasn't landed yet, the /dashboard gate
+    // routes to /billing as before — never worse than the prior behavior, and no new loop.
+    success_url: absoluteUrl(`/${locale}/dashboard?checkout=success`),
     cancel_url: absoluteUrl(`/${locale}/billing?checkout=cancelled`),
   })
 
