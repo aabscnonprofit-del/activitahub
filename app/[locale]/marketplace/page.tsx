@@ -3,6 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Search, MapPin, SearchX, ShieldCheck } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
+import { getViewerCtaState } from '@/lib/auth/viewer'
 import { PublicHeader } from '@/components/layout/PublicHeader'
 import { searchMarketplace } from '@/lib/marketplace/queries'
 import { StarRating } from '@/components/ui/StarRating'
@@ -44,6 +45,8 @@ export default async function MarketplacePage({ params, searchParams }: Marketpl
   }
 
   const supabase = await createClient()
+
+  const viewer = await getViewerCtaState(supabase)
   const {
     data: { user },
   } = await supabase.auth.getUser()
@@ -52,7 +55,7 @@ export default async function MarketplacePage({ params, searchParams }: Marketpl
 
   return (
     <div className="flex min-h-screen flex-col">
-      <PublicHeader locale={locale} isAuthenticated={!!user} />
+      <PublicHeader locale={locale} isAuthenticated={!!user} isOrganizer={viewer.isOrganizer} />
 
       <main className="flex-1 bg-slate-50">
         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-10 lg:px-8">

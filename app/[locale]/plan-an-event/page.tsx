@@ -1,6 +1,7 @@
 import { getTranslations } from 'next-intl/server'
 import { CheckCircle2, Info } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
+import { getViewerCtaState } from '@/lib/auth/viewer'
 import { PublicHeader } from '@/components/layout/PublicHeader'
 import { PublicFooter } from '@/components/layout/PublicFooter'
 import PlannerClient from '@/components/planner/PlannerClient'
@@ -25,13 +26,15 @@ export default async function PlanAnEventPage({ params, searchParams }: PageProp
   const tL = await getTranslations('eventLicense')
 
   const supabase = await createClient()
+
+  const viewer = await getViewerCtaState(supabase)
   const {
     data: { user },
   } = await supabase.auth.getUser()
 
   return (
     <div className="flex min-h-screen flex-col">
-      <PublicHeader locale={locale} isAuthenticated={!!user} />
+      <PublicHeader locale={locale} isAuthenticated={!!user} isOrganizer={viewer.isOrganizer} />
       <main className="flex-1 bg-slate-50">
         <div className="mx-auto max-w-3xl px-4 py-10 sm:py-14">
           {/* One Event License — success / cancel feedback (success_url returns here). */}

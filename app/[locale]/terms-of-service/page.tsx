@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server'
 import { createClient } from '@/lib/supabase/server'
+import { getViewerCtaState } from '@/lib/auth/viewer'
 import PublicHeader from '@/components/layout/PublicHeader'
 import PublicFooter from '@/components/layout/PublicFooter'
 import type { Locale } from '@/lib/types'
@@ -11,11 +12,13 @@ export default async function TermsPage({ params }: Props) {
   const t = await getTranslations('terms')
 
   const supabase = await createClient()
+
+  const viewer = await getViewerCtaState(supabase)
   const { data: { user } } = await supabase.auth.getUser()
 
   return (
     <div className="min-h-screen flex flex-col">
-      <PublicHeader locale={locale} isAuthenticated={!!user} />
+      <PublicHeader locale={locale} isAuthenticated={!!user} isOrganizer={viewer.isOrganizer} />
       <div className="flex-1 container-page py-16 max-w-3xl">
         <h1 className="text-4xl font-extrabold text-slate-900 mb-2">{t('title')}</h1>
         <p className="text-slate-400 text-sm mb-10">{t('lastUpdated')}</p>

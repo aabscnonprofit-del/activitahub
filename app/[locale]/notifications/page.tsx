@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Bell, BellOff, Check, SlidersHorizontal } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
+import { getViewerCtaState } from '@/lib/auth/viewer'
 import { PublicHeader } from '@/components/layout/PublicHeader'
 import { markNotificationRead, markAllNotificationsRead } from '@/lib/actions/notifications'
 import { formatDate } from '@/lib/utils'
@@ -26,6 +27,8 @@ export default async function NotificationsPage({ params }: Props) {
   const t = await getTranslations('notifications')
 
   const supabase = await createClient()
+
+  const viewer = await getViewerCtaState(supabase)
   const {
     data: { user },
   } = await supabase.auth.getUser()
@@ -42,7 +45,7 @@ export default async function NotificationsPage({ params }: Props) {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <PublicHeader locale={locale} isAuthenticated />
+      <PublicHeader locale={locale} isAuthenticated isOrganizer={viewer.isOrganizer} />
       <main className="flex-1 bg-slate-50">
         <div className="mx-auto max-w-2xl px-4 py-10">
           <div className="mb-6 flex items-center justify-between">

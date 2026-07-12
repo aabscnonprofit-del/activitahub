@@ -5,6 +5,7 @@ import {
   Compass, CalendarPlus, CalendarDays, ArrowRight, LayoutDashboard, Sparkles, History,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
+import { getViewerCtaState } from '@/lib/auth/viewer'
 import { PublicHeader } from '@/components/layout/PublicHeader'
 import { Badge } from '@/components/ui/Badge'
 import { formatDate } from '@/lib/utils'
@@ -31,6 +32,8 @@ export default async function AccountPage({ params }: AccountPageProps) {
   const tb = await getTranslations('bookings')
 
   const supabase = await createClient()
+
+  const viewer = await getViewerCtaState(supabase)
   const {
     data: { user },
   } = await supabase.auth.getUser()
@@ -67,7 +70,7 @@ export default async function AccountPage({ params }: AccountPageProps) {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <PublicHeader locale={locale} isAuthenticated />
+      <PublicHeader locale={locale} isAuthenticated isOrganizer={viewer.isOrganizer} />
 
       <main className="flex-1 bg-slate-50">
         <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">

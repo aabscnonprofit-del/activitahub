@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { getViewerCtaState } from '@/lib/auth/viewer'
 import { PublicHeader } from '@/components/layout/PublicHeader'
 import { ActivityCard } from '@/components/activities/ActivityCard'
 import { listParticipantHistory } from '@/lib/activity-marketplace/cards'
@@ -19,6 +20,8 @@ export default async function ParticipantHistoryPage({ params }: Props) {
   const { locale } = (await params) as { locale: Locale }
 
   const supabase = await createClient()
+
+  const viewer = await getViewerCtaState(supabase)
   const {
     data: { user },
   } = await supabase.auth.getUser()
@@ -28,7 +31,7 @@ export default async function ParticipantHistoryPage({ params }: Props) {
 
   return (
     <div className="min-h-screen bg-white">
-      <PublicHeader locale={locale} isAuthenticated />
+      <PublicHeader locale={locale} isAuthenticated isOrganizer={viewer.isOrganizer} />
       <main className="mx-auto max-w-4xl px-4 py-10">
         <h1 className="text-2xl font-extrabold text-slate-900">Your activity history</h1>
         <p className="mt-1 text-sm text-slate-500">The public activities you have completed.</p>

@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server'
 import { createClient } from '@/lib/supabase/server'
+import { getViewerCtaState } from '@/lib/auth/viewer'
 import { redirect } from 'next/navigation'
 import { signInWithGoogle } from '@/lib/actions/auth'
 import { BrandMark } from '@/components/brand/BrandMark'
@@ -16,12 +17,17 @@ export default async function SignInPage({ params, searchParams }: Props) {
   const next = typeof sp.next === 'string' && sp.next.startsWith('/') && !sp.next.startsWith('//') ? sp.next : undefined
   const t = await getTranslations('auth.signIn')
 
-  // Already logged in → participant home (or the requested organizer-intent next)
+  // Already logged in → an explicit organizer-intent `next`, else the viewer's own home:
+  // organizers land in their Dashboard, participants on their account (never forced through
+  // the customer account first).
   const supabase = await createClient()
   const {
     data: { user },
   } = await supabase.auth.getUser()
-  if (user) redirect(next ?? `/${locale}/account`)
+  if (user) {
+    const viewer = await getViewerCtaState(supabase)
+    redirect(next ?? (viewer.isOrganizer ? `/${locale}/dashboard` : `/${locale}/account`))
+  }
 
   const googleAction = signInWithGoogle.bind(null, locale, next)
 

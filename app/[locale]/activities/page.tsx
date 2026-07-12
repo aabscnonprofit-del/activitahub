@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import { getViewerCtaState } from '@/lib/auth/viewer'
 import { PublicHeader } from '@/components/layout/PublicHeader'
 import { ActivityCard } from '@/components/activities/ActivityCard'
 import { listMarketplaceActivities } from '@/lib/activity-marketplace/cards'
@@ -35,6 +36,8 @@ export default async function ActivitiesPage({ params, searchParams }: Props) {
   const sort: MarketplaceSort = SORTS.includes(str(sp.sort) as MarketplaceSort) ? (str(sp.sort) as MarketplaceSort) : 'soonest'
 
   const supabase = await createClient()
+
+  const viewer = await getViewerCtaState(supabase)
   const {
     data: { user },
   } = await supabase.auth.getUser()
@@ -48,7 +51,7 @@ export default async function ActivitiesPage({ params, searchParams }: Props) {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <PublicHeader locale={locale} isAuthenticated={!!user} />
+      <PublicHeader locale={locale} isAuthenticated={!!user} isOrganizer={viewer.isOrganizer} />
       <main className="flex-1 bg-slate-50">
         <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
           <h1 className="text-2xl font-extrabold text-slate-900 sm:text-3xl">Discover activities</h1>

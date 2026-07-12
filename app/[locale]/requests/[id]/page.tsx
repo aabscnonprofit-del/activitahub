@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Check, X, CalendarDays, Info } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
+import { getViewerCtaState } from '@/lib/auth/viewer'
 import { PublicHeader } from '@/components/layout/PublicHeader'
 import { Badge } from '@/components/ui/Badge'
 import { Alert } from '@/components/ui/Alert'
@@ -23,6 +24,8 @@ export default async function RequestDetailPage({ params, searchParams }: Reques
   const tm = await getTranslations('marketplace')
 
   const supabase = await createClient()
+
+  const viewer = await getViewerCtaState(supabase)
   const {
     data: { user },
   } = await supabase.auth.getUser()
@@ -69,7 +72,7 @@ export default async function RequestDetailPage({ params, searchParams }: Reques
 
   return (
     <div className="flex min-h-screen flex-col">
-      <PublicHeader locale={locale} isAuthenticated />
+      <PublicHeader locale={locale} isAuthenticated isOrganizer={viewer.isOrganizer} />
       <main className="flex-1 bg-slate-50">
         <div className="mx-auto max-w-3xl px-4 py-10">
           <Link href={`/${locale}/requests`} className="text-sm text-slate-500 hover:text-slate-800">← {t('detail.back')}</Link>
