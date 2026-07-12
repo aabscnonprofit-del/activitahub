@@ -16,8 +16,11 @@ export const runtime = 'nodejs'
  * Scheduled by Vercel Cron (see vercel.json). Protected by CRON_SECRET (matches the other crons).
  */
 export async function GET(req: NextRequest): Promise<Response> {
+  // Fail CLOSED: a valid CRON_SECRET is mandatory. If the secret is unset (or the header does not
+  // match) the endpoint is rejected — it never becomes publicly runnable. (Vercel Cron injects
+  // `Authorization: Bearer ${CRON_SECRET}` automatically when the env var is set.)
   const secret = process.env.CRON_SECRET
-  if (secret && req.headers.get('authorization') !== `Bearer ${secret}`) {
+  if (!secret || req.headers.get('authorization') !== `Bearer ${secret}`) {
     return new Response('Unauthorized', { status: 401 })
   }
 

@@ -63,7 +63,8 @@ check('worker drains only queued rows under the attempt cap', worker.includes(".
 check('worker sends with an idempotency key = the row id (no double-delivery)', worker.includes('idempotencyKey: row.id'))
 check('worker applies the retry state machine', worker.includes('nextDeliveryState(result, row.attempts)'))
 check('worker records status/attempts/last_error and sent_at', worker.includes('last_error: state.last_error') && worker.includes('patch.sent_at'))
-check('worker is CRON_SECRET-protected', worker.includes('CRON_SECRET') && worker.includes('401'))
+check('worker is CRON_SECRET-protected and fails CLOSED (rejects when secret unset)',
+  worker.includes('CRON_SECRET') && worker.includes('401') && worker.includes('if (!secret ||'))
 check('worker no-ops gracefully when the provider is unconfigured', worker.includes('emailConfigured()') && worker.includes('email_not_configured'))
 check('worker uses recipient preferred_locale for the email language', worker.includes('preferred_locale'))
 
