@@ -35,9 +35,10 @@ export async function DashboardTopbar({
 
   return (
     <header className="flex h-14 shrink-0 items-center justify-between border-b border-slate-200 bg-white px-6">
-      {/* Logo */}
+      {/* Logo — the organizer's "home" inside the working environment is the Dashboard, not the
+          public landing, so clicking the brand keeps them in their workspace. */}
       <Link
-        href={`/${locale}`}
+        href={`/${locale}/dashboard`}
         className="flex items-center gap-2 text-slate-900 hover:text-brand-600 transition-colors"
       >
         <BrandMark size={28} />
