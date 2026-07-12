@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
 import ProfileForm from '@/components/dashboard/ProfileForm'
+import AvatarUpload from '@/components/dashboard/AvatarUpload'
 import { organizerHref } from '@/lib/utils'
 import type { OrganizerProfile } from '@/lib/types'
 
@@ -24,6 +25,11 @@ export default async function ProfilePage({ params }: Props) {
     .eq('user_id', user.id)
     .maybeSingle()
 
+  // The public avatar lives on profiles (identity/trust element on the public Organizer Page).
+  const { data: profileRow } = await supabase.from('profiles').select('avatar_url').eq('id', user.id).maybeSingle()
+  const avatarUrl = (profileRow as { avatar_url?: string | null } | null)?.avatar_url ?? null
+  const displayName = (orgProfile as OrganizerProfile | null)?.display_name ?? null
+
   return (
     <div>
       <div className="mb-6 flex flex-wrap items-start justify-between gap-3">
@@ -39,6 +45,8 @@ export default async function ProfilePage({ params }: Props) {
           View my organizer page
         </Link>
       </div>
+
+      <AvatarUpload avatarUrl={avatarUrl} displayName={displayName} />
 
       <ProfileForm
         locale={locale}
