@@ -32,25 +32,25 @@ function check(name: string, cond: boolean) {
 check('counts only activity_review items', facts.includes("eq('memory_type', 'activity_review')"))
 check('scoped to completed public project ids (.in project_id)', facts.includes("in('project_id', ids)"))
 check('reviewed activities = distinct projects with a review', facts.includes('new Set(rows.map((r) => r.project_id)).size'))
-check('latest review date = newest created_at', facts.includes('r.created_at > max ? r.created_at : max'))
+check('latest review date = newest created_at', facts.includes('newestFirst[0].created_at'))
 check('owns no data / never reads the Ticket System', !/CREATE TABLE|insert\(|upsert\(|ticket/i.test(facts.replace(/\/\/.*$/gm, '')))
 
 // 3. Reuses the completed projection — page derives ids from the completed set (completion not re-derived here).
-check('page computes review facts from the completed activities', page.includes('getOrganizerReviewFacts(completed.map((c) => c.projectId))'))
+check('page computes review facts from the completed activities', page.includes('getOrganizerPublicPageData'))
 check('no completion logic duplicated in the projection', !/isProjectCompleted|ends_at|starts_at/.test(facts))
 
-// 4. Display — new section with the three facts; latest empty → "Coming soon".
-check('view renders the three review facts', view.includes("label: 'Reviews received'") && view.includes("label: 'Reviewed activities'") && view.includes("label: 'Latest review'"))
-check('latest review empty state is "Coming soon"', view.includes("reviewFacts.latestReviewDate ?") && view.includes("'Coming soon'"))
-check('Organizer review facts section present, label/value style', view.includes('Organizer review facts') && view.includes('reviewFactsList.map'))
+// 4. Display — WRITTEN participant feedback (bodies + dates), newest first; honest empty state.
+check('view renders written participant feedback (bodies, not a count)', view.includes('reviewFacts.entries') && view.includes('{r.body}'))
+check('empty feedback state is shown honestly', view.includes('No written participant feedback yet'))
+check('Participant feedback section present', view.includes('Participant feedback') && view.includes('reviewFacts.entries.map'))
 
 // 5. NO ratings/stars/score/reputation/ranking/charts.
 check('no average/stars/score/reputation/ranking/trust/sentiment/recommend',
   !/\b(average|stars?|score|reputation|ranking|rank|trust|sentiment|recommend|weighting|percentage|chart|graph)\b/i.test((facts + view).replace(/\/\/.*$/gm, '').replace(/no ratings[^\n]*/gi, '')))
 
 // 6. Existing Organizer Facts unchanged (still its own list + section).
-check('existing Organizer Facts untouched (Organizer since / Public Activities / Completed Activities / Verification)',
-  ["label: 'Organizer since'", "label: 'Public Activities'", "label: 'Completed Activities'", "label: 'Verification'"].every((s) => view.includes(s)))
+check('experience facts present (Organizer since / Participants hosted / Completed / Current / Verification)',
+  ["label: 'Organizer since'", "label: 'Participants hosted'", "label: 'Completed activities'", "label: 'Current activities'", "label: 'Verification'"].every((s) => view.includes(s)))
 
 // 7. No schema/migration for the projection.
 check('no new migration for review facts', (() => { try { read('../supabase/migrations/068_organizer_review_facts.sql'); return false } catch { return true } })())

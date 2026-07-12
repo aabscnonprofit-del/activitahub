@@ -18,18 +18,18 @@ function check(name: string, cond: boolean) {
 }
 
 // 1. Organizer Facts section exists.
-check('Organizer Facts section present', view.includes('Organizer facts'))
+check('Organizer Facts section present', view.includes('Experience'))
 
 // 2. Organizer since — real member_since date, formatted, with a placeholder fallback (never invented).
 check('Organizer since uses the existing member_since date', view.includes('monthYear(org.member_since'))
-check('Organizer since falls back to a placeholder (no invented date)', view.includes("organizerSince ?? 'Coming soon'"))
+check('Organizer since falls back to a placeholder (no invented date)', view.includes("organizerSince ?? '—'"))
 check('date formatter is deterministic + returns null on no/invalid date', view.includes('getUTCMonth()') && /if \(!iso\) return null/.test(view) && view.includes('Number.isNaN(d.getTime())'))
 
 // 3. Public Activities — the count of published public Projects (the same list the page already filters).
-check('Public Activities = the published-public activities count', view.includes("label: 'Public Activities'") && view.includes('String(activities.length)'))
+check('Public Activities = the published-public activities count', view.includes("label: 'Current activities'") && view.includes('String(activities.length)'))
 
 // 4. Completed Activities — the real archive count (single source of truth), not estimated/inferred.
-check('Completed Activities shows the real archive count', view.includes("label: 'Completed Activities'") && view.includes('String(completedActivities.length)'))
+check('Completed Activities shows the real archive count', view.includes("label: 'Completed activities'") && view.includes('String(completedActivities.length)'))
 
 // 5. Verification — existing certified field only (no new verification system).
 check('Verification uses the existing certified field', view.includes("label: 'Verification'") && view.includes("org.certified ? 'Verified' : 'Not verified'"))

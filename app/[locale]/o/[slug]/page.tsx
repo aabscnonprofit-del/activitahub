@@ -1,7 +1,8 @@
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { getPublicOrganizerBySlug, getOrganizerReviews } from '@/lib/marketplace/queries'
-import { OrganizerProfileView } from '@/components/organizer/OrganizerProfileView'
+import { getPublicOrganizerBySlug } from '@/lib/marketplace/queries'
+import { getOrganizerPublicPageData } from '@/lib/organizer/public-presence'
+import { OrganizerPublicView } from '@/components/organizer/OrganizerPublicView'
 import { absoluteUrl } from '@/lib/utils'
 import type { Locale } from '@/lib/types'
 import type { Metadata } from 'next'
@@ -30,13 +31,21 @@ export default async function OrganizerSlugPage({ params }: OrganizerSlugPagePro
   } = await supabase.auth.getUser()
   const org = await getPublicOrganizerBySlug(supabase, slug)
   if (!org) notFound()
-  const reviews = await getOrganizerReviews(supabase, org.id)
+
+  // Render the SAME consolidated public Organizer Page as /organizers/[id] — one consistent identity
+  // regardless of which URL was followed (facts only: experience, current work, history, written feedback).
+  const data = await getOrganizerPublicPageData(org)
 
   return (
-    <OrganizerProfileView
+    <OrganizerPublicView
       locale={locale}
       org={org}
-      reviews={reviews}
+      activities={data.activities}
+      completedActivities={data.completedActivities}
+      reviewFacts={data.reviewFacts}
+      participantsHosted={data.participantsHosted}
+      avatarUrl={data.avatarUrl}
+      categories={data.categories}
       isAuthenticated={!!user}
     />
   )

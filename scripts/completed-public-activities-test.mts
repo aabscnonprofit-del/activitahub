@@ -47,7 +47,7 @@ check('exclusive partition (isCompleted → completed, else current)',
 check('completed ordered newest-finished first', /completed\.sort\(\(a, b\) => new Date\(b\.startsAt[\s\S]*a\.startsAt/.test(partition))
 
 // 6. Organizer Page — Past activities replaces the placeholder; count is the SAME archive (single source).
-check('page partitions + passes current + completed', page.includes('partitionOrganizerActivities(id') && page.includes('activities={current}') && page.includes('completedActivities={completed}'))
+check('page partitions + passes current + completed', page.includes('getOrganizerPublicPageData') && page.includes('activities={data.activities}') && page.includes('completedActivities={data.completedActivities}'))
 check('Past activities renders the completed archive (placeholder removed)',
   view.includes('completedActivities.map') && !view.includes('Past Activities archive will appear after'))
 check('Completed Activities count = the archive length (single source of truth)', view.includes('String(completedActivities.length)'))

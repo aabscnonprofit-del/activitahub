@@ -17,9 +17,12 @@ export interface OrganizerReviewFacts {
   reviewedActivities: number
   /** Newest review creation date (ISO), or null when there are none. */
   latestReviewDate: string | null
+  /** The actual WRITTEN participant feedback (newest first, capped) — qualitative evidence, never
+   *  reduced to a single number. Empty when there is none. */
+  entries: { body: string; date: string }[]
 }
 
-const EMPTY: OrganizerReviewFacts = { reviewsReceived: 0, reviewedActivities: 0, latestReviewDate: null }
+const EMPTY: OrganizerReviewFacts = { reviewsReceived: 0, reviewedActivities: 0, latestReviewDate: null, entries: [] }
 
 /**
  * Compute Organizer Review Facts from the organizer's COMPLETED PUBLIC activity project IDs (from the shared
@@ -39,10 +42,13 @@ export async function getOrganizerReviewFacts(completedProjectIds: string[]): Pr
       (r) => typeof r.body === 'string' && r.body.trim().length > 0,
     )
     if (rows.length === 0) return EMPTY
+    const newestFirst = [...rows].sort((a, b) => (a.created_at < b.created_at ? 1 : a.created_at > b.created_at ? -1 : 0))
     return {
       reviewsReceived: rows.length,
       reviewedActivities: new Set(rows.map((r) => r.project_id)).size,
-      latestReviewDate: rows.reduce((max, r) => (r.created_at > max ? r.created_at : max), rows[0].created_at),
+      latestReviewDate: newestFirst[0].created_at,
+      // Written feedback (newest first, capped) — the qualitative evidence the page shows, not a score.
+      entries: newestFirst.slice(0, 6).map((r) => ({ body: (r.body ?? '').trim(), date: r.created_at })),
     }
   } catch {
     return EMPTY
