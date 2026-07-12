@@ -80,7 +80,7 @@ Basis: repository at `main` (`86ee812`), cross-checked against 68 migrations / ~
 | Activity Alerts | ✅ | — |
 | Promotion Generator | ✅ | — |
 | Organizer Dashboard | ✅ | — |
-| Email Delivery | ✅ | Provider (Resend) wired; delivery worker (`/api/cron/email-dispatch`) drains the queue with idempotency, retry, and permanent-failure recording; branded multilingual templates. Transactional emails (every queued notification) deliver. *(Operator config: set `RESEND_API_KEY` + `EMAIL_FROM`.)* |
+| Email Delivery | 🟡 | **Implementation complete, production runtime NOT yet verified.** Provider (Resend REST), delivery worker (`/api/cron/email-dispatch`, fail-closed) with idempotency/retry/permanent-failure recording, branded multilingual templates; migration 069 applied to prod; historical queue contained (39 stale rows → `failed`). **Blocked on operator activation:** set `RESEND_API_KEY` + a Resend-verified `EMAIL_FROM`, set `NEXT_PUBLIC_APP_URL` to the canonical domain, deploy. Becomes ✅ only after one real end-to-end delivery is observed. |
 | Email Campaigns (builder UI) | 🟡 | Delivery is complete; a campaign-builder UI for organizer broadcasts is not implemented (separate module). |
 
 ### Business
