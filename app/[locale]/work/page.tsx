@@ -5,6 +5,7 @@ import {
   UtensilsCrossed, Wine, Car, Drama, SprayCan, GraduationCap, Compass, Handshake, ClipboardList,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
+import { getViewerCtaState } from '@/lib/auth/viewer'
 import { PublicHeader } from '@/components/layout/PublicHeader'
 import { PublicFooter } from '@/components/layout/PublicFooter'
 import type { Locale } from '@/lib/types'
@@ -41,6 +42,8 @@ export default async function WorkPage({ params }: PageProps) {
   const t = await getTranslations('workPage')
 
   const supabase = await createClient()
+
+  const viewer = await getViewerCtaState(supabase)
   const { data: { user } } = await supabase.auth.getUser()
 
   const ctaHref = user ? `/${locale}/dashboard/worker-profile` : `/${locale}/sign-up`
@@ -48,7 +51,7 @@ export default async function WorkPage({ params }: PageProps) {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <PublicHeader locale={locale} isAuthenticated={!!user} />
+      <PublicHeader locale={locale} isAuthenticated={!!user} isOrganizer={viewer.isOrganizer} />
       <main className="flex-1 bg-slate-50">
         {/* Hero */}
         <section className="bg-white">

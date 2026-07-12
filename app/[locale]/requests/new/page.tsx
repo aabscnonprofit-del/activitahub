@@ -1,6 +1,7 @@
 import { getTranslations } from 'next-intl/server'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { getViewerCtaState } from '@/lib/auth/viewer'
 import { PublicHeader } from '@/components/layout/PublicHeader'
 import { createRequest } from '@/lib/actions/requests'
 import { getMarketplaceActivity } from '@/lib/marketplace/queries'
@@ -20,6 +21,8 @@ export default async function NewRequestPage({ params, searchParams }: NewReques
   const tm = await getTranslations('marketplace')
 
   const supabase = await createClient()
+
+  const viewer = await getViewerCtaState(supabase)
   const {
     data: { user },
   } = await supabase.auth.getUser()
@@ -46,7 +49,7 @@ export default async function NewRequestPage({ params, searchParams }: NewReques
 
   return (
     <div className="flex min-h-screen flex-col">
-      <PublicHeader locale={locale} isAuthenticated />
+      <PublicHeader locale={locale} isAuthenticated isOrganizer={viewer.isOrganizer} />
       <main className="flex-1 bg-slate-50">
         <div className="mx-auto max-w-2xl px-4 py-10">
           <h1 className="text-2xl font-extrabold text-slate-900">{t('new.title')}</h1>

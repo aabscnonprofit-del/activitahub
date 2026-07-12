@@ -7,6 +7,7 @@ import {
   Lock, ShieldCheck, CalendarCheck,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
+import { getViewerCtaState } from '@/lib/auth/viewer'
 import { PublicHeader } from '@/components/layout/PublicHeader'
 import { getMarketplaceActivity, getActivityReviews } from '@/lib/marketplace/queries'
 import { StarRating } from '@/components/ui/StarRating'
@@ -24,6 +25,8 @@ export default async function ActivityDetailPage({ params }: DetailPageProps) {
   const t = await getTranslations('marketplace')
 
   const supabase = await createClient()
+
+  const viewer = await getViewerCtaState(supabase)
   const {
     data: { user },
   } = await supabase.auth.getUser()
@@ -49,7 +52,7 @@ export default async function ActivityDetailPage({ params }: DetailPageProps) {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <PublicHeader locale={locale} isAuthenticated={!!user} />
+      <PublicHeader locale={locale} isAuthenticated={!!user} isOrganizer={viewer.isOrganizer} />
 
       <main className="flex-1 bg-slate-50">
         <div className="mx-auto max-w-5xl px-4 py-6 sm:px-6 sm:py-10 lg:px-8">

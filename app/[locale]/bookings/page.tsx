@@ -2,6 +2,7 @@ import { getTranslations } from 'next-intl/server'
 import { redirect } from 'next/navigation'
 import { CalendarCheck, CalendarDays } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
+import { getViewerCtaState } from '@/lib/auth/viewer'
 import { PublicHeader } from '@/components/layout/PublicHeader'
 import { Badge } from '@/components/ui/Badge'
 import { cancelBooking } from '@/lib/actions/bookings'
@@ -25,6 +26,8 @@ export default async function BookingsPage({ params }: Props) {
   const t = await getTranslations('bookings')
 
   const supabase = await createClient()
+
+  const viewer = await getViewerCtaState(supabase)
   const {
     data: { user },
   } = await supabase.auth.getUser()
@@ -75,7 +78,7 @@ export default async function BookingsPage({ params }: Props) {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <PublicHeader locale={locale} isAuthenticated />
+      <PublicHeader locale={locale} isAuthenticated isOrganizer={viewer.isOrganizer} />
       <main className="flex-1 bg-slate-50">
         <div className="mx-auto max-w-3xl px-4 py-10">
           <h1 className="text-2xl font-extrabold text-slate-900">{t('title')}</h1>

@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
+import { getViewerCtaState } from '@/lib/auth/viewer'
 import { PublicHeader } from '@/components/layout/PublicHeader'
 import NotificationPreferencesForm from '@/components/alerts/NotificationPreferencesForm'
 import { getAlertPreferences, hasPushSubscription } from '@/lib/alerts/preferences'
@@ -18,6 +19,8 @@ export default async function NotificationPreferencesPage({ params }: Props) {
   const t = await getTranslations('alerts')
 
   const supabase = await createClient()
+
+  const viewer = await getViewerCtaState(supabase)
   const {
     data: { user },
   } = await supabase.auth.getUser()
@@ -43,7 +46,7 @@ export default async function NotificationPreferencesPage({ params }: Props) {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <PublicHeader locale={locale} isAuthenticated={!!user} />
+      <PublicHeader locale={locale} isAuthenticated={!!user} isOrganizer={viewer.isOrganizer} />
       <main className="flex-1 bg-slate-50">
         <div className="mx-auto max-w-3xl px-4 py-8">
           <Link
