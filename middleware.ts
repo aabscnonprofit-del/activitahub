@@ -62,6 +62,16 @@ function shouldRedirectIfAuthed(path: string): boolean {
   )
 }
 
+/**
+ * The project id when `path` targets a Project Workspace route — `/dashboard/projects/<uuid>` or a
+ * sub-route such as `.../budget` — else null. Used to scope One Event License access to the
+ * purchaser's OWN project workspace only (never the rest of /dashboard).
+ */
+function projectWorkspaceId(path: string): string | null {
+  const m = path.match(/^\/dashboard\/projects\/([0-9a-fA-F-]{36})(?:\/.*)?$/)
+  return m ? m[1] : null
+}
+
 // ── Main middleware ───────────────────────────────────────────────────────────
 
 export async function middleware(request: NextRequest) {
@@ -159,16 +169,46 @@ export async function middleware(request: NextRequest) {
     // ── /dashboard zone: certified_organizer + subscribed ─────────────────
     if (path.startsWith('/dashboard')) {
       if (role !== 'certified_organizer' && role !== 'admin') {
-        if (status === 'certified') {
-          // Certified but no active subscription → billing
+        // One Event License continuity: a One Event License purchaser may reach the Project
+        // Workspace of a project they OWN — the single activity they paid to organize — and NOTHING
+        // else in /dashboard. BOTH conditions are required: ownership (also RLS-enforced at the data
+        // layer) AND a purchased license. This restores the approved One Event License workflow
+        // without granting broader dashboard access; the certified-organizer + subscription checks
+        // below are unchanged, and a user with no license still falls through to the redirect.
+        const workspaceProjectId = projectWorkspaceId(path)
+        let ownedLicensedWorkspace = false
+        if (workspaceProjectId) {
+          const [{ data: owned }, { data: license }] = await Promise.all([
+            supabase
+              .from('projects')
+              .select('id')
+              .eq('id', workspaceProjectId)
+              .eq('owner_id', user.id)
+              .maybeSingle(),
+            supabase
+              .from('event_licenses')
+              .select('id')
+              .eq('profile_id', user.id)
+              .limit(1)
+              .maybeSingle(),
+          ])
+          ownedLicensedWorkspace = !!owned && !!license
+        }
+
+        if (!ownedLicensedWorkspace) {
+          if (status === 'certified') {
+            // Certified but no active subscription → billing
+            return NextResponse.redirect(
+              new URL(`/${locale}/billing`, request.url)
+            )
+          }
+          // Not certified and not their own licensed Project Workspace → onboarding
           return NextResponse.redirect(
-            new URL(`/${locale}/billing`, request.url)
+            new URL(`/${locale}/onboarding`, request.url)
           )
         }
-        // Not certified → onboarding
-        return NextResponse.redirect(
-          new URL(`/${locale}/onboarding`, request.url)
-        )
+        // Own licensed Project Workspace → allow through (no subscription required for one's own
+        // purchased activity). Fall past the /dashboard gate to the i18n response.
       }
 
       // Access gate: organizers reach the dashboard with EITHER an active/
