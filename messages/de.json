@@ -2525,6 +2525,16 @@
       "no_access": "Für die Zahlungseinrichtung ist Veranstalterzugang erforderlich.",
       "unconfigured": "Zahlungen sind derzeit nicht verfügbar.",
       "setup_error": "Etwas ist schiefgelaufen. Bitte versuche es erneut."
+    },
+    "warning": {
+      "title": "Bevor Sie Stripe verbinden",
+      "body1": "ActivLife Hub erstellt ein separates Stripe-Connect-Konto für dieses Organisatorprofil.",
+      "body2": "Wenn Sie Stripe bereits privat oder für ein anderes Unternehmen nutzen, wechseln Sie während der Einrichtung nicht zu einem fremden Stripe-Profil und verwenden Sie es nicht erneut.",
+      "body3": "Wenn Stripe Sie zur Anmeldung auffordert, stellen Sie sicher, dass Sie sich mit der Person oder dem Unternehmen anmelden, die bzw. das Ihre ActivLife-Hub-Zahlungen erhalten soll. Wenn Sie bereits bei einem anderen Stripe-Konto angemeldet sind, melden Sie sich zuerst ab, bevor Sie fortfahren.",
+      "body4": "Schließen Sie das Stripe-Onboarding für die Person oder das Unternehmen ab, die bzw. das Ihre ActivLife-Hub-Kundenzahlungen und -Auszahlungen erhalten soll.",
+      "checkbox": "Ich weiß, welche Person oder welches Unternehmen Zahlungen von ActivLife Hub erhalten soll.",
+      "cancel": "Abbrechen",
+      "continue": "Weiter zu Stripe"
     }
   },
   "experiencedReview": {

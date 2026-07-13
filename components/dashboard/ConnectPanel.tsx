@@ -3,6 +3,7 @@ import { CreditCard, CheckCircle2, AlertTriangle, Clock } from 'lucide-react'
 import { getMyConnectAccount } from '@/lib/billing/connect.server'
 import { deriveConnectStatus } from '@/lib/billing/connect'
 import { startConnectOnboarding } from '@/lib/actions/connect'
+import ConnectStripeFirstTime from '@/components/dashboard/ConnectStripeFirstTime'
 
 // Organizer "Get paid" panel — surfaces Stripe Connect status and the onboarding CTA.
 // Reads the owner-scoped connect row (migration 035); capability flags are synced by
@@ -74,12 +75,29 @@ export default async function ConnectPanel({
             <p className={`mt-3 rounded-xl border px-3 py-2 text-sm ${MARKER_STYLE[markerTone]}`}>{markerMsg}</p>
           )}
 
-          {status !== 'enabled' && (
+          {status === 'none' ? (
+            // First-time connect → confirm before creating the very first Connect account.
+            <ConnectStripeFirstTime
+              locale={locale}
+              label={ctaLabel}
+              warning={{
+                title: t('warning.title'),
+                body1: t('warning.body1'),
+                body2: t('warning.body2'),
+                body3: t('warning.body3'),
+                body4: t('warning.body4'),
+                checkbox: t('warning.checkbox'),
+                cancel: t('warning.cancel'),
+                continue: t('warning.continue'),
+              }}
+            />
+          ) : status !== 'enabled' ? (
+            // Resume ("Finish setup"/"Continue on Stripe") — an account already exists; no warning.
             <form action={startConnectOnboarding} className="mt-4">
               <input type="hidden" name="locale" value={locale} />
               <button type="submit" className="btn-primary">{ctaLabel}</button>
             </form>
-          )}
+          ) : null}
         </div>
       </div>
     </section>
