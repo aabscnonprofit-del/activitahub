@@ -158,6 +158,29 @@ async function handleCheckoutCompleted(
     return
   }
 
+  // Ticket / donation payment (Phase 1) — a paid or donation ticket admits the buyer to the
+  // Project only after payment succeeds (migration 062). Idempotent: the project_participants
+  // UNIQUE(project_id, account_id) constraint makes the upsert safe under Stripe's at-least-once
+  // delivery, and re-admits a previously cancelled buyer. No participant exists before payment.
+  if (kind === 'ticket') {
+    const ticketProjectId = session.metadata?.project_id
+    const buyerId = session.metadata?.buyer_profile_id
+    if (ticketProjectId && buyerId) {
+      await admin
+        .from('project_participants')
+        .upsert(
+          {
+            project_id: ticketProjectId,
+            account_id: buyerId,
+            status: 'approved',
+            updated_at: new Date().toISOString(),
+          },
+          { onConflict: 'project_id,account_id' },
+        )
+    }
+    return
+  }
+
   // Invoice payment — all customer money flows through invoices (Booking is the
   // agreement, not a payment rail). Flip the open invoice to paid; no profile_id
   // (the payer is anonymous), so this must run before the profile_id guard below.
