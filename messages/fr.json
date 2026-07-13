@@ -2525,6 +2525,16 @@
       "no_access": "Un accès organisateur est requis pour configurer les paiements.",
       "unconfigured": "Les paiements ne sont pas disponibles pour le moment.",
       "setup_error": "Une erreur s’est produite. Veuillez réessayer."
+    },
+    "warning": {
+      "title": "Avant de connecter Stripe",
+      "body1": "ActivLife Hub va créer un compte Stripe Connect distinct pour ce profil d’organisateur.",
+      "body2": "Si vous utilisez déjà Stripe à titre personnel ou pour une autre entreprise, ne basculez pas vers un profil Stripe sans rapport et ne le réutilisez pas pendant la configuration.",
+      "body3": "Si Stripe vous demande de vous connecter, assurez-vous de vous connecter avec la personne ou l’entreprise qui doit recevoir vos paiements ActivLife Hub. Si vous êtes déjà connecté à un autre compte Stripe, déconnectez-vous d’abord avant de continuer.",
+      "body4": "Terminez la configuration Stripe pour la personne ou l’entreprise qui doit recevoir les paiements et les virements de vos clients ActivLife Hub.",
+      "checkbox": "Je comprends quelle personne ou entreprise doit recevoir les paiements d’ActivLife Hub.",
+      "cancel": "Annuler",
+      "continue": "Continuer vers Stripe"
     }
   },
   "experiencedReview": {
