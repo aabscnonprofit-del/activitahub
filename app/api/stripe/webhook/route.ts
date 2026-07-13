@@ -25,8 +25,18 @@ export const dynamic = 'force-dynamic'
  * at-least-once delivery and retries converge to the same state.
  */
 export async function POST(request: NextRequest) {
-  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET
-  if (!webhookSecret) {
+  // Two Stripe webhook endpoints deliver to this URL, each with its own signing secret:
+  //  - the platform ("Your account") endpoint → billing events (checkout/subscription/invoice/refund);
+  //  - the Connected-accounts endpoint (connect=true) → connected-account `account.updated`.
+  // A Stripe endpoint's scope is a single boolean, so a second endpoint (not a scope change on the
+  // first, which would drop the platform events) is required to receive Connect events. We verify the
+  // signature against whichever secret matches. STRIPE_WEBHOOK_SECRET_CONNECT is optional — when unset,
+  // behavior is identical to the single platform-secret configuration.
+  const webhookSecrets = [
+    process.env.STRIPE_WEBHOOK_SECRET,
+    process.env.STRIPE_WEBHOOK_SECRET_CONNECT,
+  ].filter((s): s is string => Boolean(s))
+  if (webhookSecrets.length === 0) {
     return NextResponse.json(
       { error: 'STRIPE_WEBHOOK_SECRET is not configured' },
       { status: 500 }
@@ -40,13 +50,20 @@ export async function POST(request: NextRequest) {
 
   const payload = await request.text()
 
-  let event: Stripe.Event
+  // Accept the event if it verifies against any configured endpoint secret.
+  let event: Stripe.Event | null = null
+  let lastError = 'Invalid signature'
   const stripe = getStripe()
-  try {
-    event = stripe.webhooks.constructEvent(payload, signature, webhookSecret)
-  } catch (err) {
-    const message = err instanceof Error ? err.message : 'Invalid signature'
-    return NextResponse.json({ error: message }, { status: 400 })
+  for (const secret of webhookSecrets) {
+    try {
+      event = stripe.webhooks.constructEvent(payload, signature, secret)
+      break
+    } catch (err) {
+      lastError = err instanceof Error ? err.message : 'Invalid signature'
+    }
+  }
+  if (!event) {
+    return NextResponse.json({ error: lastError }, { status: 400 })
   }
 
   const admin = await createAdminClient()
