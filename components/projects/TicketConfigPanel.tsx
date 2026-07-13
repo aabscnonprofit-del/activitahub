@@ -48,8 +48,8 @@ export function TicketConfigPanel({
 
   const options: { value: TicketType; icon: typeof Ticket; title: string; desc: string }[] = [
     { value: 'free', icon: Ticket, title: 'Free Ticket', desc: 'Participants receive a ticket immediately and are added to the activity.' },
-    { value: 'paid', icon: CreditCard, title: 'Paid Ticket', desc: 'Payment required. Checkout will be available in a future update.' },
-    { value: 'donation', icon: HandHeart, title: 'Donation', desc: 'Donation support will be available in a future update.' },
+    { value: 'paid', icon: CreditCard, title: 'Paid Ticket', desc: 'Participants pay the occurrence price to join. Requires Stripe payments enabled.' },
+    { value: 'donation', icon: HandHeart, title: 'Donation', desc: 'Participants choose an amount to support the activity. Requires Stripe payments enabled.' },
   ]
 
   return (

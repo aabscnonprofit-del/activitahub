@@ -9,6 +9,7 @@ import { getParticipantMemoryEligibility } from '@/lib/activity-memories/partici
 import { getReviewEligibility } from '@/lib/reviews/reviews-eligibility'
 import { listParticipantStories, getParticipantStory, listActivityReviews, getActivityReview } from '@/lib/activity-memories/store'
 import { JoinButton } from '@/components/participants/JoinButton'
+import { getTicketContext } from '@/lib/tickets/context.server'
 import { ArrivalCoordination } from '@/components/activities/ArrivalCoordination'
 import { getArrivalPreference, getArrivalSummary } from '@/lib/arrival/store'
 import { ActivityArchive } from '@/components/activities/ActivityArchive'
@@ -53,6 +54,8 @@ export default async function PublicProjectPage({ params }: Props) {
   // the Ticket System's ticket type (tolerant default 'free') decides the Join CTA.
   const joinPolicy = await getProjectJoinPolicy(supabase, projectId)
   const ticketType = await getProjectTicketType(supabase, projectId)
+  // Paid/donation tickets: the representative occurrence price + the organizer's receive-payments gate.
+  const ticketCtx = joinPolicy === 'ticket' && ticketType !== 'free' ? await getTicketContext(projectId) : null
 
   // Stage 5d: render the prepared event from EventPlanV2 (public-safe subset). Null for projects without
   // an EventPlanV2 (e.g. legacy structured-flow) → the existing bare projection is shown instead.
@@ -224,6 +227,8 @@ export default async function PublicProjectPage({ params }: Props) {
               initialStatus={myParticipation?.status ?? null}
               isAuthenticated={!!user}
               signInHref={`/${locale}/sign-in`}
+              priceCents={ticketCtx?.priceCents ?? null}
+              canReceivePayments={ticketCtx?.canReceivePayments ?? false}
             />
 
             {/* Getting there — arrival coordination for the organizer + approved participants (never public). */}
