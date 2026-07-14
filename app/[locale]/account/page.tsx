@@ -10,6 +10,7 @@ import { PublicHeader } from '@/components/layout/PublicHeader'
 import { Badge } from '@/components/ui/Badge'
 import { formatDate } from '@/lib/utils'
 import type { Locale, Profile, Booking, BookingStatus } from '@/lib/types'
+import { listParticipantBookings } from '@/lib/bookings/participant-bookings.server'
 import type { Metadata } from 'next'
 
 interface AccountPageProps {
@@ -59,6 +60,10 @@ export default async function AccountPage({ params }: AccountPageProps) {
     .order('date', { ascending: true })
     .limit(3)
   const bookings = (bkRows ?? []) as Pick<Booking, 'id' | 'date' | 'status' | 'activity_id' | 'amount_cents' | 'currency'>[]
+
+  // Occurrence ticket bookings (Project world) — the participant's approved, occurrence-bound
+  // registrations for upcoming dates. Projected from project_participants (no booking entity).
+  const occBookings = await listParticipantBookings(user.id, 'upcoming')
 
   // Resolve activity titles for the listed bookings.
   const actIds = [...new Set(bookings.map((b) => b.activity_id).filter(Boolean) as string[])]
@@ -128,10 +133,29 @@ export default async function AccountPage({ params }: AccountPageProps) {
               </Link>
             </div>
           </div>
-          {bookings.length === 0 ? (
+          {occBookings.length === 0 && bookings.length === 0 ? (
             <p className="card mt-3 p-6 text-center text-sm text-slate-500">{t('upcoming.empty')}</p>
           ) : (
             <div className="mt-3 space-y-3">
+              {/* Occurrence ticket bookings — the participant's approved, date-specific registrations. */}
+              {occBookings.map((b) => (
+                <Link
+                  key={b.participantId}
+                  href={`/${locale}/p/${b.projectId}`}
+                  className="card card-hover flex items-center justify-between gap-4 p-4"
+                >
+                  <div className="min-w-0">
+                    <p className="truncate font-semibold text-slate-900">{b.title || tb('activity')}</p>
+                    <p className="mt-0.5 flex flex-wrap items-center gap-1 text-xs text-slate-500">
+                      <CalendarDays className="h-3.5 w-3.5" />
+                      {new Date(b.startsAt).toLocaleString(locale, { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}
+                      {b.organizerName && <span>· {b.organizerName}</span>}
+                    </p>
+                  </div>
+                  <Badge label="Booked" variant="success" />
+                </Link>
+              ))}
+              {/* Legacy marketplace bookings. */}
               {bookings.map((b) => (
                 <Link
                   key={b.id}
