@@ -3,6 +3,7 @@ import { headers } from 'next/headers'
 import { createClient } from '@/lib/supabase/server'
 import { DashboardSidebar } from '@/components/layout/DashboardSidebar'
 import { DashboardTopbar } from '@/components/layout/DashboardTopbar'
+import { DashboardMobileNav } from '@/components/layout/DashboardMobileNav'
 import type { Locale, Profile } from '@/lib/types'
 
 interface DashboardLayoutProps {
@@ -49,6 +50,18 @@ export default async function DashboardLayout({
           locale={locale}
           fullName={profile?.full_name ?? null}
           avatarUrl={profile?.avatar_url ?? null}
+          mobileNav={
+            // Same DashboardSidebar as the desktop column (kept in sync by reuse), shown as a
+            // slide-over drawer below `lg` where the permanent sidebar is hidden.
+            <DashboardMobileNav>
+              <DashboardSidebar
+                locale={locale}
+                role={profile?.role ?? 'student'}
+                onboardingStatus={profile?.onboarding_status ?? 'not_started'}
+                currentPath={currentPath}
+              />
+            </DashboardMobileNav>
+          }
         />
       </div>
 
