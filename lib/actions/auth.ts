@@ -161,8 +161,10 @@ export async function signIn(
   }
 
   if (profile.onboarding_status === 'certified') {
-    // Certified but not yet subscribed
-    redirect(`/${locale}/billing`)
+    // Certified but not yet subscribed → land on the Organizer Dashboard (the Billing/
+    // Subscription page stays reachable from the organizer nav). Post-login destination
+    // only; the dashboard's existing access/subscription prompts are unchanged.
+    redirect(`/${locale}/dashboard`)
   }
 
   // Organizer path already in progress (a path was chosen) → resume onboarding.
