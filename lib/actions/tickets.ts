@@ -4,13 +4,13 @@ import { createClient } from '@/lib/supabase/server'
 import { absoluteUrl } from '@/lib/utils'
 import { createConnectCheckoutSession } from '@/lib/billing/connect-checkout'
 import { getTicketContext } from '@/lib/tickets/context.server'
-import { getParticipantForAccount } from '@/lib/participants/store'
+import { getOccurrenceParticipant } from '@/lib/participants/store'
 
-// Phase 1 ticket checkout. Paid and donation tickets route a one-time Stripe Connect DESTINATION
-// charge to the organizer's connected account via the existing createConnectCheckoutSession. The
-// participant is admitted ONLY after the webhook confirms payment (062 design: paid/donation create
-// no participant up front). Reuses the existing checkout + webhook (metadata.kind='ticket'); no new
-// payment rail, no Ticket entity, no project-level ticket price (paid price = occurrence price).
+// Occurrence-bound ticket checkout. Paid/donation tickets route a one-time Stripe Connect
+// destination charge to the organizer's connected account for ONE selected occurrence; the
+// participant is admitted to THAT occurrence only after the webhook confirms payment. Reuses the
+// existing checkout + webhook (metadata.kind='ticket', metadata.occurrence_id); no new payment
+// rail, no Ticket entity, no project-level ticket price (paid price = the occurrence price).
 
 export type TicketCheckoutResult =
   | { ok: true; url: string }
@@ -20,7 +20,9 @@ export type TicketCheckoutResult =
         | 'not_authenticated'
         | 'not_available'
         | 'not_ticketed'
-        | 'already_participant'
+        | 'occurrence_invalid'
+        | 'occurrence_full'
+        | 'already_registered'
         | 'not_connected'
         | 'no_price'
         | 'invalid_amount'
@@ -32,6 +34,7 @@ const MAX_DONATION_CENTS = 1_000_000 // $10,000 sanity ceiling
 export async function startTicketCheckout(
   projectId: string,
   locale: string,
+  occurrenceId: string,
   donationAmountCents?: number,
 ): Promise<TicketCheckoutResult> {
   const supabase = await createClient()
@@ -46,9 +49,14 @@ export async function startTicketCheckout(
     return { ok: false, error: 'not_ticketed' }
   }
 
-  // Never charge someone who already holds a spot.
-  const mine = await getParticipantForAccount(supabase, projectId, user.id)
-  if (mine?.status === 'approved') return { ok: false, error: 'already_participant' }
+  // The buyer must have selected a real, still-upcoming occurrence of this project.
+  const occ = ctx.occurrences.find((o) => o.id === occurrenceId)
+  if (!occ) return { ok: false, error: 'occurrence_invalid' }
+  if (occ.full) return { ok: false, error: 'occurrence_full' }
+
+  // Never charge someone who already holds a spot for THIS occurrence.
+  const mine = await getOccurrenceParticipant(supabase, occurrenceId, user.id)
+  if (mine?.status === 'approved') return { ok: false, error: 'already_registered' }
 
   // Safety gate: the organizer must be able to receive payments (charges_enabled).
   if (!ctx.canReceivePayments) return { ok: false, error: 'not_connected' }
@@ -61,8 +69,8 @@ export async function startTicketCheckout(
       return { ok: false, error: 'invalid_amount' }
     }
   } else {
-    if (!ctx.priceCents || ctx.priceCents <= 0) return { ok: false, error: 'no_price' }
-    amountCents = ctx.priceCents
+    if (!occ.priceCents || occ.priceCents <= 0) return { ok: false, error: 'no_price' }
+    amountCents = occ.priceCents
   }
 
   const result = await createConnectCheckoutSession({
@@ -71,10 +79,16 @@ export async function startTicketCheckout(
     currency: 'usd',
     name: ctx.ticketType === 'donation' ? 'Activity donation' : 'Activity ticket',
     customerEmail: user.email ?? null,
-    metadata: { kind: 'ticket', project_id: projectId, buyer_profile_id: user.id, locale },
+    metadata: {
+      kind: 'ticket',
+      project_id: projectId,
+      occurrence_id: occurrenceId,
+      buyer_profile_id: user.id,
+      locale,
+    },
     successUrl: absoluteUrl(`/${locale}/p/${projectId}?ticket=success`),
     cancelUrl: absoluteUrl(`/${locale}/p/${projectId}?ticket=cancelled`),
-    idempotencyKey: `ticket_${projectId}_${user.id}_${amountCents}`,
+    idempotencyKey: `ticket_${occurrenceId}_${user.id}_${amountCents}`,
   })
 
   if (!result.ok) return { ok: false, error: 'checkout_failed' }

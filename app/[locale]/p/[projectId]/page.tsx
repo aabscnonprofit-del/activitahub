@@ -107,8 +107,10 @@ export default async function PublicProjectPage({ params }: Props) {
   // organizer or an APPROVED participant (never public). Only approved participants may submit.
   const isApprovedParticipant = myParticipation?.status === 'approved'
   const showArrival = !showArchive && (isOwner || isApprovedParticipant)
-  const arrivalSummary = showArrival ? await getArrivalSummary(projectId) : null
-  const myArrivalPreference = showArrival && isApprovedParticipant && user ? await getArrivalPreference(supabase, projectId, user.id) : null
+  // Ride coordination is occurrence-scoped — to the soonest upcoming occurrence (the representative date).
+  const rideOccurrenceId = occurrences[0]?.id ?? null
+  const arrivalSummary = showArrival ? await getArrivalSummary(projectId, rideOccurrenceId) : null
+  const myArrivalPreference = showArrival && isApprovedParticipant && user ? await getArrivalPreference(supabase, projectId, user.id, rideOccurrenceId) : null
 
   return (
     <div className="min-h-screen bg-white">
@@ -227,7 +229,7 @@ export default async function PublicProjectPage({ params }: Props) {
               initialStatus={myParticipation?.status ?? null}
               isAuthenticated={!!user}
               signInHref={`/${locale}/sign-in`}
-              priceCents={ticketCtx?.priceCents ?? null}
+              occurrences={(ticketCtx?.occurrences ?? []).map((o) => ({ id: o.id, startsAt: o.startsAt, priceCents: o.priceCents, remaining: o.remaining, full: o.full }))}
               canReceivePayments={ticketCtx?.canReceivePayments ?? false}
             />
 
@@ -235,6 +237,7 @@ export default async function PublicProjectPage({ params }: Props) {
             {showArrival && arrivalSummary && (
               <ArrivalCoordination
                 projectId={projectId}
+                occurrenceId={rideOccurrenceId}
                 locale={locale}
                 myPreference={myArrivalPreference}
                 summary={arrivalSummary}

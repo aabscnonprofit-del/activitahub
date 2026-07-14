@@ -13,6 +13,8 @@ export const PARTICIPANT_STATUSES: ParticipantStatus[] = ['pending', 'approved',
 export interface ProjectParticipant {
   id: string
   projectId: string
+  /** The specific Occurrence this registration is for (paid/donation tickets); null = project-level join. */
+  occurrenceId: string | null
   accountId: string
   status: ParticipantStatus
   createdAt: string
