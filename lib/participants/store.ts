@@ -9,11 +9,12 @@ import { type ParticipantStatus, type ProjectParticipant, isParticipantStatus } 
 
 type ServerClient = Awaited<ReturnType<typeof createClient>>
 
-const COLS = 'id, project_id, account_id, status, created_at, updated_at'
+const COLS = 'id, project_id, occurrence_id, account_id, status, created_at, updated_at'
 
 interface Row {
   id: string
   project_id: string
+  occurrence_id: string | null
   account_id: string
   status: string
   created_at: string
@@ -24,10 +25,46 @@ function toParticipant(r: Row): ProjectParticipant {
   return {
     id: r.id,
     projectId: r.project_id,
+    occurrenceId: r.occurrence_id ?? null,
     accountId: r.account_id,
     status: isParticipantStatus(r.status) ? r.status : 'pending',
     createdAt: r.created_at,
     updatedAt: r.updated_at,
+  }
+}
+
+/** Count APPROVED registrations for an Occurrence (capacity accounting). 0 on error/absent. */
+export async function countApprovedForOccurrence(supabase: ServerClient, occurrenceId: string): Promise<number> {
+  try {
+    const { count, error } = await supabase
+      .from('project_participants')
+      .select('id', { count: 'exact', head: true })
+      .eq('occurrence_id', occurrenceId)
+      .eq('status', 'approved')
+    if (error) return 0
+    return count ?? 0
+  } catch {
+    return 0
+  }
+}
+
+/** The caller's registration for a specific Occurrence, or null. */
+export async function getOccurrenceParticipant(
+  supabase: ServerClient,
+  occurrenceId: string,
+  accountId: string,
+): Promise<ProjectParticipant | null> {
+  try {
+    const { data, error } = await supabase
+      .from('project_participants')
+      .select(COLS)
+      .eq('occurrence_id', occurrenceId)
+      .eq('account_id', accountId)
+      .maybeSingle()
+    if (error || !data) return null
+    return toParticipant(data as Row)
+  } catch {
+    return null
   }
 }
 
@@ -42,10 +79,11 @@ export async function listProjectParticipants(supabase: ServerClient, projectId:
   }
 }
 
-/** The caller's own participation in a Project, or null (never joined / table absent). */
+/** The caller's PROJECT-LEVEL participation (occurrence_id IS NULL — free/instant/approval join),
+ *  or null. Occurrence ticket registrations are read via getOccurrenceParticipant. */
 export async function getParticipantForAccount(supabase: ServerClient, projectId: string, accountId: string): Promise<ProjectParticipant | null> {
   try {
-    const { data, error } = await supabase.from('project_participants').select(COLS).eq('project_id', projectId).eq('account_id', accountId).maybeSingle()
+    const { data, error } = await supabase.from('project_participants').select(COLS).eq('project_id', projectId).eq('account_id', accountId).is('occurrence_id', null).maybeSingle()
     if (error || !data) return null
     return toParticipant(data as Row)
   } catch {

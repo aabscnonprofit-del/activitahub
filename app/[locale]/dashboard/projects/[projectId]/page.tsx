@@ -507,12 +507,17 @@ export default async function ProjectDetailsPage({ params, searchParams }: Props
       <section className="rounded-lg border border-slate-200 p-4">
         <h2 className="mb-1 text-sm font-semibold text-slate-700">Participants</h2>
         <p className="mb-3 max-w-2xl text-xs text-slate-500">
-          Manage the people who joined this activity — a card for each, grouped by status. Approve, decline, or remove where appropriate.
+          Manage the people who joined this activity — grouped by date, with places remaining per date. Approve, decline, or remove where appropriate.
         </p>
         <ParticipantsRosterPanel
           participants={participants.map((p) => {
             const prof = participantProfiles[p.accountId]
-            return { id: p.id, accountId: p.accountId, status: p.status, createdAt: p.createdAt, name: prof?.fullName ?? null, email: prof?.email ?? null, phone: null, joinSource: joinSourceLabel }
+            return { id: p.id, accountId: p.accountId, occurrenceId: p.occurrenceId, status: p.status, createdAt: p.createdAt, name: prof?.fullName ?? null, email: prof?.email ?? null, phone: null, joinSource: joinSourceLabel }
+          })}
+          occurrences={projectOccurrences.map((o) => {
+            const registered = participants.filter((p) => p.occurrenceId === o.id && p.status === 'approved').length
+            const remaining = o.capacity != null ? Math.max(0, o.capacity - registered) : null
+            return { id: o.id, label: new Date(o.starts_at).toLocaleString(undefined, { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }), registered, capacity: o.capacity ?? null, remaining, full: o.capacity != null && remaining !== null && remaining <= 0 }
           })}
           projectId={projectId}
           locale={locale}

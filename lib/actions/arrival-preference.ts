@@ -6,7 +6,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
-import { getParticipantForAccount } from '@/lib/participants/store'
+import { getParticipantForAccount, getOccurrenceParticipant } from '@/lib/participants/store'
 import { setArrivalPreference } from '@/lib/arrival/store'
 import { ARRIVAL_NOTE_MAX, ARRIVAL_ZIP_MAX, ARRIVAL_SEATS_MAX } from '@/lib/arrival/limits'
 
@@ -24,7 +24,7 @@ export type ArrivalResult = { ok: true } | { ok: false; error: 'not_authenticate
  * Save the caller's own arrival preference. Only an APPROVED participant may submit. Seats apply only to offers.
  * Free-text is length-capped; no address/phone is collected. Revalidates the activity page.
  */
-export async function setArrivalPreferenceAction(projectId: string, input: ArrivalPreferenceInput, locale: string): Promise<ArrivalResult> {
+export async function setArrivalPreferenceAction(projectId: string, occurrenceId: string | null, input: ArrivalPreferenceInput, locale: string): Promise<ArrivalResult> {
   if (typeof input?.pickupZip !== 'string' || input.pickupZip.length > ARRIVAL_ZIP_MAX) return { ok: false, error: 'invalid' }
   if (typeof input?.note !== 'string' || input.note.length > ARRIVAL_NOTE_MAX) return { ok: false, error: 'invalid' }
   if (input.seatsAvailable != null && (!Number.isInteger(input.seatsAvailable) || input.seatsAvailable < 0 || input.seatsAvailable > ARRIVAL_SEATS_MAX)) {
@@ -37,8 +37,11 @@ export async function setArrivalPreferenceAction(projectId: string, input: Arriv
   } = await supabase.auth.getUser()
   if (!user) return { ok: false, error: 'not_authenticated' }
 
-  // Only APPROVED participants may submit (participation is the source of truth; the Ticket System is never read).
-  const mine = await getParticipantForAccount(supabase, projectId, user.id)
+  // Only APPROVED participants may submit — for THIS occurrence when one is given (ride coordination
+  // is occurrence-scoped); else the project-level join.
+  const mine = occurrenceId
+    ? await getOccurrenceParticipant(supabase, occurrenceId, user.id)
+    : await getParticipantForAccount(supabase, projectId, user.id)
   if (mine?.status !== 'approved') return { ok: false, error: 'not_approved' }
 
   const ok = await setArrivalPreference(supabase, projectId, user.id, {
@@ -47,7 +50,7 @@ export async function setArrivalPreferenceAction(projectId: string, input: Arriv
     pickupZip: input.pickupZip.trim() || null,
     seatsAvailable: input.canOfferRide ? input.seatsAvailable ?? null : null,
     note: input.note.trim() || null,
-  })
+  }, occurrenceId)
   if (!ok) return { ok: false, error: 'failed' }
 
   revalidatePath(`/${locale}/p/${projectId}`)

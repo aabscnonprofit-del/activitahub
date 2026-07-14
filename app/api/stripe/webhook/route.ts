@@ -127,6 +127,40 @@ export async function POST(request: NextRequest) {
 type AdminClient = Awaited<ReturnType<typeof createAdminClient>>
 
 /**
+ * Notify the Project organizer immediately after a ticket/donation payment, with occurrence
+ * context: who registered, the occurrence date, the amount, and the ticket type. The notification
+ * deep-links the relevant occurrence in the organizer workspace.
+ */
+async function notifyOrganizerTicketPaid(
+  admin: AdminClient,
+  args: { projectId: string; occurrenceId: string | null; buyerId: string; amountCents: number; locale: string },
+): Promise<void> {
+  const { data: proj } = await admin.from('projects').select('owner_id, ticket_type').eq('id', args.projectId).maybeSingle()
+  const ownerId = (proj as { owner_id?: string } | null)?.owner_id
+  if (!ownerId) return
+  const ticketType = (proj as { ticket_type?: string } | null)?.ticket_type === 'donation' ? 'donation' : 'ticket'
+
+  let dateLabel: string | null = null
+  if (args.occurrenceId) {
+    const { data: occ } = await admin.from('occurrences').select('starts_at').eq('id', args.occurrenceId).maybeSingle()
+    const startsAt = (occ as { starts_at?: string } | null)?.starts_at
+    if (startsAt) dateLabel = new Date(startsAt).toISOString().slice(0, 10)
+  }
+  const { data: prof } = await admin.from('profiles').select('full_name').eq('id', args.buyerId).maybeSingle()
+  const buyerName = (prof as { full_name?: string | null } | null)?.full_name ?? 'A participant'
+  const amount = `$${(args.amountCents / 100).toFixed(2)}`
+  const url = `/${args.locale}/dashboard/projects/${args.projectId}${args.occurrenceId ? `?occurrence=${args.occurrenceId}` : ''}`
+
+  await admin.from('notifications').insert({
+    profile_id: ownerId,
+    type: 'event_update',
+    title: `New ${ticketType}: ${buyerName}${dateLabel ? ` · ${dateLabel}` : ''}`,
+    body: `${buyerName} registered${dateLabel ? ` for ${dateLabel}` : ''} — ${amount} (${ticketType}).`,
+    data: { url, occurrence_id: args.occurrenceId, amount_cents: args.amountCents, ticket_type: ticketType },
+  })
+}
+
+/**
  * checkout.session.completed — fired for both certification (one-time) and
  * subscription checkouts. We branch on the `kind` metadata we set at creation.
  */
@@ -158,25 +192,40 @@ async function handleCheckoutCompleted(
     return
   }
 
-  // Ticket / donation payment (Phase 1) — a paid or donation ticket admits the buyer to the
-  // Project only after payment succeeds (migration 062). Idempotent: the project_participants
-  // UNIQUE(project_id, account_id) constraint makes the upsert safe under Stripe's at-least-once
-  // delivery, and re-admits a previously cancelled buyer. No participant exists before payment.
+  // Ticket / donation payment — admits the buyer to the SELECTED OCCURRENCE only after payment
+  // succeeds (migration 062/070). Constraint-agnostic check-then-write (no ON CONFLICT on the
+  // occurrence/project unique keys) so it is safe across the 070→071 expand→contract window and
+  // idempotent under Stripe's at-least-once delivery. occurrence_id set → admits to that occurrence;
+  // null (an in-flight pre-migration session) → project-level admission (legacy). No participant
+  // exists before payment.
   if (kind === 'ticket') {
     const ticketProjectId = session.metadata?.project_id
+    const occurrenceId = session.metadata?.occurrence_id ?? null
     const buyerId = session.metadata?.buyer_profile_id
     if (ticketProjectId && buyerId) {
-      await admin
+      const now = new Date().toISOString()
+      const base = admin
         .from('project_participants')
-        .upsert(
-          {
-            project_id: ticketProjectId,
-            account_id: buyerId,
-            status: 'approved',
-            updated_at: new Date().toISOString(),
-          },
-          { onConflict: 'project_id,account_id' },
-        )
+        .select('id')
+        .eq('project_id', ticketProjectId)
+        .eq('account_id', buyerId)
+      const { data: existing } = await (occurrenceId
+        ? base.eq('occurrence_id', occurrenceId)
+        : base.is('occurrence_id', null)
+      ).maybeSingle()
+      if (existing) {
+        await admin.from('project_participants').update({ status: 'approved', updated_at: now }).eq('id', (existing as { id: string }).id)
+      } else {
+        await admin.from('project_participants').insert({ project_id: ticketProjectId, occurrence_id: occurrenceId, account_id: buyerId, status: 'approved' })
+      }
+      // Organizer notification with occurrence context (participant, date, amount, ticket type).
+      await notifyOrganizerTicketPaid(admin, {
+        projectId: ticketProjectId,
+        occurrenceId,
+        buyerId,
+        amountCents: session.amount_total ?? 0,
+        locale: session.metadata?.locale ?? 'en',
+      })
     }
     return
   }

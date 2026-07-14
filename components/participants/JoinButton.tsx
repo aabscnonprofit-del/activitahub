@@ -40,7 +40,9 @@ const CONNECT_REQUIRED = 'Connect Stripe to accept payments.'
 function ticketErrorMessage(code: string): string {
   const map: Record<string, string> = {
     not_authenticated: 'Please sign in to continue.',
-    already_participant: 'You already have a spot for this activity.',
+    already_registered: 'You already have a spot for this date.',
+    occurrence_invalid: 'Please choose a date.',
+    occurrence_full: 'That date is full. Please choose another.',
     not_connected: CONNECT_REQUIRED,
     no_price: 'The ticket price hasn’t been set yet.',
     invalid_amount: 'Enter a valid amount.',
@@ -51,6 +53,23 @@ function formatUsd(cents: number): string {
   return `$${(cents / 100).toFixed(2)}`
 }
 
+// One purchasable occurrence (serializable subset passed from the server).
+export type TicketOcc = {
+  id: string
+  startsAt: string
+  priceCents: number | null
+  remaining: number | null
+  full: boolean
+}
+function formatOcc(startsAt: string): string {
+  const d = new Date(startsAt)
+  return d.toLocaleString(undefined, { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })
+}
+function spotsLabel(remaining: number | null): string {
+  if (remaining == null) return ''
+  return remaining <= 0 ? 'Full' : `${remaining} left`
+}
+
 export function JoinButton({
   projectId,
   locale,
@@ -59,7 +78,7 @@ export function JoinButton({
   initialStatus,
   isAuthenticated,
   signInHref,
-  priceCents = null,
+  occurrences = [],
   canReceivePayments = false,
 }: {
   projectId: string
@@ -69,7 +88,7 @@ export function JoinButton({
   initialStatus: ParticipantStatus | null
   isAuthenticated: boolean
   signInHref: string
-  priceCents?: number | null
+  occurrences?: TicketOcc[]
   canReceivePayments?: boolean
 }) {
   const router = useRouter()
@@ -77,12 +96,18 @@ export function JoinButton({
   const [pending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
   const [donationInput, setDonationInput] = useState('')
+  // Default the selection to the first date with room.
+  const [selectedId, setSelectedId] = useState<string | null>(
+    occurrences.find((o) => !o.full)?.id ?? occurrences[0]?.id ?? null,
+  )
+  const selectedOcc = occurrences.find((o) => o.id === selectedId) ?? null
 
-  // Paid/donation → Stripe Connect Checkout; the participant is admitted by the webhook on payment.
-  function buyTicket(amountCents?: number) {
+  // Paid/donation → Stripe Connect Checkout for the SELECTED occurrence; the participant is
+  // admitted to that occurrence by the webhook on payment.
+  function buyTicket(occurrenceId: string, amountCents?: number) {
     startTransition(async () => {
       setError(null)
-      const res = await startTicketCheckout(projectId, locale, amountCents)
+      const res = await startTicketCheckout(projectId, locale, occurrenceId, amountCents)
       if (res.ok) window.location.href = res.url
       else setError(ticketErrorMessage(res.error))
     })
@@ -155,55 +180,77 @@ export function JoinButton({
         </div>
       )
     }
-    if (ticketType === 'paid') {
-      const hasPrice = priceCents != null && priceCents > 0
-      return (
-        <div className="mt-8">
-          <button
-            type="button"
-            disabled={pending || !hasPrice}
-            onClick={() => buyTicket()}
-            className="inline-flex items-center justify-center rounded-xl bg-brand-600 px-7 py-3.5 font-bold text-white transition-colors hover:bg-brand-500 disabled:opacity-60"
-          >
-            {pending ? 'Working…' : hasPrice ? `${TICKET_LABEL.paid} · ${formatUsd(priceCents!)}` : TICKET_LABEL.paid}
-          </button>
-          <p className="mt-2 text-xs text-slate-400">
-            {hasPrice ? 'You’ll pay securely on Stripe, then you’re admitted.' : 'The organizer hasn’t set a ticket price yet.'}
-          </p>
-          {error && <p className="mt-2 text-xs text-red-600">{error}</p>}
-        </div>
-      )
+    if (occurrences.length === 0) {
+      return <div className="mt-8"><p className="text-sm text-slate-500">No upcoming dates available yet.</p></div>
     }
-    // donation — participant chooses an amount (funds go to the organizer, like a paid ticket).
-    const amountCents = Math.round(parseFloat(donationInput) * 100)
-    const validAmount = Number.isFinite(amountCents) && amountCents > 0
+    // Occurrence selector — the buyer chooses ONE date; price, remaining capacity, and admission
+    // are all per-occurrence. Donation is the same flow with a participant-entered amount.
+    const donationCents = Math.round(parseFloat(donationInput) * 100)
+    const validDonation = Number.isFinite(donationCents) && donationCents > 0
+    const paidHasPrice = ticketType === 'paid' && selectedOcc?.priceCents != null && selectedOcc.priceCents > 0
+    const canBuy = !!selectedOcc && !selectedOcc.full && (ticketType === 'donation' ? validDonation : paidHasPrice)
     return (
       <div className="mt-8">
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="relative">
-            <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">$</span>
-            <input
-              type="number"
-              min="1"
-              step="1"
-              inputMode="decimal"
-              value={donationInput}
-              onChange={(e) => setDonationInput(e.target.value)}
-              placeholder={priceCents ? (priceCents / 100).toFixed(0) : '20'}
-              className="w-32 rounded-xl border border-slate-300 py-3 pl-7 pr-3 font-medium text-slate-900 focus:border-brand-500 focus:outline-none"
-              aria-label="Donation amount in dollars"
-            />
+        <p className="mb-2 text-sm font-semibold text-slate-800">Choose a date</p>
+        <ul className="space-y-2" role="radiogroup" aria-label="Choose a date">
+          {occurrences.map((o) => {
+            const selected = o.id === selectedId
+            return (
+              <li key={o.id}>
+                <button
+                  type="button"
+                  role="radio"
+                  aria-checked={selected}
+                  disabled={o.full}
+                  onClick={() => setSelectedId(o.id)}
+                  className={`flex w-full items-center justify-between gap-3 rounded-xl border px-4 py-3 text-left transition-colors ${
+                    selected ? 'border-brand-500 bg-brand-50' : 'border-slate-200 hover:bg-slate-50'
+                  } ${o.full ? 'cursor-not-allowed opacity-60' : ''}`}
+                >
+                  <span className="text-sm font-medium text-slate-900">{formatOcc(o.startsAt)}</span>
+                  <span className="flex items-center gap-3 text-sm">
+                    {ticketType === 'paid' && o.priceCents != null && <span className="font-semibold text-slate-900">{formatUsd(o.priceCents)}</span>}
+                    <span className={o.full ? 'text-rose-600' : 'text-slate-500'}>{spotsLabel(o.remaining)}</span>
+                  </span>
+                </button>
+              </li>
+            )
+          })}
+        </ul>
+
+        {ticketType === 'donation' && (
+          <div className="mt-4 flex items-center gap-2">
+            <div className="relative">
+              <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">$</span>
+              <input
+                type="number" min="1" step="1" inputMode="decimal"
+                value={donationInput}
+                onChange={(e) => setDonationInput(e.target.value)}
+                placeholder="20"
+                className="w-32 rounded-xl border border-slate-300 py-3 pl-7 pr-3 font-medium text-slate-900 focus:border-brand-500 focus:outline-none"
+                aria-label="Donation amount in dollars"
+              />
+            </div>
           </div>
-          <button
-            type="button"
-            disabled={pending || !validAmount}
-            onClick={() => buyTicket(amountCents)}
-            className="inline-flex items-center justify-center rounded-xl bg-brand-600 px-7 py-3.5 font-bold text-white transition-colors hover:bg-brand-500 disabled:opacity-60"
-          >
-            {pending ? 'Working…' : TICKET_LABEL.donation}
-          </button>
-        </div>
-        <p className="mt-2 text-xs text-slate-400">Choose an amount to support this activity. Funds go to the organizer.</p>
+        )}
+
+        <button
+          type="button"
+          disabled={pending || !canBuy}
+          onClick={() => selectedOcc && buyTicket(selectedOcc.id, ticketType === 'donation' ? donationCents : undefined)}
+          className="mt-4 inline-flex items-center justify-center rounded-xl bg-brand-600 px-7 py-3.5 font-bold text-white transition-colors hover:bg-brand-500 disabled:opacity-60"
+        >
+          {pending
+            ? 'Working…'
+            : ticketType === 'paid'
+              ? `${TICKET_LABEL.paid}${paidHasPrice ? ` · ${formatUsd(selectedOcc!.priceCents!)}` : ''}`
+              : TICKET_LABEL.donation}
+        </button>
+        <p className="mt-2 text-xs text-slate-400">
+          {ticketType === 'donation'
+            ? 'Choose a date and an amount. Funds go to the organizer.'
+            : 'You’ll pay securely on Stripe, then you’re admitted to the selected date.'}
+        </p>
         {error && <p className="mt-2 text-xs text-red-600">{error}</p>}
       </div>
     )

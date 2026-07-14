@@ -16,12 +16,14 @@ const DISCLAIMER = 'This is participant coordination only. ActivLife Hub does no
 
 export function ArrivalCoordination({
   projectId,
+  occurrenceId = null,
   locale,
   myPreference,
   summary,
   canSubmit,
 }: {
   projectId: string
+  occurrenceId?: string | null
   locale: string
   myPreference: ArrivalPreference | null
   summary: ArrivalSummary
@@ -41,6 +43,7 @@ export function ArrivalCoordination({
     startTransition(async () => {
       const res = await setArrivalPreferenceAction(
         projectId,
+        occurrenceId,
         { needsRide, canOfferRide, pickupZip, seatsAvailable: seats.trim() === '' ? null : Number(seats), note },
         locale,
       )
