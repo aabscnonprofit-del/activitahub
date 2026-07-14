@@ -9,6 +9,8 @@ interface DashboardTopbarProps {
   locale: Locale
   fullName: string | null
   avatarUrl: string | null
+  /** Narrow-screen menu trigger (hamburger + drawer); rendered at the far left. */
+  mobileNav?: React.ReactNode
 }
 
 /**
@@ -19,6 +21,7 @@ export async function DashboardTopbar({
   locale,
   fullName,
   avatarUrl,
+  mobileNav,
 }: DashboardTopbarProps) {
   const t = await getTranslations('nav')
 
@@ -35,15 +38,19 @@ export async function DashboardTopbar({
 
   return (
     <header className="flex h-14 shrink-0 items-center justify-between border-b border-slate-200 bg-white px-6">
-      {/* Logo — the organizer's "home" inside the working environment is the Dashboard, not the
-          public landing, so clicking the brand keeps them in their workspace. */}
-      <Link
-        href={`/${locale}/dashboard`}
-        className="flex items-center gap-2 text-slate-900 hover:text-brand-600 transition-colors"
-      >
-        <BrandMark size={28} />
-        <span className="hidden font-bold sm:block text-sm">ActivLife Hub</span>
-      </Link>
+      <div className="flex items-center gap-2">
+        {/* Hamburger (narrow screens only) → opens the sidebar as a drawer. */}
+        {mobileNav}
+        {/* Logo — the organizer's "home" inside the working environment is the Dashboard, not the
+            public landing, so clicking the brand keeps them in their workspace. */}
+        <Link
+          href={`/${locale}/dashboard`}
+          className="flex items-center gap-2 text-slate-900 hover:text-brand-600 transition-colors"
+        >
+          <BrandMark size={28} />
+          <span className="hidden font-bold sm:block text-sm">ActivLife Hub</span>
+        </Link>
+      </div>
 
       {/* Right side */}
       <div className="flex items-center gap-3">

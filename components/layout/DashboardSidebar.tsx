@@ -123,7 +123,10 @@ export async function DashboardSidebar({
   }
 
   return (
-    <aside className="hidden w-60 shrink-0 lg:block">
+    // Visibility is controlled by the container (the desktop column is `hidden lg:block`;
+    // the mobile drawer shows it below lg) — the sidebar itself is always displayed so it
+    // can be reused unchanged in both places.
+    <aside className="w-60 shrink-0">
       <nav className="space-y-0.5" aria-label="Dashboard navigation">
         {isOrganizer && primaryItems.map(renderItem)}
         {isOrganizer && (
