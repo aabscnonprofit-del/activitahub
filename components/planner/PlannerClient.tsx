@@ -33,6 +33,34 @@ const IDEA_EXAMPLES = [
   'I want a networking night for startup founders.',
 ]
 
+// Active Planner session persistence — survives a component remount (e.g. the locale switcher navigating
+// /en/plan-an-event → /ru/plan-an-event, which unmounts this client component). sessionStorage is per-tab
+// and cleared when the tab closes, which matches an "active session". Best-effort; never throws.
+const PLANNER_SESSION_KEY = 'alh.planner.session.v1'
+type PlannerSnapshot = {
+  step: Step; idea: string; whatShouldHappen: string
+  category: Category; total: string; adults: string; kids: string; venue: Venue; budget: string
+  requirements: string; city: string; stateRegion: string; country: string; postal: string
+  repeats: Repeats; sessions: string; instructor: 'have' | 'need' | ''; materials: 'provided' | 'byo' | ''
+  discovery: DiscoveryMsg[] | null; answer: string
+  eventPlanV2: EventPlanV2 | null; projectId: string | undefined
+}
+function loadPlannerSession(): Partial<PlannerSnapshot> | null {
+  if (typeof window === 'undefined') return null
+  try {
+    const raw = window.sessionStorage.getItem(PLANNER_SESSION_KEY)
+    return raw ? (JSON.parse(raw) as Partial<PlannerSnapshot>) : null
+  } catch { return null }
+}
+function savePlannerSession(s: PlannerSnapshot): void {
+  if (typeof window === 'undefined') return
+  try { window.sessionStorage.setItem(PLANNER_SESSION_KEY, JSON.stringify(s)) } catch { /* quota / disabled */ }
+}
+function clearPlannerSession(): void {
+  if (typeof window === 'undefined') return
+  try { window.sessionStorage.removeItem(PLANNER_SESSION_KEY) } catch { /* disabled */ }
+}
+
 export default function PlannerClient({ locale }: { locale: string }) {
   const t = useTranslations('planner')
   const tf = useTranslations('planner.form')
@@ -76,12 +104,64 @@ export default function PlannerClient({ locale }: { locale: string }) {
   // same Project. The Project row persists server-side (RLS owner-only).
   const [projectId, setProjectId] = useState<string | undefined>(undefined)
 
+  // Whether the stored session has been restored yet. Gates the save effect below so the initial
+  // (empty) render never overwrites a stored session before it is restored.
+  const [hydrated, setHydrated] = useState(false)
+
   // When a gate (sign-in / license) or error appears after Generate, scroll it into view so it
   // can never be silently off-screen at the bottom of the long details form.
   const gateRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
     if (gate || error) gateRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
   }, [gate, error])
+
+  // Restore an active session after a remount (client-only, post-mount → no SSR hydration mismatch).
+  useEffect(() => {
+    const s = loadPlannerSession()
+    if (s) {
+      if (s.step !== undefined) setStep(s.step)
+      if (s.idea !== undefined) setIdea(s.idea)
+      if (s.whatShouldHappen !== undefined) setWhatShouldHappen(s.whatShouldHappen)
+      if (s.category !== undefined) setCategory(s.category)
+      if (s.total !== undefined) setTotal(s.total)
+      if (s.adults !== undefined) setAdults(s.adults)
+      if (s.kids !== undefined) setKids(s.kids)
+      if (s.venue !== undefined) setVenue(s.venue)
+      if (s.budget !== undefined) setBudget(s.budget)
+      if (s.requirements !== undefined) setRequirements(s.requirements)
+      if (s.city !== undefined) setCity(s.city)
+      if (s.stateRegion !== undefined) setStateRegion(s.stateRegion)
+      if (s.country !== undefined) setCountry(s.country)
+      if (s.postal !== undefined) setPostal(s.postal)
+      if (s.repeats !== undefined) setRepeats(s.repeats)
+      if (s.sessions !== undefined) setSessions(s.sessions)
+      if (s.instructor !== undefined) setInstructor(s.instructor)
+      if (s.materials !== undefined) setMaterials(s.materials)
+      if (s.discovery !== undefined) setDiscovery(s.discovery)
+      if (s.answer !== undefined) setAnswer(s.answer)
+      if (s.eventPlanV2 !== undefined) setEventPlanV2(s.eventPlanV2)
+      if (s.projectId !== undefined) setProjectId(s.projectId)
+    }
+    setHydrated(true)
+  }, [])
+
+  // Persist the active session on every change (after hydration) so it survives navigation/remount.
+  useEffect(() => {
+    if (!hydrated) return
+    savePlannerSession({
+      step, idea, whatShouldHappen,
+      category, total, adults, kids, venue, budget,
+      requirements, city, stateRegion, country, postal,
+      repeats, sessions, instructor, materials,
+      discovery, answer, eventPlanV2, projectId,
+    })
+  }, [
+    hydrated, step, idea, whatShouldHappen,
+    category, total, adults, kids, venue, budget,
+    requirements, city, stateRegion, country, postal,
+    repeats, sessions, instructor, materials,
+    discovery, answer, eventPlanV2, projectId,
+  ])
 
   function resetAll() {
     setStep('idea'); setIdea(''); setWhatShouldHappen('')
@@ -90,6 +170,7 @@ export default function PlannerClient({ locale }: { locale: string }) {
     setRepeats('one_time'); setSessions(''); setInstructor(''); setMaterials('')
     setEventPlanV2(null); setError(false); setGate(null); setDiscovery(null); setAnswer('')
     setProjectId(undefined)
+    clearPlannerSession()
   }
 
   function applyPrefill(p: IdeaPrefill) {
