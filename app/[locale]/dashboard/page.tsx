@@ -8,6 +8,8 @@ import {
 } from 'lucide-react'
 import { formatDate } from '@/lib/utils'
 import { listProjects } from '@/lib/projects/store'
+import { getActivityTitles } from '@/lib/planning/persistence'
+import { UNTITLED_ACTIVITY } from '@/lib/planning/activity-identity'
 import ConnectPanel from '@/components/dashboard/ConnectPanel'
 import type { Locale, Profile } from '@/lib/types'
 import type { Metadata } from 'next'
@@ -52,6 +54,9 @@ export default async function CommandCenterPage({ params, searchParams }: Props)
 
   // Stage C — Project-first home. Reuses the existing Project store (RLS owner-only); no new business logic.
   const projects = await listProjects(supabase)
+  // Activity name comes from the single identity source (getActivityTitles → the persisted plan's
+  // experienceDesign.intendedFeeling) — the SAME source the activities list and public page use — never a raw id.
+  const projectTitles = await getActivityTitles(supabase, projects.map((p) => p.id))
   const profile = profileRow as Pick<Profile, 'full_name' | 'timezone'> | null
   const tz = profile?.timezone ?? 'UTC'
   const firstName = profile?.full_name?.split(' ')[0] ?? null
@@ -198,7 +203,7 @@ export default async function CommandCenterPage({ params, searchParams }: Props)
                 <Link href={`/${locale}/dashboard/projects/${p.id}`} className="min-w-0 flex-1">
                   <span className="flex items-center gap-2">
                     <FolderKanban className="h-4 w-4 shrink-0 text-brand-600" />
-                    <span className="truncate text-sm font-semibold text-slate-900">{p.id.slice(0, 8)}…</span>
+                    <span className="truncate text-sm font-semibold text-slate-900">{projectTitles[p.id] ?? UNTITLED_ACTIVITY}</span>
                   </span>
                   <span className="mt-0.5 block text-xs text-slate-500">{p.status} · {p.current_step}</span>
                 </Link>

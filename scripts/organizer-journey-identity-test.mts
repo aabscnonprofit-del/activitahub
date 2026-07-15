@@ -35,6 +35,12 @@ check('activities list loads names via getActivityTitles (batch, single source)'
 check('activities list renders the activity name, not a raw id slice', list.includes('titles[p.id]') && !list.includes('p.id.slice'))
 check('activities list is titled for activities, not internal "Projects"', list.includes('Your activities'))
 
+// Dashboard HOME "Your projects" cards must use the SAME identity source — not a raw id slice.
+const home = code('../app/[locale]/dashboard/page.tsx')
+check('dashboard home loads names via getActivityTitles (same single source)', home.includes('getActivityTitles('))
+check('dashboard home cards render the activity name, not a raw id slice', home.includes('projectTitles[p.id]') && !home.includes('p.id.slice'))
+check('dashboard home falls back to a human-readable label', home.includes('UNTITLED_ACTIVITY'))
+
 const workspace = code('../app/[locale]/dashboard/projects/[projectId]/page.tsx')
 check('workspace derives the title from the same identity source', workspace.includes('activityTitleFromPlan(workerPlan)'))
 check('workspace H1 is the activity name (not "Project Workspace" + raw id)', workspace.includes('{activityTitle}') && !workspace.includes('font-mono text-sm text-slate-500">{projectId}'))
