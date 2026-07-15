@@ -28,14 +28,14 @@ const resetPasswordSchema = z.object({
 
 /**
  * Validate a post-auth `next` destination. Only same-origin absolute paths are
- * allowed; anything else falls back to the participant home (`/account`).
+ * allowed; anything else falls back to the participant surface (`/activities`).
  * This is how organizer *intent* is carried — organizer CTAs pass
  * `next=/<locale>/onboarding`; ordinary participants pass nothing.
  */
 function safeNext(next: FormDataEntryValue | string | null, locale: string): string {
   const s = typeof next === 'string' ? next : ''
   if (s.startsWith('/') && !s.startsWith('//')) return s
-  return `/${locale}/account`
+  return `/${locale}/activities`
 }
 
 // ── Actions ───────────────────────────────────────────────────────────────────
@@ -65,7 +65,7 @@ export async function signUp(
   const { fullName, email, password, locale } = parsed.data
   const supabase = await createClient()
 
-  // Default new users are participants → land on /account after confirmation.
+  // Default new users are participants → land on /activities after confirmation.
   // Organizer-intent sign-ups carry next=/<locale>/onboarding.
   const dest = safeNext(formData.get('next'), locale)
 

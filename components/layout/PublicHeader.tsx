@@ -146,7 +146,7 @@ export function PublicHeader({ locale, isAuthenticated, isOrganizer = false }: P
             {isAuthenticated ? (
               <>
                 <Link
-                  href={`/${locale}/account`}
+                  href={isOrganizer ? `/${locale}/dashboard` : `/${locale}/activities`}
                   className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700 transition-colors"
                 >
                   {t('account')}
@@ -241,7 +241,7 @@ export function PublicHeader({ locale, isAuthenticated, isOrganizer = false }: P
             {isAuthenticated ? (
               <>
                 <Link
-                  href={`/${locale}/account`}
+                  href={isOrganizer ? `/${locale}/dashboard` : `/${locale}/activities`}
                   onClick={() => setMobileOpen(false)}
                   className="rounded-lg bg-brand-600 px-3 py-2.5 text-center text-sm font-semibold text-white"
                 >

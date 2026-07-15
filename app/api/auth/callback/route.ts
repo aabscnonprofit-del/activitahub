@@ -16,9 +16,9 @@ export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url)
   const code = searchParams.get('code')
   // Only allow same-origin relative paths to prevent open redirects.
-  const rawNext = searchParams.get('next') ?? '/en/account'
+  const rawNext = searchParams.get('next') ?? '/en/activities'
   const next =
-    rawNext.startsWith('/') && !rawNext.startsWith('//') ? rawNext : '/en/account'
+    rawNext.startsWith('/') && !rawNext.startsWith('//') ? rawNext : '/en/activities'
 
   if (code) {
     const cookieStore = await cookies()

@@ -26,7 +26,7 @@ export default async function SignInPage({ params, searchParams }: Props) {
   } = await supabase.auth.getUser()
   if (user) {
     const viewer = await getViewerCtaState(supabase)
-    redirect(next ?? (viewer.isOrganizer ? `/${locale}/dashboard` : `/${locale}/account`))
+    redirect(next ?? (viewer.isOrganizer ? `/${locale}/dashboard` : `/${locale}/activities`))
   }
 
   const googleAction = signInWithGoogle.bind(null, locale, next)

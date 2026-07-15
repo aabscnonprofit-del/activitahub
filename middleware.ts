@@ -123,12 +123,12 @@ export async function middleware(request: NextRequest) {
 
   if (user && shouldRedirectIfAuthed(path)) {
     // Honour an explicit organizer-intent `next` (e.g. ?next=/en/onboarding);
-    // otherwise land on the participant home, NOT organizer onboarding.
+    // otherwise land on the participant surface, NOT organizer onboarding.
     const nextParam = request.nextUrl.searchParams.get('next')
     const dest =
       nextParam && nextParam.startsWith('/') && !nextParam.startsWith('//')
         ? nextParam
-        : `/${locale}/account`
+        : `/${locale}/activities`
     return NextResponse.redirect(new URL(dest, request.url))
   }
 
