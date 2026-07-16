@@ -12,7 +12,6 @@ import {
   readBareCount,
   readInstructor,
   readInstructorAnswer,
-  missingRequiredFact,
 } from '@/lib/planning/required-facts'
 import { hasOrganizerAccess } from '@/lib/auth/organizer-access'
 import { resolveProjectForPlan, updateProject } from '@/lib/projects/store'
@@ -148,34 +147,13 @@ export async function analyzeIdeaAction(idea: string, conversation?: DiscoveryTu
     }
   }
 
-  // REQUIRED-FACTS GATE — the Organizer is ready to draft a WSH, but the current architecture still
-  // needs guestCount (always) and, for class-type activities, instructor before planning. Rather than
-  // reopen the removed Details form, we keep the SAME Discovery conversation open and ask a single
-  // natural follow-up for the one fact still missing, in the visitor's language. Once it is supplied
-  // the next call captures it (above) and the flow proceeds — so the FED always carries real values
-  // and no downstream consumer receives a degraded default.
-  const missing = missingRequiredFact(ext.category, headcount, instructor)
-  if (missing) {
-    // Same concept funnel the other discovery/WSH branches produce — the gate only holds for the
-    // missing fact; it changes nothing else about the analysis.
-    const funnel = await runConceptFunnelAI(effective)
-    return {
-      ok: true,
-      funnel,
-      prefill,
-      scenario: {
-        status: 'scenario_needed',
-        whatShouldHappen: null,
-        source: null,
-        discoveryRequired: true,
-        interpretation: verdict.interpretation ?? null,
-        directions: verdict.directions ?? [],
-        discoveryQuestions: verdict.discoveryQuestions ?? [],
-        // The client renders the localized follow-up for this fact (route language).
-        missingFact: missing,
-      },
-    }
-  }
+  // AI readiness is authoritative (Product Canon Ch. 9 / Ch. 12): once the AI Organizer has judged the
+  // intent ready to draft (verdict.mayDraftWsh, checked above), Discovery is NOT re-forced merely because
+  // a deterministic operational fact (expected-attendance guestCount, or instructor) is still unknown.
+  // guestCount and instructor are still extracted above and carried through `prefill` into the FED when
+  // the user actually stated them; when unstated they flow through as unknown and do not block the
+  // Statement/FED/planning. (Maximum capacity is a different concept than expected attendance and is
+  // never treated as the latter here.)
 
   // plan_ready: a usable scenario/WSH already exists. A provided itinerary/narrative bypasses the
   // Concept Funnel with the recognised story; otherwise prefer the Agent's WSH/summary (falling

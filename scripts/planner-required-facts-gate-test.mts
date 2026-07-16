@@ -1,7 +1,12 @@
-// Required-facts gate — analyzeIdeaAction must not advance to a WSH/plan until guestCount (always)
-// and instructor (class-type activities) are known, capturing them from the SAME Discovery
-// conversation (a natural follow-up), never the removed Details form. This locks the wiring at the
-// source level (the pure capture logic is covered by required-facts-test).
+// Required facts must NOT override AI readiness (Product Canon Ch. 9 / Ch. 12).
+//
+// The AI Organizer's verdict (decideRequest → mayDraftWsh) is authoritative for whether Discovery is
+// required. Once the AI has judged the intent ready to draft, `analyzeIdeaAction` must NOT re-force
+// Discovery merely because a deterministic operational fact (expected-attendance guestCount, or
+// instructor) is still unknown — that was the legacy `missingRequiredFact` override (removed here).
+// guestCount and instructor are still EXTRACTED and carried through the prefill/FED when the user
+// stated them; when unstated they flow through as unknown and do not block Statement/FED/planning.
+// (The pure capture logic is covered by required-facts-test.)
 //
 //   Run:  npx tsx scripts/planner-required-facts-gate-test.mts
 
@@ -19,41 +24,33 @@ const read = (p: string) => readFileSync(new URL(p, root), 'utf8')
 const action = read('lib/actions/planner.ts')
 const planner = read('components/planner/PlannerClient.tsx')
 
-// ── Capture: facts are read from the idea + latest answer, and carried in the prefill/FED ─────
-check('imports the required-facts capture helpers',
+// ── Extraction is preserved (Req 3 / scenario D): facts are still read from the idea + latest answer
+//    and carried in the prefill/FED when the user provided them. ───────────────────────────────────
+check('imports the required-facts CAPTURE helpers',
   action.includes("from '@/lib/planning/required-facts'") &&
-  ['readHeadcount', 'readBareCount', 'readInstructor', 'readInstructorAnswer', 'missingRequiredFact'].every((f) => action.includes(f)))
-check('headcount is captured from idea + short answer (never a silent default)',
+  ['readHeadcount', 'readBareCount', 'readInstructor', 'readInstructorAnswer'].every((f) => action.includes(f)))
+check('headcount is still captured from idea + short answer',
   action.includes('ext.guestCount ?? readHeadcount(effective) ?? readBareCount(lastAnswer)'))
-check('instructor is captured from idea + short answer',
+check('instructor is still captured from idea + short answer',
   action.includes('readInstructor(effective) ?? readInstructorAnswer(lastAnswer)'))
-check('IdeaPrefill carries instructor', /instructor: 'have' \| 'need' \| null/.test(action))
-check('prefill carries the captured guestCount + instructor', action.includes('guestCount: headcount') && /\n\s*instructor,\n/.test(action))
-
-// ── Gate: hold in Discovery for the one missing fact, only after the Organizer is WSH-ready ───
-check('the gate runs only when the Organizer would draft a WSH (after the !mayDraftWsh return)',
-  action.indexOf('!verdict.mayDraftWsh') < action.indexOf('missingRequiredFact(ext.category, headcount, instructor)'))
-check('a missing fact holds in Discovery (scenario_needed, whatShouldHappen null, missingFact set)',
-  /const missing = missingRequiredFact\([^)]*\)\n\s*if \(missing\) \{/.test(action) &&
-  action.includes('missingFact: missing') && action.includes('whatShouldHappen: null'))
-check('ScenarioState carries the structured missingFact (guests | instructor)',
-  /missingFact\?: 'guests' \| 'instructor' \| null/.test(action))
-check('the follow-up question is localized CLIENT-side (route language), not via server getTranslations',
-  !action.includes('getTranslations') &&
-  planner.includes("tf('facts.askGuests')") && planner.includes("tf('facts.askInstructor')"))
-
-// ── No legacy form, no new flow: the gate reuses the existing Discovery return shape ──────────
-check('no Details step was reintroduced', !planner.includes("'details'") && !planner.includes('setStep(\'details\')'))
-check('client carries the captured instructor into the FED via applyPrefill',
+check('prefill still carries the captured guestCount + instructor',
+  action.includes('guestCount: headcount') && /\n\s*instructor,\n/.test(action))
+check('client still carries the captured instructor into the FED via applyPrefill',
   planner.includes('if (p.instructor) setInstructor(p.instructor)'))
 
-// ── Localized question strings exist for every supported locale ───────────────────────────────
-for (const loc of ['en', 'de', 'es', 'fr', 'pt', 'ru']) {
-  const m = JSON.parse(read(`messages/${loc}.json`))
-  const facts = m?.planner?.form?.facts
-  check(`${loc}: planner.form.facts has ack/askGuests/askInstructor`,
-    !!facts && !!facts.ack && !!facts.askGuests && !!facts.askInstructor)
-}
+// ── AI readiness is authoritative (Req 1 / Req 2 / Req 7): the deterministic gate no longer overrides.
+check('the legacy deterministic override is gone (no missingRequiredFact call in the action)',
+  !action.includes('missingRequiredFact('))
+check('missingRequiredFact is no longer imported into the action',
+  !action.includes('missingRequiredFact,'))
+check('no deterministic missing-fact branch forces Discovery',
+  !/const missing = missingRequiredFact\(/.test(action) && !action.includes('missingFact: missing'))
+check('the ONLY forced-Discovery path is the AI verdict (!verdict.mayDraftWsh)',
+  action.includes('if (!verdict.mayDraftWsh) {') &&
+  (action.match(/discoveryRequired: true/g) ?? []).length === 1)
+
+// ── No legacy form reintroduced (Req 4). ──────────────────────────────────────────────────────────
+check('no Details step was reintroduced', !planner.includes("'details'") && !planner.includes("setStep('details')"))
 
 console.log(`\n${failures === 0 ? 'ALL PASS' : `${failures} FAILURE(S)`}`)
 process.exit(failures === 0 ? 0 : 1)
